@@ -11,5 +11,9 @@ def home():
 def variable():
     return render_template('test_var.html', variable="34")
 
+@app.route('/variable/<var>') # La url deberia ser: '/variable/<34>'
+def variable(var):
+    return render_template('test_var2.html', variable=var)
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -24,3 +24,72 @@ Con `flask run` o `python app.py` deberia iniciarse el programa (hay que estar p
 Si se ingresa es url se accede a la pagina.
 
 Para frenar la ejecucion se tiene que usar la combinaicon de teclas: `Ctrl`+`C`.
+## Bases de datos
+### Paquete
+```
+pip install flask-sqlalchemy
+```
+### Uso
+```python
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+```
+
+## HTML
+### Estructura de archivos
+```
+tu_proyecto/
+├── app.py
+├── templates/
+│   ├── index.html
+│   ├── usuario.html
+│   └── base.html (opcional)
+└── static/ (para CSS/JS)
+```
+### Uso
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')  # Busca en la carpeta 'templates'
+
+@app.route('/usuario/<nombre>')
+def usuario(nombre):
+    return render_template('usuario.html', nombre_usuario=nombre)  # Pasar variables
+```
+### Usar Variables
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuario</title>
+</head>
+<body>
+    <h1>Hola {{ nombre_usuario }}</h1>
+    
+    <!-- Condicionales -->
+    {% if nombre_usuario == 'Admin' %}
+        <p>Tienes privilegios de administrador.</p>
+    {% else %}
+        <p>Eres un usuario normal.</p>
+    {% endif %}
+
+    <!-- Bucles -->
+    <ul>
+    {% for item in ['Python', 'Flask', 'HTML'] %}
+        <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+```

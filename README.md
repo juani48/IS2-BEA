@@ -19,7 +19,13 @@ Desde VSCODE usar `Ctrl`+`Shift`+`P` para abrir la paleta de comandos y seleccio
 ```bash
 pip3 install package_name
 ```
-## Framework
+## Paquetes del proyecto
+
+Puedes generar este archivo desde los paquetes ya instalados en tu entorno virtual ejecutando el comando `pip freeze > requirements.txt`.
+
+Una vez creado el archivo `requirements.txt`, puedes instalar todos los paquetes necesarios en un nuevo entorno virtual ejecutando `pip install -r requirements.txt`.
+
+# Flask
 Deje un archivo `app.py` con un ejemplo de como funciona `flask`.
 
 Flask es un Microframeworks flexible, sin dependencias externas obligatorias. Vi que es ideal para aplicaciones pequeñas. 
@@ -31,12 +37,12 @@ Con `flask run` o `python app.py` deberia iniciarse el programa (hay que estar p
 Si se ingresa es url se accede a la pagina.
 
 Para frenar la ejecucion se tiene que usar la combinaicon de teclas: `Ctrl`+`C`.
-## Bases de datos
-### Paquete
+# Bases de datos
+## Paquete
 ```
 pip install flask-sqlalchemy
 ```
-### Uso
+## Uso
 ```python
 from flask_sqlalchemy import SQLAlchemy
 

@@ -6,6 +6,10 @@ Haz clic en "Download Python 3.x.x" (la versión más reciente).
 
 Verificala la instalacion abriendo la terminal (cmd o PowerShell) y escribe:: `python --version`.
 
+## Crear entrono virtual
+
+En la terminal usar `python -m venv ".venv"`
+
 ## Activar entorno virtual
 Desde VSCODE usar `Ctrl`+`Shift`+`P` para abrir la paleta de comandos y seleccionar el interprete (buscar opcion `Python: Seleccionar interprete`) `./venv/bin/python3`.
 

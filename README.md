@@ -8,6 +8,9 @@ Verificala la instalacion abriendo la terminal (cmd o PowerShell) y escribe:: `p
 
 ## Activar entorno virtual
 Desde VSCODE usar `Ctrl`+`Shift`+`P` para abrir la paleta de comandos y seleccionar el interprete (buscar opcion `Python: Seleccionar interprete`) `./venv/bin/python3`.
+
+> En linux tuve que instalar `python3-venv` y usar el comando `source ./venv/bin/activate`. Capa a alguno le sirve.
+
 ## Instalar paquetes al entorno
 ```bash
 pip3 install package_name

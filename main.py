@@ -1,7 +1,8 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template
+from data import config 
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+app = Flask(__name__)	
 
 @app.route('/')
 def home():

@@ -150,46 +150,49 @@ session.commit()
 ```
 
 # Relaciones entre modelos con SQLAlchemy
-## Relación uno a uno
-Este tipo de relación ocurre cuando un solo registro de una tabla se relaciona con un solo registro de otra tabla. En el siguiente ejemplo se tiene una tabla persona que guardará los datos personales y dos tablas, `profesor` y `alumno` cada una de las cuales está asociada a la tabla persona a través de la
-clave foránea `personaId`.
+Seria solo necesario declarar un atributo en la columba de tipo `ForeignKey("tabla.cp")`. Aun asi dejo un [link](https://juncotic.com/creacion-modelos-flask-sqlalchemy/) de refrencia.
 
-Para representar esta relación primero es necesario definir la columna `personaId` correspondiente a la clave foránea en la tabla `alumno`:
+# Definicion de modelos
+
+## Modelos
+Para definir modelos seguiremos el siguiente esquema:
 ```python
-class Alumno(db.Model):
-    alumnoId = db.Column(db.Integer, primary_key=True)
-    personaId = db.Column(db.Integer, db.ForeignKey('persona.personaId'), nullable=False) #Definición de clave foranea
-    plan = db.Column(db.Integer, nullable=False)
+# imports
+from config import Base # import minimo necesario
+
+class ObjectModel(Base):
+    # Definir el nombre de la tabla
+    __tablename__ = "object_table"
+
+    # Definicion de atributos de la tabla
+    nombre_atributo = ...
+
+    # Definir el formato de consulta
+    def __repr__(self):
+        return "{" + f"atributo: {self.formato_json}" + "}"
+
+    # Definir el constructor
+    def __init__(...):
+        ...
 ```
-En este caso creamos una columna tipo entero a la que le especificamos su naturaleza de clave foránea mediante la clase `ForeingKey`. A esta clase se le pasa por parámetro en nombre de la tabla con la que se relaciona seguida por la clave primaria de dicha tabla. Repetimos dicho proceso en la tabla profesor:
+`Object` sera el tipo de objecto a repsentar, el nombre de la tabla debe respetar el formato de `"object_table"`. Ejemplo `class UserModel`, `__tablaname__ = "user_table"`.
+
+El nombre de los atributos debe respetar el siguiente formato: Toda la palabra en minuscula, y el uso de `_` para los espacios.
+
+El metodo `__repr__(self)` necesaria para las consultas, retornaran a la clase en formato json. Ejemplo `return "{" + f"dni:{self.dni}, name:{self.name}, email={self.email}" + "}"`. La idea es utilizar la libreria `json`, que permite usar la funcion `json.loads()`, la cual convierte una cadena JSON a un objeto de Python, especificamente en un diccionario.
+
+El metodo `__init__(...)` debe contener la inicializacion del objeto, con todos sus parametros, se puede tener sobrecarga de metodos `__init__` por parametros. Tener en cuenta la definicion de los atributos de la columna (nullable o no nullable) para la creacion del constructor.
+
+## Atributo compuesto
 ```python
-class Profesor(db.Model):
-    profesorId = db.Column(db.Integer, primary_key=True)
-    personaId = db.Column(db.Integer, db.ForeignKey('persona.personaId'), nullable=False) #Definición de clave foranea
-    numEmpleado = db.Column(db.Integer, nullable=False)
+from sqlalchemy.orm import composite
+
+class User(Base):
+    __tablename__ = 'users'
+    
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    
+    full_name = composite(FullName, first_name, last_name)
 ```
-Esto ha definido las columnas correspondientes a la clave foránea entre las tablas pero no ha definido la relación entre ambas tablas para poder relacionar los objetos en nuestro código. Para ello es necesario especificar estas relaciones en todas las tablas.
-
-Para el modelo correspondiente a la tabla `persona` es necesario cargar dos relaciones utilizando la función `relationship`, la que especifica la relación con la clase `Alumno` y la que especifica la relación con la clase `Profesor`:
-```python
-class Persona(db.Model):
-    personaId = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(80), nullable=False)
-    apellido = db.Column(db.String(80), nullable=False)
- 
-    # Relaciones
-    profesor = db.relationship('Profesor',uselist=False,
-    back_populates="persona",cascade="all, delete-orphan",single_parent=True)
-    alumno = db.relationship('Alumno',uselist=False,
-    back_populates="persona",cascade="all, delete-orphan",single_parent=True)
-
-```
-El primer parámetro de la función `relationship` representa la clase con la que se está creando en la relación.
-
-El parámetro `uselist` es un valor booleano que indica si se quiere que el valor obtenido de la relación sea una lista. En este caso, como la relación es uno a uno y al cargar una persona se traerá solo un profesor o un alumno este valor es configurado como `False`.
-
-El parámetro `back_populates` indica el nombre de la relación en la dirección inversa. Es decir, el modelo `Persona` se relaciona con `Profesor` a través del atributo llamado `profesor` y a su vez el modelo `Profesor` se relacionará con el modelo `Persona` a través de un atributo llamado `persona`.
-
-El parámetro `cascade` define el comportamiento en cascada de las tablas con respecto a sus relaciones. Se especifica como una lista de reglas separadas por coma, las reglas disponibles son `save-update`, `merge`, `expunge`, `delete`, `delete-orphan` y `refresh-expire`. Una manera de aplicar todas estas reglas de una manera más reducida es colocar la regla all que incluye a todas las nombradas anteriormente excepto `delete-orphan` que debe colocarse por separado. Una descripción más completa de la funcionalidad `cascade` puede encontrarse en la documentación oficial.
-
-

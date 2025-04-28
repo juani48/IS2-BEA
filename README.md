@@ -39,16 +39,14 @@ Si se ingresa es url se accede a la pagina.
 Para frenar la ejecucion se tiene que usar la combinaicon de teclas: `Ctrl`+`C`.
 ## Bases de datos
 ### Paquete
-```
+```bash
 pip install flask-sqlalchemy
 ```
 ### [Go to README data ](data/README.md) 
 
-### [Link util](https://entrenamiento-frameworks-web-python.readthedocs.io/es/latest/leccion2/sqlalchemy.html#insertar-registros)
-
 ## HTML
 ### Paquete
-```
+```bash
 pip install flask
 ```
 ### Estructura de archivos

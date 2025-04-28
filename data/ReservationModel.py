@@ -1,7 +1,7 @@
-from main import db
-from sqlalchemy import Column
-from sqlalchemy import Integer, String
+from config import Base
+from sqlalchemy import Column, Integer, String
 
-#class ReservationModel(db.Model):
-   # __tablename__ = "reservation_table"
+class ReservationModel(Base):
+   __tablename__ = "reservation_table"
+   
     

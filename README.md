@@ -42,20 +42,15 @@ Para frenar la ejecucion se tiene que usar la combinaicon de teclas: `Ctrl`+`C`.
 ```
 pip install flask-sqlalchemy
 ```
-### Uso
-```python
-from flask_sqlalchemy import SQLAlchemy
+### [Go to README data ](data/README.md) 
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-```
+### [Link util](https://entrenamiento-frameworks-web-python.readthedocs.io/es/latest/leccion2/sqlalchemy.html#insertar-registros)
 
 ## HTML
+### Paquete
+```
+pip install flask
+```
 ### Estructura de archivos
 ```
 tu_proyecto/

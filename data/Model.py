@@ -1,5 +1,5 @@
 from config import Base
-from sqlalchemy import Column, Integer, Double, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, Double, DateTime, ForeignKey, Boolean, String
 
 class UserModel(Base):
     __tablename__ = "user_table"

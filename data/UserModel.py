@@ -12,11 +12,7 @@ class UserModel(Base):
     employee_number = Column(Integer, unique=True, nullable=True)
     
     def __repr__(self):
-        return "{" + f"""dni:{self.dni}, 
-        name:{self.name}, 
-        email={self.email}, 
-        astname:{self.lastname}, 
-        employeeNumber:{self.employee_number}""" + "}"
+        return "{" + f"""dni:{self.dni}, name:{self.name}, email={self.email}, astname:{self.lastname}, employeeNumber:{self.employee_number}""" + "}"
 
     def __init__(self, dni, email, name, lastname, employee_number):
         self.dni = dni

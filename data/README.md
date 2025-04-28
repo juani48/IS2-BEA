@@ -148,6 +148,11 @@ El método `update()` le permite actualizar la fila del registro, tratando las c
 session.query(ClassModel).filter(ClassModel.variable == valor).delete()
 session.commit()
 ```
+## Consultar por clave compuesta
+```python
+session.get(ClassModel, (valor, valor))
+```
+El orden en que defines las columnas en la clave primaria compuesta sí importa al usar métodos como `session.get()`.
 
 # Relaciones entre modelos con SQLAlchemy
 Seria solo necesario declarar un atributo en la columba de tipo `ForeignKey("tabla.cp")`. Aun asi dejo un [link](https://juncotic.com/creacion-modelos-flask-sqlalchemy/) de refrencia.

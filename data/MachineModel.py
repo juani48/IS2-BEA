@@ -13,11 +13,7 @@ class MachineModel(Base):
     # refund_strategy = Column() # CF de la estrategia de reembolso
 
     def __repr__(self):
-        return "{" + f"""patent:{self.patent}, 
-            mark:{self.mark}, 
-            model:{self.model}, 
-            price_day:{self.price_day}, 
-            ubication:{self.ubication}""" + "}"
+        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}""" + "}"
 
     def __init__(self, patent, mark, model, price_day, ubication):
         self.patent = patent

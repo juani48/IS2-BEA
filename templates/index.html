@@ -1,9 +1,35 @@
+<!-- INICIO SESION -->
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>LogIn</title>
 </head>
 <body>
-    <h1>Hola Mundo!</h1>
+    <h1>Iniciar sesion</h1>
+
+        <label>Ingrese el nombre</label>
+        <input
+            type= "text"
+            id= "login-input-name">
+
+        <button onclick="IniciarSesion()" >Iniciar sesion</button>
 </body>
+
+<script>
+    function IniciarSesion(){
+        // Obtener el dato
+        var name = document.getElementById("login-input-name").value;
+
+        // Realizar el envio de datos
+        fetch("/login", // url del metodo de python
+            {
+                method: "POST", // tipo de conexion
+                headers: { "Content-Type": "application/json" }, // formato
+                body: JSON.stringify( { name: name} ) // enviaremos un .json
+            }
+        )
+        .then(response => response.json())
+    }
+</script>
 </html>

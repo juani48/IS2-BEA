@@ -1,15 +1,43 @@
-<!-- INICIO SESION -->
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-
+    <title>LogIn</title>
 </head>
 <body>
+    <h1>Inciar sesion</h1>
 
+    <div>
+        <label>Ingrese su numero de documento</label>
+        <input id="login-input-dni" type="text">
+    </div>
+    <div>
+        <label>Ingrese su contraseña</label>
+        <input id="login-input-password" type="text">
+    </div>
+    <div>
+        <button onclick="login()" >Iniciar sesion</button>
+        <a href="{{ url_for('load_singin') }}">Registrarse</a>
+    </div>
 </body>
 
 <script>
+    function login(){
+    var dni = document.getElementById("login-input-dni")
+    var password = document.getElementById("login-inpunt-password")
 
+    fetch(
+        "/login",
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+                {
+                    dni: dni,
+                    password: password
+                }
+            )
+        }
+    ).then(response => response.json())
+}
 </script>
 </html>

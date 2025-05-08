@@ -97,3 +97,74 @@ def function(var):
 El archivo `.html` debe mantenerse igual. En este caso, el valor sera enviado mediante la url, siendo ingresado por el navegador; se debe tener en cuenta que el nombre de la url (`<var>`) debe coincidir con el del parametro de la funcion, el resto de la configuracion es igual al caso anterior.
 
 > Creo que hay forma de enviar por url desde codigo.
+# Plantilla HTML
+```html
+<!DOCTYPE html>
+<html lang="es"> <!-- Cambiar "es" por el idioma principal del documento -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Descripción breve del contenido de la página">
+    <title>Título de la página</title>
+    <!-- Enlaces a hojas de estilo -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Enlaces a scripts (opcional en head) -->
+</head>
+<body>
+    <!-- Cabecera del sitio -->
+    <header>
+        <h1>Logo o título principal</h1>
+        <!-- Navegación principal -->
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Acerca de</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        <article>
+            <h2>Título del artículo</h2>
+            <section>
+                <h3>Subtítulo</h3>
+                <p>Contenido de la sección...</p>
+            </section>
+        </article>
+
+        <!-- Barra lateral (opcional) -->
+        <aside>
+            <h3>Información relacionada</h3>
+            <p>Contenido secundario...</p>
+        </aside>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>© 2024 Nombre de la empresa o autor - Todos los derechos reservados</p>
+        <!-- Información de contacto/legal -->
+    </footer>
+
+    <!-- Scripts al final del body (mejor práctica) -->
+    <script src="script.js"></script>
+</body>
+</html>
+```
+1. `<!DOCTYPE html>`: Declara el tipo de documento HTML5.
+2. `<html lang="es">`: Elemento raíz con atributo de idioma.
+3. `<head>`: Contiene metadatos y enlaces a recursos externos.
+3. `<meta charset="UTF-8">`: Especifica codificación de caracteres.
+4. `<meta viewport>`: Configuración para responsive design.
+5. `<title>`: Título de la página (aparece en pestañas del navegador).
+6. `<body>`: Contiene todo el contenido visible de la página
+7. Elementos semánticos:
+  - `<header>`: Cabecera del sitio.
+  - `<nav>`: Menú de navegación.
+  - `<main>`: Contenido principal.
+  - `<article>`: Contenido autónomo.
+  - `<section>`: División temática.
+  - `<aside>`: Contenido relacionado secundario.
+  - `<footer>`: Pie de página.
+

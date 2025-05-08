@@ -1,0 +1,2 @@
+class NonExistingRecordException(Exception):
+    pass

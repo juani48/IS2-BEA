@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>SingIn</title>
+</head>
+<body>
+    <h1>Registrar sesion</h1>
+
+    <div>
+        <label>Ingrese su numero de documento</label>
+        <input id="singin-input-dni" type="text">
+    </div>
+    <div>
+        <label>Ingrese su contraseña</label>
+        <input id="singin-input-password" type="text">
+    </div>
+    <div>
+        <label>Ingrese su correo</label>
+        <input id="singin-input-email" type="text">
+    </div>
+    <div>
+        <label>Ingrese su nombre</label>
+        <input id="singin-input-name" type="text">
+    </div>
+    <div>
+        <label>Ingrese su apellido</label>
+        <input id="singin-input-lastname" type="text">
+    </div>
+
+    <div>
+        <button onclick="singin()" >Registrar sesion</button>
+        <a href="{{ url_for('load_login') }}">Iniciar sesion</a>
+    </div>
+</body>
+
+<script >
+    function singin(){
+        let dni = document.getElementById("singin-input-dni").value;
+        let password = document.getElementById("singin-input-password").value;
+        let email = document.getElementById("singin-input-email").value;
+        let name = document.getElementById("singin-input-name").value;
+        let lastname = document.getElementById("singin-input-lastname").value;
+        let employee_number = 0;
+
+        fetch(
+            "/singin",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(
+                    {
+                        dni: dni,
+                        password: password,
+                        email: email,
+                        name: name,
+                        lastname: lastname,
+                        employee_number: employee_number
+                    }
+                )
+            }
+        ).then(response => response.json());
+    }
+</script>
+</html>

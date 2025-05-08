@@ -3,7 +3,6 @@ from core.exception import NullData
 
 def usecase_singing(dni, password, email, name, lastname, employee_number, db):
     _validator(dni, password, email, name, lastname)
-    print("Sing in 1")
     user = UserModel(
             dni=int(dni),
             password= password,

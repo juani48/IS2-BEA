@@ -13,19 +13,12 @@ def create_database():
 
 # inserts
 def insert_user(dni, user):
-    print("Inser user")
-    #local_user = session.query(UserModel).get(dni)
-    #if (local_user == None):
-        #session.add(user)
-        #session.commit()
-    #else:
-        #raise ExistingRecord.ExistingRecordException()
-    try:
-        session.add(user)
-        session.commit()
-        print("Usuario insertado")
-    except:
-        print("Usuario existente")
+    local_user = session.query(UserModel).filter(UserModel.dni == dni).first()
+    if (local_user != None):
+        raise Exception("Usuario existente")
+    session.add(user)
+    session.commit()
+    
 
 def insert_machine(machine):
     local_machine = session.query(MachineModel).get(machine.patent)

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 from data import AppDataBase
 from core.usecase import Login, Singin
 # from flask_sqlalchemy import SQLAlchemy
+from data.exception.ExistingRecord import ExistingRecordException
 from templates import *
 
 app = Flask(__name__)	

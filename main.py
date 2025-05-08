@@ -10,7 +10,7 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    request_value = request.get_json("name") # resivimos el .json
+    request_value = request.get_json("name")
     print(request_value)
     print("Test")
     return jsonify({"request_value": request_value}), 200

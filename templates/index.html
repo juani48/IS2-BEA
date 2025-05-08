@@ -3,56 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SingIn</title>
+
 </head>
 <body>
-    <h1>Registrar sesion</h1>
 
-        <label>Ingrese el nombre</label>
-        <input
-            type= "text"
-            id= "singin-input-name">
-        
-        <label>Ingrese el apellido</label>
-        <input
-            type= "text"
-            id= "singin-input-lastname">
-
-        <label>Ingrese el contraseña</label>
-        <input
-            type= "text"
-            id= "singin-input-password">
-
-        <label>Ingrese el correo</label>
-        <input
-            type= "text"
-            id= "singin-input-email">
-
-        <button onclick="RegistrarSesion()" >Iniciar sesion</button>
 </body>
 
 <script>
-    function RegistrarSesion(){
-        var name = document.getElementById("singin-input-name").value;
-        var lastname = document.getElementById("singin-input-lastname").value;
-        var password = document.getElementById("singin-input-password").value;
-        var email = document.getElementById("singin-input-email").value;
 
-        fetch("/singin",
-            {
-                method: "POST", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( 
-                    { 
-                        name: name,
-                        lastname: lastname,
-                        password: password,
-                        email: email
-                    } 
-                )
-            }
-        )
-        .then(response => response.json())
-    }
 </script>
 </html>

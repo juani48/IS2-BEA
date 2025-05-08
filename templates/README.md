@@ -63,3 +63,37 @@ Luego de procesar el dato, usaremos `return jsonify({"response": response}), 200
 ```python
 return "", 204
 ```
+
+# Envio de datos 
+Es posible enviar datos a archivos `.html` por medio de las url, existen dos formas, con parametros o url:
+
+## Parametros
+Dentro de nuestro archivo `.py` debemos tener a siguiente extructura:
+```python
+@app.route('/url')
+def function():
+    return render_template('archivo.html', variable="62")
+```
+Y en uestro archivo `.html`:
+```html
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Archivo con variable</h1>
+    <p>La variable es: {{variable}}</p>
+</body>
+</html>
+```
+
+Si dentro de un archivo `.html` ponemos `{{ ... }}`, lo tomara como codigo Python. El nombre `{{variable}}` debe coincidir con el parametro `variable=62` del metodo `render_template(...)`, mientras que el primer parametro debe inidicar el nombre del archivo `.html` que se debe cargar.
+
+## URL
+Para este envio de datos necesitamos la siguiente configuracion:
+```python
+@app.route('/url/<var>') # La url deberia ser: '/url/62'
+def function(var):
+    return render_template('archivo.html', variable=var)
+```
+El archivo `.html` debe mantenerse igual. En este caso, el valor sera enviado mediante la url, siendo ingresado por el navegador; se debe tener en cuenta que el nombre de la url (`<var>`) debe coincidir con el del parametro de la funcion, el resto de la configuracion es igual al caso anterior.
+
+> Creo que hay forma de enviar por url desde codigo.

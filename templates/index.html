@@ -3,30 +3,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LogIn</title>
+    <title>SingIn</title>
 </head>
 <body>
-    <h1>Iniciar sesion</h1>
+    <h1>Registrar sesion</h1>
 
         <label>Ingrese el nombre</label>
         <input
             type= "text"
-            id= "login-input-name">
+            id= "singin-input-name">
+        
+        <label>Ingrese el apellido</label>
+        <input
+            type= "text"
+            id= "singin-input-lastname">
 
-        <button onclick="IniciarSesion()" >Iniciar sesion</button>
+        <label>Ingrese el contraseña</label>
+        <input
+            type= "text"
+            id= "singin-input-password">
+
+        <label>Ingrese el correo</label>
+        <input
+            type= "text"
+            id= "singin-input-email">
+
+        <button onclick="RegistrarSesion()" >Iniciar sesion</button>
 </body>
 
 <script>
-    function IniciarSesion(){
-        // Obtener el dato
-        var name = document.getElementById("login-input-name").value;
+    function RegistrarSesion(){
+        var name = document.getElementById("singin-input-name").value;
+        var lastname = document.getElementById("singin-input-lastname").value;
+        var password = document.getElementById("singin-input-password").value;
+        var email = document.getElementById("singin-input-email").value;
 
-        // Realizar el envio de datos
-        fetch("/login", // url del metodo de python
+        fetch("/singin",
             {
-                method: "POST", // tipo de conexion
-                headers: { "Content-Type": "application/json" }, // formato
-                body: JSON.stringify( { name: name} ) // enviaremos un .json
+                method: "POST", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( 
+                    { 
+                        name: name,
+                        lastname: lastname,
+                        password: password,
+                        email: email
+                    } 
+                )
             }
         )
         .then(response => response.json())

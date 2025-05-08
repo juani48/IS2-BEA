@@ -50,14 +50,14 @@ from flask import jsonify, request
 
 @app.route("/url", methods=["GET", "POST"])
 def login():
-    request_value = request.get_json("variable") # obtener dato
+    request_value = request.get_json() # obtener dato
     # procesamiento de datos
     return jsonify({"response": response}), 200
 ```
 
 Observar que en el encabezado del metodo definir la url y el timpo de metodo, `POST` es necesario para la recepcion de datos desde la UI y `GET` se utiliza para enviar una respuesta.
 
-Con `request.get_json("variable")` recivimos el dato enviado desde el script de JavaScript (el nombre de `"variable"` debe ser el mismo que el de la variable envia desde el script)
+Con `request.get_json()` recivimos el dato enviado desde el script de JavaScript. Para acceder a los datos enviados en el `.json`, simplemente usaremos `request_value.get("variable")` de esta forma accederemos a la informacion de un campo del `.json`
 
 Luego de procesar el dato, usaremos `return jsonify({"response": response}), 200` para enviar una respuesta, en este caso en formato `.json`, pero podriamos enviar un archivo `.html`, un texto o directamente un numero. El entero `200` inidica que la conexion fue exitosa y que se envian datos de respuesta, en caso de respuesta exitosa sin datos de retorno, el `return` seria el siguiente:
 ```python

@@ -1,9 +1,6 @@
 import os
-
-from data.config import Base, engine, session
-from data.model import MachineModel, ReservationModel
+from data.config import Base, engine
 from data.query.inseret import query_insert_user, query_insert_machine, query_insert_reservation
-from data.model.UserModel import UserModel
 
 def create_database():
     if (not os.path.isfile("///db/database.db")):

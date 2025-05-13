@@ -1,5 +1,4 @@
 from data.model.UserModel import UserModel
-from core.exception import NullData
 
 def usecase_singing(dni, password, email, name, lastname, employee_number, db):
     _validator(dni, password, email, name, lastname)
@@ -16,12 +15,12 @@ def usecase_singing(dni, password, email, name, lastname, employee_number, db):
 
 def _validator(dni, password, email, name, lastname):
     if dni == "":
-        raise NullData.NullDataException()
+        raise Exception()
     if password == "":
-        raise NullData.NullDataException()
+        raise Exception()
     if email == "":
-        raise NullData.NullDataException()
+        raise Exception()
     if name == "":
-        raise NullData.NullDataException()
+        raise Exception()
     if lastname == "":
-        raise NullData.NullDataException()
+        raise Exception()

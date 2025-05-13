@@ -49,7 +49,7 @@ pip install flask-sqlalchemy
 ```bash
 pip install flask
 ```
-### [Go to README data ](templates/README.md)
+### [Go to README template ](templates/README.md)
 
 ### Estructura de archivos
 ```

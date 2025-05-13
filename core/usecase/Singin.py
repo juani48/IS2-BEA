@@ -1,4 +1,4 @@
-from data.Model import UserModel
+from data.model.UserModel import UserModel
 from core.exception import NullData
 
 def usecase_singing(dni, password, email, name, lastname, employee_number, db):

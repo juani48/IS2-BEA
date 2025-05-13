@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template, request
-from data import AppDataBase
+from data import appDataBase
 from core.usecase import Login, Singin
 # from flask_sqlalchemy import SQLAlchemy
 from data.exception.ExistingRecord import ExistingRecordException
@@ -21,7 +21,7 @@ def Login():
     Login.usecase_login(
         dni=request_value.get("dni"), 
         password=request_value.get("password"),
-        db=AppDataBase
+        db=appDataBase
     )
     return "", 204
 
@@ -39,11 +39,11 @@ def singin():
         name=request_value.get("name"),
         lastname=request_value.get("lastname"),
         employee_number=request_value.get("employee_number"),
-        db=AppDataBase
+        db=appDataBase
     )
     return "", 204
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-    AppDataBase.create_database()
+    appDataBase.create_database()

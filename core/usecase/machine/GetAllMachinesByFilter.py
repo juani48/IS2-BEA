@@ -1,6 +1,5 @@
 from data.appDataBase import get_all_machines, get_all_machines_by_categorie
 
-
 # Dicccionarios con booleano y filtro
 def usecase_get_all_machines_by(categorie_filter, price_filter, mark_filter, model_filter):
     if (categorie_filter.apply):

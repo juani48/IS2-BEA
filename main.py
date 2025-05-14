@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
 from core.usecase import Login, Singin
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
 
@@ -9,6 +9,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    #AddCategorie.usecase_add_categorie("categoria1")
+    AddMachine.usecase_add_machine("ABC2", "marca", "modelo", 10, "ubicacion", 10, "categoria1")
+    print(GetAllMachines.usecase_get_all_machines())
     return render_template('index.html')
 
 @app.route("/load_login")
@@ -71,6 +74,10 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
+#@app.route("/machine/get_all", methods=["GET", "POST"])
+#def get_all_machines():
+
+
 # ---- Categorias ----
 
 @app.route("/categorie/add_categorie", methods=["GET", "POST"])
@@ -99,3 +106,4 @@ def disable_categorie():
 if __name__ == '__main__':
     app.run(debug=True)
     appDataBase.create_database()
+    

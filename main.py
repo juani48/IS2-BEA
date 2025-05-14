@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
 from core.usecase import Login, Singin
+from core.usecase.machine import AddMachine
 from templates import *
 
 app = Flask(__name__)	
@@ -40,6 +41,21 @@ def singin():
         db=appDataBase
     )
     return "", 204
+
+@app.route("/machine/add-machine", methods=["GET", "POST"])
+def add_machine():
+    request_value = request.get_json()
+    AddMachine.usecase_add_machine(
+        patent=request_value.get("patent"),
+        mark=request_value.get("patent"),
+        model=request_value.get("model"),
+        price_day=request_value.get("price_day"),
+        ubication=request_value.get("ubication"),
+        refund=request_value.get("refund"),
+        categorie=request_value.get("categorie")
+    )
+    return "", 204
+
 
 
 if __name__ == '__main__':

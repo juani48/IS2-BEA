@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, Double, String, Boolean
 class MachineModel(Base):
     __tablename__ = "machine_table"
 
-    patent = Column(Integer, primary_key=True)
+    patent = Column(String, primary_key=True)
     mark = Column(String, nullable=False)
     model = Column(String, nullable=False)
     price_day = Column(Double, nullable=False)

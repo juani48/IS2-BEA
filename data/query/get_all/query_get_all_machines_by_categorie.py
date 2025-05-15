@@ -1,3 +1,4 @@
+from operator import and_
 from data.config import session
 from data.model.MachineModel import MachineModel
 from data.model.MachineCategorieModel import MachineCategorieModel
@@ -9,7 +10,10 @@ def execute(categorie):
         MachineCategorieModel,
         MachineCategorieModel.machine_id == MachineModel.patent
     ).filter(
-        MachineCategorieModel.categorie_id == categorie & MachineModel.disable == False
+        and_(
+            MachineCategorieModel.categorie_id == categorie,
+            MachineModel.disable == False
+        ) 
     ).all()
 
     if(not machine_list):

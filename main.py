@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
 from core.usecase import Login, Singin
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
 
@@ -10,8 +10,17 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     #AddCategorie.usecase_add_categorie("categoria1")
-    AddMachine.usecase_add_machine("ABC2", "marca", "modelo", 10, "ubicacion", 10, "categoria1")
-    print(GetAllMachines.usecase_get_all_machines())
+    #AddCategorie.usecase_add_categorie("categoria2")
+    #AddMachine.usecase_add_machine("1A", "marca", "modelo", 11, "ubicacion", 10, "categoria1")
+    #AddMachine.usecase_add_machine("2A", "marca", "modelo", 8, "ubicacion", 10, "categoria1")
+    #AddMachine.usecase_add_machine("3A", "marca", "modelo", 7, "ubicacion", 10, "categoria2")
+    #print(GetAllMachines.usecase_get_all_machines())
+    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
+    #    categorie_filter={"categorie":"categoria2", "apply": False},
+    #    price_filter={"price": 8, "apply": True},
+    #    mark_filter={"apply": False},
+    #    model_filter={"apply":False}
+    #))
     return render_template('index.html')
 
 @app.route("/load_login")

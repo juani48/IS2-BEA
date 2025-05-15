@@ -7,24 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="./scripts.js" defer></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'bob-red': '#D10000',
-                        'bob-dark-red': '#A30000',
-                        'bob-light-red': '#FF3333',
-                    }
-                },
-                fontFamily: {
-                    'sans': ['Montserrat', 'sans-serif'],
-                }
-            }
-        }
-    </script>
-  <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css">
 
 <body class="bg-gray-50">
     <!-- Header -->
@@ -40,50 +23,48 @@
     <div class="flex-grow flex justify-center">
       <div class="relative w-full max-w-xl">
         <input type="text"
-               placeholder="Buscar maquinaria..."
-               class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+            placeholder="Buscar maquinaria..."
+            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
         <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-          <i class="fas fa-search"></i>
+        <i class="fas fa-search"></i>
         </button>
       </div>
     </div>
 
     <!-- MI CUENTA -->
-   <div class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-  <!-- Ícono normal -->
-  <i class="fas fa-user text-lg group-hover:hidden"></i>
-  <!-- Ícono alternativo que aparece en hover -->
-  <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-
-  <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Cuenta</span>
+<div class="divAccesos">
+  <a href="login.html" class = "shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+    <i class="fas fa-user text-lg group-hover:hidden"></i>
+    <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+    <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Cuenta</span>
+</a>
+</div>
 </div>
 
-  </div>
-
          <!-- Navigation debajo, 100% ancho -->
-                    <nav class="main-nav w-full">
-  <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-    <li><a href="#">Menú</a></li>
-    <li><a href="#maquinarias">Maquinarias</a></li>
-    <li><a href="#categorias">Categorías</a></li>
-    <li><a href="#">Palabra</a></li>
-    <li><a href="#">Preguntas Frecuentes</a></li>
-    <li><a href="#contacto">Contáctanos</a></li>
-  </ul>
+<nav class="main-nav w-full">
+    <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+        <li><a href="#">Menú</a></li>
+        <li><a href="#maquinarias">Maquinarias</a></li>
+        <li><a href="#categorias">Categorías</a></li>
+        <li><a href="#">Palabra</a></li>
+        <li><a href="#">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto">Contáctanos</a></li>
+    </ul>
 </nav>      
-            
-            <!-- Mobile Navigation Menu -->
-            <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-                <ul class="flex flex-col space-y-3">
-                    <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                    <li><a href="#maquinarias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                    <li><a href="#categorias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                    <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Mi Cuenta</a></li>
-                    <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
-                    <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
-                </ul>
-            </div>
-    </header>
+
+<!-- Mobile Navigation Menu -->
+<div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+    <ul class="flex flex-col space-y-3">
+        <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+        <li><a href="#maquinarias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+        <li><a href="#categorias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+        <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Mi Cuenta</a></li>
+        <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+    </ul>
+</div>
+</header>
 
     <!-- Hero Section -->
     <section class="relative h-[500px] overflow-visible bg-white">
@@ -113,22 +94,7 @@
   </div>
 </section>
 
- <script>
-  const zoomElement = document.getElementById('hero-zoom');
-
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const maxZoomOut = 0.9; // 90% tamaño
-    const maxScroll = 300; // hasta dónde empieza a escalar
-
-    // calcular cuánto scroll proporcionalmente 
-    let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
-    if (scale < maxZoomOut) scale = maxZoomOut;
-    if (scale > 1) scale = 1;
-
-    zoomElement.style.transform = `scale(${scale})`;
-  });
-  // ----------------------------------------------------- HASTA ACA CONOZCO --------------------------
+<!------------------------------------------------------ HASTA ACA CONOZCO -------------------------->
 </script> 
 </section> 
 
@@ -542,135 +508,3 @@
             </div>
         </div>
     </footer>
-
-    <!-- Reservation Modal -->
-    <div id="reservation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800">Confirmación de Reserva</h3>
-                <button id="close-modal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="modal-content" class="mb-6">
-                <p class="text-gray-600 mb-4">Tu reserva ha sido recibida. Te contactaremos pronto para confirmar los detalles.</p>
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
-                    <p class="font-bold">¡Reserva Exitosa!</p>
-                    <p>Número de reserva: <span id="reservation-number" class="font-bold"></span></p>
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <button id="confirm-modal" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-2 px-6 rounded-lg transition duration-300">
-                    Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    
-<!-- 
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            document.getElementById('mobile-nav').classList.toggle('hidden');
-        });
-        
-        // Reservation form handling
-        document.getElementById('reservation-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Generate random reservation number
-            const reservationNumber = 'R' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            document.getElementById('reservation-number').textContent = reservationNumber;
-            
-            // Show modal
-            document.getElementById('reservation-modal').classList.remove('hidden');
-        });
-        
-        // Reserve buttons on machine cards
-        document.querySelectorAll('.reserve-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const machineId = this.getAttribute('data-id');
-                let machineName = '';
-                
-                switch(machineId) {
-                    case '1':
-                        machineName = 'Excavadora Compacta';
-                        break;
-                    case '2':
-                        machineName = 'Retroexcavadora Industrial';
-                        break;
-                    case '3':
-                        machineName = 'Minicargadora Versátil';
-                        break;
-                }
-                
-                // Scroll to reservation form
-                document.getElementById('reserva').scrollIntoView({ behavior: 'smooth' });
-                
-                // Pre-select the machine in the dropdown
-                const machineSelect = document.getElementById('machine-type');
-                for(let i = 0; i < machineSelect.options.length; i++) {
-                    if(machineSelect.options[i].text === machineName) {
-                        machineSelect.selectedIndex = i;
-                        break;
-                    }
-                }
-            });
-        });
-        
-        // Close modal
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('reservation-modal').classList.add('hidden');
-        });
-        
-        document.getElementById('confirm-modal').addEventListener('click', function() {
-            document.getElementById('reservation-modal').classList.add('hidden');
-            document.getElementById('reservation-form').reset();
-        });
-        
-        // Date validation
-        document.getElementById('start-date').addEventListener('change', function() {
-            const startDate = new Date(this.value);
-            const endDateInput = document.getElementById('end-date');
-            
-            // Set minimum end date to start date
-            const minEndDate = new Date(startDate);
-            minEndDate.setDate(minEndDate.getDate() + 1);
-            
-            endDateInput.min = minEndDate.toISOString().split('T')[0];
-            
-            // If end date is before new start date, reset it
-            if(endDateInput.value && new Date(endDateInput.value) <= startDate) {
-                endDateInput.value = '';
-            }
-        });
-        
-        // Set minimum start date to today
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        document.getElementById('start-date').min = today.toISOString().split('T')[0];
-        document.getElementById('end-date').min = tomorrow.toISOString().split('T')[0];
-        
-        // Duration selection affects end date
-        document.getElementById('duration').addEventListener('change', function() {
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-            
-            if(startDateInput.value) {
-                const startDate = new Date(startDateInput.value);
-                const duration = parseInt(this.value);
-                
-                if(duration) {
-                    const endDate = new Date(startDate);
-                    endDate.setDate(endDate.getDate() + duration);
-                    endDateInput.value = endDate.toISOString().split('T')[0];
-                }
-            }
-        });
-    </script>
-<script>-->

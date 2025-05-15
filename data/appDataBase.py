@@ -5,6 +5,8 @@ from data.query.enable import query_enable_categorie, query_enable_machine
 from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc
 from data.query.update import query_update_machine, query_update_user
+from data.query.change import query_change_password_user
+from data.query.get import query_get_password_user
 
 def create_database():
     if (not os.path.isfile("///db/database.db")):
@@ -40,8 +42,17 @@ def enable_machine(patent):
 def update_machine(patent, machine):
     query_update_machine.execute(patent=patent, new_machine=machine)
 
-def update_user(dni, user):
-    query_update_user.execute(new_dni=dni, new_user= user)
+def update_user(dni, name, lastname):
+    query_update_user.execute(dni=dni, new_name= name,new_lastname= lastname)    
+
+# ---- change  ----
+def change_password(dni,password):
+    query_change_password_user.execute(dni,password)
+
+
+# ----   get  -----
+def get_password (dni):
+    return query_get_password_user.execute(dni)
 
 # ---- get all ----
 def get_all_users():

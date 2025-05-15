@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
-from core.usecase.user import Login, Signin, UpdateUser
+from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
@@ -44,14 +44,27 @@ def signin():
     return "", 204
 
 @app.route("/user/update_user", methods=["PUT"])
-def update_user(user):
+def update_user():
     request_value = request.get_json()
     UpdateUser.usecase_update_user(
         #email=request_value.get("email"),
+        dni = request_value.get("dni"),
         name=request_value.get("name"),
         lastname=request_value.get("lastname"),
     )
     return "", 204
+
+@app.route("/user/change_password", methods=["PUT"])
+def change_password():
+    request_value = request.get_json()
+    ChangePassword(
+        dni = request_value.get("dni"),
+        password_Act = request_value.get("passwordAct"),
+        password_New_1 = request_value.get("password1"),
+        password_New_2 = request_value.get("password2")
+    )
+    return "", 204
+
 
 # ---- Maquinas ----
 
@@ -80,6 +93,13 @@ def disable_machine():
     request_value = request.get_json().get("patent")
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
+
+@app.route("/machine/view_description", methods=["GET"])
+def view_description():
+    patent = request.args.get("patent")
+    if not patent:
+        return jsonify({"error": "No patent provided"}), 400
+    
 
 # ---- Categorias ----
 

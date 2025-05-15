@@ -3,7 +3,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="./scripts.js" defer></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -24,51 +28,49 @@
 
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-        <div class="container mx-auto px-1 py-3">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <!-- Logo -->
-                    <div class="flex items-center mr-6">
-                        <img class="logo"src="./img/Completo.svg" alt="">
+  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+  <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-                        
-    
-                    </div>
-                    
-                    <!-- Search Bar -->
-                    <div class="relative hidden md:block">
-                        <input type="text" placeholder="Buscar maquinarias..." class="search-bar py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none w-64">
-                        <button class="absolute right-0 top-0 mt-2 mr-3 text-gray-600">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Mobile Search -->
-                <div class="relative w-full mb-4 md:hidden">
-                    <input type="text" placeholder="Buscar maquinarias..." class="search-bar py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none w-full">
-                    <button class="absolute right-0 top-0 mt-2 mr-3 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                
-                <!-- Navigation -->
-                <nav>
-                    <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                    
-                    <ul id="nav-menu" class="hidden md:flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 text-center">
-                        <li><a href="#" class="nav-link font-medium hover:text-gray-200">Menú</a></li>
-                        <li><a href="#maquinarias" class="nav-link font-medium hover:text-gray-200">Maquinarias</a></li>
-                        <li><a href="#categorias" class="nav-link font-medium hover:text-gray-200">Categorías</a></li>
-                        <li><a href="#" class="nav-link font-medium hover:text-gray-200">Mi Cuenta</a></li>
-                        <li><a href="#" class="nav-link font-medium hover:text-gray-200">Preguntas Frecuentes</a></li>
-                        <li><a href="#contacto" class="nav-link font-medium hover:text-gray-200">Contáctanos</a></li>
-                    </ul>
-                </nav>
-            </div>
+    <!-- LOGO -->
+    <div class="shrink-0">
+      <img class="h-16" src="./img/Completo.svg" alt="Bob el Alquilador">
+    </div>
+
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="flex-grow flex justify-center">
+      <div class="relative w-full max-w-xl">
+        <input type="text"
+               placeholder="Buscar maquinaria..."
+               class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+        <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- MI CUENTA -->
+   <div class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+  <!-- Ícono normal -->
+  <i class="fas fa-user text-lg group-hover:hidden"></i>
+  <!-- Ícono alternativo que aparece en hover -->
+  <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+
+  <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Cuenta</span>
+</div>
+
+  </div>
+
+         <!-- Navigation debajo, 100% ancho -->
+                    <nav class="main-nav w-full">
+  <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+    <li><a href="#">Menú</a></li>
+    <li><a href="#maquinarias">Maquinarias</a></li>
+    <li><a href="#categorias">Categorías</a></li>
+    <li><a href="#">Palabra</a></li>
+    <li><a href="#">Preguntas Frecuentes</a></li>
+    <li><a href="#contacto">Contáctanos</a></li>
+  </ul>
+</nav>      
             
             <!-- Mobile Navigation Menu -->
             <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
@@ -81,24 +83,54 @@
                     <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
                 </ul>
             </div>
-        </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section text-white py-20">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Maquinaria de Construcción de Calidad</h1>
-            <p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#maquinarias" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
-                    Ver Maquinarias
-                </a>
-                <a href="#reserva" class="bg-white hover:bg-gray-100 text-bob-red font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
-                    Reservar Ahora
-                </a>
-            </div>
-        </div>
-    </section>
+    <section class="relative h-[500px] overflow-visible bg-white">
+  <!-- Video -->
+  <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
+    <source src="./img/Bob_el_Alquilador_-_New_York.mp4" type="video/mp4">
+  </video>
+
+  <!-- Capa roja -->
+  <div class="absolute inset-0 bg-red-800 bg-opacity-70"></div>
+
+  <!-- Contenido principal -->
+  <div id="hero-zoom" class="relative z-10 h-full flex flex-col justify-center items-center text-white text-center px-4 transition-transform duration-300">
+    <h1 class="text-4xl md:text-5xl  mb-4 font-montserrat">
+        Maquinarias de Construcción de Calidad
+    </h1>
+
+    <p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
+    <div class="flex flex-col md:flex-row justify-center gap-4">
+      <a href="#maquinarias" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
+        Ver Maquinarias
+      </a>
+      <a href="#reserva" class="bg-white hover:bg-gray-100 text-bob-red font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
+        Reservar Ahora
+      </a>
+    </div>
+  </div>
+</section>
+
+ <script>
+  const zoomElement = document.getElementById('hero-zoom');
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const maxZoomOut = 0.9; // 90% tamaño
+    const maxScroll = 300; // hasta dónde empieza a escalar
+
+    // calcular cuánto scroll proporcionalmente 
+    let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
+    if (scale < maxZoomOut) scale = maxZoomOut;
+    if (scale > 1) scale = 1;
+
+    zoomElement.style.transform = `scale(${scale})`;
+  });
+  // ----------------------------------------------------- HASTA ACA CONOZCO --------------------------
+</script> 
+</section> 
 
     <!-- Featured Machines -->
     <section id="maquinarias" class="py-16 bg-white">
@@ -119,8 +151,8 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Excavadora Compacta</h3>
-                        <p class="text-gray-600 mb-4">Perfecta para espacios reducidos y trabajos de precisión.</p>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
+                        <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$25.000/día</span>
                             <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">
@@ -143,8 +175,8 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Retroexcavadora Industrial</h3>
-                        <p class="text-gray-600 mb-4">Gran potencia para proyectos de construcción a gran escala.</p>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
+                        <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$35.000/día</span>
                             <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="2">
@@ -167,8 +199,8 @@
                         </svg>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Minicargadora Versátil</h3>
-                        <p class="text-gray-600 mb-4">Ideal para múltiples tareas con diferentes accesorios disponibles.</p>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
+                        <p class="text-gray-600 mb-4">Descripción corta</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$18.000/día</span>
                             <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="3">
@@ -201,7 +233,7 @@
                         </svg>
                     </div>
                     <h3 class="text-lg font-bold text-gray-800">Excavadoras</h3>
-                    <p class="text-gray-600 mt-2">8 máquinas disponibles</p>
+                    <p class="text-gray-600 mt-2"></p> <!-- este texto iria abajo del nombre de la categoria-->
                 </a>
                 
                 <!-- Category 2 -->
@@ -211,8 +243,8 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Grúas</h3>
-                    <p class="text-gray-600 mt-2">5 máquinas disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 3 -->
@@ -222,8 +254,8 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Compactadoras</h3>
-                    <p class="text-gray-600 mt-2">6 máquinas disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 4 -->
@@ -233,8 +265,8 @@
                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Generadores</h3>
-                    <p class="text-gray-600 mt-2">4 máquinas disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 5 -->
@@ -244,8 +276,8 @@
                             <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Hormigoneras</h3>
-                    <p class="text-gray-600 mt-2">7 máquinas disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 6 -->
@@ -255,8 +287,8 @@
                             <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H9.771l-.592-2.37A1 1 0 008.234 9h3.532a1 1 0 00-.945.63l-.592 2.37z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Andamios</h3>
-                    <p class="text-gray-600 mt-2">12 sets disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 7 -->
@@ -266,8 +298,8 @@
                             <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Herramientas</h3>
-                    <p class="text-gray-600 mt-2">20+ disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
                 
                 <!-- Category 8 -->
@@ -277,8 +309,8 @@
                             <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">Accesorios</h3>
-                    <p class="text-gray-600 mt-2">15+ disponibles</p>
+                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
+                    <p class="text-gray-600 mt-2"></p>
                 </a>
             </div>
         </div>
@@ -537,6 +569,8 @@
         </div>
     </div>
 
+    
+<!-- 
     <script>
         // Mobile menu toggle
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
@@ -639,4 +673,4 @@
             }
         });
     </script>
-<script>
+<script>-->

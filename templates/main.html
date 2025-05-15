@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,24 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="./scripts.js" defer></script>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="svg" href="img/Solo logo.svg">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'bob-red': '#D10000',
-                        'bob-dark-red': '#A30000',
-                        'bob-light-red': '#FF3333',
-                    }
-                },
-                fontFamily: {
-                    'sans': ['Montserrat', 'sans-serif'],
-                }
-            }
-        }
-    </script>
-  <link rel="stylesheet" href="./style.css">
+    </head>
 
 <body class="bg-gray-50">
     <!-- Header -->
@@ -32,8 +19,10 @@
   <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
     <!-- LOGO -->
-    <div class="shrink-0">
-      <img class="h-16" src="./img/Completo.svg" alt="Bob el Alquilador">
+     <div class="shrink-0">
+          <a href="main.html">
+            <img src="./img/Completo.svg" alt="Bob el Alquilador" class="h-16">
+        </a>
     </div>
 
     <!-- BARRA DE BÚSQUEDA -->
@@ -55,7 +44,7 @@
   <!-- Ícono alternativo que aparece en hover -->
   <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
 
-  <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Cuenta</span>
+  <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
 </div>
 
   </div>
@@ -63,8 +52,8 @@
          <!-- Navigation debajo, 100% ancho -->
                     <nav class="main-nav w-full">
   <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-    <li><a href="#">Menú</a></li>
-    <li><a href="#maquinarias">Maquinarias</a></li>
+    <li><a href="main.html">Menú</a></li>
+    <li><a href="machinery.html">Maquinarias</a></li> <!-- borrar el # para enlazar con una pg-->
     <li><a href="#categorias">Categorías</a></li>
     <li><a href="#">Palabra</a></li>
     <li><a href="#">Preguntas Frecuentes</a></li>
@@ -75,8 +64,8 @@
             <!-- Mobile Navigation Menu -->
             <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
                 <ul class="flex flex-col space-y-3">
-                    <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                    <li><a href="#maquinarias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                    <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                    <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
                     <li><a href="#categorias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
                     <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Mi Cuenta</a></li>
                     <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
@@ -128,7 +117,6 @@
 
     zoomElement.style.transform = `scale(${scale})`;
   });
-  // ----------------------------------------------------- HASTA ACA CONOZCO --------------------------
 </script> 
 </section> 
 
@@ -155,9 +143,9 @@
                         <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$25.000/día</span>
-                            <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">
+                            <a href="reserve.html" class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">  
                                 Reservar
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -179,9 +167,9 @@
                         <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$35.000/día</span>
-                            <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="2">
+                            <a href="reserve.html" class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">  
                                 Reservar
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -203,9 +191,9 @@
                         <p class="text-gray-600 mb-4">Descripción corta</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$18.000/día</span>
-                            <button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="3">
+                            <a href="reserve.html" class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">  
                                 Reservar
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -306,7 +294,7 @@
                 <a href="#" class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
                     <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
                     <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
@@ -316,90 +304,13 @@
         </div>
     </section>
 
-    <!-- Reservation Section -->
-    <section id="reserva" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Reserva tu Maquinaria</h2>
-            
-            <div class="bg-gray-100 rounded-lg p-8 max-w-3xl mx-auto shadow-lg">
-                <form id="reservation-form" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="machine-type" class="block text-gray-700 font-medium mb-2">Tipo de Maquinaria</label>
-                            <select id="machine-type" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red">
-                                <option value="" disabled="" selected="">Seleccionar maquinaria</option>
-                                <option value="excavadora">Excavadora Compacta</option>
-                                <option value="retroexcavadora">Retroexcavadora Industrial</option>
-                                <option value="minicargadora">Minicargadora Versátil</option>
-                                <option value="grua">Grúa Torre</option>
-                                <option value="compactadora">Compactadora de Suelo</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label for="duration" class="block text-gray-700 font-medium mb-2">Duración del Alquiler</label>
-                            <select id="duration" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red">
-                                <option value="" disabled="" selected="">Seleccionar duración</option>
-                                <option value="1">1 día</option>
-                                <option value="3">3 días</option>
-                                <option value="7">1 semana</option>
-                                <option value="14">2 semanas</option>
-                                <option value="30">1 mes</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="start-date" class="block text-gray-700 font-medium mb-2">Fecha de Inicio</label>
-                            <input type="date" id="start-date" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" min="2025-05-14">
-                        </div>
-                        
-                        <div>
-                            <label for="end-date" class="block text-gray-700 font-medium mb-2">Fecha de Devolución</label>
-                            <input type="date" id="end-date" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" min="2025-05-15">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="name" class="block text-gray-700 font-medium mb-2">Nombre Completo</label>
-                        <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" placeholder="Ingresa tu nombre completo">
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="email" class="block text-gray-700 font-medium mb-2">Correo Electrónico</label>
-                            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" placeholder="tu@email.com">
-                        </div>
-                        
-                        <div>
-                            <label for="phone" class="block text-gray-700 font-medium mb-2">Teléfono</label>
-                            <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" placeholder="Tu número de teléfono">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="comments" class="block text-gray-700 font-medium mb-2">Comentarios Adicionales</label>
-                        <textarea id="comments" rows="3" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" placeholder="Detalles adicionales sobre tu reserva..."></textarea>
-                    </div>
-                    
-                    <div class="text-center">
-                        <button type="submit" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                            Confirmar Reserva
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="py-16 bg-gray-100">
+    <!--  Testimonials 
+   <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Lo que dicen nuestros clientes</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
+                 Testimonial 1 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="text-bob-red">
@@ -422,7 +333,7 @@
                     </div>
                 </div>
                 
-                <!-- Testimonial 2 -->
+                 Testimonial 2 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="text-bob-red">
@@ -445,7 +356,7 @@
                     </div>
                 </div>
                 
-                <!-- Testimonial 3 -->
+                 Testimonial 3 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="text-bob-red">
@@ -469,208 +380,128 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Footer -->
     <footer id="contacto" class="bg-bob-dark-red text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Company Info -->
-                <div>
-                    <div class="flex items-center mb-4">
-                        <svg class="w-10 h-10 mr-2" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="50" height="50" rx="10" fill="white"></rect>
-                            <path d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z" fill="#D10000"></path>
-                            <path d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z" fill="white"></path>
-                            <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
-                        </svg>
-                        <span class="font-bold text-xl">Bob el Alquilador</span>
-                    </div>
-                    <p class="mb-4">Soluciones de alquiler de maquinaria para construcción desde 1995. Calidad y servicio garantizado.</p>
-                    <div class="flex space-x-4">
-                        <a href="https://instagram.com/bobelaquilador" class="hover:text-gray-300 transition duration-300">
-                            <i class="fab fa-instagram text-2xl"></i>
-                        </a>
-                        <a href="https://facebook.com/bobelaquilador" class="hover:text-gray-300 transition duration-300">
-                            <i class="fab fa-facebook text-2xl"></i>
-                        </a>
-                        <a href="https://twitter.com/bobelaquilador" class="hover:text-gray-300 transition duration-300">
-                            <i class="fab fa-twitter text-2xl"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Contact Info -->
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Contacto</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-center">
-                            <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
-                            <span>Av. Construcción 1234, Ciudad</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone mr-3 text-bob-light-red"></i>
-                            <span>+54 11 5555-5555</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
-                            <span>info@bobelaquilador.com</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-clock mr-3 text-bob-light-red"></i>
-                            <span>Lun-Vie: 8:00 - 18:00, Sáb: 9:00 - 14:00</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Quick Links -->
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-gray-300 transition duration-300">Inicio</a></li>
-                        <li><a href="#maquinarias" class="hover:text-gray-300 transition duration-300">Maquinarias</a></li>
-                        <li><a href="#categorias" class="hover:text-gray-300 transition duration-300">Categorías</a></li>
-                        <li><a href="#" class="hover:text-gray-300 transition duration-300">Preguntas Frecuentes</a></li>
-                        <li><a href="#" class="hover:text-gray-300 transition duration-300">Términos y Condiciones</a></li>
-                        <li><a href="#" class="hover:text-gray-300 transition duration-300">Política de Privacidad</a></li>
-                    </ul>
-                </div>
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Company Info -->
+          <div>
+            <div class="flex items-center mb-4">
+              <svg
+                class="w-10 h-10 mr-2"
+                viewBox="0 0 50 50"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="50" height="50" rx="10" fill="white"></rect>
+                <path
+                  d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z"
+                  fill="#D10000"
+                ></path>
+                <path
+                  d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z"
+                  fill="white"
+                ></path>
+                <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
+              </svg>
+              <span class="font-bold text-xl">Bob El Alquilador</span>
             </div>
-            
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>© 2023 Bob el Alquilador. Todos los derechos reservados.</p>
+            <p class="mb-4">
+              Soluciones de alquiler de maquinaria para construcción desde 2005.
+              Calidad y servicio garantizado.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://instagram.com/bobelalquilador"
+                class="hover:text-gray-300 transition duration-300"
+              >
+                <i class="fab fa-instagram text-2xl"></i>
+              </a>
+              <a
+                href="https://wa.me/5492245400777"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-gray-300 transition duration-300"
+              >
+                <i class="fab fa-whatsapp text-2xl"></i>
+              </a>
+
             </div>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h3 class="text-xl font-bold mb-4">Contacto</h3>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
+                <span>poner link al mapa de ubicaciones</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone mr-3 text-bob-light-red"></i>
+                <span>+54 11 5555-5555</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
+                <span>info@bobelaquilador.com</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-clock mr-3 text-bob-light-red"></i>
+                <span>Lun-Vie: 9:00 - 17:00</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Inicio</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#maquinarias"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Maquinarias</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#categorias"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Categorías</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Preguntas Frecuentes</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Política de Privacidad</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+          <p>© 2025 Bob El Alquilador. Todos los derechos reservados.</p>
+        </div>
+      </div>
     </footer>
 
-    <!-- Reservation Modal -->
-    <div id="reservation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800">Confirmación de Reserva</h3>
-                <button id="close-modal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="modal-content" class="mb-6">
-                <p class="text-gray-600 mb-4">Tu reserva ha sido recibida. Te contactaremos pronto para confirmar los detalles.</p>
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
-                    <p class="font-bold">¡Reserva Exitosa!</p>
-                    <p>Número de reserva: <span id="reservation-number" class="font-bold"></span></p>
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <button id="confirm-modal" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-2 px-6 rounded-lg transition duration-300">
-                    Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
 
-    
-<!-- 
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            document.getElementById('mobile-nav').classList.toggle('hidden');
-        });
-        
-        // Reservation form handling
-        document.getElementById('reservation-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Generate random reservation number
-            const reservationNumber = 'R' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            document.getElementById('reservation-number').textContent = reservationNumber;
-            
-            // Show modal
-            document.getElementById('reservation-modal').classList.remove('hidden');
-        });
-        
-        // Reserve buttons on machine cards
-        document.querySelectorAll('.reserve-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const machineId = this.getAttribute('data-id');
-                let machineName = '';
-                
-                switch(machineId) {
-                    case '1':
-                        machineName = 'Excavadora Compacta';
-                        break;
-                    case '2':
-                        machineName = 'Retroexcavadora Industrial';
-                        break;
-                    case '3':
-                        machineName = 'Minicargadora Versátil';
-                        break;
-                }
-                
-                // Scroll to reservation form
-                document.getElementById('reserva').scrollIntoView({ behavior: 'smooth' });
-                
-                // Pre-select the machine in the dropdown
-                const machineSelect = document.getElementById('machine-type');
-                for(let i = 0; i < machineSelect.options.length; i++) {
-                    if(machineSelect.options[i].text === machineName) {
-                        machineSelect.selectedIndex = i;
-                        break;
-                    }
-                }
-            });
-        });
-        
-        // Close modal
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('reservation-modal').classList.add('hidden');
-        });
-        
-        document.getElementById('confirm-modal').addEventListener('click', function() {
-            document.getElementById('reservation-modal').classList.add('hidden');
-            document.getElementById('reservation-form').reset();
-        });
-        
-        // Date validation
-        document.getElementById('start-date').addEventListener('change', function() {
-            const startDate = new Date(this.value);
-            const endDateInput = document.getElementById('end-date');
-            
-            // Set minimum end date to start date
-            const minEndDate = new Date(startDate);
-            minEndDate.setDate(minEndDate.getDate() + 1);
-            
-            endDateInput.min = minEndDate.toISOString().split('T')[0];
-            
-            // If end date is before new start date, reset it
-            if(endDateInput.value && new Date(endDateInput.value) <= startDate) {
-                endDateInput.value = '';
-            }
-        });
-        
-        // Set minimum start date to today
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        document.getElementById('start-date').min = today.toISOString().split('T')[0];
-        document.getElementById('end-date').min = tomorrow.toISOString().split('T')[0];
-        
-        // Duration selection affects end date
-        document.getElementById('duration').addEventListener('change', function() {
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-            
-            if(startDateInput.value) {
-                const startDate = new Date(startDateInput.value);
-                const duration = parseInt(this.value);
-                
-                if(duration) {
-                    const endDate = new Date(startDate);
-                    endDate.setDate(endDate.getDate() + duration);
-                    endDateInput.value = endDate.toISOString().split('T')[0];
-                }
-            }
-        });
-    </script>
-<script>-->
+</body>
+</html>

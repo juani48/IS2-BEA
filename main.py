@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
 from core.usecase import Login, Singin
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
 
@@ -9,18 +9,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    #AddCategorie.usecase_add_categorie("categoria1")
-    #AddCategorie.usecase_add_categorie("categoria2")
-    #AddMachine.usecase_add_machine("1A", "marca", "modelo", 11, "ubicacion", 10, "categoria1")
-    #AddMachine.usecase_add_machine("2A", "marca", "modelo", 8, "ubicacion", 10, "categoria1")
-    #AddMachine.usecase_add_machine("3A", "marca", "modelo", 7, "ubicacion", 10, "categoria2")
-    #print(GetAllMachines.usecase_get_all_machines())
-    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
-    #    categorie_filter={"categorie":"categoria2", "apply": False},
-    #    price_filter={"price": 8, "apply": True},
-    #    mark_filter={"apply": False},
-    #    model_filter={"apply":False}
-    #))
     return render_template('index.html')
 
 @app.route("/load_login")
@@ -83,9 +71,24 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-#@app.route("/machine/get_all", methods=["GET", "POST"])
-#def get_all_machines():
+@app.route("/machine/get_all", methods=["GET", "POST"])
+def get_all_machines():
+    request.get_json()
+    return GetAllMachines.usecase_get_all_machines(), 200 # verfificar si e snecesario el jsonify
 
+@app.route("/machine/get_all_name", methods=["GET", "POST"])
+def get_all_machines_name():
+    request_value = request.get_json().get("name")
+    return GetAllMachinesByName.usecase_get_all_machines_by(name=request_value), 200
+
+@app.route("/machine/get_all_filter", methods=["GET", "POST"])
+def get_all_machines_filter():
+    return GetAllMachinesByFilter.usecase_get_all_machines_by( 
+        categorie_filter=request.get_json().get("categoire"),
+        price_filter=request.get_json().get("price"),
+        mark_filter=request.get_json().get("mark"),
+        model_filter=request.get_json().get("model")), 200
+    # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
 
 # ---- Categorias ----
 

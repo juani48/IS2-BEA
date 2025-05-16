@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.ccs') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
 
 </head>
@@ -20,12 +20,13 @@
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-    <!-- LOGO -->
-     <div class="shrink-0">
-          <a href="main.html">Completo
-            <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-        </a>
-    </div>
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="main.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
+                        class="h-16">
+                </a>
+            </div>
 
             <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
@@ -79,10 +80,10 @@
 
     <!-- Hero Section -->
     <section class="relative h-[500px] overflow-visible bg-white">
-  <!-- Video -->
-  <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="{{ url_for('static', filename='video/Bob_el_Alquilador_-_New_York.mp4') }}" type="video/mp4">
-  </video>
+        <!-- Video -->
+        <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='video/Bob_el_Alquilador_-_New_York.mp4') }}" type="video/mp4">
+        </video>
 
         <!-- Capa roja -->
         <div class="absolute inset-0 bg-red-800 bg-opacity-70"></div>
@@ -94,15 +95,16 @@
                 Maquinarias de Construcción de Calidad
             </h1>
 
-    <p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
-    <div class="flex flex-col md:flex-row justify-center gap-4">
-      <a href="machinery.html" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
-        Ver Maquinarias
-      </a>
-    
-    </div>
-  </div>
-</section>
+            <p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="machinery.html"
+                    class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
+                    Ver Maquinarias
+                </a>
+
+            </div>
+        </div>
+    </section>
 
     <script>
         const zoomElement = document.getElementById('hero-zoom');
@@ -212,7 +214,7 @@
             </div>
 
             <div class="text-center mt-12">
-                <a href="machinery.html"
+                <a href="#"
                     class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
                     Ver todas las maquinarias
                 </a>

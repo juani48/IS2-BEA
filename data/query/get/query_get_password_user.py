@@ -1,4 +1,4 @@
-from config import session
+from data.config import session
 from data.model.UserModel import UserModel
 
 

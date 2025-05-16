@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
-from core.usecase import Login, Singin
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
+from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
 
@@ -45,10 +45,14 @@ def Login():
     )
     return "", 204
 
-@app.route("/singin", methods=["GET", "POST"])
-def singin():
+@app.route("/load_signin")
+def load_signin():
+    return render_template("singin.html")
+
+@app.route("/signin", methods=["GET", "POST"])
+def signin():
     request_value = request.get_json()
-    Singin.usecase_singing(
+    Signin.usecase_signing(
         dni=request_value.get("dni"), 
         password=request_value.get("password"),
         email=request_value.get("email"),
@@ -58,6 +62,29 @@ def singin():
         db=appDataBase
     )
     return "", 204
+
+@app.route("/user/update_user", methods=["PUT"])
+def update_user():
+    request_value = request.get_json()
+    UpdateUser.usecase_update_user(
+        #email=request_value.get("email"),
+        dni = request_value.get("dni"),
+        name=request_value.get("name"),
+        lastname=request_value.get("lastname"),
+    )
+    return "", 204
+
+@app.route("/user/change_password", methods=["PUT"])
+def change_password():
+    request_value = request.get_json()
+    ChangePassword(
+        dni = request_value.get("dni"),
+        password_Act = request_value.get("passwordAct"),
+        password_New_1 = request_value.get("password1"),
+        password_New_2 = request_value.get("password2")
+    )
+    return "", 204
+
 
 # ---- Maquinas ----
 
@@ -87,23 +114,12 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-@app.route("/machine/get_all", methods=["GET"])
-def get_all_machines():
-    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 # verfificar si e snecesario el jsonify
-
-@app.route("/machine/get_all_name", methods=["GET", "POST"])
-def get_all_machines_name():
-    request_value = request.get_json().get("name")
-    return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
-
-@app.route("/machine/get_all_filter", methods=["GET", "POST"])
-def get_all_machines_filter():
-    return GetAllMachinesByFilter.usecase_get_all_machines_by( 
-        categorie_filter=request.get_json().get("categoire"),
-        price_filter=request.get_json().get("price"),
-        mark_filter=request.get_json().get("mark"),
-        model_filter=request.get_json().get("model")), 200
-    # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
+@app.route("/machine/view_description", methods=["GET"])
+def view_description():
+    patent = request.args.get("patent")
+    if not patent:
+        return jsonify({"error": "No patent provided"}), 400
+    
 
 # ---- Categorias ----
 

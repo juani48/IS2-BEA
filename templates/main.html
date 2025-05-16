@@ -7,9 +7,9 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="./scripts.js" defer></script>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" type="svg" href="img/Solo logo.svg">
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.ccs') }}">
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
 
     </head>
 
@@ -20,8 +20,8 @@
 
     <!-- LOGO -->
      <div class="shrink-0">
-          <a href="main.html">
-            <img src="./img/Completo.svg" alt="Bob el Alquilador" class="h-16">
+          <a href="main.html">Completo
+            <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
         </a>
     </div>
 
@@ -79,7 +79,7 @@
     <section class="relative h-[500px] overflow-visible bg-white">
   <!-- Video -->
   <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="./img/Bob_el_Alquilador_-_New_York.mp4" type="video/mp4">
+    <source src="{{ url_for('static', filename='video/Bob_el_Alquilador_-_New_York.mp4') }}" type="video/mp4">
   </video>
 
   <!-- Capa roja -->
@@ -93,7 +93,7 @@
 
     <p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
     <div class="flex flex-col md:flex-row justify-center gap-4">
-      <a href="#maquinarias" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
+      <a href="machinery.html" class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
         Ver Maquinarias
       </a>
     

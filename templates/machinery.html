@@ -17,9 +17,9 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="./scripts.js" defer></script>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="icon" type="svg" href="img/Solo logo.svg" />
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.ccs') }}" />
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
   </head>
 
   <body class="bg-gray-100 text-gray-900">
@@ -32,7 +32,7 @@
         <div class="shrink-0">
           <a href="main.html">
             <img
-              src="./img/Completo.svg"
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
               alt="Bob el Alquilador"
               class="h-16"
             />
@@ -134,7 +134,7 @@
         <!-- Maquinaria 1 -->
         <div class="bg-white rounded-lg shadow-md p-4">
           <img
-            src="./img/cargadora-frontal.jpg"
+            src="{{ url_for('static', filename='cargadora-frontal.jpg') }}"
             alt="Excavadora Compacta"
             class="w-full h-48 object-cover rounded"
           />
@@ -152,7 +152,7 @@
         <!-- Maquinaria 2 -->
         <div class="bg-white rounded-lg shadow-md p-4">
           <img
-            src="./img/digger-gf2d8e1c66_1280.jpg"
+            src="{{ url_for('static', filename='digger-gf2d8e1c66_1280.jpg') }}"
             alt="Retroexcavadora Industrial"
             class="w-full h-48 object-cover rounded"
           />
@@ -170,7 +170,7 @@
         <!-- Maquinaria 3 -->
         <div class="bg-white rounded-lg shadow-md p-4">
           <img
-            src="./img/dump-truck.jpg"
+            src="{{ url_for('static', filename='image/dump-truck.jpg') }}"
             alt="Minicargadora Versátil"
             class="w-full h-48 object-cover rounded"
           />
@@ -308,16 +308,23 @@
   </body>
 
   <script>
-    function getMachine() {
-      try {
-        fetch("/machine/get_all", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
-        }).then((response) => console.log(response.json()));
-      } catch (error) {
-        console.error("Error: ", error.message);
-      }
-    }
+     // Ejecutar fetch cuando la página se cargue
+  document.addEventListener('DOMContentLoaded', getMachine())
+
+  function getMachine() {
+    console.log("Enter in method");
+
+      fetch("/machine/get_all")
+      .then(response => { 
+        if(!response.ok) {
+          console.log("Enter in method 2");
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }) 
+      .then(data => { console.log("Datos:", data) })
+      .catch(error => { console.log("Error: ", "error") });
+
+  }
   </script>
 </html>

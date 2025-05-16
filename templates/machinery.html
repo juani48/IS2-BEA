@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.ccs') }}" />
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
-  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}"/>
-</head>
-
-<body class="bg-gray-100 text-gray-900">
-  <!-- Header -->
-  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <!-- LOGO -->
-      <div class="shrink-0">
-        <a href="main.html">
-          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16" />
-        </a>
-      </div>
+  <body class="bg-gray-100 text-gray-900">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+      <div
+        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
+      >
+        <!-- LOGO -->
+        <div class="shrink-0">
+          <a href="main.html">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
+        </div>
 
       <!-- BARRA DE BÚSQUEDA -->
       <div class="flex-grow flex justify-center">
@@ -87,46 +101,65 @@
     </div>
   </header>
 
-  <!-- Listado de maquinarias -->
-  <main class="container mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold mb-6 text-center">Nuestras máquinas</h1>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Listado de maquinarias -->
+    <main class="container mx-auto px-4 py-10">
+      <h1 class="text-3xl font-bold mb-6 text-center">Nuestras máquinas</h1>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Maquinaria 1 -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <img
+            src="{{ url_for('static', filename='cargadora-frontal.jpg') }}"
+            alt="Excavadora Compacta"
+            class="w-full h-48 object-cover rounded"
+          />
+          <h2 class="text-xl font-semibold mt-4">Excavadora Compacta</h2>
+          <p class="text-gray-600 mt-2">
+            Ideal para trabajos urbanos y excavaciones pequeñas.
+          </p>
+          <a
+            href="reserve.html"
+            class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition"
+            >Reservar</a
+          >
+        </div>
 
-      <!-- Maquinaria 1 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/cargadora-frontal.jpg') }}" alt="Excavadora Compacta" class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Excavadora Compacta</h2>
-        <p class="text-gray-600 mt-2">
-          Ideal para trabajos urbanos y excavaciones pequeñas.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
-      </div>
+        <!-- Maquinaria 2 -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <img
+            src="{{ url_for('static', filename='digger-gf2d8e1c66_1280.jpg') }}"
+            alt="Retroexcavadora Industrial"
+            class="w-full h-48 object-cover rounded"
+          />
+          <h2 class="text-xl font-semibold mt-4">Retroexcavadora Industrial</h2>
+          <p class="text-gray-600 mt-2">
+            Potente y versátil para grandes obras.
+          </p>
+          <a
+            href="reserve.html"
+            class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition"
+            >Reservar</a
+          >
+        </div>
 
-      <!-- Maquinaria 2 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/digger-gf2d8e1c66_1280.jpg') }}" alt="Retroexcavadora Industrial"
-          class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Retroexcavadora Industrial</h2>
-        <p class="text-gray-600 mt-2">
-          Potente y versátil para grandes obras.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
+        <!-- Maquinaria 3 -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <img
+            src="{{ url_for('static', filename='image/dump-truck.jpg') }}"
+            alt="Minicargadora Versátil"
+            class="w-full h-48 object-cover rounded"
+          />
+          <h2 class="text-xl font-semibold mt-4">Minicargadora Versátil</h2>
+          <p class="text-gray-600 mt-2">
+            Compacta y eficiente en espacios reducidos.
+          </p>
+          <a
+            href="reserve.html"
+            class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition"
+            >Reservar</a
+          >
+        </div>
       </div>
-
-      <!-- Maquinaria 3 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/dump-truck.jpg') }}" alt="Minicargadora Versátil" class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Minicargadora Versátil</h2>
-        <p class="text-gray-600 mt-2">
-          Compacta y eficiente en espacios reducidos.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
-      </div>
-    </div>
-  </main>
+    </main>
 
   <!-- Footer -->
   <footer id="contacto" class="bg-bob-dark-red text-white py-12">
@@ -214,8 +247,8 @@
   </footer>
 </body>
 
-<script>
-  // Ejecutar fetch cuando la página se cargue
+  <script>
+     // Ejecutar fetch cuando la página se cargue
   document.addEventListener('DOMContentLoaded', getMachine())
 
   function getMachine() {
@@ -233,6 +266,5 @@
       .catch(error => { console.log("Error: ", "error") });
 
   }
-</script>
-
+  </script>
 </html>

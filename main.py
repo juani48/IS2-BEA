@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
 from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
 
@@ -114,11 +114,23 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-@app.route("/machine/view_description", methods=["GET"])
-def view_description():
-    patent = request.args.get("patent")
-    if not patent:
-        return jsonify({"error": "No patent provided"}), 400
+@app.route("/machine/get_all", methods=["GET"])
+def get_all_machines():
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 # verfificar si e snecesario el jsonify
+
+@app.route("/machine/get_all_name", methods=["GET", "POST"])
+def get_all_machines_name():
+    request_value = request.get_json().get("name")
+    return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
+
+@app.route("/machine/get_all_filter", methods=["GET", "POST"])
+def get_all_machines_filter():
+    return GetAllMachinesByFilter.usecase_get_all_machines_by( 
+        categorie_filter=request.get_json().get("categoire"),
+        price_filter=request.get_json().get("price"),
+        mark_filter=request.get_json().get("mark"),
+        model_filter=request.get_json().get("model")), 200
+    # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
     
 
 # ---- Categorias ----

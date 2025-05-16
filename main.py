@@ -9,11 +9,31 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('/main.html')
 
-@app.route("/load_login")
+# ---- RENDERIZAR PAGINAS ---- #
+
+@app.route('/main.html')
+def load_home():
+    return render_template('/main.html')
+
+@app.route('/machinery.html')
+def load_machinery():
+    return render_template('/machinery.html')
+
+@app.route("/login.html")
 def load_login():
-    return render_template("index.html")
+    return render_template("/login.html")
+
+@app.route("/singin.html")
+def load_singin():
+    return render_template("singin.html")
+
+@app.route("/reserve.html")
+def load_reserve():
+    return render_template("/reserve.html")
+
+# ---- METODOS POST ---- #
 
 @app.route("/login", methods=["GET", "POST"])
 def Login():
@@ -24,10 +44,6 @@ def Login():
         db=appDataBase
     )
     return "", 204
-
-@app.route("/load_singin")
-def load_singin():
-    return render_template("singin.html")
 
 @app.route("/singin", methods=["GET", "POST"])
 def singin():
@@ -74,12 +90,14 @@ def disable_machine():
 @app.route("/machine/get_all", methods=["GET", "POST"])
 def get_all_machines():
     request.get_json()
-    return GetAllMachines.usecase_get_all_machines(), 200 # verfificar si e snecesario el jsonify
+    return jsonify( GetAllMachines.usecase_get_all_machines() ), 200 # verfificar si e snecesario el jsonify
 
 @app.route("/machine/get_all_name", methods=["GET", "POST"])
 def get_all_machines_name():
     request_value = request.get_json().get("name")
-    return GetAllMachinesByName.usecase_get_all_machines_by(name=request_value), 200
+    return jsonify(
+        GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)
+    ), 200
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])
 def get_all_machines_filter():

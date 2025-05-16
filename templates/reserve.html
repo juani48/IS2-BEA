@@ -17,9 +17,9 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="./scripts.js" defer></script>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="icon" type="svg" href="img/Solo logo.svg" />
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
   </head>
 
   <body class="bg-gray-100 text-gray-900">
@@ -32,7 +32,7 @@
         <div class="shrink-0">
           <a href="main.html">
             <img
-              src="./img/Completo.svg"
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
               alt="Bob el Alquilador"
               class="h-16"
             />
@@ -348,6 +348,6 @@
       </div>
     </footer>
 
-    <script src="./scripts.js"></script>
+    <script src="{{ url_for('static', filename='script/scripts.js') }}"></script>
   </body>
 </html>

@@ -25,6 +25,10 @@ class MachineModel(Base):
             "refund": self.refund,
             "disable": self.disable 
         }
+    
+    def include(self, string):
+        string = string.lower()
+        return string in self.patent.lower() | string in self.mark.lower() | string in self.model.lower() | string in self.ubication.lower()
 
     def __init__(self, patent, mark, model, price_day, ubication, refund):
         self.patent = patent

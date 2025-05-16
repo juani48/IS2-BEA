@@ -219,25 +219,19 @@
   document.addEventListener('DOMContentLoaded', getMachine())
 
   function getMachine() {
+    console.log("Enter in method");
 
-    try {
-      fetch("/machine/get_all", 
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      })
+      fetch("/machine/get_all")
       .then(response => { 
         if(!response.ok) {
+          console.log("Enter in method 2");
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        console.log("Datos: ", response.json())
+        return response.json();
       }) 
-      .catch(error => { console.log("Error: ", error) });
+      .then(data => { console.log("Datos:", data) })
+      .catch(error => { console.log("Error: ", "error") });
 
-    } catch (error) {
-      console.error("Error: ", error.message);
-    }
   }
 </script>
 

@@ -87,17 +87,14 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-@app.route("/machine/get_all", methods=["GET", "POST"])
+@app.route("/machine/get_all", methods=["GET"])
 def get_all_machines():
-    request.get_json()
-    return jsonify( GetAllMachines.usecase_get_all_machines() ), 200 # verfificar si e snecesario el jsonify
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 # verfificar si e snecesario el jsonify
 
 @app.route("/machine/get_all_name", methods=["GET", "POST"])
 def get_all_machines_name():
     request_value = request.get_json().get("name")
-    return jsonify(
-        GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)
-    ), 200
+    return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])
 def get_all_machines_filter():

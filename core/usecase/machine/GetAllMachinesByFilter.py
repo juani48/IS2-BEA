@@ -1,10 +1,10 @@
 from data.appDataBase import get_all_machines, get_all_machines_by_categorie
 
+
 # Dicccionarios con booleano y filtro
-# {"categorie":"categoria2", "apply": True}
 def usecase_get_all_machines_by(categorie_filter, price_filter, mark_filter, model_filter):
-    if (categorie_filter.get("apply")):
-        list = get_all_machines_by_categorie(categorie_filter.get("categorie"))
+    if (categorie_filter.apply):
+        list = get_all_machines_by_categorie(categorie_filter.categorie)
     else:
         list = get_all_machines()
 
@@ -14,16 +14,16 @@ def usecase_get_all_machines_by(categorie_filter, price_filter, mark_filter, mod
     return list
 
 def _price_filter(price_filter, list):
-    if (price_filter.get("apply")):
-        list = [x for x in list if price_filter.get("price") >= x.price_day]
+    if (price_filter.apply):
+        list = [x for x in list if price_filter.price == x.price]
     return list
 
 def _mark_filter(mark_filter, list):
-    if (mark_filter.get("apply")):
-        list = [x for x in list if mark_filter.get("mark").lower() in x.mark.lower()] # stream in python
+    if (mark_filter.apply):
+        list = [x for x in list if mark_filter.mark.lower() in x.mark.lower()] # stream in python
     return list
 
 def _model_filter(model_filter, list):
-    if (model_filter.get("apply")):
-        list = [x for x in list if model_filter.get("model").lower() in x.model.lower()] # stream in python
+    if (model_filter.apply):
+        list = [x for x in list if model_filter.model.lower() in x.model.lower()] # stream in python
     return list

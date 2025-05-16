@@ -15,22 +15,7 @@ class MachineModel(Base):
     def __repr__(self):
         return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}""" + "}"
 
-    def json(self):
-        return {
-            "patent": self.patent,
-            "mark": self.mark,
-            "model": self.model,
-            "price_day": self.price_day,
-            "ubication": self.ubication,
-            "refund": self.refund,
-            "disable": self.disable 
-        }
-    
-    def include(self, string):
-        string = string.lower()
-        return string in self.patent.lower() | string in self.mark.lower() | string in self.model.lower() | string in self.ubication.lower()
-
-    def __init__(self, patent, mark, model, price_day, ubication, refund):
+    def __init__(self, patent, mark, model,description, price_day, ubication, refund):
         self.patent = patent
         self.mark = mark
         self.model = model

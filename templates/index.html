@@ -1,43 +1,581 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <title>LogIn</title>
-</head>
-<body>
-    <h1>Inciar sesion</h1>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
 
-    <div>
-        <label>Ingrese su numero de documento</label>
-        <input id="login-input-dni" type="text">
-    </div>
-    <div>
-        <label>Ingrese su contraseña</label>
-        <input id="login-input-password" type="text">
-    </div>
-    <div>
-        <button onclick="login()" >Iniciar sesion</button>
-        <a href="{{ url_for('load_singin') }}">Registrarse</a>
-    </div>
-</body>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
+<link href="./style.css" rel="stylesheet"/>
+<body class="bg-gray-50">
+<!-- Header -->
+<header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+<div class="container mx-auto px-1 py-1">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<div class="flex items-center mb-0 md:mb-0">
+<!-- Logo -->
+<div class="flex items-center mr-6">
+<img alt="" class="logo" src="./img/Completo.svg"/>
+</div>
+<!-- Search Bar -->
+<div class="relative hidden md:block">
+<input class="search-bar py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none w-64" placeholder="Buscar maquinarias..." type="text"/>
+<button class="absolute right-0 top-0 mt-2 mr-3 text-gray-600">
+<i class="fas fa-search"></i>
+</button>
+</div>
+</div>
+<!-- Mobile Search -->
+<div class="relative w-full mb-4 md:hidden">
+<input class="search-bar py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none w-full" placeholder="Buscar maquinarias..." type="text"/>
+<button class="absolute right-0 top-0 mt-2 mr-3 text-gray-600">
+<i class="fas fa-search"></i>
+</button>
+</div>
+<!-- Navigation -->
+<nav>
+<button class="md:hidden text-white focus:outline-none" id="mobile-menu-button">
+<i class="fas fa-bars text-2xl"></i>
+</button>
+<ul class="hidden md:flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 text-center" id="nav-menu">
+<li><a class="nav-link font-medium hover:text-gray-200" href="#">Menú</a></li>
+<li><a class="nav-link font-medium hover:text-gray-200" href="#maquinarias">Maquinarias</a></li>
+<li><a class="nav-link font-medium hover:text-gray-200" href="#categorias">Categorías</a></li>
+<li><a class="nav-link font-medium hover:text-gray-200" href="#">Mi Cuenta</a></li>
+<li><a class="nav-link font-medium hover:text-gray-200" href="#">Preguntas Frecuentes</a></li>
+<li><a class="nav-link font-medium hover:text-gray-200" href="#contacto">Contáctanos</a></li>
+</ul>
+</nav>
+</div>
+<!-- Mobile Navigation Menu -->
+<div class="hidden md:hidden mt-4 pb-2" id="mobile-nav">
+<ul class="flex flex-col space-y-3">
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#">Menú</a></li>
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#maquinarias">Maquinarias</a></li>
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#categorias">Categorías</a></li>
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#">Mi Cuenta</a></li>
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#">Preguntas Frecuentes</a></li>
+<li><a class="block py-1 hover:bg-bob-dark-red px-2 rounded" href="#contacto">Contáctanos</a></li>
+</ul>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="hero-section text-white py-20">
+<div class="container mx-auto px-4 text-center">
+<h1 class="text-4xl md:text-5xl font-bold mb-4">Maquinaria de Construcción de Calidad</h1>
+<p class="text-xl mb-8">Alquila las mejores máquinas para tu proyecto</p>
+<div class="flex flex-col md:flex-row justify-center gap-4">
+<a class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg" href="#maquinarias">
+                    Ver Maquinarias
+                </a>
+<a class="bg-white hover:bg-gray-100 text-bob-red font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg" href="#reserva">
+                    Reservar Ahora
+                </a>
+</div>
+</div>
+</section>
+<!-- Featured Machines -->
+<section class="py-16 bg-white" id="maquinarias">
+<div class="container mx-auto px-4">
+<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Nuestras Maquinarias Destacadas</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Machine 1 -->
+<div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
+<div class="h-48 overflow-hidden">
+<svg class="w-full h-full object-cover" viewbox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#f0f0f0" height="200" width="400"></rect>
+<path d="M50,150 L100,150 L100,120 L300,120 L300,150 L350,150 L350,180 L50,180 Z" fill="#FFD700"></path>
+<rect fill="#333" height="20" width="40" x="250" y="130"></rect>
+<rect fill="#333" height="30" width="20" x="70" y="150"></rect>
+<rect fill="#333" height="30" width="20" x="310" y="150"></rect>
+<rect fill="#555" height="30" width="60" x="120" y="90"></rect>
+</svg>
+</div>
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2 text-gray-800">Excavadora Compacta</h3>
+<p class="text-gray-600 mb-4">Perfecta para espacios reducidos y trabajos de precisión.</p>
+<div class="flex justify-between items-center">
+<span class="text-bob-red font-bold">$25.000/día</span>
+<button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="1">
+                                Reservar
+                            </button>
+</div>
+</div>
+</div>
+<!-- Machine 2 -->
+<div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
+<div class="h-48 overflow-hidden">
+<svg class="w-full h-full object-cover" viewbox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#f0f0f0" height="200" width="400"></rect>
+<rect fill="#FFD700" height="40" width="300" x="50" y="140"></rect>
+<circle cx="100" cy="180" fill="#333" r="20"></circle>
+<circle cx="300" cy="180" fill="#333" r="20"></circle>
+<rect fill="#FFD700" height="40" width="240" x="80" y="100"></rect>
+<rect fill="#555" height="40" width="100" x="150" y="60"></rect>
+</svg>
+</div>
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2 text-gray-800">Retroexcavadora Industrial</h3>
+<p class="text-gray-600 mb-4">Gran potencia para proyectos de construcción a gran escala.</p>
+<div class="flex justify-between items-center">
+<span class="text-bob-red font-bold">$35.000/día</span>
+<button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="2">
+                                Reservar
+                            </button>
+</div>
+</div>
+</div>
+<!-- Machine 3 -->
+<div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
+<div class="h-48 overflow-hidden">
+<svg class="w-full h-full object-cover" viewbox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#f0f0f0" height="200" width="400"></rect>
+<rect fill="#FFD700" height="60" rx="10" width="200" x="100" y="120"></rect>
+<rect fill="#FFD700" height="40" width="160" x="120" y="80"></rect>
+<rect fill="#555" height="40" width="100" x="150" y="40"></rect>
+<circle cx="140" cy="180" fill="#333" r="20"></circle>
+<circle cx="260" cy="180" fill="#333" r="20"></circle>
+</svg>
+</div>
+<div class="p-6">
+<h3 class="text-xl font-bold mb-2 text-gray-800">Minicargadora Versátil</h3>
+<p class="text-gray-600 mb-4">Ideal para múltiples tareas con diferentes accesorios disponibles.</p>
+<div class="flex justify-between items-center">
+<span class="text-bob-red font-bold">$18.000/día</span>
+<button class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" data-id="3">
+                                Reservar
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<div class="text-center mt-12">
+<a class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg" href="#">
+                    Ver todas las maquinarias
+                </a>
+</div>
+</div>
+</section>
+<!-- Categories -->
+<section class="py-16 bg-gray-100" id="categorias">
+<div class="container mx-auto px-4">
+<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Categorías de Maquinarias</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<!-- Category 1 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Excavadoras</h3>
+<p class="text-gray-600 mt-2">8 máquinas disponibles</p>
+</a>
+<!-- Category 2 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Grúas</h3>
+<p class="text-gray-600 mt-2">5 máquinas disponibles</p>
+</a>
+<!-- Category 3 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Compactadoras</h3>
+<p class="text-gray-600 mt-2">6 máquinas disponibles</p>
+</a>
+<!-- Category 4 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Generadores</h3>
+<p class="text-gray-600 mt-2">4 máquinas disponibles</p>
+</a>
+<!-- Category 5 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Hormigoneras</h3>
+<p class="text-gray-600 mt-2">7 máquinas disponibles</p>
+</a>
+<!-- Category 6 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H9.771l-.592-2.37A1 1 0 008.234 9h3.532a1 1 0 00-.945.63l-.592 2.37z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Andamios</h3>
+<p class="text-gray-600 mt-2">12 sets disponibles</p>
+</a>
+<!-- Category 7 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Herramientas</h3>
+<p class="text-gray-600 mt-2">20+ disponibles</p>
+</a>
+<!-- Category 8 -->
+<a class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300" href="#">
+<div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+<svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-gray-800">Accesorios</h3>
+<p class="text-gray-600 mt-2">15+ disponibles</p>
+</a>
+</div>
+</div>
+</section>
+<!-- Reservation Section -->
+<section class="py-16 bg-white" id="reserva">
+<div class="container mx-auto px-4">
+<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Reserva tu Maquinaria</h2>
+<div class="bg-gray-100 rounded-lg p-8 max-w-3xl mx-auto shadow-lg">
+<form class="space-y-6" id="reservation-form">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="machine-type">Tipo de Maquinaria</label>
+<select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="machine-type">
+<option disabled="" selected="" value="">Seleccionar maquinaria</option>
+<option value="excavadora">Excavadora Compacta</option>
+<option value="retroexcavadora">Retroexcavadora Industrial</option>
+<option value="minicargadora">Minicargadora Versátil</option>
+<option value="grua">Grúa Torre</option>
+<option value="compactadora">Compactadora de Suelo</option>
+</select>
+</div>
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="duration">Duración del Alquiler</label>
+<select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="duration">
+<option disabled="" selected="" value="">Seleccionar duración</option>
+<option value="1">1 día</option>
+<option value="3">3 días</option>
+<option value="7">1 semana</option>
+<option value="14">2 semanas</option>
+<option value="30">1 mes</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="start-date">Fecha de Inicio</label>
+<input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="start-date" min="2025-05-14" type="date"/>
+</div>
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="end-date">Fecha de Devolución</label>
+<input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="end-date" min="2025-05-15" type="date"/>
+</div>
+</div>
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="name">Nombre Completo</label>
+<input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="name" placeholder="Ingresa tu nombre completo" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="email">Correo Electrónico</label>
+<input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="email" placeholder="tu@email.com" type="email"/>
+</div>
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="phone">Teléfono</label>
+<input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="phone" placeholder="Tu número de teléfono" type="tel"/>
+</div>
+</div>
+<div>
+<label class="block text-gray-700 font-medium mb-2" for="comments">Comentarios Adicionales</label>
+<textarea class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-bob-red" id="comments" placeholder="Detalles adicionales sobre tu reserva..." rows="3"></textarea>
+</div>
+<div class="text-center">
+<button class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg" type="submit">
+                            Confirmar Reserva
+                        </button>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-16 bg-gray-100">
+<div class="container mx-auto px-4">
+<h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Lo que dicen nuestros clientes</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Testimonial 1 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="flex items-center mb-4">
+<div class="text-bob-red">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+</div>
+</div>
+<p class="text-gray-600 mb-4">"Excelente servicio. Las máquinas estaban en perfecto estado y el proceso de alquiler fue muy sencillo. Definitivamente volveré a alquilar con Bob el Alquilador."</p>
+<div class="flex items-center">
+<div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            JR
+                        </div>
+<div>
+<h4 class="font-bold text-gray-800">Juan Rodríguez</h4>
+<p class="text-gray-500 text-sm">Constructor</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="flex items-center mb-4">
+<div class="text-bob-red">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+</div>
+</div>
+<p class="text-gray-600 mb-4">"Muy buena atención al cliente y precios competitivos. La maquinaria funcionó perfectamente durante todo el proyecto. Recomendado."</p>
+<div class="flex items-center">
+<div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            ML
+                        </div>
+<div>
+<h4 class="font-bold text-gray-800">María López</h4>
+<p class="text-gray-500 text-sm">Arquitecta</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+<div class="flex items-center mb-4">
+<div class="text-bob-red">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+</div>
+</div>
+<p class="text-gray-600 mb-4">"La mejor empresa de alquiler de maquinaria con la que he trabajado. Entrega puntual y equipos de primera calidad. El sistema de reservas online es muy práctico."</p>
+<div class="flex items-center">
+<div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            CG
+                        </div>
+<div>
+<h4 class="font-bold text-gray-800">Carlos Gómez</h4>
+<p class="text-gray-500 text-sm">Contratista</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-bob-dark-red text-white py-12" id="contacto">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Company Info -->
+<div>
+<div class="flex items-center mb-4">
+<svg class="w-10 h-10 mr-2" fill="none" viewbox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+<rect fill="white" height="50" rx="10" width="50"></rect>
+<path d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z" fill="#D10000"></path>
+<path d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z" fill="white"></path>
+<path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
+</svg>
+<span class="font-bold text-xl">Bob el Alquilador</span>
+</div>
+<p class="mb-4">Soluciones de alquiler de maquinaria para construcción desde 1995. Calidad y servicio garantizado.</p>
+<div class="flex space-x-4">
+<a class="hover:text-gray-300 transition duration-300" href="https://instagram.com/bobelaquilador">
+<i class="fab fa-instagram text-2xl"></i>
+</a>
+<a class="hover:text-gray-300 transition duration-300" href="https://facebook.com/bobelaquilador">
+<i class="fab fa-facebook text-2xl"></i>
+</a>
+<a class="hover:text-gray-300 transition duration-300" href="https://twitter.com/bobelaquilador">
+<i class="fab fa-twitter text-2xl"></i>
+</a>
+</div>
+</div>
+<!-- Contact Info -->
+<div>
+<h3 class="text-xl font-bold mb-4">Contacto</h3>
+<ul class="space-y-3">
+<li class="flex items-center">
+<i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
+<span>Av. Construcción 1234, Ciudad</span>
+</li>
+<li class="flex items-center">
+<i class="fas fa-phone mr-3 text-bob-light-red"></i>
+<span>+54 11 5555-5555</span>
+</li>
+<li class="flex items-center">
+<i class="fas fa-envelope mr-3 text-bob-light-red"></i>
+<span>info@bobelaquilador.com</span>
+</li>
+<li class="flex items-center">
+<i class="fas fa-clock mr-3 text-bob-light-red"></i>
+<span>Lun-Vie: 8:00 - 18:00, Sáb: 9:00 - 14:00</span>
+</li>
+</ul>
+</div>
+<!-- Quick Links -->
+<div>
+<h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
+<ul class="space-y-2">
+<li><a class="hover:text-gray-300 transition duration-300" href="#">Inicio</a></li>
+<li><a class="hover:text-gray-300 transition duration-300" href="#maquinarias">Maquinarias</a></li>
+<li><a class="hover:text-gray-300 transition duration-300" href="#categorias">Categorías</a></li>
+<li><a class="hover:text-gray-300 transition duration-300" href="#">Preguntas Frecuentes</a></li>
+<li><a class="hover:text-gray-300 transition duration-300" href="#">Términos y Condiciones</a></li>
+<li><a class="hover:text-gray-300 transition duration-300" href="#">Política de Privacidad</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-700 mt-8 pt-8 text-center">
+<p>© 2023 Bob el Alquilador. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<!-- Reservation Modal -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="reservation-modal">
+<div class="bg-white rounded-lg p-8 max-w-md w-full">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-2xl font-bold text-gray-800">Confirmación de Reserva</h3>
+<button class="text-gray-500 hover:text-gray-700 focus:outline-none" id="close-modal">
+<i class="fas fa-times text-xl"></i>
+</button>
+</div>
+<div class="mb-6" id="modal-content">
+<p class="text-gray-600 mb-4">Tu reserva ha sido recibida. Te contactaremos pronto para confirmar los detalles.</p>
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+<p class="font-bold">¡Reserva Exitosa!</p>
+<p>Número de reserva: <span class="font-bold" id="reservation-number"></span></p>
+</div>
+</div>
+<div class="text-center">
+<button class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-2 px-6 rounded-lg transition duration-300" id="confirm-modal">
+                    Aceptar
+                </button>
+</div>
+</div>
+</div>
 <script>
-    function login(){
-    var dni = document.getElementById("login-input-dni")
-    var password = document.getElementById("login-inpunt-password")
-
-    fetch(
-        "/login",
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-                {
-                    dni: dni,
-                    password: password
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-nav').classList.toggle('hidden');
+        });
+        
+        // Reservation form handling
+        document.getElementById('reservation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Generate random reservation number
+            const reservationNumber = 'R' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            document.getElementById('reservation-number').textContent = reservationNumber;
+            
+            // Show modal
+            document.getElementById('reservation-modal').classList.remove('hidden');
+        });
+        
+        // Reserve buttons on machine cards
+        document.querySelectorAll('.reserve-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const machineId = this.getAttribute('data-id');
+                let machineName = '';
+                
+                switch(machineId) {
+                    case '1':
+                        machineName = 'Excavadora Compacta';
+                        break;
+                    case '2':
+                        machineName = 'Retroexcavadora Industrial';
+                        break;
+                    case '3':
+                        machineName = 'Minicargadora Versátil';
+                        break;
                 }
-            )
-        }
-    ).then(response => response.json())
-}
-</script>
-</html>
+                
+                // Scroll to reservation form
+                document.getElementById('reserva').scrollIntoView({ behavior: 'smooth' });
+                
+                // Pre-select the machine in the dropdown
+                const machineSelect = document.getElementById('machine-type');
+                for(let i = 0; i < machineSelect.options.length; i++) {
+                    if(machineSelect.options[i].text === machineName) {
+                        machineSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            });
+        });
+        
+        // Close modal
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('reservation-modal').classList.add('hidden');
+        });
+        
+        document.getElementById('confirm-modal').addEventListener('click', function() {
+            document.getElementById('reservation-modal').classList.add('hidden');
+            document.getElementById('reservation-form').reset();
+        });
+        
+        // Date validation
+        document.getElementById('start-date').addEventListener('change', function() {
+            const startDate = new Date(this.value);
+            const endDateInput = document.getElementById('end-date');
+            
+            // Set minimum end date to start date
+            const minEndDate = new Date(startDate);
+            minEndDate.setDate(minEndDate.getDate() + 1);
+            
+            endDateInput.min = minEndDate.toISOString().split('T')[0];
+            
+            // If end date is before new start date, reset it
+            if(endDateInput.value && new Date(endDateInput.value) <= startDate) {
+                endDateInput.value = '';
+            }
+        });
+        
+        // Set minimum start date to today
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        document.getElementById('start-date').min = today.toISOString().split('T')[0];
+        document.getElementById('end-date').min = tomorrow.toISOString().split('T')[0];
+        
+        // Duration selection affects end date
+        document.getElementById('duration').addEventListener('change', function() {
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            
+            if(startDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                const duration = parseInt(this.value);
+                
+                if(duration) {
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + duration);
+                    endDateInput.value = endDate.toISOString().split('T')[0];
+                }
+            }
+        });
+    </script>
+<script></script></body><link href="style.css" rel="stylesheet"/></head></html>

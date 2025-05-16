@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="./scripts.js" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="svg" href="img/Solo logo.svg" />
+  </head>
+
+  <body class="bg-gray-100 text-gray-900">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+      <div
+        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
+      >
+        <!-- LOGO -->
+        <div class="shrink-0">
+          <a href="main.html">
+            <img
+              src="./img/Completo.svg"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
+        </div>
+
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- MI CUENTA -->
+        <a
+          href="login.html"
+          class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group"
+        >
+          <!-- Ícono normal -->
+          <i class="fas fa-user text-lg group-hover:hidden"></i>
+          <!-- Ícono alternativo que aparece en hover -->
+          <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+          <span class="hidden sm:inline text-sm font-semibold tracking-wide"
+            >Mi Perfil</span
+          >
+        </a>
+      </div>
+      </div>
+
+      <!-- Navigation debajo, 100% ancho -->
+      <nav class="main-nav w-full">
+        <ul
+          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
+        >
+          <li><a href="main.html">Menú</a></li>
+          <li><a href="machinery.html">Maquinarias</a></li>
+          <li><a href="#categorias">Categorías</a></li>
+          <li><a href="#">Palabra</a></li>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#contacto">Contáctanos</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+        <ul class="flex flex-col space-y-3">
+          <li>
+            <a
+              href="main.html"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Menú</a
+            >
+          </li>
+          <li>
+            <a
+              href="machinery.html"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Maquinarias</a
+            >
+          </li>
+          <li>
+            <a
+              href="#categorias"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Categorías</a
+            >
+          </li>
+          <li>
+            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Mi Cuenta</a
+            >
+          </li>
+          <li>
+            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Preguntas Frecuentes</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contacto"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Contáctanos</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- Sección de reserva (sincronizada con main.html) -->
+    <section id="reserva" class="reservation-section py-10">
+      <h2 class="text-3xl font-bold text-center mb-6">Reserva tu Maquinaria</h2>
+      <form
+        id="reservation-form"
+        class="reservation-form max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg space-y-4"
+      >
+        <label for="machine-type">Tipo de Maquinaria</label>
+        <select id="machine-type" class="w-full border p-2 rounded">
+          <option value="">Seleccionar maquinaria</option>
+          <option value="1">Excavadora Compacta</option>
+          <option value="2">Retroexcavadora Industrial</option>
+          <option value="3">Minicargadora Versátil</option>
+        </select>
+
+        <label for="duration">Duración del alquiler</label>
+        <select id="duration" class="w-full border p-2 rounded">
+          <option value="">Seleccionar duración</option>
+          <option value="1">1 día</option>
+          <option value="3">3 días</option>
+        </select>
+
+        <label for="start-date">Fecha de inicio</label>
+        <input type="date" id="start-date" class="w-full border p-2 rounded" />
+
+        <label for="end-date">Fecha de devolución</label>
+        <input type="date" id="end-date" class="w-full border p-2 rounded" />
+
+        <label for="name">Nombre completo</label>
+        <input
+          type="text"
+          id="name"
+          placeholder="Tu nombre"
+          class="w-full border p-2 rounded"
+        />
+
+        <label for="email">Correo electrónico</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="tu@email.com"
+          class="w-full border p-2 rounded"
+        />
+
+        <label for="phone">Teléfono</label>
+        <input
+          type="tel"
+          id="phone"
+          placeholder="Tu teléfono"
+          class="w-full border p-2 rounded"
+        />
+
+        <label for="comments">Comentarios adicionales</label>
+        <textarea
+          id="comments"
+          rows="3"
+          class="w-full border p-2 rounded"
+        ></textarea>
+
+        <button
+          type="submit"
+          class="w-full bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded"
+        >
+          Confirmar Reserva
+        </button>
+      </form>
+    </section>
+
+    <!-- Modal de confirmación -->
+    <div
+      id="reservation-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+        <h3 class="text-xl font-bold mb-2">¡Reserva confirmada!</h3>
+        <p>
+          Tu número de reserva es:
+          <span
+            id="reservation-number"
+            class="font-mono text-bob-red font-bold"
+          ></span>
+        </p>
+        <div class="mt-4 flex justify-center gap-4">
+          <button
+            id="confirm-modal"
+            class="bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red"
+          >
+            OK
+          </button>
+          <button
+            id="close-modal"
+            class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contacto" class="bg-bob-dark-red text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Company Info -->
+          <div>
+            <div class="flex items-center mb-4">
+              <svg
+                class="w-10 h-10 mr-2"
+                viewBox="0 0 50 50"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="50" height="50" rx="10" fill="white"></rect>
+                <path
+                  d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z"
+                  fill="#D10000"
+                ></path>
+                <path
+                  d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z"
+                  fill="white"
+                ></path>
+                <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
+              </svg>
+              <span class="font-bold text-xl">Bob El Alquilador</span>
+            </div>
+            <p class="mb-4">
+              Soluciones de alquiler de maquinaria para construcción desde 2005.
+              Calidad y servicio garantizado.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://instagram.com/bobelalquilador"
+                class="hover:text-gray-300 transition duration-300"
+              >
+                <i class="fab fa-instagram text-2xl"></i>
+              </a>
+              <a
+                href="https://wa.me/5492245400777"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-gray-300 transition duration-300"
+              >
+                <i class="fab fa-whatsapp text-2xl"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h3 class="text-xl font-bold mb-4">Contacto</h3>
+            <ul class="space-y-3">
+              <li class="flex items-center">
+                <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
+                <span>poner link al mapa de ubicaciones</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone mr-3 text-bob-light-red"></i>
+                <span>+54 11 5555-5555</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
+                <span>info@bobelaquilador.com</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-clock mr-3 text-bob-light-red"></i>
+                <span>Lun-Vie: 9:00 - 17:00</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Inicio</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#maquinarias"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Maquinarias</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#categorias"
+                  class="hover:text-gray-300 transition duration-300"
+                  >Categorías</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Preguntas Frecuentes</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gray-300 transition duration-300"
+                  >Política de Privacidad</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+          <p>© 2025 Bob El Alquilador. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./scripts.js"></script>
+  </body>
+</html>

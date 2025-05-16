@@ -7,3 +7,4 @@ def execute(patent, categorie, machine_categorie):
         raise Exception("La maquina ya tiene esta categoria")
     session.add(machine_categorie)
     session.commit()
+    

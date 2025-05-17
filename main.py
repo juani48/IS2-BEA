@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from data import appDataBase
-from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
+from core.usecase.user import Login, Signin, UpdateUser,ChangePassword,RequestUser
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from templates import *
@@ -52,14 +52,14 @@ def load_signin():
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
     request_value = request.get_json()
-    Signin.usecase_signing(
+    RequestUser.usecase_request_user(
         dni=request_value.get("dni"), 
-        password=request_value.get("password"),
+        ##password=request_value.get("password"),
         email=request_value.get("email"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-        employee_number=request_value.get("employee_number"),
-        db=appDataBase
+        ##name=request_value.get("name"),
+        ##lastname=request_value.get("lastname"),
+        ##employee_number=request_value.get("employee_number"),
+        ##db=appDataBase
     )
     return "", 204
 

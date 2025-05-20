@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template, request
+from flask import redirect # redirigir a mercado pago
+from core.service.configMercadoPago import preference, sdk
 from data import appDataBase
 from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
@@ -174,14 +176,40 @@ def disable_categorie():
 # ---- RESERVAS ----
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"])
-def add_reservation():
+def reserve_machine():
     try:
         print()
         return "", 204
     except Exception as e:
         return jsonify({ "message": e }), 404
 
-# --- MAIN ----
+
+# ---- PAGOS ---- # COMENTADO A DREDE
+
+#@app.rout("/pay/redirect_to_pay")
+#def redirect_to_pay():
+    try:
+        payment_url = preference["init_point"]  # URL de Mercado Pago
+        return redirect(payment_url) # redirige al pago via mercado pago
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+# RESPUESTAS DE PAGO
+
+#@app.route("/pago-exitoso") # Con mi ejemplo de url esto queda "/pay/successful_payment"
+#def pago_exitoso():
+    payment_id = request.args.get("payment_id")
+    
+    # Verificar el estado del pago
+    payment_info = sdk.payment().get(payment_id)
+    status = payment_info["response"]["status"]
+    
+    if status == "approved":
+        return "¡Pago exitoso!"
+    else:
+        return "Pago pendiente o rechazado"
+
+# ---- MAIN ----
 
 if __name__ == '__main__':
     app.run(debug=True)

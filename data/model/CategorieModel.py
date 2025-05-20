@@ -10,6 +10,12 @@ class CategorieModel(Base):
     def __repr__(self):
         return "{" + f"""name: {self.name}, disable: {self.disabled}""" + "}"
     
+    def json(self):
+        return {
+            "name": self.name,
+            "disable": self.disabled
+        }
+
     def __init__(self, name):
         self.name = name
         self.disabled = False

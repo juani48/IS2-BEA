@@ -11,7 +11,7 @@ def usecase_get_all_machines_by(categorie_filter, price_filter, mark_filter, mod
     list = _price_filter(price_filter, list)
     list = _mark_filter(mark_filter, list)
     list = _model_filter(model_filter, list)
-    return list
+    return [ x.json() for x in list ]
 
 def _price_filter(price_filter, list):
     if (price_filter.get("apply")):

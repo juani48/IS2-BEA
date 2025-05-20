@@ -9,6 +9,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    #AddCategorie.usecase_add_categorie("categoria1")
+    #AddCategorie.usecase_add_categorie("categoria2")
+    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "", "")
+    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
+    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
+    #print(GetAllMachinesByName.usecase_get_all_machines_by("ciona"))
     return render_template('/main.html')
 
 # ---- RENDERIZAR PAGINAS ---- #
@@ -33,7 +39,7 @@ def load_singin():
 def load_reserve():
     return render_template("/reserve.html")
 
-# ---- METODOS POST ---- #
+# ---- METODOS USUARIO ---- #
 
 @app.route("/login", methods=["GET", "POST"])
 def Login():
@@ -85,24 +91,26 @@ def change_password():
     )
     return "", 204
 
+# ---- MAQUINAS ----
 
-# ---- Maquinas ----
-
-@app.route("/machine/add_machine", methods=["GET", "POST"])
+@app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE
 def add_machine():
-    request_value = request.get_json()
-    AddMachine.usecase_add_machine(
-        patent=request_value.get("patent"),
-        mark=request_value.get("patent"),
-        model=request_value.get("model"),
-        price_day=request_value.get("price_day"),
-        ubication=request_value.get("ubication"),
-        refund=request_value.get("refund"),
-        categorie=request_value.get("categorie")
-    )
-    return "", 204
+    try:
+        request_value = request.get_json()
+        AddMachine.usecase_add_machine(
+            patent=request_value.get("patent"),
+            mark=request_value.get("patent"),
+            model=request_value.get("model"),
+            price_day=request_value.get("price_day"),
+            ubication=request_value.get("ubication"),
+            refund=request_value.get("refund"),
+            categorie=request_value.get("categorie")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify( { "message": e } ), 404
 
-@app.route("/machine/enable_machine", methods=["GET", "POST"])
+@app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
     request_value = request.get_json().get("patent")
     EnableMachine.usecase_enable_machine(patent=request_value)
@@ -114,34 +122,42 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-@app.route("/machine/get_all", methods=["GET"])
+@app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 # verfificar si e snecesario el jsonify
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
 
-@app.route("/machine/get_all_name", methods=["GET", "POST"])
+@app.route("/machine/get_all_name", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_name():
-    request_value = request.get_json().get("name")
-    return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
+    try:
+        request_value = request.get_json().get("name")
+        return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
-@app.route("/machine/get_all_filter", methods=["GET", "POST"])
+@app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
-    return GetAllMachinesByFilter.usecase_get_all_machines_by( 
-        categorie_filter=request.get_json().get("categoire"),
-        price_filter=request.get_json().get("price"),
-        mark_filter=request.get_json().get("mark"),
-        model_filter=request.get_json().get("model")), 200
-    # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
-    
+    try:
+        # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
+        return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+            categorie_filter=request.get_json().get("categoire"),
+            price_filter=request.get_json().get("price"),
+            mark_filter=request.get_json().get("mark"),
+            model_filter=request.get_json().get("model"))), 200
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
-# ---- Categorias ----
+# ---- CATEGORIAS ----
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def add_categorie():
-    request_value = request.get_json()
-    AddCategorie.usecase_add_categorie(
-        categorie=request_value.get("categorie")
-    )
-    return "", 204
+    try:
+        request_value = request.get_json()
+        AddCategorie.usecase_add_categorie(
+            categorie=request_value.get("categorie")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 @app.route("/categorie/enable_categorie", methods=["GET", "POST"])
 def enable_categorie():
@@ -155,10 +171,18 @@ def disable_categorie():
     DisableCategorie.usecase_disable_categorie(categorie=request_value)
     return "", 204
 
+# ---- RESERVAS ----
+
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"])
+def add_reservation():
+    try:
+        print()
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 # --- MAIN ----
 
 if __name__ == '__main__':
     app.run(debug=True)
     appDataBase.create_database()
-    

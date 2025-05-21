@@ -1,7 +1,6 @@
 from data.model.ReservationModel import ReservationModel
 from data.appDataBase import insert_reserve
 
-# validar usuario, maquina -> deribar compra
 def usecase_add_reserve(start_day, end_day, client_id, machine_id, total_value, shipment):
 
     reserve = ReservationModel(

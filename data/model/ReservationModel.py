@@ -19,14 +19,20 @@ class ReservationModel(Base):
 
    def json(self):
       return {
-         "start_day": self.start_day,
+         "start_day": self.start_day.strftime("%d/%m/%Y %H:%M:%S"),
          "client_id": self.client_id,
          "machine_id": self.machine_id,
-         "end_day": self.end_day,
+         "end_day": self.end_day.strftime("%d/%m/%Y %H:%M:%S"),
          "total_value": self.total_value,
          "shipment": self.shipment,
          "activate": self.activate,
          "employee_id": self.employee_id
+      }
+   
+   def json_days(self):
+      return {
+         "start_day": self.start_day.strftime("%d/%m/%Y %H:%M:%S"),
+         "end_day": self.end_day.strftime("%d/%m/%Y %H:%M:%S"),
       }
 
    def __init__(self, start_day, client_id, machine_id, end_day, total_value, shipment):

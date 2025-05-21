@@ -1,11 +1,18 @@
 import os
 from data.config import Base, engine
+
 from data.query.disable import query_disable_categorie, query_disable_machine
+
 from data.query.enable import query_enable_categorie, query_enable_machine
-from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories
+
+from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine
+
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc, query_insert_reserve
+
 from data.query.update import query_update_machine, query_update_user
+
 from data.query.change import query_change_password_user
+
 from data.query.get import query_get_password_user
 
 def create_database():
@@ -72,3 +79,6 @@ def get_all_machines_by_categorie(categorie):
 
 def get_all_categories():
     return query_get_all_categories.execute()
+
+def get_all_reservations_by_machine(machine_id):
+    return query_get_all_reservations_by_machine.execute(machine_id)

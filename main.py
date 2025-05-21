@@ -1,10 +1,13 @@
+from datetime import datetime, timedelta
+import json
 from flask import Flask, jsonify, render_template, request
 from flask import redirect # redirigir a mercado pago
-from core.service.configMercadoPago import preference, sdk
+from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
 from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
+from core.usecase.reserve import MachineReservations, AddReservation
 from templates import *
 
 app = Flask(__name__)	
@@ -17,6 +20,14 @@ def home():
     #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
     #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
     #print(GetAllMachinesByName.usecase_get_all_machines_by("ciona"))
+
+    # prueba de reservas
+    # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
+    
+    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
+    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
+    #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
+
     return render_template('/main.html')
 
 # ---- RENDERIZAR PAGINAS ---- #
@@ -128,20 +139,15 @@ def disable_machine():
 def get_all_machines():
     return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
 
-@app.route("/machine/get_all_name", methods=["GET", "POST"])  # TESTEADO -> TRUE
-def get_all_machines_name():
-    try:
-        request_value = request.get_json().get("name")
-        return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
-    except Exception as e:
-        return jsonify({ "message": e }), 404
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
+    # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
+
     try:
-        # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
             categorie_filter=request.get_json().get("categoire"),
+            string_filer=request.get_json().get("string"),
             price_filter=request.get_json().get("price"),
             mark_filter=request.get_json().get("mark"),
             model_filter=request.get_json().get("model"))), 200
@@ -175,8 +181,25 @@ def disable_categorie():
 
 # ---- RESERVAS ----
 
-@app.route("/reservation/reserve_machine", methods=["GET", "POST"])
+@app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
+def machine_reservations():
+    
+    try:
+        request_value = request.get_json().get("machine_id")
+        return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # obtener reservas de una maquina
 def reserve_machine():
+
+    # fecha_hora = datetime.now()
+    # fecha_hora = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
+    # formate de las fechas
+
+    # now = datetime.now()
+    # date2 = now + timedelta(days=3)
+    # date2_1 = now + timedelta(days=4)
     try:
         print()
         return "", 204
@@ -186,17 +209,18 @@ def reserve_machine():
 
 # ---- PAGOS ---- # COMENTADO A DREDE
 
-#@app.rout("/pay/redirect_to_pay")
-#def redirect_to_pay():
+@app.route("/pay/redirect_to_pay", methods=["GET"]) # Metodo iniciado por el boton de 'reservar'
+def redirect_to_pay():
     try:
-        payment_url = preference["init_point"]  # URL de Mercado Pago
-        return redirect(payment_url) # redirige al pago via mercado pago
+        url = PayByMercadoPago.execute(request.get_json())
+        
+        return redirect(url) # redirige al pago via mercado pago
     except Exception as e:
         return jsonify({ "message": e }), 404
 
 # RESPUESTAS DE PAGO
 
-#@app.route("/pago-exitoso") # Con mi ejemplo de url esto queda "/pay/successful_payment"
+#@app.route("/pago-exitoso") # Con mi ejemplo de url esto queda "/pay/successful_payment" // Llamar al caso de uso que realiza la alta de reserva
 #def pago_exitoso():
     payment_id = request.args.get("payment_id")
     

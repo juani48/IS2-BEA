@@ -17,6 +17,55 @@ UPLOAD_FOLDER = 'static/image/users'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)	
 
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'static/images/machine'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # crea la carpeta si no existe
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+import os
+from werkzeug.utils import secure_filename
+
+@app.route("/machine/create_with_image", methods=["POST"])
+def create_machine_with_image():
+    try:
+        form = request.form
+        file = request.files.get("image")
+
+        patent = f"{form.get('mark')}-{form.get('model')}"
+        # ✅ Guardar imagen en static/image/machines/ si existe
+        if file and file.filename != "":
+            filename = secure_filename(patent + ".jpg")
+            folder_path = os.path.join("static", "image", "machines")
+            os.makedirs(folder_path, exist_ok=True)
+            file.save(os.path.join(folder_path, filename))
+            # No se guarda en base de datos ❌
+
+        # ✅ Registrar la máquina sin imagen
+        from core.usecase.machine import AddMachine  # si no lo importaste arriba
+
+        AddMachine.usecase_add_machine(
+            patent=patent,
+            mark=form.get("mark"),
+            model=form.get("model"),
+            price_day=float(form.get("price_day")),
+            ubication=form.get("ubication"),
+            refund=0,
+            categorie="default"
+        )
+
+        return "", 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
 @app.route('/')
 def home():
     return render_template('/main.html')
@@ -27,9 +76,15 @@ def home():
 def load_home():
     return render_template('/main.html')
 
+#@app.route('/machinery.html')
+#def load_machinery():
+#    return render_template('/machinery.html') 
+
 @app.route('/machinery.html')
 def load_machinery():
-    return render_template('/machinery.html')
+    machines = GetAllMachines.usecase_get_all_machines()  # obtiene todas las máquinas activas
+    return render_template('machinery.html', machines=machines)
+
 
 @app.route("/login.html")
 def load_login():
@@ -48,6 +103,16 @@ def load_singin():
 @app.route("/panelUsuario.html")
 def load_panelUsuario():
     return render_template("/panelUsuario.html")
+
+
+@app.route("/categorie.html")  #Lara estuvo aki
+def categorias():
+    return render_template("categorie.html")
+
+@app.route("/register_machinery.html")
+def register_machine():
+    return render_template("register_machinery.html")
+
 
 # ---- METODOS POST ---- #
 

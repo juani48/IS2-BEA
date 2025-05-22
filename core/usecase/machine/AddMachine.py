@@ -31,7 +31,7 @@ def validator(patent, mark, model, price_day, ubication, refund, categorie):
         raise Exception("La marca no puede estar vacia")
     if (model == ""):
         raise Exception("El modelo no puede estar vacio")
-    if (price_day == 0 | price_day == None):
+    if (price_day == 0 or price_day == None):
         raise Exception("El precio por dia no puede estar vacio")
     if (ubication == ""):
         raise Exception("La ubicacion no puede estar vacia")

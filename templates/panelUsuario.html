@@ -17,63 +17,46 @@
 
 <body class="bg-gray-50">
     <!-- Header -->
+    <!-- Encabezado del usuario logueado -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-            <!-- LOGO -->
-            <div class="shrink-0">
-                <a href="/main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
-                </a>
-            </div>
-
-            <!-- BARRA DE BÚSQUEDA -->
-            <div class="flex-grow flex justify-center">
-                <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
+        <!-- LOGO -->
+        <div class="shrink-0">
+            <a href="/main.html">
+                <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
             </a>
         </div>
 
-        <!-- Navigation debajo, 100% ancho -->
-        <nav class="main-nav w-full">
-            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="#categorias">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="#">Palabra</a></li>
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
-            </ul>
-        </nav>
-
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-            <ul class="flex flex-col space-y-3">
-                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="#categorias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Mi Cuenta</a></li>
-                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
-            </ul>
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="flex-grow flex justify-center">
+            <div class="relative w-full max-w-xl">
+                <input type="text" placeholder="Buscar maquinaria..."
+                    class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
-    </header>
+
+        <!-- MI CUENTA (usuario logueado) -->
+        <div class="relative">
+                <button onclick="toggleDropdown()"
+                    class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+                    <i class="fas fa-user text-lg"></i>
+                    <span class="text-sm font-semibold tracking-wide">{{ usuario_nombre }}</span>
+                </button>
+
+            <!-- Dropdown -->     <!--PONER LAS HREF BIEN, ESAS NO EXISTEN-->
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                <button onclick="window.location.href='/logout'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+</header>
+
 
     <!-- Hero Section -->
     <section class="relative h-[500px] overflow-visible bg-white">
@@ -98,7 +81,6 @@
                     class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
                     Ver Maquinarias
                 </a>
-
             </div>
         </div>
     </section>
@@ -350,83 +332,6 @@
         </div>
     </section>
 
-    <!--  Testimonials 
-   <section class="py-16 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Lo que dicen nuestros clientes</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 Testimonial 1 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Excelente servicio. Las máquinas estaban en perfecto estado y el proceso de alquiler fue muy sencillo. Definitivamente volveré a alquilar con Bob el Alquilador."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            JR
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Juan Rodríguez</h4>
-                            <p class="text-gray-500 text-sm">Constructor</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 2 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Muy buena atención al cliente y precios competitivos. La maquinaria funcionó perfectamente durante todo el proyecto. Recomendado."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            ML
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">María López</h4>
-                            <p class="text-gray-500 text-sm">Arquitecta</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 3 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"La mejor empresa de alquiler de maquinaria con la que he trabajado. Entrega puntual y equipos de primera calidad. El sistema de reservas online es muy práctico."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            CG
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Carlos Gómez</h4>
-                            <p class="text-gray-500 text-sm">Contratista</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <footer class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -485,5 +390,12 @@
 
 
 </body>
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('hidden');
+  }
+</script>
+
 
 </html>

@@ -14,8 +14,7 @@ def usecase_signing(dni, password, email, name, lastname, employee_number, db):
         )
     insert_user(
         dni,
-        user,
-        email
+        user
     )
     return True
 

@@ -9,7 +9,7 @@ def usecase_login(dni, password, db):
         raise Exception("La contraseña no puede estar vacía")
     
     session.get
-    user = db.get_user(dni)
+    user = db.get_user(dni) #esto no esta implementado
     user = json.loads(user)
     if password != user.get("password"):
         raise Exception()

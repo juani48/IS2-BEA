@@ -1,9 +1,9 @@
-from data.appDataBase import change_password,get_password
+from data.appDataBase import change_password,get_user
 
 
 def usecase_change_password (dni,password_Act, password_New_1 , password_New_2):
     
-    if (password_Act == get_password(dni)):
+    if (password_Act == get_user(dni)):
 
         if (len(password_New_1) < 8 and len(password_New_2) < 8):
 

@@ -1,8 +1,16 @@
+from datetime import datetime, timedelta
+import json
 from flask import Flask, jsonify, render_template, request
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from core.entity import User
+from data.appDataBase import get_user
+from flask import redirect # redirigir a mercado pago
+from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
-from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, GetAllMachinesByName
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
+from core.usecase.reserve import MachineReservations, AddReservation
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -12,6 +20,7 @@ from flask import flash
 
 
 app = Flask(__name__)
+
 app.secret_key = 'B3bQh7#2d@xZ!59sP0mT&vL'
 UPLOAD_FOLDER = 'static/image/users'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -65,9 +74,33 @@ def create_machine_with_image():
         return jsonify({"error": str(e)}), 400
 
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'load_login'  # Redirección si el usuario no está logueado
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_model = get_user(user_id)
+    return User(user_model) if user_model else None
+
+
 
 @app.route('/')
 def home():
+    #AddCategorie.usecase_add_categorie("categoria1")
+    #AddCategorie.usecase_add_categorie("categoria2")
+    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "", "")
+    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
+    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
+    # GetAllMachinesByFilter.usecase_get_all_machines_by(categorie_filter={"apply": True, "categorie": "categoria1"}, string_filer=request.get_json().get("string"),price_filter=request.get_json().get("price"),            mark_filter=request.get_json().get("mark"),            model_filter=request.get_json().get("model"))
+
+    # prueba de reservas
+    # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
+    
+    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
+    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
+    #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
+
     return render_template('/main.html')
 
 # ---- RENDERIZAR PAGINAS ---- #
@@ -96,6 +129,14 @@ def load_login():
 def load_reserve():
     return render_template("/reserve.html")
 
+@app.route("/prior_to_paying.html")
+def load_prior_to_paying():
+    return render_template("/prior_to_paying.html")
+
+@app.route("/successful_reservation.html")
+def load_successful_reservation():
+    return render_template("/successful_reservation.html")
+
 @app.route("/singin.html")
 def load_singin():
     return render_template("/singin.html")
@@ -114,72 +155,63 @@ def register_machine():
     return render_template("register_machinery.html")
 
 
-# ---- METODOS POST ---- #
+# ---- METODOS USUARIO ---- #
+
 
 @app.route("/login", methods=["POST"])
-def Logins():
-    dni = request.form["usuario"]
-    password = request.form["password"]
+def login():
+    request_value = request.get_json()
+    
+    if not request_value:
+        return jsonify({"error": "No se recibieron datos JSON"}), 400
 
-    Login.usecase_login(
-        dni=dni,
-        password=password,
-        db=appDataBase
-    )
-    return redirect(url_for("load_panelUsuario"))
-    #return "exito en inicio de sesión",204 # o return "", 204 si usás JS
+    dni = request_value.get("dni")
+    password = request_value.get("password")
 
+    if not dni or not password:
+        return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
+
+    try:
+        user = Auth.usecase_login(dni=dni, password=password)
+        login_user(user)
+
+        return jsonify({
+            "message": "Inicio de sesión exitoso",
+            "user": {
+                "dni": user.dni,
+                "name": user.name,
+                "lastname": user.lastname,
+                "email": user.email
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Sesión cerrada exitosamente"}), 200
 
 
 @app.route("/signin", methods=["POST"])
 def signin():
-    dni = request.form['dni']
-    password = request.form['password']
-    email = request.form['email']
-    name = request.form['name']
-    lastname = request.form['lastname']
-    #employee_number = request.form['employee_number'] numero de empleado???
-    dni_photo = request.files['dni_photo']  # ← nombre del campo en el HTML
-
-
-    # Ejecutar lógica de registro
-    try:
-        Signin.usecase_signing(
-            dni=dni,
-            password=password, #no deberia ir
-            email=email,
-            name=name,
-            lastname=lastname,
-            employee_number=80,
-            db=appDataBase
-        )
-    except Exception as e: 
-        flash(str(e))  # Manda el mensaje de error al template
-        return redirect(url_for("load_singin"))
-
-    # Guardar imagen
-    if dni_photo:
-        filename = secure_filename(f"{dni}_{lastname}.jpg") # Se guarda la imagen con el dni y el apellido 
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        dni_photo.save(filepath)
-    flash("Solicitud enviada. Tu cuenta está pendiente de confirmación.")
-    return redirect(url_for("load_login"))
-
-#@app.route("/signin", methods=["GET", "POST"])
-#def signin():
-#   request_value = request.get_json()
-#  Signin.usecase_signing(
-#     dni=request_value.get("dni"), 
-#       password=request_value.get("password"),
-#        email=request_value.get("email"),
-#        name=request_value.get("name"),
-#        lastname=request_value.get("lastname"),
-#        employee_number=request_value.get("employee_number"),
-#        db=appDataBase
-#    )
-#    return "", 204
+    request_value = request.get_json()
+    RequestUser.usecase_request_user(
+        dni=request_value.get("dni"), 
+        email=request_value.get("email"),
+        name=request_value.get("name"),
+        lastname=request_value.get("lastname"),
+        phone = request_value.get("phone"),
+        birthDate= request_value.get("birthDate"),
+        employee_number=request_value.get("employee_number"),
+    )
+    return "", 204
 
 @app.route("/user/update_user", methods=["PUT"])
+@login_required
 def update_user():
     request_value = request.get_json()
     UpdateUser.usecase_update_user(
@@ -191,6 +223,7 @@ def update_user():
     return "", 204
 
 @app.route("/user/change_password", methods=["PUT"])
+@login_required
 def change_password():
     request_value = request.get_json()
     ChangePassword(
@@ -201,24 +234,41 @@ def change_password():
     )
     return "", 204
 
-
-# ---- Maquinas ----
-
-@app.route("/machine/add_machine", methods=["GET", "POST"])
-def add_machine():
+@app.route("/admin/add_employee", methods=["PUT"])
+@login_required
+def add_employee():
     request_value = request.get_json()
-    AddMachine.usecase_add_machine(
-        patent=request_value.get("patent"),
-        mark=request_value.get("patent"),
-        model=request_value.get("model"),
-        price_day=request_value.get("price_day"),
-        ubication=request_value.get("ubication"),
-        refund=request_value.get("refund"),
-        categorie=request_value.get("categorie")
+    AddEmployee.usecase_add_employee(
+        name = request_value.get("name"),
+        lastname = request_value.get("lastname"),
+        dni = request_value.get("DNI"),
+        email = request_value.get("email"),
+        phone = request_value.get("phone"),
+        dateBirth = request_value.get("dateBirth"),
+        employeeN = request_value.get("employeeN")
     )
-    return "", 204
+    
+# ---- MAQUINAS ----
 
-@app.route("/machine/enable_machine", methods=["GET", "POST"])
+@app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE
+@login_required
+def add_machine():
+    try:
+        request_value = request.get_json()
+        AddMachine.usecase_add_machine(
+            patent=request_value.get("patent"),
+            mark=request_value.get("patent"),
+            model=request_value.get("model"),
+            price_day=request_value.get("price_day"),
+            ubication=request_value.get("ubication"),
+            refund=request_value.get("refund"),
+            categorie=request_value.get("categorie")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify( { "message": e } ), 404
+
+@app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
     request_value = request.get_json().get("patent")
     EnableMachine.usecase_enable_machine(patent=request_value)
@@ -230,34 +280,37 @@ def disable_machine():
     DisableMachine.usecase_disable_machine(patent=request_value)
     return "", 204
 
-@app.route("/machine/get_all", methods=["GET"])
+@app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 # verfificar si e snecesario el jsonify
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
 
-@app.route("/machine/get_all_name", methods=["GET", "POST"])
-def get_all_machines_name():
-    request_value = request.get_json().get("name")
-    return jsonify(GetAllMachinesByName.usecase_get_all_machines_by(name=request_value)), 200
 
-@app.route("/machine/get_all_filter", methods=["GET", "POST"])
+@app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
-    return GetAllMachinesByFilter.usecase_get_all_machines_by( 
-        categorie_filter=request.get_json().get("categoire"),
-        price_filter=request.get_json().get("price"),
-        mark_filter=request.get_json().get("mark"),
-        model_filter=request.get_json().get("model")), 200
-    # json del request = { "categorie": { "apply": Bool, "categorie": "string" }, ... }
-    
+    # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
 
-# ---- Categorias ----
+    try:
+        return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+            categorie_filter=request.get_json().get("categoire"),
+            string_filer=request.get_json().get("string"),
+            price_filter=request.get_json().get("price"),
+            mark_filter=request.get_json().get("mark"),
+            model_filter=request.get_json().get("model"))), 200
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])
+# ---- CATEGORIAS ----
+
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def add_categorie():
-    request_value = request.get_json()
-    AddCategorie.usecase_add_categorie(
-        categorie=request_value.get("categorie")
-    )
-    return "", 204
+    try:
+        request_value = request.get_json()
+        AddCategorie.usecase_add_categorie(
+            categorie=request_value.get("categorie")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 @app.route("/categorie/enable_categorie", methods=["GET", "POST"])
 def enable_categorie():
@@ -271,15 +324,65 @@ def disable_categorie():
     DisableCategorie.usecase_disable_categorie(categorie=request_value)
     return "", 204
 
-@app.route("/testMachine" ,methods=["GET"])
-def chargemachine():
-    AddMachine.usecase_add_machine(12345, "raptor", "700", 200, "la plata", 10, "categoria1")
-    return "",204
+# ---- RESERVAS ----
+
+@app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
+def machine_reservations():
+    
+    try:
+        request_value = request.get_json().get("machine_id")
+        return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # obtener reservas de una maquina
+def reserve_machine():
+
+    # fecha_hora = datetime.now()
+    # fecha_hora = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
+    # formate de las fechas
+
+    # now = datetime.now()
+    # date2 = now + timedelta(days=3)
+    # date2_1 = now + timedelta(days=4)
+    try:
+        print()
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 
-# --- MAIN ----
+# ---- PAGOS ---- # COMENTADO A DREDE
+
+@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # Metodo iniciado por el boton de 'reservar'
+def redirect_to_pay():
+    try:
+        #request_value = request.get_json()
+
+        #preference = AddReservation.usecase_add_reserve(
+            #start_day=request_value.get("start_day"),
+            #end_day=request_value.get("end_day"),
+            #client_id=request_value.get("client_id"),
+            #machine_id=request_value.get("machine_id"),
+            #shipment=request_value.get("shipment"),
+        #)
+
+        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+# RESPUESTAS DE PAGO
+
+@app.route("/pay/successful_payment", methods=["GET"]) # Llamar al caso de uso que confirme la reserva
+def successful_payment():
+    try:
+
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+# ---- MAIN ----
 
 if __name__ == '__main__':
     app.run(debug=True)
     appDataBase.create_database()
-    

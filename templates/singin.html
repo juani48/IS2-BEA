@@ -94,5 +94,38 @@
 
 </body>
 
+<script >
+    function singin(){
+        let dni = document.getElementById("singin-input-dni").value;
+        let password = document.getElementById("singin-input-password").value;
+        let email = document.getElementById("singin-input-email").value;
+        let name = document.getElementById("singin-input-name").value;
+        let lastname = document.getElementById("singin-input-lastname").value;
+        let employee_number = 0;
 
+        try{
+            fetch(
+                "/signin",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(
+                        {
+                            dni: dni,
+                            password: password,
+                            email: email,
+                            name: name,
+                            lastname: lastname,
+                            employee_number: employee_number
+                        }
+                    )
+                }
+            ).then(response =>  response.json());
+        }
+        catch (error){
+                console.error("Error: ", error.message);
+        }
+        
+    }
+</script>
 </html>

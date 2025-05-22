@@ -182,6 +182,13 @@
         Confirmar Reserva
       </button>
     </form>
+
+    <!-- JUANI AGREGO EL BOTON -->
+        <h1 class="text-3xl font-bold text-center mb-6" >IR A PAGAR</h1>
+        <a href="./prior_to_paying.html">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</a>
+        <button onclick="loadLink()" >BBBBBBBBBBBBBBBBBBBBBBBBBBB</button>
+        <!-- JUANI AGREGO EL BOTON -->
+
     </main>
 
     <script>
@@ -295,4 +302,25 @@
         });
     </script>
   </body>
+  <script >
+
+    // CODIGO QUE AGREGO JUANI PARA REDIRIGIR A MERCADO PAGO
+    function loadLink(){
+      fetch("/pay/redirect_to_pay",
+        
+      )
+      .then(response => { 
+        if(!response.ok){
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();  
+      })
+      .then( preference => {
+        console.log("preference", preference)
+        window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
+      })
+      .catch(error => { console.log("Error: ", "error") });
+    }
+    //src="{{ url_for('static', filename='script/scripts.js') }}"
+  </script>
 </html>

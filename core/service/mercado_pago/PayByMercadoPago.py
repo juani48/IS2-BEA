@@ -1,32 +1,20 @@
-from core.service.mercado_pago.config import make_preferences
+from core.service.mercado_pago.config import make_preferences, make_preferences_test
 
-def execute(request_value):
+def execute(machine_id, machine_model, unit_price):
+    return make_preferences(machine_id, machine_model, unit_price)
 
-    # Buscar como se realizar las operaciones de fechas
-    days = (request_value.get("start_day") - request_value.get("end_day")).days
-    unit_price = days * request_value.get("price_day")
+def execute():
+    return make_preferences_test()
 
-    preference = make_preferences(
-        start_day=request_value.get("start_day"),
-        end_day=request_value.get("end_day"),
-        client_id=request_value.get("client_id"),
-        machine_id=request_value.get("machine_id"),
-        shipment=request_value.get("shipment"),
-        unit_price=unit_price
-    )
-    return preference["init_point"]  # URL de Mercado Pago
 
-#
-# from datetime import datetime
-
-# Definir fechas
-#fecha1 = datetime.strptime("2021-12-25", "%Y-%m-%d")
-#fecha2 = datetime.strptime("2021-12-31", "%Y-%m-%d")
-
-# Calcular la diferencia
-#diferencia = fecha2 - fecha1
-#print(f"La diferencia es de {diferencia.days} días")
-# 
-# 
-# 
-# 
+# collection_id=112006940331
+# collection_status=approved
+# payment_id=112006940331
+# status=approved
+# external_reference=null
+# payment_type=account_money
+# merchant_order_id=31207000692
+# preference_id=2447327823-f9f12169-6453-46c2-a318-6f1bbc32e1f6
+# site_id=MLA
+# processing_mode=aggregator
+# merchant_account_id=null

@@ -187,8 +187,8 @@
           id="comments"
           rows="3"
           class="w-full border p-2 rounded"
-        ></textarea>
-
+        ></textarea>     
+        
         <button
           type="submit"
           class="w-full bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded"
@@ -196,7 +196,14 @@
           Confirmar Reserva
         </button>
       </form>
-    </section>
+
+      <!-- JUANI AGREGO EL BOTON -->
+        <h1 class="text-3xl font-bold text-center mb-6" >IR A PAGAR</h1>
+        <a href="./prior_to_paying.html">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</a>
+        <button onclick="loadLink()" >BBBBBBBBBBBBBBBBBBBBBBBBBBB</button>
+        <!-- JUANI AGREGO EL BOTON -->
+
+    </script>
 
     <!-- Modal de confirmación -->
     <div
@@ -347,7 +354,26 @@
         </div>
       </div>
     </footer>
-
-    <script src="{{ url_for('static', filename='script/scripts.js') }}"></script>
   </body>
+  <script >
+
+    // CODIGO QUE AGREGO JUANI PARA REDIRIGIR A MERCADO PAGO
+    function loadLink(){
+      fetch("/pay/redirect_to_pay",
+        
+      )
+      .then(response => { 
+        if(!response.ok){
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();  
+      })
+      .then( preference => {
+        console.log("preference", preference)
+        window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
+      })
+      .catch(error => { console.log("Error: ", "error") });
+    }
+    //src="{{ url_for('static', filename='script/scripts.js') }}"
+  </script>
 </html>

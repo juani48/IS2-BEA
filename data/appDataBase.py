@@ -13,7 +13,7 @@ from data.query.update import query_update_machine, query_update_user
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_password_user
+from data.query.get import query_get_password_user, query_get_machine
 
 def create_database():
     if (not os.path.isfile("///db/database.db")):
@@ -63,6 +63,9 @@ def change_password(dni,password):
 # ----   get  -----
 def get_password (dni):
     return query_get_password_user.execute(dni)
+
+def get_machine(machine_id):
+    return query_get_machine.execute(machine_id)
 
 # ---- get all ----
 def get_all_users():

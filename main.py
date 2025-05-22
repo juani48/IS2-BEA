@@ -19,7 +19,7 @@ def home():
     #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "", "")
     #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
     #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
-    #print(GetAllMachinesByName.usecase_get_all_machines_by("ciona"))
+    # GetAllMachinesByFilter.usecase_get_all_machines_by(categorie_filter={"apply": True, "categorie": "categoria1"}, string_filer=request.get_json().get("string"),price_filter=request.get_json().get("price"),            mark_filter=request.get_json().get("mark"),            model_filter=request.get_json().get("model"))
 
     # prueba de reservas
     # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
@@ -51,6 +51,14 @@ def load_singin():
 @app.route("/reserve.html")
 def load_reserve():
     return render_template("/reserve.html")
+
+@app.route("/prior_to_paying.html")
+def load_prior_to_paying():
+    return render_template("/prior_to_paying.html")
+
+@app.route("/successful_reservation.html")
+def load_successful_reservation():
+    return render_template("/successful_reservation.html")
 
 # ---- METODOS USUARIO ---- #
 
@@ -209,29 +217,32 @@ def reserve_machine():
 
 # ---- PAGOS ---- # COMENTADO A DREDE
 
-@app.route("/pay/redirect_to_pay", methods=["GET"]) # Metodo iniciado por el boton de 'reservar'
+@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # Metodo iniciado por el boton de 'reservar'
 def redirect_to_pay():
     try:
-        url = PayByMercadoPago.execute(request.get_json())
-        
-        return redirect(url) # redirige al pago via mercado pago
+        #request_value = request.get_json()
+
+        #preference = AddReservation.usecase_add_reserve(
+            #start_day=request_value.get("start_day"),
+            #end_day=request_value.get("end_day"),
+            #client_id=request_value.get("client_id"),
+            #machine_id=request_value.get("machine_id"),
+            #shipment=request_value.get("shipment"),
+        #)
+
+        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
     except Exception as e:
         return jsonify({ "message": e }), 404
 
 # RESPUESTAS DE PAGO
 
-#@app.route("/pago-exitoso") # Con mi ejemplo de url esto queda "/pay/successful_payment" // Llamar al caso de uso que realiza la alta de reserva
-#def pago_exitoso():
-    payment_id = request.args.get("payment_id")
-    
-    # Verificar el estado del pago
-    payment_info = sdk.payment().get(payment_id)
-    status = payment_info["response"]["status"]
-    
-    if status == "approved":
-        return "¡Pago exitoso!"
-    else:
-        return "Pago pendiente o rechazado"
+@app.route("/pay/successful_payment", methods=["GET"]) # Llamar al caso de uso que confirme la reserva
+def successful_payment():
+    try:
+
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 # ---- MAIN ----
 

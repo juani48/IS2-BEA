@@ -13,9 +13,10 @@ class ReservationModel(Base):
    shipment = Column(Boolean, nullable=False) # Envio
    activate = Column(Boolean, nullable=False) # Activa
    employee_id = Column(String, nullable=True) # Cuando se activa, se guarda el id empleado que activo
+   paid = Column(Boolean, default=False) # Cuando es pagada, es puesto en true
 
    def __repr__(self):
-      return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, total_value:{self.total_value}, shipment:{self.shipment}, activate:{self.activate}, employee_id:{self.employee_id}""" + "}"
+      return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, total_value:{self.total_value}, shipment:{self.shipment}, activate:{self.activate}, employee_id:{self.employee_id}, paid: {self.paid}""" + "}"
 
    def json(self):
       return {
@@ -26,7 +27,8 @@ class ReservationModel(Base):
          "total_value": self.total_value,
          "shipment": self.shipment,
          "activate": self.activate,
-         "employee_id": self.employee_id
+         "employee_id": self.employee_id,
+         "paid": self.paid
       }
    
    def json_days(self):
@@ -44,3 +46,4 @@ class ReservationModel(Base):
       self.shipment = shipment
       self.activate = False
       self.employee_id = None
+      self.paid = False

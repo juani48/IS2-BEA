@@ -1,16 +1,29 @@
 from datetime import datetime, timedelta
 import json
 from flask import Flask, jsonify, render_template, request
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from core.entity import User
+from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
-from core.usecase.user import Login, Signin, UpdateUser,ChangePassword
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from core.usecase.reserve import MachineReservations, AddReservation
 from templates import *
 
-app = Flask(__name__)	
+app = Flask(__name__)
+app.secret_key = 'clave_secreta_segura'  # Necesario para las sesiones
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'load_login'  # Redirección si el usuario no está logueado
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_model = get_user(user_id)
+    return User(user_model) if user_model else None
 
 @app.route('/')
 def home():
@@ -62,15 +75,43 @@ def load_successful_reservation():
 
 # ---- METODOS USUARIO ---- #
 
-@app.route("/login", methods=["GET", "POST"])
-def Login():
+
+@app.route("/login", methods=["POST"])
+def login():
     request_value = request.get_json()
-    Login.usecase_login(
-        dni=request_value.get("dni"), 
-        password=request_value.get("password"),
-        db=appDataBase
-    )
-    return "", 204
+    
+    if not request_value:
+        return jsonify({"error": "No se recibieron datos JSON"}), 400
+
+    dni = request_value.get("dni")
+    password = request_value.get("password")
+
+    if not dni or not password:
+        return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
+
+    try:
+        user = Auth.usecase_login(dni=dni, password=password)
+        login_user(user)
+
+        return jsonify({
+            "message": "Inicio de sesión exitoso",
+            "user": {
+                "dni": user.dni,
+                "name": user.name,
+                "lastname": user.lastname,
+                "email": user.email
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Sesión cerrada exitosamente"}), 200
 
 @app.route("/load_signin")
 def load_signin():
@@ -79,18 +120,19 @@ def load_signin():
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
     request_value = request.get_json()
-    Signin.usecase_signing(
+    RequestUser.usecase_request_user(
         dni=request_value.get("dni"), 
-        password=request_value.get("password"),
         email=request_value.get("email"),
         name=request_value.get("name"),
         lastname=request_value.get("lastname"),
+        phone = request_value.get("phone"),
+        birthDate= request_value.get("birthDate"),
         employee_number=request_value.get("employee_number"),
-        db=appDataBase
     )
     return "", 204
 
 @app.route("/user/update_user", methods=["PUT"])
+@login_required
 def update_user():
     request_value = request.get_json()
     UpdateUser.usecase_update_user(
@@ -102,6 +144,7 @@ def update_user():
     return "", 204
 
 @app.route("/user/change_password", methods=["PUT"])
+@login_required
 def change_password():
     request_value = request.get_json()
     ChangePassword(
@@ -112,9 +155,24 @@ def change_password():
     )
     return "", 204
 
+@app.route("/admin/add_employee", methods=["PUT"])
+@login_required
+def add_employee():
+    request_value = request.get_json()
+    AddEmployee.usecase_add_employee(
+        name = request_value.get("name"),
+        lastname = request_value.get("lastname"),
+        dni = request_value.get("DNI"),
+        email = request_value.get("email"),
+        phone = request_value.get("phone"),
+        dateBirth = request_value.get("dateBirth"),
+        employeeN = request_value.get("employeeN")
+    )
+    
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE
+@login_required
 def add_machine():
     try:
         request_value = request.get_json()

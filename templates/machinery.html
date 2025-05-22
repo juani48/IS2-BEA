@@ -2,17 +2,18 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
-  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maquinarias - Bob el Alquilador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+
 </head>
+
 
 <body class="bg-gray-100 text-gray-900">
   <!-- Header -->
@@ -49,84 +50,39 @@
     </div>
 
     <!-- Navigation debajo, 100% ancho -->
-    <nav class="main-nav w-full">
-      <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-        <li><a href="main.html">Menú</a></li>
-        <li>
-          <a href="machinery.html">Maquinarias</a> <!-- onclick="getMachine()" no funciona si no son botones -->
-        </li>
-        <li><a href="#categorias">Categorías</a></li>
-        <li><a href="#">Palabra</a></li>
-        <li><a href="#">Preguntas Frecuentes</a></li>
-        <li><a href="#contacto">Contáctanos</a></li>
-      </ul>
-    </nav>
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
+                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
 
-    <!-- Mobile Navigation Menu -->
-    <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-      <ul class="flex flex-col space-y-3">
-        <li>
-          <a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a>
-        </li>
-        <li>
-          <a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a>
-        </li>
-        <li>
-          <a href="#categorias" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a>
-        </li>
-        <li>
-          <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Mi Cuenta</a>
-        </li>
-        <li>
-          <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a>
-        </li>
-        <li>
-          <a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a>
-        </li>
-      </ul>
-    </div>
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
   </header>
 
-  <!-- Listado de maquinarias -->
-  <main class="container mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold mb-6 text-center">Nuestras máquinas</h1>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+  
+  <!-- CONTENEDOR DE LAS TARJETAS 
+<div id="machine-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 px-4 py-8"></div> -->
+<div id="machine-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"></div>
 
-      <!-- Maquinaria 1 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/cargadora-frontal.jpg') }}" alt="Excavadora Compacta" class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Excavadora Compacta</h2>
-        <p class="text-gray-600 mt-2">
-          Ideal para trabajos urbanos y excavaciones pequeñas.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
-      </div>
 
-      <!-- Maquinaria 2 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/digger-gf2d8e1c66_1280.jpg') }}" alt="Retroexcavadora Industrial"
-          class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Retroexcavadora Industrial</h2>
-        <p class="text-gray-600 mt-2">
-          Potente y versátil para grandes obras.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
-      </div>
 
-      <!-- Maquinaria 3 -->
-      <div class="bg-white rounded-lg shadow-md p-4">
-        <img src="{{ url_for('static', filename='image/dump-truck.jpg') }}" alt="Minicargadora Versátil" class="w-full h-48 object-cover rounded" />
-        <h2 class="text-xl font-semibold mt-4">Minicargadora Versátil</h2>
-        <p class="text-gray-600 mt-2">
-          Compacta y eficiente en espacios reducidos.
-        </p>
-        <a href="reserve.html"
-          class="mt-4 inline-block bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red transition">Reservar</a>
-      </div>
-    </div>
-  </main>
+<!-- PAGINADO -->
+<div id="pagination" class="flex justify-center flex-wrap mt-6 mb-12 gap-2"></div>
 
   <!-- Footer -->
   <footer id="contacto" class="bg-bob-dark-red text-white py-12">
@@ -212,27 +168,125 @@
       </div>
     </div>
   </footer>
+
 </body>
 
 <script>
-  // Ejecutar fetch cuando la página se cargue
-  document.addEventListener('DOMContentLoaded', getMachine())
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.getElementById("machine-list");
+  const pagination = document.getElementById("pagination");
+  const cardsPerPage = 9;
+  let currentPage = 1;
+  let machines = [];
 
-  function getMachine() {
-    console.log("Enter in method");
+  fetch("/machine/get_all")
+    .then((response) => response.json())
+    .then((data) => {
+      machines = data.value;
+      renderPage(currentPage);
+      renderPagination();
+    })
+    .catch((error) => {
+      container.innerHTML = '<p class="text-red-600 text-center font-bold mt-4">Error al cargar las máquinas.</p>';
+      console.error("Error al cargar:", error);
+    });
 
-      fetch("/machine/get_all")
-      .then(response => { 
-        if(!response.ok) {
-          console.log("Enter in method 2");
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      }) 
-      .then(data => { console.log("Datos:", data) })
-      .catch(error => { console.log("Error: ", "error") });
+  function renderPage(page) {
+    container.innerHTML = "";
+    const start = (page - 1) * cardsPerPage;
+    const end = start + cardsPerPage;
+    const items = machines.slice(start, end);
 
+    items.forEach((machine) => {
+      const normalizedPatent = machine.patent.replace(/\s+/g, "_");  // reemplaza espacios por guiones bajos
+      const imageSrc = `/static/image/machines/${normalizedPatent}.jpg`;
+
+
+  const card = `
+  <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
+
+    <!-- Imagen cuadrada -->
+    <div class="w-full aspect-square overflow-hidden">
+      <img src="${imageSrc}"
+           onerror="this.src='/static/image/machines/default.png'"
+           alt="Imagen de ${machine.model}"
+           class="w-full h-full object-cover" />
+    </div>
+
+    <!-- Texto dentro del cuadrado -->
+    <div class="flex-grow p-2 text-center flex flex-col justify-between">
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
+        <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
+        <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
+      </div>
+      <a href="/reserve.html?machine_id=${machine.patent}"
+         class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
+         Reservar
+      </a>
+    </div>
+
+  </div>
+`;
+
+
+
+
+
+      container.innerHTML += card;
+    });
   }
+
+  function renderPagination() {
+    const totalPages = Math.ceil(machines.length / cardsPerPage);
+    pagination.innerHTML = "";
+
+    // Anterior
+    const prev = document.createElement("button");
+    prev.textContent = "‹ Anterior";
+    prev.disabled = currentPage === 1;
+    prev.className = "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
+    prev.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+        renderPagination();
+      }
+    };
+    pagination.appendChild(prev);
+
+    // Botones de página
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className =
+        "px-3 py-1 rounded border " +
+        (i === currentPage ? "bg-red-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200");
+      btn.onclick = () => {
+        currentPage = i;
+        renderPage(currentPage);
+        renderPagination();
+      };
+      pagination.appendChild(btn);
+    }
+
+    // Siguiente
+    const next = document.createElement("button");
+    next.textContent = "Siguiente ›";
+    next.disabled = currentPage === totalPages;
+    next.className = "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
+    next.onclick = () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderPage(currentPage);
+        renderPagination();
+      }
+    };
+    pagination.appendChild(next);
+  }
+});
 </script>
+
+
 
 </html>

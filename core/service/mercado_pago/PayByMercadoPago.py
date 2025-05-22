@@ -7,6 +7,9 @@ def execute():
     return make_preferences_test()
 
 
+
+# url de vuelta 
+
 # collection_id=112006940331
 # collection_status=approved
 # payment_id=112006940331

@@ -157,8 +157,7 @@ def register_machine():
 
 # ---- METODOS USUARIO ---- #
 
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
     
     #request_value = request.get_json()

@@ -7,6 +7,8 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
 
     if(description == ""):
         description = None
+    if image == "":
+        image = None
 
     machine = MachineModel(
         patent=patent,

@@ -160,7 +160,7 @@ def register_machine():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    return jsonify({"SI": "HOLAS"}), 204
+    
     #request_value = request.get_json()
     
    # if not request_value:
@@ -186,6 +186,20 @@ def login():
     #    }), 200
    # except Exception as e:
     #    return jsonify({"error": str(e)}), 401
+    try:
+        data = request.get_json()
+        user = Auth.usecase_login(dni=data['dni'], password=data['password'])  #<<------------------------------------------------------------
+        return jsonify({
+            "user": {
+                "dni": user.dni,
+                "name": user.name,
+                "lastname": user.lastname,
+                "email": user.email
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
 
 
 @app.route("/logout", methods=["GET"])

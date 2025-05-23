@@ -41,17 +41,17 @@
 
         <!-- MI CUENTA (usuario logueado) -->
         <div class="relative">
-                <button onclick="toggleDropdown()"
-                    class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                    <i class="fas fa-user text-lg"></i>
-                    <span class="text-sm font-semibold tracking-wide">{{ usuario_nombre }}</span>
-                </button>
+            <button onclick="toggleDropdown()"
+                class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+                <i class="fas fa-user text-lg"></i>
+                <span id="userNameDisplay" class="text-sm font-semibold tracking-wide">Cargando...</span>
+            </button>
 
-            <!-- Dropdown -->     <!--PONER LAS HREF BIEN, ESAS NO EXISTEN-->
+            <!-- Dropdown -->
             <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
                 <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
                 <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
-                <button onclick="window.location.href='/logout'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
             </div>
         </div>
     </div>
@@ -84,25 +84,6 @@
             </div>
         </div>
     </section>
-
-
-    <!--Pasar esto a un archivo js-->
-    <script>
-        const zoomElement = document.getElementById('hero-zoom');
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxZoomOut = 0.9; // 90% tamaño
-            const maxScroll = 300; // hasta dónde empieza a escalar
-
-            // calcular cuánto scroll proporcionalmente 
-            let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
-            if (scale < maxZoomOut) scale = maxZoomOut;
-            if (scale > 1) scale = 1;
-
-            zoomElement.style.transform = `scale(${scale})`;
-        });
-    </script>
     </section>
 
     <!-- Featured Machines -->
@@ -386,16 +367,60 @@
             © 2025 Bob El Alquilador. Todos los derechos reservados.
         </div>
     </footer>
-
-
-
 </body>
 <script>
-  function toggleDropdown() {
-    const dropdown = document.getElementById('userDropdown');
-    dropdown.classList.toggle('hidden');
-  }
+    const zoomElement = document.getElementById('hero-zoom');
+
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const maxZoomOut = 0.9; // 90% tamaño
+        const maxScroll = 300; // hasta dónde empieza a escalar
+
+        // calcular cuánto scroll proporcionalmente 
+        let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
+        if (scale < maxZoomOut) scale = maxZoomOut;
+        if (scale > 1) scale = 1;
+
+        zoomElement.style.transform = `scale(${scale})`;
+    });
+ 
+    function toggleDropdown() {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+
+    // Obtener datos del usuario de la memoria del navegador                      <<-------------------------------------------------------------------
+    const userData = JSON.parse(localStorage.getItem('user'));
+
+    // Función para mostrar los datos del usuario
+    function displayUserData() {
+        if (userData) {
+            // Reemplazar {{ usuario_nombre }} con el nombre real
+            const userNameElement = document.querySelector('.relative button span');
+            if (userNameElement) {
+                userNameElement.textContent = userData.name;
+            }
+        } else {
+            // Si no hay datos de usuario, redirigir al login
+            window.location.href = '/login.html';
+        }
+    }
+
+    // Llamar a la función cuando la página cargue
+    document.addEventListener('DOMContentLoaded', displayUserData);
+    //---------------------------------
+
+    function logout() {
+        // Eliminar datos de usuario del almacenamiento
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+        
+        // Opcional: hacer logout también en el servidor
+        fetch('/logout', { method: 'POST' })
+            .then(() => {
+                window.location.href = '/login.html';
+            });
+    }
 </script>
-
-
 </html>

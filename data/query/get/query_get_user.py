@@ -3,9 +3,9 @@ from data.model.UserModel import UserModel
 
 
 def execute (dni):
-    
-    if (dni != 0):
-        local_user = session.get(UserModel,dni)
+    local_user = session.query(UserModel).filter(UserModel.dni == dni).first()
+    #if local_user == None:
+        #raise Exception("Ya existe la cuenta.")
     #else:
         #local_user = session.get(UserModel,email)
 

@@ -1,4 +1,5 @@
 function login(){
+    
     var dni = document.getElementById("login-input-dni")
     var password = document.getElementById("login-inpunt-password")
 
@@ -14,5 +15,6 @@ function login(){
                 }
             )
         }
-    ).then(response => response.json())
+    )
 }
+

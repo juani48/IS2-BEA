@@ -22,17 +22,17 @@ from flask import flash
 app = Flask(__name__)
 
 app.secret_key = 'B3bQh7#2d@xZ!59sP0mT&vL'
-UPLOAD_FOLDER = 'static/image/users'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)	
+UPLOAD_FOLDER_USER = 'static/image/users'
+app.config['UPLOAD_FOLDER_USER'] = UPLOAD_FOLDER_USER
+os.makedirs(UPLOAD_FOLDER_USER, exist_ok=True)	
 
 import os
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = 'static/images/machine'
+UPLOAD_FOLDER_MACHINE = 'static/image/machine'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # crea la carpeta si no existe
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER_MACHINE, exist_ok=True)  # crea la carpeta si no existe
+app.config['UPLOAD_FOLDER_MACHINE'] = UPLOAD_FOLDER_MACHINE
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -158,35 +158,36 @@ def register_machine():
 # ---- METODOS USUARIO ---- #
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    request_value = request.get_json()
+    print("SI")
+    #request_value = request.get_json()
     
-    if not request_value:
-        return jsonify({"error": "No se recibieron datos JSON"}), 400
+    #if not request_value:
+       # return jsonify({"error": "No se recibieron datos JSON"}), 400
 
-    dni = request_value.get("dni")
-    password = request_value.get("password")
+   # dni = request_value.get("dni")
+   # password = request_value.get("password")
 
-    if not dni or not password:
-        return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
+   # if not dni or not password:
+   #     return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
+#
+    #try:
+        #user = Auth.usecase_login(dni=dni, password=password)
+        #login_user(user)
 
-    try:
-        user = Auth.usecase_login(dni=dni, password=password)
-        login_user(user)
-
-        return jsonify({
-            "message": "Inicio de sesión exitoso",
-            "user": {
-                "dni": user.dni,
-                "name": user.name,
-                "lastname": user.lastname,
-                "email": user.email
-            }
-        }), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 401
+        #return jsonify({
+        #    "message": "Inicio de sesión exitoso",
+        #    "user": {
+        #        "dni": user.dni,
+        #        "name": user.name,
+        #        "lastname": user.lastname,
+        #        "email": user.email
+        #    }
+        #}), 200
+    return redirect (url_for("load_panelUsuario"))
+    #except Exception as e:
+        #return jsonify({"error": str(e)}), 401
 
 
 @app.route("/logout", methods=["GET"])
@@ -212,9 +213,9 @@ def signin():
 
         if dni_photo:
             filename = secure_filename(f"{dni}_{lastname}.jpg")
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER_USER'], filename)
             dni_photo.save(filepath)
-            relative_path = f"{app.config['UPLOAD_FOLDER']}/{filename}"
+            relative_path = f"{app.config['UPLOAD_FOLDER_USER']}/{filename}"
         else:
             relative_path = None
         flash("Solicitud pendiente de confirmación")

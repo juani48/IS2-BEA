@@ -97,7 +97,7 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form action="/login" method="POST" class="space-y-5">
+    <form action="/login" method="POST" class="space-y-5" id="login-form">
       <div>
         <label for="usuario" class="block text-sm font-medium text-gray-700">DNI</label>
         <input type="text" id="usuario" name="usuario" required
@@ -188,4 +188,5 @@
 
 
 </body>
+
 </html>

@@ -1,43 +1,62 @@
 from core.usecase.service import SendMail
 from core.usecase.user import Signin
-from data.appDataBase import get_user
+from data.model.UserModel import UserModel
+from data.appDataBase import get_user, TEST_USER
 from datetime import datetime, date
 import secrets
 import string
+import bcrypt
 
 def usecase_request_user(dni, email, name, lastname, phone, birthDate, terms_accepted):
     _validator(dni, email, name, lastname, birthDate, 18, terms_accepted)
 
-    dni_str = str(dni)
+    #dni_str = str(dni)
 
-    user_by_dni = get_user(dni)
-    if user_by_dni is not None:
-        raise Exception("DNI ya registrado")
+    #user_by_dni = get_user(dni)
+    #if user_by_dni is not None:
+    #    raise Exception("DNI ya registrado")
 
     #user_by_email = get_user(0, email)
     #if user_by_email is not None:
     #    raise Exception("Email ya registrado")
 
-    SendMail.usecase_send_mail(
-        emailDest=email,
-        subject="Solicitud de registro",
-        body=f"""
-            Hola equipo,
+    #SendMail.usecase_send_mail(
+        #emailDest=email,
+        #subject="Solicitud de registro",
+        #body=f"""
+            #Hola equipo,
 
-            Se ha recibido una nueva solicitud de registro por parte de un usuario con DNI: {dni_str}
+            #Se ha recibido una nueva solicitud de registro por parte de un usuario con DNI: {dni_str}
 
-            Por favor, ingrese al sistema para revisar y aprobar o rechazar el registro según corresponda.
+            #Por favor, ingrese al sistema para revisar y aprobar o rechazar el registro según corresponda.
 
-            Gracias y saludos,
-            Sistema de Gestión BEA
-        """
-    )
+            #Gracias y saludos,
+            #Sistema de Gestión BEA
+        #"""
+    #)
+
+    
 
     password = _random_password()
 
-    Signin.usecase_signing(dni, password, email, name, lastname, phone)
+    user = UserModel(
+        dni=dni,
+        email=email,
+        name=name,
+        lastname=lastname,
+        password=password,
+        phone=phone,
+        birth_date=birthDate
+    )
 
-    return True
+    #user = UserModel(dni=1, email="email", name="name", lastname="lastname", password="password", phone=1234, birth_date="fecha")
+
+    TEST_USER(dni=dni, user=user)
+
+
+    #Signin.usecase_signing(dni, password, email, name, lastname, phone, birthDate)
+
+    #return True
 
 def _validator(dni, email, name, lastname, birth_date_str, minimum_age, terms_accepted):
     required_fields = {

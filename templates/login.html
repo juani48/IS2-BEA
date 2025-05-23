@@ -97,24 +97,24 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form action="/login" method="POST" class="space-y-5" id="login-form">
-      <div>
-        <label for="usuario" class="block text-sm font-medium text-gray-700">DNI</label>
-        <input type="text" id="usuario" name="usuario" required 
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-      </div>
+    <form id="login-form" class="space-y-5">  <!-- Quitamos action/method -->
+  <div>
+    <label for="login-input-dni" class="block text-sm font-medium text-gray-700">DNI</label>
+    <input type="text" id="login-input-dni" required
+           class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+  </div>
 
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-        <input type="password" id="password" name="password" required
-          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-      </div>
+  <div>
+    <label for="login-input-password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+    <input type="password" id="login-input-password" required
+           class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+  </div>
 
-      <button type="submit"
+  <button type="submit"
           class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
-        Ingresar
-      </button>
-    </form>
+    Ingresar
+  </button>
+</form>
 
     <p class="mt-4 text-center text-sm text-gray-600">
       ¿No tenés cuenta? <a href="singin.html" class="text-red-500 hover:underline">Registrate</a>
@@ -123,13 +123,6 @@
       ¿Olvidaste tu contraseña? <a href="recuperarContraseña.html" class="text-red-500 hover:underline">Recuperala</a>
     </p>
   </div>
-<script>
-  setTimeout(() => {
-    const alert = document.querySelector(".bg-green-100");
-    if (alert) alert.remove();
-  }, 4000); // se borra a los 4 segundos
-</script>
-
 </main>
 
 <footer class="bg-bob-dark-red text-white py-10">
@@ -185,8 +178,60 @@
             © 2025 Bob El Alquilador. Todos los derechos reservados.
         </div>
     </footer>
-
-
 </body>
+<script>
+  setTimeout(() => {
+    const alert = document.querySelector(".bg-green-100");
+    if (alert) alert.remove();
+  }, 4000); // se borra a los 4 segundos
 
+  document.getElementById("login-form").addEventListener("submit", function(event) {  //<--------------------------------------------------------------------------------
+        event.preventDefault();
+        
+        const dni = document.getElementById("login-input-dni").value;
+        const password = document.getElementById("login-input-password").value;
+
+        // Mostrar loader (opcional)
+        const button = event.target.querySelector('button[type="submit"]');
+        const originalText = button.textContent;
+        button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Ingresando...';
+        button.disabled = true;
+
+        fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ dni, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.status === 401 ? "Credenciales incorrectas" : "Error del servidor");
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Redirigir después de login exitoso
+            localStorage.setItem('user', JSON.stringify(data.user));
+            console.log("info guardada");
+            window.location.href = "/panelUsuario.html";  // Ajusta esta ruta
+        })
+        .catch(error => {
+            // Mostrar error al usuario
+            const errorElement = document.createElement('p');
+            errorElement.className = 'mt-2 text-center text-sm text-red-600';
+            errorElement.textContent = error.message;
+            
+            // Limpiar errores anteriores
+            const existingError = document.querySelector('.login-error');
+            if (existingError) existingError.remove();
+            
+            errorElement.classList.add('login-error');
+            event.target.appendChild(errorElement);
+        })
+        .finally(() => {
+            // Restaurar botón
+            button.textContent = originalText;
+            button.disabled = false;
+        });
+    });
+</script>
 </html>

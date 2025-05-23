@@ -157,36 +157,25 @@ def register_machine():
 
 # ---- METODOS USUARIO ---- #
 
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    return jsonify({"SI": "HOLAS"}), 204
-    #request_value = request.get_json()
+    try:
+        data = request.get_json()
+        user = Auth.usecase_login(dni=data['dni'], password=data['password'])  #<<------------------------------------------------------------
+        return jsonify({
+            "user": {
+                "dni": user.dni,
+                "name": user.name,
+                "lastname": user.lastname,
+                "email": user.email
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
+
+
     
-   # if not request_value:
-    #    return jsonify({"error": "No se recibieron datos JSON"}), 400
-
-    #dni = request_value.get("dni")
-    #password = request_value.get("password")
-
-    #if not dni or not password:
-    #    return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
-
-    #try:
-    #    user = Auth.usecase_login(dni=dni, password=password)
-    #    login_user(user)
-#
-    #    return jsonify({
-    #        "user": {
-    #            "dni": user.dni,
-     #           "name": user.name,
-    #            "lastname": user.lastname,
-    #            "email": user.email
-     #       }
-    #    }), 200
-   # except Exception as e:
-    #    return jsonify({"error": str(e)}), 401
-
 
 @app.route("/logout", methods=["GET"])
 @login_required

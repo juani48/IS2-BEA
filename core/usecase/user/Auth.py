@@ -11,10 +11,14 @@ def usecase_login(dni, password):
         raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
 
     if password == user_model.password:
-        user = User(user_model)
-        login_user(user)
-        return user
-
+        #user = User(user_model)
+        #if user is None:
+        #    raise Exception("Usuario null.")
+        #login_user(user)
+        return user_model #retorno directamente la clase Usuario modelo      <<-----------------------------------------------------------------------
+    else:
+        raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
+    
     #if bcrypt.checkpw(password, user_model.password):
         #user = User(user_model)
         #login_user(user)

@@ -12,8 +12,12 @@ class MachineModel(Base):
     refund = Column(Double, nullable=False) # reembolso
     disable = Column(Boolean, nullable=False, default=False)
 
+    description = Column(String, nullable=True)
+    
+    # stock?
+
     def __repr__(self):
-        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}""" + "}"
+        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}, description: {self.description}, image: {self.image}""" + "}"
 
     def json(self):
         return {
@@ -23,14 +27,19 @@ class MachineModel(Base):
             "price_day": self.price_day,
             "ubication": self.ubication,
             "refund": self.refund,
-            "disable": self.disable 
+            "disable": self.disable,
+            "description": self.description,
+            "image": self.image
         }
     
     def include(self, string):
-        string = string.lower()
-        return string in self.patent.lower() | string in self.mark.lower() | string in self.model.lower() | string in self.ubication.lower()
+        str = string.lower()
+        desc = ""
+        if (self.description != None):
+            desc = self.description
+        return (str in self.patent.lower() or str in self.mark.lower() or str in self.model.lower() or str in self.ubication.lower() or str in desc)
 
-    def __init__(self, patent, mark, model, price_day, ubication, refund):
+    def __init__(self, patent, mark, model, price_day, ubication, refund, description, image):
         self.patent = patent
         self.mark = mark
         self.model = model
@@ -38,3 +47,5 @@ class MachineModel(Base):
         self.ubication = ubication
         self.refund = refund
         self.disable = False
+        self.description = description
+        self.image = image

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dar de alta una maquinaria - Bob el Alquilador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="main.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
+                        class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                    <input type="text" placeholder="Buscar maquinaria..."
+                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MI CUENTA -->
+            <a href="login.html"
+                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+                <!-- Ícono normal -->
+                <i class="fas fa-user text-lg group-hover:hidden"></i>
+                <!-- Ícono alternativo que aparece en hover -->
+                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
+            </a>
+
+
+        </div>
+        </div>
+
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
+                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
+
+  <body class="bg-gray-100 text-gray-800">
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold mb-6 text-center text-bob-red">
+        Dar de alta una máquina
+      </h1>
+
+      <form
+        enctype="multipart/form-data"
+        class="space-y-4"
+        id="machine-form"
+      >
+      <div id="mensajeExito" class="hidden text-green-700 bg-green-100 border border-green-400 rounded p-3 text-center font-semibold mt-4">
+          Máquina cargada correctamente.
+      </div>
+
+      <div id="mensajeError" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 flex items-center gap-2 mt-4" role="alert">
+          <i class="fas fa-exclamation-triangle text-xl"></i>
+          <span id="mensajeErrorTexto">⚠️ Máquina existente</span>
+      </div>
+
+
+        <!-- Marca -->
+        <div>
+          <label for="mark" class="block text-sm font-medium text-gray-700"
+            >Marca</label
+          >
+          <input
+            type="text"
+            id="mark"
+            name="mark"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Modelo -->
+        <div>
+          <label for="model" class="block text-sm font-medium text-gray-700"
+            >Modelo</label
+          >
+          <input
+            type="text"
+            id="model"
+            name="model"
+            required
+            minlength="2"
+            maxlength="20"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Ubicación -->
+        <div>
+          <label for="ubication" class="block text-sm font-medium text-gray-700"
+            >Ubicación</label
+          >
+          <input
+            type="text"
+            id="ubication"
+            name="ubication"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Precio por día -->
+        <div>
+          <label for="price_day" class="block text-sm font-medium text-gray-700"
+            >Precio por día (ARS)</label
+          >
+          <input
+            type="number"
+            id="price_day"
+            name="price_day"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Imagen -->
+        <div>
+          <label for="image" class="block text-sm font-medium text-gray-700"
+            >Imagen de la máquina</label
+          >
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            />
+        </div>
+
+        <!-- Botón -->
+        <div class="text-center">
+          <button
+            type="submit"
+            class="bg-bob-red text-white px-6 py-2 rounded-lg font-semibold hover:bg-bob-dark-red transition"
+          >
+            Cargar Máquina
+          </button>
+        </div>
+      </form>
+    </div>
+
+  <script>
+document.getElementById("machine-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+
+  const errorDiv = document.getElementById("mensajeError");
+  const errorText = document.getElementById("mensajeErrorTexto");
+  const successDiv = document.getElementById("mensajeExito");
+  const submitBtn = form.querySelector("button[type='submit']");
+
+  // Ocultar mensajes
+  if (errorDiv) errorDiv.classList.add("hidden");
+  if (successDiv) successDiv.classList.add("hidden");
+
+  // Desactivar botón mientras se envía
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Cargando...";
+  }
+
+  fetch("/machine/create_with_image", {
+    method: "POST",
+    body: formData
+  })
+    .then(res => {
+      if (res.status === 201) {
+        form.reset();
+
+        if (successDiv) {
+          successDiv.classList.remove("hidden");
+          successDiv.textContent = "✅ Máquina cargada correctamente.";
+          successDiv.scrollIntoView({ behavior: "smooth" });
+
+          // Ocultar automáticamente a los 3 segundos
+          setTimeout(() => {
+            successDiv.classList.add("hidden");
+          }, 3000);
+        }
+
+        if (errorDiv) errorDiv.classList.add("hidden");
+      } else {
+        return res.json().then(err => {
+          throw new Error(err.error || "Error al registrar la máquina");
+        });
+      }
+    })
+    .catch(err => {
+      if (errorDiv) {
+        errorText.textContent = "⚠️ " + err.message;
+        errorDiv.classList.remove("hidden");
+        errorDiv.scrollIntoView({ behavior: "smooth" });
+      }
+      if (successDiv) successDiv.classList.add("hidden");
+    })
+    .finally(() => {
+      // Reactivar botón
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Cargar Máquina";
+      }
+    });
+});
+</script>
+
+
+<footer class="bg-bob-dark-red text-white py-10">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Columna 1: Redes + legales -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="https://instagram.com/bobelalquilador" target="_blank"
+                        class="hover:text-gray-300 transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+                    </li>
+                    <li>
+                        <a href="privacidad.html" class="hover:underline">Política de Privacidad</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Columna 2: Contacto -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Contacto</h3>
+                <ul class="space-y-2">
+                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Mapa -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Línea inferior -->
+        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+            © 2025 Bob El Alquilador. Todos los derechos reservados.
+        </div>
+    </footer>
+
+  </body>
+</html>

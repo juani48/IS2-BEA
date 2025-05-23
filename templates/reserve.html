@@ -1,353 +1,323 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      src="https://kit.fontawesome.com/a076d05399.js"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
-  </head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
 
-  <body class="bg-gray-100 text-gray-900">
-    <!-- Header -->
-    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-      <div
-        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
-      >
-        <!-- LOGO -->
-        <div class="shrink-0">
-          <a href="main.html">
-            <img
-              src="{{ url_for('static', filename='image/Completo.svg') }}"
-              alt="Bob el Alquilador"
-              class="h-16"
-            />
-          </a>
+</head>
+
+  
+<body class="bg-gray-50">
+ <!-- Header -->
+    <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="main.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
+                        class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                    <input type="text" placeholder="Buscar maquinaria..."
+                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MI CUENTA -->
+            <a href="login.html"
+                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+                <!-- Ícono normal -->
+                <i class="fas fa-user text-lg group-hover:hidden"></i>
+                <!-- Ícono alternativo que aparece en hover -->
+                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
+            </a>
+
+
+        </div>
         </div>
 
-        <!-- BARRA DE BÚSQUEDA -->
-        <div class="flex-grow flex justify-center">
-          <div class="relative w-full max-w-xl">
-            <input
-              type="text"
-              placeholder="Buscar maquinaria..."
-              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
-            />
-            <button
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
+                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
 
-        <!-- MI CUENTA -->
-        <a
-          href="login.html"
-          class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group"
-        >
-          <!-- Ícono normal -->
-          <i class="fas fa-user text-lg group-hover:hidden"></i>
-          <!-- Ícono alternativo que aparece en hover -->
-          <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-          <span class="hidden sm:inline text-sm font-semibold tracking-wide"
-            >Mi Perfil</span
-          >
-        </a>
-      </div>
-      </div>
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>  
 
-      <!-- Navigation debajo, 100% ancho -->
-      <nav class="main-nav w-full">
-        <ul
-          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
-        >
-          <li><a href="main.html">Menú</a></li>
-          <li><a href="machinery.html">Maquinarias</a></li>
-          <li><a href="#categorias">Categorías</a></li>
-          <li><a href="#">Palabra</a></li>
-          <li><a href="#">Preguntas Frecuentes</a></li>
-          <li><a href="#contacto">Contáctanos</a></li>
-        </ul>
-      </nav>
-
-      <!-- Mobile Navigation Menu -->
-      <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-        <ul class="flex flex-col space-y-3">
-          <li>
-            <a
-              href="main.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Menú</a
-            >
-          </li>
-          <li>
-            <a
-              href="machinery.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Maquinarias</a
-            >
-          </li>
-          <li>
-            <a
-              href="#categorias"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Categorías</a
-            >
-          </li>
-          <li>
-            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Mi Cuenta</a
-            >
-          </li>
-          <li>
-            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Preguntas Frecuentes</a
-            >
-          </li>
-          <li>
-            <a
-              href="#contacto"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Contáctanos</a
-            >
-          </li>
-        </ul>
-      </div>
     </header>
 
-    <!-- Sección de reserva (sincronizada con main.html) -->
-    <section id="reserva" class="reservation-section py-10">
-      <h2 class="text-3xl font-bold text-center mb-6">Reserva tu Maquinaria</h2>
-      <form
-        id="reservation-form"
-        class="reservation-form max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg space-y-4"
-      >
-        <label for="machine-type">Tipo de Maquinaria</label>
-        <select id="machine-type" class="w-full border p-2 rounded">
-          <option value="">Seleccionar maquinaria</option>
-          <option value="1">Excavadora Compacta</option>
-          <option value="2">Retroexcavadora Industrial</option>
-          <option value="3">Minicargadora Versátil</option>
-        </select>
+    <main class="flex justify-center items-center min-h-[80vh] px-4">
+    <form id="reservaForm"
+    class="bg-red-100 p-6 rounded-2xl shadow-lg space-y-4 w-full max-w-md">
 
-        <label for="duration">Duración del alquiler</label>
-        <select id="duration" class="w-full border p-2 rounded">
-          <option value="">Seleccionar duración</option>
-          <option value="1">1 día</option>
-          <option value="3">3 días</option>
-        </select>
+      <h1 class="text-2xl font-bold text-red-700 text-center">
+        Reservar Máquina
+      </h1>
 
-        <label for="start-date">Fecha de inicio</label>
-        <input type="date" id="start-date" class="w-full border p-2 rounded" />
+      <!-- Máquina seleccionada -->
+      <div>
+        <label class="block text-sm font-medium text-red-700"
+          >Máquina seleccionada</label
+        >
+        <div
+          id="maquinaSeleccionada"
+          class="flex items-center space-x-3 text-red-800 font-semibold"
+        >
+          <span id="maquinaNombre">Cargando...</span>
+          <img
+            id="maquinaImagen"
+            src=""
+            alt="Imagen máquina"
+            class="w-12 h-12 rounded-lg border border-red-300 hidden"
+          />
+        </div>
+      </div>
 
-        <label for="end-date">Fecha de devolución</label>
-        <input type="date" id="end-date" class="w-full border p-2 rounded" />
+      <!-- Fechas -->
+      <div>
+        <label for="fechaInicio" class="block text-sm font-medium text-red-700"
+          >Fecha de inicio</label
+        >
+        <input
+          type="date"
+          id="fechaInicio"
+          name="fechaInicio"
+          required
+          class="border border-red-300 p-2 rounded w-full"
+        />
+      </div>
 
-        <label for="name">Nombre completo</label>
+      <div>
+        <label for="fechaFin" class="block text-sm font-medium text-red-700"
+          >Fecha de fin</label
+        >
+        <input
+          type="date"
+          id="fechaFin"
+          name="fechaFin"
+          required
+          class="border border-red-300 p-2 rounded w-full"
+        />
+      </div>
+
+      <!-- Entrega -->
+      <div>
+        <label class="block text-sm font-medium text-red-700 mb-1"
+          >Método de entrega</label
+        >
+        <div class="space-y-2">
+          <label class="inline-flex items-center space-x-2">
+            <input
+              type="radio"
+              name="entrega"
+              value="local"
+              checked
+              class="text-red-600"
+            />
+            <span>Retirar en el local</span> </label
+          ><br />
+          <label class="inline-flex items-center space-x-2">
+            <input type="radio" name="entrega" value="domicilio" />
+            <span>Envío a domicilio</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div id="campoDireccion" class="hidden">
+        <label for="direccion" class="block text-sm font-medium text-red-700"
+          >Dirección de envío</label
+        >
         <input
           type="text"
-          id="name"
-          placeholder="Tu nombre"
-          class="w-full border p-2 rounded"
+          id="direccion"
+          name="direccion"
+          placeholder="Ej: Calle Falsa 123"
+          class="border border-red-300 p-2 rounded w-full"
         />
-
-        <label for="email">Correo electrónico</label>
-        <input
-          type="email"
-          id="email"
-          placeholder="tu@email.com"
-          class="w-full border p-2 rounded"
-        />
-
-        <label for="phone">Teléfono</label>
-        <input
-          type="tel"
-          id="phone"
-          placeholder="Tu teléfono"
-          class="w-full border p-2 rounded"
-        />
-
-        <label for="comments">Comentarios adicionales</label>
-        <textarea
-          id="comments"
-          rows="3"
-          class="w-full border p-2 rounded"
-        ></textarea>
-
-        <button
-          type="submit"
-          class="w-full bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded"
-        >
-          Confirmar Reserva
-        </button>
-      </form>
-    </section>
-
-    <!-- Modal de confirmación -->
-    <div
-      id="reservation-modal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
-    >
-      <div class="bg-white p-6 rounded-lg shadow-xl text-center">
-        <h3 class="text-xl font-bold mb-2">¡Reserva confirmada!</h3>
-        <p>
-          Tu número de reserva es:
-          <span
-            id="reservation-number"
-            class="font-mono text-bob-red font-bold"
-          ></span>
-        </p>
-        <div class="mt-4 flex justify-center gap-4">
-          <button
-            id="confirm-modal"
-            class="bg-bob-red text-white px-4 py-2 rounded hover:bg-bob-dark-red"
-          >
-            OK
-          </button>
-          <button
-            id="close-modal"
-            class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-          >
-            Cancelar
-          </button>
-        </div>
       </div>
-    </div>
 
-    <!-- Footer -->
-    <footer id="contacto" class="bg-bob-dark-red text-white py-12">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Company Info -->
-          <div>
-            <div class="flex items-center mb-4">
-              <svg
-                class="w-10 h-10 mr-2"
-                viewBox="0 0 50 50"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="50" height="50" rx="10" fill="white"></rect>
-                <path
-                  d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z"
-                  fill="#D10000"
-                ></path>
-                <path
-                  d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z"
-                  fill="white"
-                ></path>
-                <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
-              </svg>
-              <span class="font-bold text-xl">Bob El Alquilador</span>
-            </div>
-            <p class="mb-4">
-              Soluciones de alquiler de maquinaria para construcción desde 2005.
-              Calidad y servicio garantizado.
-            </p>
-            <div class="flex space-x-4">
-              <a
-                href="https://instagram.com/bobelalquilador"
-                class="hover:text-gray-300 transition duration-300"
-              >
-                <i class="fab fa-instagram text-2xl"></i>
-              </a>
-              <a
-                href="https://wa.me/5492245400777"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="hover:text-gray-300 transition duration-300"
-              >
-                <i class="fab fa-whatsapp text-2xl"></i>
-              </a>
-            </div>
-          </div>
+      <!-- Mensaje de error -->
+      <div
+        id="mensajeError"
+        class="hidden bg-red-200 text-red-800 font-semibold p-2 rounded"
+      ></div>
 
-          <!-- Contact Info -->
-          <div>
-            <h3 class="text-xl font-bold mb-4">Contacto</h3>
-            <ul class="space-y-3">
-              <li class="flex items-center">
-                <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
-                <span>poner link al mapa de ubicaciones</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-phone mr-3 text-bob-light-red"></i>
-                <span>+54 11 5555-5555</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
-                <span>info@bobelaquilador.com</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-clock mr-3 text-bob-light-red"></i>
-                <span>Lun-Vie: 9:00 - 17:00</span>
-              </li>
-            </ul>
-          </div>
+      <button
+      onclick="goToPriorToPaying()"
+        type="submit"
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Confirmar Reserva
+      </button>
+    </form>
+    </main>
 
-          <!-- Quick Links -->
-          <div>
-            <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
-            <ul class="space-y-2">
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Inicio</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#maquinarias"
-                  class="hover:text-gray-300 transition duration-300"
-                  >Maquinarias</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#categorias"
-                  class="hover:text-gray-300 transition duration-300"
-                  >Categorías</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Preguntas Frecuentes</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Términos y Condiciones</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Política de Privacidad</a
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
+    <script>
+      const machineId = new URLSearchParams(window.location.search).get(
+        "machine_id"
+      );
+      const maquinaNombre = document.getElementById("maquinaNombre");
+      const maquinaImagen = document.getElementById("maquinaImagen");
 
-        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p>© 2025 Bob El Alquilador. Todos los derechos reservados.</p>
-        </div>
-      </div>
-    </footer>
+      if (machineId) {
+        // Consultar al backend para obtener nombre e imagen
+        fetch(`/api/maquinas/${machineId}`)
+          .then((response) => {
+            if (!response.ok) throw new Error("No se encontró la máquina");
+            return response.json();
+          })
+          .then((data) => {
+            // Mostrar nombre completo
+            maquinaNombre.textContent = `${data.nombre} (ID: ${machineId})`;
 
-    <script src="{{ url_for('static', filename='script/scripts.js') }}"></script>
+            // Cargar imagen desde la URL exacta que da el backend
+            maquinaImagen.src = data.imagen_url;
+            maquinaImagen.onerror = function () {
+              this.src = "/static/image/default.png";
+            };
+            maquinaImagen.classList.remove("hidden");
+          })
+          .catch((error) => {
+            console.error(error);
+            maquinaNombre.textContent = `Máquina ID: ${machineId}`;
+          });
+      } else {
+        maquinaNombre.textContent = "No se seleccionó ninguna máquina";
+      }
+
+      // Mostrar/ocultar campo de dirección
+      document.querySelectorAll('input[name="entrega"]').forEach((radio) => {
+        radio.addEventListener("change", function () {
+          document
+            .getElementById("campoDireccion")
+            .classList.toggle("hidden", this.value !== "domicilio");
+        });
+      });
+
+      // Validación de fechas
+      document
+        .getElementById("reservaForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const fechaInicio = new Date(
+            document.getElementById("fechaInicio").value
+          );
+          const fechaFin = new Date(document.getElementById("fechaFin").value);
+          const errorDiv = document.getElementById("mensajeError");
+
+          errorDiv.classList.add("hidden");
+          errorDiv.textContent = "";
+
+          if (fechaFin < fechaInicio) {
+            errorDiv.textContent =
+              "La fecha de fin no puede ser anterior a la fecha de inicio.";
+            errorDiv.classList.remove("hidden");
+            return;
+          }
+
+          const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+          if (dias < 7) {
+            errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
+            errorDiv.classList.remove("hidden");
+            return;
+          }
+
+          // Parámetros del formulario
+          const shipment =
+            document.querySelector('input[name="entrega"]:checked').value ===
+            "domicilio";
+          const direccion = document.getElementById("direccion").value;
+          const client_id = localStorage.getItem("dni"); // o ajustalo si viene de sesión
+
+          // Precio total (esto deberías traerlo desde la API de la máquina si querés hacerlo real)
+          const precioPorDia = 10000; // TEMPORAL: reemplazar por valor real
+          const total = precioPorDia * dias;
+
+          fetch("/reservation/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              start_day: document.getElementById("fechaInicio").value,
+              end_day: document.getElementById("fechaFin").value,
+              client_id: client_id,
+              machine_id: machineId,
+              shipment: shipment,
+              total_value: total,
+              direccion: direccion,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.message) {
+                alert("✅ Reserva creada con éxito");
+                window.location.href = "/"; // redirigir a home
+              } else {
+                throw new Error(data.error || "Error al reservar");
+              }
+            })
+            .catch((err) => {
+              errorDiv.textContent = "Error: " + err.message;
+              errorDiv.classList.remove("hidden");
+            });
+        });
+    </script>
   </body>
+  <script >
+    function goToPriorToPaying(){
+      window.location.href = "/prior_to_paying.html"
+    }
+
+    // CODIGO QUE AGREGO JUANI PARA REDIRIGIR A MERCADO PAGO
+    function loadLink(){
+      fetch("/pay/redirect_to_pay",
+        
+      )
+      .then(response => { 
+        if(!response.ok){
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();  
+      })
+      .then( preference => {
+        console.log("preference", preference)
+        window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
+      })
+      .catch(error => { console.log("Error: ", "error") });
+    }
+    //src="{{ url_for('static', filename='script/scripts.js') }}"
+  </script>
 </html>

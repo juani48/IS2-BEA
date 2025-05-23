@@ -1,39 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>SingIn</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
 </head>
-<body>
-    <h1>Registrar sesion</h1>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-200">
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+        <div class="flex justify-end">
+            <a href="/" title="Volver al inicio" 
+                class="text-gray-400 hover:text-red-500 font-bold text-xl transition duration-200">&times;
+            </a>
+</div>
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Registrarse</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input type="text" id="name" name="name" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
 
-    <div>
-        <label>Ingrese su numero de documento</label>
-        <input id="singin-input-dni" type="text">
-    </div>
-    <div>
-        <label>Ingrese su contraseña</label>
-        <input id="singin-input-password" type="text">
-    </div>
-    <div>
-        <label>Ingrese su correo</label>
-        <input id="singin-input-email" type="text">
-    </div>
-    <div>
-        <label>Ingrese su nombre</label>
-        <input id="singin-input-name" type="text">
-    </div>
-    <div>
-        <label>Ingrese su apellido</label>
-        <input id="singin-input-lastname" type="text">
+            <div>
+                <label for="lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+                <input type="text" id="lastname" name="lastname" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+
+            <div>
+                <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+                <input type="text" id="dni" name="dni" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+            <!-- <div> este campo no deberia ir, lo hice para probar
+                <label for="dni" class="block text-sm font-medium text-gray-700">passowrd</label>
+                <input type="text" id="password" name="password" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>-->
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                <input type="email" id="email" name="email" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                <input type="tel" id="phone" name="phone" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+
+            <div>
+                <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+                <input type="date" id="birthdate" name="birthdate" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+
+            <div>
+                <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
+                <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
+                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                        file:rounded-lg file:border-0 file:text-sm file:font-semibold
+                        file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+            </div>
+
+            <div class="flex items-start">
+                <input id="terms" name="terms" type="checkbox" required
+                    class="mt-1 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                <label for="terms" class="text-sm text-gray-600">
+                    Acepto los <a href="/terminos" class="text-red-500 hover:underline">Términos y Condiciones</a>
+                </label>
+            </div>
+
+
+            <button type="submit"
+                class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
+                Confirmar
+            </button>
+        </form>
+
+        <p class="mt-4 text-center text-sm text-gray-600">
+            ¿Ya tenés cuenta? <a href="login.html" class="text-red-500 hover:underline">Iniciar sesión</a>
+        </p>
     </div>
 
-    <div>
-        <button onclick="singin()" >Registrar sesion</button>
-        <a href="login.html">Iniciar sesion</a>
-    </div>
 </body>
 
-<script >
+<!--<script >
     function singin(){
         let dni = document.getElementById("singin-input-dni").value;
         let password = document.getElementById("singin-input-password").value;
@@ -44,7 +107,7 @@
 
         try{
             fetch(
-                "/singin",
+                "/signin",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -66,5 +129,5 @@
         }
         
     }
-</script>
+</script>-->
 </html>

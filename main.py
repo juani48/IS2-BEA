@@ -326,8 +326,8 @@ def add_categorie():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
-@app.route("/categorie/enable_categorie", methods=["GET"])
-def enable_categorie():
+@app.route("/categorie/get_all_categories", methods=["GET"])
+def get_all_categories():
     try:
         return jsonify({ "categories": GetAllCategories.usecase_get_all_categories() })
     except Exception as e:
@@ -361,8 +361,8 @@ def machine_reservations():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # obtener reservas de una maquina
-def reserve_machine():
+#@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) 
+#def reserve_machine():
 
     # fecha_hora = datetime.now()
     # fecha_hora = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
@@ -377,35 +377,33 @@ def reserve_machine():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
-# ---- PAGOS ---- # COMENTADO A DREDE
+# ---- PAGOS ---- # 
 
 @app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # Metodo iniciado por el boton de 'reservar'
 def redirect_to_pay():
     try:
-        #request_value = request.get_json()
+        request_value = request.get_json()
 
-        #preference = AddReservation.usecase_add_reserve(
-            #start_day=request_value.get("start_day"),
-            #end_day=request_value.get("end_day"),
-            #client_id=request_value.get("client_id"),
-            #machine_id=request_value.get("machine_id"),
-            #shipment=request_value.get("shipment"),
-        #)
+        preference = AddReservation.usecase_add_reserve(
+            start_day=request_value.get("start_day"),
+            end_day=request_value.get("end_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            shipment=request_value.get("shipment"),
+        )
 
         return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
     except Exception as e:
         return jsonify({ "message": e }), 404
 
-# RESPUESTAS DE PAGO
+# ---- RESPUESTAS DE PAGO ---- #
 
-@app.route("/pay/successful_payment", methods=["GET"]) # Llamar al caso de uso que confirme la reserva
-def successful_payment():
-    try:
-
-        return "", 204
-    except Exception as e:
-        return jsonify({ "message": e }), 404
+@app.route("/pay/pay_notification", methods=["POST"]) # Llamar al caso de uso que confirme la reserva
+def pay_notification():
+    request_value = request.get_json()
+    print(request)
+    print("-----")
+    print(request_value)
 
 # ---- MAIN ----
 

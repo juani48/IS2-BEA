@@ -12,8 +12,9 @@ class MachineModel(Base):
     refund = Column(Double, nullable=False)  # reembolso
     disable = Column(Boolean, nullable=False, default=False)
 
-    # description = Column(String, nullable=True)  # ← Activala si la agregás a la base
-    # image = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    
+    # stock?
 
     def __repr__(self):
         return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}""" + "}"

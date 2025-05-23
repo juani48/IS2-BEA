@@ -22,17 +22,17 @@ from flask import flash
 app = Flask(__name__)
 
 app.secret_key = 'B3bQh7#2d@xZ!59sP0mT&vL'
-UPLOAD_FOLDER = 'static/image/users'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)	
+UPLOAD_FOLDER_USER = 'static/image/users'
+app.config['UPLOAD_FOLDER_USER'] = UPLOAD_FOLDER_USER
+os.makedirs(UPLOAD_FOLDER_USER, exist_ok=True)	
 
 import os
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = 'static/images/machine'
+UPLOAD_FOLDER_MACHINE = 'static/image/machine'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # crea la carpeta si no existe
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER_MACHINE, exist_ok=True)  # crea la carpeta si no existe
+app.config['UPLOAD_FOLDER_MACHINE'] = UPLOAD_FOLDER_MACHINE
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -157,26 +157,12 @@ def register_machine():
 
 # ---- METODOS USUARIO ---- #
 
-
 @app.route("/login", methods=["POST"])
 def login():
-    request_value = request.get_json()
-    
-    if not request_value:
-        return jsonify({"error": "No se recibieron datos JSON"}), 400
-
-    dni = request_value.get("dni")
-    password = request_value.get("password")
-
-    if not dni or not password:
-        return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
-
     try:
-        user = Auth.usecase_login(dni=dni, password=password)
-        login_user(user)
-
+        data = request.get_json()
+        user = Auth.usecase_login(dni=data['dni'], password=data['password'])  #<<------------------------------------------------------------
         return jsonify({
-            "message": "Inicio de sesión exitoso",
             "user": {
                 "dni": user.dni,
                 "name": user.name,
@@ -184,10 +170,12 @@ def login():
                 "email": user.email
             }
         }), 200
-
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 401
 
+
+    
 
 @app.route("/logout", methods=["GET"])
 @login_required
@@ -198,17 +186,30 @@ def logout():
 
 @app.route("/signin", methods=["POST"])
 def signin():
-    request_value = request.get_json()
-    RequestUser.usecase_request_user(
-        dni=request_value.get("dni"), 
-        email=request_value.get("email"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-        phone = request_value.get("phone"),
-        birthDate= request_value.get("birthDate"),
-        employee_number=request_value.get("employee_number"),
-    )
-    return "", 204
+    try:
+        dni = request.form["dni"]
+        email= request.form["email"]
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        phone = request.form["phone"]
+        birthdate = request.form["birthdate"]
+        terms_accepted = "terms" in request.form
+        dni_photo = request.files["dni_photo"]
+        #employee_number=request_value.get("employee_number"),
+        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate, terms_accepted)
+
+        if dni_photo:
+            filename = secure_filename(f"{dni}_{lastname}.jpg")
+            filepath = os.path.join(app.config['UPLOAD_FOLDER_USER'], filename)
+            dni_photo.save(filepath)
+            relative_path = f"{app.config['UPLOAD_FOLDER_USER']}/{filename}"
+        else:
+            relative_path = None
+        flash("Solicitud pendiente de confirmación")
+        return redirect (url_for("load_login"))
+    except Exception as e:
+        flash(str(e))
+        return redirect(url_for("load_singin"))
 
 @app.route("/user/update_user", methods=["PUT"])
 @login_required
@@ -262,7 +263,8 @@ def add_machine():
             price_day=request_value.get("price_day"),
             ubication=request_value.get("ubication"),
             refund=request_value.get("refund"),
-            categorie=request_value.get("categorie")
+            categorie=request_value.get("categorie"),
+            description=request_value.get("description")
         )
         return "", 204
     except Exception as e:

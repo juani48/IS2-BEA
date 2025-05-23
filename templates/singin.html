@@ -15,11 +15,13 @@
             </a>
 </div>
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Registrarse</h2>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
-                <div class="mb-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center">
-                    {{ messages[0] }}
-                </div>
+                {% for category, message in messages %}
+                    <div class="mb-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
         {% endwith %}
         <form action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
@@ -40,11 +42,11 @@
                 <input type="text" id="dni" name="dni" required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
             </div>
-            <div> <!-- este campo no deberia ir, lo hice para probar-->
+            <!-- <div> este campo no deberia ir, lo hice para probar
                 <label for="dni" class="block text-sm font-medium text-gray-700">passowrd</label>
                 <input type="text" id="password" name="password" required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-            </div>
+            </div>-->
 
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
@@ -94,7 +96,7 @@
 
 </body>
 
-<script >
+<!--<script >
     function singin(){
         let dni = document.getElementById("singin-input-dni").value;
         let password = document.getElementById("singin-input-password").value;
@@ -127,5 +129,5 @@
         }
         
     }
-</script>
+</script>-->
 </html>

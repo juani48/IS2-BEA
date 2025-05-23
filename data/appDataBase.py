@@ -7,7 +7,7 @@ from data.query.enable import query_enable_categorie, query_enable_machine
 
 from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine
 
-from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve
+from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
 from data.query.update import query_update_machine, query_update_user
 
@@ -21,8 +21,14 @@ def create_database():
 
 
 # ---- inserts -----
-def insert_user(dni, user, email):
-    query_insert_user.execute(dni, user, email)
+def TEST_USER(dni, user):
+    query_TEST_USER.execute(dni, user)
+    #query_insert_user.execute(dni, user)
+
+
+def insert_user(dni, user):
+    #query_TEST_USER.execute(dni, user)
+    query_insert_user.execute(dni, user)
 
 def insert_machine(patent, categorie, machine, machine_categorie):
     query_insert_machine.execute(patent, machine)

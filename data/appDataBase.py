@@ -9,7 +9,7 @@ from data.query.get_all import query_get_all_machines, query_get_all_machines_by
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
-from data.query.update import query_update_machine, query_update_user
+from data.query.update import query_update_machine, query_update_user, query_update_user_points
 
 from data.query.change import query_change_password_user
 
@@ -60,6 +60,9 @@ def enable_machine(patent):
 # ---- update ----
 def update_machine(patent, machine):
     query_update_machine.execute(patent=patent, new_machine=machine)
+
+def update_user_points(dni, number):
+    query_update_user_points.execute(dni, number)
 
 def update_user(dni, name, lastname):
     query_update_user.execute(dni=dni, new_name= name,new_lastname= lastname)    

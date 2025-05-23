@@ -5,11 +5,6 @@ from data.appDataBase import insert_machine
 def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description):
     validator(patent, mark, model, price_day, ubication, refund, categorie)
 
-    if(description == ""):
-        description = None
-    if image == "":
-        image = None
-
     machine = MachineModel(
         patent=patent,
         mark=mark,

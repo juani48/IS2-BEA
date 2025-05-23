@@ -40,40 +40,6 @@ def allowed_file(filename):
 import os
 from werkzeug.utils import secure_filename
 
-@app.route("/machine/create_with_image", methods=["POST"])
-def create_machine_with_image():
-    try:
-        form = request.form
-        file = request.files.get("image")
-
-        patent = f"{form.get('mark')}-{form.get('model')}"
-        # ✅ Guardar imagen en static/image/machines/ si existe
-        if file and file.filename != "":
-            filename = secure_filename(patent + ".jpg")
-            folder_path = os.path.join("static", "image", "machines")
-            os.makedirs(folder_path, exist_ok=True)
-            file.save(os.path.join(folder_path, filename))
-            # No se guarda en base de datos ❌
-
-        # ✅ Registrar la máquina sin imagen
-        from core.usecase.machine import AddMachine  # si no lo importaste arriba
-
-        AddMachine.usecase_add_machine(
-            patent=patent,
-            mark=form.get("mark"),
-            model=form.get("model"),
-            price_day=float(form.get("price_day")),
-            ubication=form.get("ubication"),
-            refund=0,
-            categorie="default"
-        )
-
-        return "", 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'load_login'  # Redirección si el usuario no está logueado
@@ -275,24 +241,39 @@ def add_employee():
     
 # ---- MAQUINAS ----
 
-@app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE
-@login_required
+@app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
+#@login_required
 def add_machine():
     try:
-        request_value = request.get_json()
+        form = request.form
+        file = request.files.get("image")
+
+        patent=form.get('patent')
+
+        if file and file.filename != "":
+            filename = secure_filename(patent + ".jpg")
+            folder_path = os.path.join("static", "image", "machines")
+            os.makedirs(folder_path, exist_ok=True)
+            file.save(os.path.join(folder_path, filename))
+
+        description = form.get("description")
+        if description == None:
+            description = ""
+
         AddMachine.usecase_add_machine(
-            patent=request_value.get("patent"),
-            mark=request_value.get("patent"),
-            model=request_value.get("model"),
-            price_day=request_value.get("price_day"),
-            ubication=request_value.get("ubication"),
-            refund=request_value.get("refund"),
-            categorie=request_value.get("categorie"),
-            description=request_value.get("description")
+            patent=patent,
+            mark=form.get("mark"),
+            model=form.get("model"),
+            price_day=float(form.get("price_day")),
+            ubication=form.get("ubication"),
+            refund=float(form.get("refund")),
+            categorie=form.get("categorie"),
+            description=description
         )
-        return "", 204
+        return "", 201
+
     except Exception as e:
-        return jsonify( { "message": e } ), 404
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():

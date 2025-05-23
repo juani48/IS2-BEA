@@ -128,6 +128,39 @@
           />
         </div>
 
+        <!-- Patente -->
+        <div>
+          <label for="patent" class="block text-sm font-medium text-gray-700"
+            >Patente</label
+          >
+          <input
+            type="text"
+            id="patent"
+            name="patent"
+            required
+            minlength="2"
+            maxlength="20"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Categoria -->
+        <!-- Cambiar a un SELECT -->
+        <div>
+          <label for="categorie" class="block text-sm font-medium text-gray-700"
+            >Categoria</label
+          >
+          <input
+            type="text"
+            id="categorie"
+            name="categorie"
+            required
+            minlength="2"
+            maxlength="20"
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
         <!-- Ubicación -->
         <div>
           <label for="ubication" class="block text-sm font-medium text-gray-700"
@@ -148,7 +181,7 @@
             >Precio por día (ARS)</label
           >
           <input
-            type="number"
+            type="float"
             id="price_day"
             name="price_day"
             required
@@ -156,7 +189,24 @@
           />
         </div>
 
-        <!-- Descripción 
+        <!-- Politica de reembolso -->
+        <!-- LARA ESTO HAY QUE CAMBIARLO PARA QUE EL USUARIO SELECCIONE -->
+        <!-- reembolso total, nulo, o parcial (si elige el parcil debe introducir el % de reembolso) -->
+        <!-- Si es reembolso total mandame 100.0, si es nulo mandame = 0.0, si es parcial mandame lo que se ingrese -->
+        <div>
+          <label for="refund" class="block text-sm font-medium text-gray-700"
+            >Politica de rembolso</label
+          >
+          <input
+            type="float"
+            id="refund"
+            name="refund"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+          />
+        </div>
+
+        <!-- Descripción -->
         <div>
           <label for="description" class="block text-sm font-medium text-gray-700"
             >Descripción</label
@@ -167,7 +217,7 @@
             name="description"  
             class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
           />
-        </div> -->
+        </div> 
 
         <!-- Imagen -->
         <div>
@@ -195,6 +245,13 @@
     </div>
 
   <script>
+    let categorie = []
+    document.addEventListener('DOMContentLoaded', loadCategoires())
+
+    function loadCategoires(){
+      // TENES QUE HACER UN FETCH ACA PARA TRAERTE LAS CATEGOIRAS Y AGREGARLAS AL SELECT DE LA CATEGORIA DE LA MAQUINA
+    }
+
 document.getElementById("machine-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -216,7 +273,7 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
     submitBtn.textContent = "Cargando...";
   }
 
-  fetch("/machine/create_with_image", {
+  fetch("/machine/add_machine", {
     method: "POST",
     body: formData
   })
@@ -236,6 +293,10 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
         }
 
         if (errorDiv) errorDiv.classList.add("hidden");
+
+        // no se como hacer para que avise antes de ir la main.html que se cargo la maquina
+        // O LO MOSTRAMOS ACA O EN EL HOME
+        window.location.href = "/main.html"
       } else {
         return res.json().then(err => {
           throw new Error(err.error || "Error al registrar la máquina");
@@ -244,6 +305,7 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
     })
     .catch(err => {
       if (errorDiv) {
+        console.log("error", err)
         errorText.textContent = "⚠️ " + err.message;
         errorDiv.classList.remove("hidden");
         errorDiv.scrollIntoView({ behavior: "smooth" });

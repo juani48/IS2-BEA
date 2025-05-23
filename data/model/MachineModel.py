@@ -41,7 +41,7 @@ class MachineModel(Base):
         # if self.description:
         #     return str in self.description.lower()
 
-    def __init__(self, patent, mark, model, price_day, ubication, refund):
+    def __init__(self, patent, mark, model, price_day, ubication, refund, description):
         self.patent = patent
         self.mark = mark
         self.model = model
@@ -49,5 +49,5 @@ class MachineModel(Base):
         self.ubication = ubication
         self.refund = refund
         self.disable = False
-        # self.description = description
+        self.description = description
         # self.image = image

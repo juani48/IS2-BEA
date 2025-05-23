@@ -15,9 +15,10 @@ class UserModel(Base):
     authorized = Column(Boolean, nullable=False, default=False)
     birth_date = Column(String, nullable=False)  # <-- Campo nuevo
     phone = Column(Integer, nullable=False)
+    points = Column(Integer, default=0)
 
     def __repr__(self):
-        return "{" + f"""dni:{self.dni}, password:{self.password}, email: {self.email}, name:{self.name}, lastname: {self.lastname}, employee_number: {self.employee_number} , authorized: {self.authorized}, birth_date: {self.birth_date}, phone: {self.phone}""" + "}"
+        return "{" + f"""dni:{self.dni}, password:{self.password}, email: {self.email}, name:{self.name}, lastname: {self.lastname}, employee_number: {self.employee_number} , authorized: {self.authorized}, birth_date: {self.birth_date}, phone: {self.phone}, points: {self.points}""" + "}"
 
     def __init__(self, dni, email, name, lastname, phone, birth_date, password):
         self.dni = dni
@@ -29,4 +30,5 @@ class UserModel(Base):
         self.password = password
         self.employee_number = 0
         self.authorized = False
+        self.points = 0
 

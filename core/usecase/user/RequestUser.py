@@ -10,13 +10,13 @@ def usecase_request_user(dni, email, name, lastname, phone, birthDate, terms_acc
 
     dni_str = str(dni)
 
-    user_by_dni = get_user(dni, "")
+    user_by_dni = get_user(dni)
     if user_by_dni is not None:
         raise Exception("DNI ya registrado")
 
-    user_by_email = get_user(0, email)
-    if user_by_email is not None:
-        raise Exception("Email ya registrado")
+    #user_by_email = get_user(0, email)
+    #if user_by_email is not None:
+    #    raise Exception("Email ya registrado")
 
     SendMail.usecase_send_mail(
         emailDest=email,

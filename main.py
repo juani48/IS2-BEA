@@ -198,17 +198,30 @@ def logout():
 
 @app.route("/signin", methods=["POST"])
 def signin():
-    request_value = request.get_json()
-    RequestUser.usecase_request_user(
-        dni=request_value.get("dni"), 
-        email=request_value.get("email"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-        phone = request_value.get("phone"),
-        birthDate= request_value.get("birthDate"),
-        employee_number=request_value.get("employee_number"),
-    )
-    return "", 204
+    try:
+        dni = request.form["dni"]
+        email= request.form["email"]
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        phone = request.form["phone"]
+        birthdate = request.form["birthdate"]
+        terms_accepted = "terms" in request.form
+        dni_photo = request.files["dni_photo"]
+        #employee_number=request_value.get("employee_number"),
+        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate, terms_accepted)
+
+        if dni_photo:
+            filename = secure_filename(f"{dni}_{lastname}.jpg")
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            dni_photo.save(filepath)
+            relative_path = f"{app.config['UPLOAD_FOLDER']}/{filename}"
+        else:
+            relative_path = None
+        flash("Solicitud pendiente de confirmación")
+        return redirect (url_for("load_login"))
+    except Exception as e:
+        flash(str(e))
+        return redirect(url_for("load_singin"))
 
 @app.route("/user/update_user", methods=["PUT"])
 @login_required

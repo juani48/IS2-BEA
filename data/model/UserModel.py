@@ -11,7 +11,7 @@ class UserModel(Base):
     email = Column(String(120), unique=True, nullable=False)
     name = Column(String(100), nullable=False)
     lastname = Column(String(100), nullable=False)
-    employee_number = Column(Integer, nullable=True)
+    employee_number = Column(Integer, nullable=True, default=0)
     authorized = Column(Boolean, nullable=False, default=False)
     birth_date = Column(Date, nullable=False)  # <-- Campo nuevo
 

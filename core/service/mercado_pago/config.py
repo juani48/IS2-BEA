@@ -4,7 +4,7 @@ import mercadopago
 MP_SDK = mercadopago.SDK("APP_USR-5208819603646835-052017-0d91fab01a4d5ecf50714f57ed634e49-2447327823")
 __UNIT__ = 1
 __CURRENCY__ = "ARS"
-__BASE_URL__ = "https://fbfa-181-231-168-220.ngrok-free.app" # ngrok http http://127.0.0.1:5000 -> Se debe reemplazar esta url por lo que salga en la terminal
+__BASE_URL__ = "https://a3eb-181-231-168-220.ngrok-free.app" # ngrok http http://127.0.0.1:5000 -> Se debe reemplazar esta url por lo que salga en la terminal
 __SUCCESS_URL__ = f"{__BASE_URL__}/successful_reservation.html"
 __FAILURE_URL__ = f"{__BASE_URL__}/failure_reservation.html"
 __PENDING_URL__ = ""

@@ -9,7 +9,7 @@ from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
-from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
+from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation
 from templates import *
 import os
@@ -275,27 +275,34 @@ def add_machine():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/machine/enable_machine", methods=["GET", "POST"]) 
+@app.route("/machine/enable_machine", methods=["POST"]) 
 def enable_machine():
-    request_value = request.get_json().get("patent")
-    EnableMachine.usecase_enable_machine(patent=request_value)
-    return "", 204
+    try:
+        request_value = request.get_json().get("patent")
+        EnableMachine.usecase_enable_machine(patent=request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-@app.route("/machine/disable_machine", methods=["GET", "POST"])
+@app.route("/machine/disable_machine", methods=["POST"])
 def disable_machine():
-    request_value = request.get_json().get("patent")
-    DisableMachine.usecase_disable_machine(patent=request_value)
-    return "", 204
+    try:
+        request_value = request.get_json().get("patent")
+        DisableMachine.usecase_disable_machine(patent=request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
-
+    try:
+        return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
-
     try:
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
             categorie_filter=request.get_json().get("categoire"),
@@ -304,43 +311,55 @@ def get_all_machines_filter():
             mark_filter=request.get_json().get("mark"),
             model_filter=request.get_json().get("model"))), 200
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
 # ---- CATEGORIAS ----
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
+@app.route("/categorie/add_categorie", methods=["POST"])  # TESTEADO -> TRUE
 def add_categorie():
     try:
         request_value = request.get_json()
         AddCategorie.usecase_add_categorie(
             categorie=request_value.get("categorie")
         )
-        return "", 204
+        return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
-
-@app.route("/categorie/enable_categorie", methods=["GET", "POST"])
+        return jsonify({"error": str(e)}), 400
+    
+@app.route("/categorie/enable_categorie", methods=["GET"])
 def enable_categorie():
-    request_value = request.get_json().get("categorie")
-    EnableCategorie.usecase_enable_categorie(categorie=request_value)
-    return "", 204
+    try:
+        return jsonify({ "categories": GetAllCategories.usecase_get_all_categories() })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-@app.route("/categorie/disable_categorie", methods=["GET", "POST"])
+@app.route("/categorie/enable_categorie", methods=["POST"])
+def enable_categorie():
+    try:
+        request_value = request.get_json().get("categorie")
+        EnableCategorie.usecase_enable_categorie(categorie=request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/categorie/disable_categorie", methods=["POST"])
 def disable_categorie():
-    request_value = request.get_json().get("categorie")
-    DisableCategorie.usecase_disable_categorie(categorie=request_value)
-    return "", 204
+    try:
+        request_value = request.get_json().get("categorie")
+        DisableCategorie.usecase_disable_categorie(categorie=request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # ---- RESERVAS ----
 
 @app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
 def machine_reservations():
-    
     try:
         request_value = request.get_json().get("machine_id")
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # obtener reservas de una maquina
 def reserve_machine():
@@ -354,9 +373,9 @@ def reserve_machine():
     # date2_1 = now + timedelta(days=4)
     try:
         print()
-        return "", 204
+        return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
 
 # ---- PAGOS ---- # COMENTADO A DREDE

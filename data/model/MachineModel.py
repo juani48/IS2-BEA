@@ -13,7 +13,7 @@ class MachineModel(Base):
     disable = Column(Boolean, nullable=False, default=False)
 
     description = Column(String, nullable=True)
-    image = Column(String, nullable=True) # URL de la carpeta donde guardaremos las imagenes -> /static/image/machinary/filename.png
+    
     # stock?
 
     def __repr__(self):

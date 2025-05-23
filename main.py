@@ -160,34 +160,32 @@ def register_machine():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print("SI")
+    return jsonify({"SI": "HOLAS"}), 204
     #request_value = request.get_json()
     
-    #if not request_value:
-       # return jsonify({"error": "No se recibieron datos JSON"}), 400
+   # if not request_value:
+    #    return jsonify({"error": "No se recibieron datos JSON"}), 400
 
-   # dni = request_value.get("dni")
-   # password = request_value.get("password")
+    #dni = request_value.get("dni")
+    #password = request_value.get("password")
 
-   # if not dni or not password:
-   #     return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
-#
+    #if not dni or not password:
+    #    return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
+
     #try:
-        #user = Auth.usecase_login(dni=dni, password=password)
-        #login_user(user)
-
-        #return jsonify({
-        #    "message": "Inicio de sesión exitoso",
-        #    "user": {
-        #        "dni": user.dni,
-        #        "name": user.name,
-        #        "lastname": user.lastname,
-        #        "email": user.email
-        #    }
-        #}), 200
-    return redirect (url_for("load_panelUsuario"))
-    #except Exception as e:
-        #return jsonify({"error": str(e)}), 401
+    #    user = Auth.usecase_login(dni=dni, password=password)
+    #    login_user(user)
+#
+    #    return jsonify({
+    #        "user": {
+    #            "dni": user.dni,
+     #           "name": user.name,
+    #            "lastname": user.lastname,
+    #            "email": user.email
+     #       }
+    #    }), 200
+   # except Exception as e:
+    #    return jsonify({"error": str(e)}), 401
 
 
 @app.route("/logout", methods=["GET"])
@@ -276,7 +274,8 @@ def add_machine():
             price_day=request_value.get("price_day"),
             ubication=request_value.get("ubication"),
             refund=request_value.get("refund"),
-            categorie=request_value.get("categorie")
+            categorie=request_value.get("categorie"),
+            description=request_value.get("description")
         )
         return "", 204
     except Exception as e:

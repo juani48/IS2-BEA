@@ -2,13 +2,11 @@ from data.model.MachineModel import MachineModel
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.appDataBase import insert_machine
 
-def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description, image):
+def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description):
     validator(patent, mark, model, price_day, ubication, refund, categorie)
 
     if(description == ""):
         description = None
-    if image == "":
-        image = None
 
     machine = MachineModel(
         patent=patent,
@@ -18,8 +16,8 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
         ubication=ubication,
         refund=refund,
         description=description,
-        image=image
     )
+    
     mc = MachineCategorieModel(
         machine_id=patent,
         categorie_id=categorie

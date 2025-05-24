@@ -16,11 +16,13 @@ class UserModel(Base):
     birth_date = Column(String, nullable=False)  # <-- Campo nuevo
     phone = Column(Integer, nullable=False)
     points = Column(Integer, default=0)
+    tipo = Column(String(20), nullable=False, default="cliente") 
+
 
     def __repr__(self):
         return "{" + f"""dni:{self.dni}, password:{self.password}, email: {self.email}, name:{self.name}, lastname: {self.lastname}, employee_number: {self.employee_number} , authorized: {self.authorized}, birth_date: {self.birth_date}, phone: {self.phone}, points: {self.points}""" + "}"
 
-    def __init__(self, dni, email, name, lastname, phone, birth_date, password):
+    def __init__(self, dni, email, name, lastname, phone, birth_date, password,tipo):
         self.dni = dni
         self.email = email
         self.name = name
@@ -31,4 +33,5 @@ class UserModel(Base):
         self.employee_number = 0
         self.authorized = False
         self.points = 0
+        self.tipo = tipo
 

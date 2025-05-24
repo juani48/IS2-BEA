@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import json
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from core.entity import User
 from data.appDataBase import get_user
@@ -37,8 +37,6 @@ app.config['UPLOAD_FOLDER_MACHINE'] = UPLOAD_FOLDER_MACHINE
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-import os
-from werkzeug.utils import secure_filename
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -75,9 +73,6 @@ def home():
 def load_home():
     return render_template('/main.html')
 
-#@app.route('/machinery.html')
-#def load_machinery():
-#    return render_template('/machinery.html') 
 
 @app.route('/machinery.html')
 def load_machinery():
@@ -85,10 +80,37 @@ def load_machinery():
     return render_template('machinery.html', machines=machines)
 
 
-@app.route("/login.html")
-def load_login():
-    return render_template("login.html")
+#@app.route("/login.html")
+#def load_login():
+#    return render_template("login.html")
 
+from flask import request, session, jsonify, redirect
+from core.usecase.user.Auth import usecase_login
+
+@app.route("/login", methods=["POST"])
+def login_route():
+    try:
+        data = request.get_json()
+        dni = data["dni"]
+        password = data["password"]
+
+        user = usecase_login(dni, password)
+
+        session["dni"] = user.dni
+        session["tipo"] = user.tipo  #Esto es lo que guarda el tipo en sesión
+
+        # Respondemos con JSON al frontend (como hace login.html)
+        return jsonify({
+            "message": "Login correcto",
+            "user": {
+                "dni": user.dni,
+                "name": user.name,
+                "tipo": user.tipo
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
 
 
 @app.route("/reserve.html")
@@ -119,6 +141,18 @@ def categorias():
 @app.route("/register_machinery.html")
 def register_machine():
     return render_template("register_machinery.html")
+
+@app.route("/panelAdmin.html")
+def panel_administrador():
+    #if session.get("tipo") != "admin":
+    #    return redirect("/login.html")
+    return render_template("panelAdmin.html")
+
+
+@app.route("/register_categorie.html")
+def render_register_categorie():
+    return render_template("register_categorie.html")
+
 
 
 # ---- METODOS USUARIO ---- #
@@ -327,14 +361,14 @@ def add_categorie():
         return jsonify({"error": str(e)}), 400
     
 @app.route("/categorie/enable_categorie", methods=["GET"])
-def enable_categorie():
+def enable_categorie_get():
     try:
         return jsonify({ "categories": GetAllCategories.usecase_get_all_categories() })
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
 @app.route("/categorie/enable_categorie", methods=["POST"])
-def enable_categorie():
+def enable_categorie_post():
     try:
         request_value = request.get_json().get("categorie")
         EnableCategorie.usecase_enable_categorie(categorie=request_value)

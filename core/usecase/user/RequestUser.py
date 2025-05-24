@@ -7,8 +7,69 @@ import secrets
 import string
 import bcrypt
 
-def usecase_request_user(dni, email, name, lastname, phone, birthDate, terms_accepted):
-    _validator(dni, email, name, lastname, birthDate, 18, terms_accepted)
+def usecase_request_user(dni, email, name, lastname, phone, birthDate):
+    _validator(dni, email, name, lastname, birthDate, 18)
+
+    password = _random_password()
+
+    user = UserModel(
+        dni=dni,
+        password=password,
+        email=email,
+        name=name,
+        lastname=lastname,        
+        birth_date=birthDate,
+        phone=phone,
+        type = "Cliente"
+    )
+
+    #user = UserModel(dni=1, email="email", name="name", lastname="lastname", password="password", phone=1234, birth_date="fecha")
+
+    TEST_USER(dni=dni, user=user)
+
+
+    #Signin.usecase_signing(dni, password, email, name, lastname, phone, birthDate)
+
+    #return True
+
+def _validator(dni, email, name, lastname, birth_date_str, minimum_age):
+    required_fields = {
+        "DNI": dni,
+        "mail": email,
+        "nombre": name,
+        "apellido": lastname,
+        "fecha de nacimiento": birth_date_str
+    }
+
+    # Validación de campos vacíos
+    for field_name, value in required_fields.items():
+        if not value:
+            raise Exception(f"El campo '{field_name}' no puede estar vacío")
+
+    # Validación de formato de fecha y edad
+    try:
+        birth_date = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
+    except ValueError:
+        raise Exception("El formato de la fecha de nacimiento es inválido. Usa YYYY-MM-DD")
+
+    if birth_date > date.today():
+        raise Exception("La fecha de nacimiento no puede ser futura")
+
+    today = date.today()
+    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+    if age < minimum_age:
+        raise Exception(f"El usuario debe tener al menos {minimum_age} años")
+    
+def _random_password(longitud=12):
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(secrets.choice(caracteres) for _ in range(longitud))
+
+
+
+
+
+
 
     #dni_str = str(dni)
 
@@ -34,62 +95,3 @@ def usecase_request_user(dni, email, name, lastname, phone, birthDate, terms_acc
             #Sistema de Gestión BEA
         #"""
     #)
-
-    
-
-    password = _random_password()
-
-    user = UserModel(
-        dni=dni,
-        email=email,
-        name=name,
-        lastname=lastname,
-        password=password,
-        phone=phone,
-        birth_date=birthDate
-    )
-
-    #user = UserModel(dni=1, email="email", name="name", lastname="lastname", password="password", phone=1234, birth_date="fecha")
-
-    TEST_USER(dni=dni, user=user)
-
-
-    #Signin.usecase_signing(dni, password, email, name, lastname, phone, birthDate)
-
-    #return True
-
-def _validator(dni, email, name, lastname, birth_date_str, minimum_age, terms_accepted):
-    required_fields = {
-        "DNI": dni,
-        "mail": email,
-        "nombre": name,
-        "apellido": lastname,
-        "fecha de nacimiento": birth_date_str
-    }
-
-    # Validación de campos vacíos
-    for field_name, value in required_fields.items():
-        if not value:
-            raise Exception(f"El campo '{field_name}' no puede estar vacío")
-
-    if not terms_accepted:
-        raise Exception("Debes aceptar los términos y condiciones para continuar")
-
-    # Validación de formato de fecha y edad
-    try:
-        birth_date = datetime.strptime(birth_date_str, "%Y-%m-%d").date()
-    except ValueError:
-        raise Exception("El formato de la fecha de nacimiento es inválido. Usa YYYY-MM-DD")
-
-    if birth_date > date.today():
-        raise Exception("La fecha de nacimiento no puede ser futura")
-
-    today = date.today()
-    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-
-    if age < minimum_age:
-        raise Exception(f"El usuario debe tener al menos {minimum_age} años")
-    
-def _random_password(longitud=12):
-    caracteres = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(secrets.choice(caracteres) for _ in range(longitud))

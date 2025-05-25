@@ -9,4 +9,4 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment):
     reserve = ReservationModel(start_day=start_day, client_id=client_id, machine_id=machine_id, end_day=end_day, total_value=total_value, shipment=shipment)
     insert_reserve(start_day, client_id, machine_id, reserve)
 
-    return PayByMercadoPago.execute(machine_id, machine.model, total_value)
+    return PayByMercadoPago.execute(client_id, machine_id, start_day, machine.model, total_value)

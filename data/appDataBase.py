@@ -9,11 +9,13 @@ from data.query.get_all import query_get_all_machines, query_get_all_machines_by
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
-from data.query.update import query_update_machine, query_update_user, query_update_user_points
+from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation
 
 from data.query.change import query_change_password_user
 
 from data.query.get import query_get_user, query_get_machine
+
+from data.query.delete import query_delete_reservation
 
 def create_database():
     if (not os.path.isfile("///db/database.db")):
@@ -67,6 +69,9 @@ def update_user_points(dni, number):
 def update_user(dni, name, lastname):
     query_update_user.execute(dni=dni, new_name= name,new_lastname= lastname)    
 
+def update_confirm_reservation(client_id, start_day, machine_id):
+    query_update_confirm_reservation.execute(client_id, start_day, machine_id)
+
 # ---- change  ----
 def change_password(dni,password):
     query_change_password_user.execute(dni,password)
@@ -97,3 +102,7 @@ def get_all_categories():
 
 def get_all_reservations_by_machine(machine_id):
     return query_get_all_reservations_by_machine.execute(machine_id)
+
+# ---- delete ---- #
+def delete_reservation(client_id, start_day, machine_id):
+    query_delete_reservation.execute(client_id, start_day, machine_id)

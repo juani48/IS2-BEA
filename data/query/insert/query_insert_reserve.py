@@ -1,8 +1,6 @@
 from sqlalchemy import and_
 from data.config import session
 from data.model.ReservationModel import ReservationModel
-from data.model.ReservationInProcces import ReservationInProccesModel
-
 
 def execute(start_day, client_id, machine_id, reserve):
     local_reservation = session.query(ReservationModel).filter(
@@ -13,5 +11,4 @@ def execute(start_day, client_id, machine_id, reserve):
     if(local_reservation != None):
         raise Exception("Ya existes una reserva para estas fechas.")
     session.add(reserve)
-    session.add(ReservationInProccesModel(start_day, client_id, machine_id))
     session.commit()

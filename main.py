@@ -6,11 +6,12 @@ from core.entity import User
 from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
+from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -239,7 +240,7 @@ def add_employee():
         employeeN = request_value.get("employeeN")
     )
     
-# ---- MAQUINAS ----
+# ---- MAQUINAS ---- #
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
 #@login_required
@@ -313,7 +314,7 @@ def get_all_machines_filter():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ---- CATEGORIAS ----
+# ---- CATEGORIAS ---- #
 
 @app.route("/categorie/add_categorie", methods=["POST"])  # TESTEADO -> TRUE
 def add_categorie():
@@ -351,7 +352,7 @@ def disable_categorie():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ---- RESERVAS ----
+# ---- RESERVAS ---- #
 
 @app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
 def machine_reservations():
@@ -361,26 +362,8 @@ def machine_reservations():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-#@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) 
-#def reserve_machine():
-
-    # fecha_hora = datetime.now()
-    # fecha_hora = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
-    # formate de las fechas
-
-    # now = datetime.now()
-    # date2 = now + timedelta(days=3)
-    # date2_1 = now + timedelta(days=4)
-    try:
-        print()
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# ---- PAGOS ---- # 
-
-@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # Metodo iniciado por el boton de 'reservar'
-def redirect_to_pay():
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO REAL PARA RESERVAR MAQUINAS
+def reserve_machine():
     try:
         request_value = request.get_json()
 
@@ -392,18 +375,35 @@ def redirect_to_pay():
             shipment=request_value.get("shipment"),
         )
 
+        return jsonify({ "preference": preference }), 200 # LARA TE DEVUELVO ESTO Y TENES QUE SACAR EL "init_point" Y GUARDARTELO EN CACHE
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
+# ---- PAGOS ---- # 
+
+@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # METODO PROVISORIO
+def redirect_to_pay():
+    try:
         return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
     except Exception as e:
         return jsonify({ "message": e }), 404
 
-# ---- RESPUESTAS DE PAGO ---- #
+@app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
+def failure_reservation():
+    
+    return render_template("failure_reservation.html")
 
-@app.route("/pay/pay_notification", methods=["POST"]) # Llamar al caso de uso que confirme la reserva
+@app.route("/pay/pay_notification", methods=["POST"]) # Verificar que se realizo el pago y enviar un correo
 def pay_notification():
-    request_value = request.get_json()
-    print(request)
-    print("-----")
-    print(request_value)
+    try:
+        request_value = request.get_json()
+        topic = request_value.get("topic")
+        if topic != None:
+            ConfirmReservation.usecase_confirm_reservation(topic, request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
 
 # ---- MAIN ----
 

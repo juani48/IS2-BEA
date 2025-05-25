@@ -1,0 +1,63 @@
+{
+    "status": 200,
+    "response": {
+        "id": 31278505848,
+        "status": "closed",
+        "external_reference": "",
+        "preference_id": "2447327823-eab9467b-15cb-4a18-b1ea-d9f56417adea",
+        "payments": [
+            {
+                "id": 112342800291,
+                "transaction_amount": 10,
+                "total_paid_amount": 10,
+                "shipping_cost": 0,
+                "currency_id": "ARS",
+                "status": "approved",
+                "status_detail": "accredited",
+                "operation_type": "regular_payment",
+                "date_approved": "2025-05-25T17:57:51.000-04:00",
+                "date_created": "2025-05-25T17:57:50.000-04:00",
+                "last_modified": "2025-05-25T17:57:51.000-04:00",
+                "amount_refunded": 0
+            }
+        ],
+        "shipments": [],
+        "payouts": [],
+        "collector": {
+            "id": 2447327823,
+            "email": "",
+            "nickname": "TESTUSER1819399140"
+        },
+        "marketplace": "NONE",
+        "notification_url": "https://c8fe-181-231-168-220.ngrok-free.app/pay/pay_notification",
+        "date_created": "2025-05-25T17:57:50.513-04:00",
+        "last_updated": "2025-05-25T17:57:51.206-04:00",
+        "sponsor_id": null,
+        "shipping_cost": 0,
+        "total_amount": 10,
+        "site_id": "MLA",
+        "paid_amount": 10,
+        "refunded_amount": 0,
+        "payer": {
+            "id": 2451716882,
+            "email": ""
+        },
+        "items": [
+            {
+                "id": "",
+                "category_id": "",
+                "currency_id": "ARS",
+                "description": "",
+                "picture_url": null,
+                "title": "COMPRAR RESERVA DE LA MAQUINA: JAUN_XD - ABC1",
+                "quantity": 1,
+                "unit_price": 10
+            }
+        ],
+        "cancelled": false,
+        "additional_info": "",
+        "application_id": null,
+        "is_test": true,
+        "order_status": "paid"
+    }
+}

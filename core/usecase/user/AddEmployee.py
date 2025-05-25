@@ -4,7 +4,7 @@ from core.usecase.user.RequestUser import _random_password
 from core.usecase.service import SendMail
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
-    if (_validator(dni, email, name, lastname)):
+    if (_validator(dni, email, name, lastname)):        
         password = _random_password()
         user = UserModel(
                 dni=int(dni),

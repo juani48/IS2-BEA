@@ -1,17 +1,22 @@
 from data.model.UserModel import UserModel
 from data.appDataBase import insert_employee
+from core.usecase.user.RequestUser import _random_password
 
+def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
+    #_validator(dni, email, name, lastname)
 
-def usecase_add_employee(dni, email, name, lastname,phone,dateBirth, employeeN):
-    _validator(dni, email, name, lastname)
+    password = _random_password()
     user = UserModel(
             dni=int(dni),
+            password= password,
             email= email,
             name= name,
             lastname= lastname,
             phone = phone,
-            dateBirth = dateBirth,
-            employeeN= employeeN
+            birth_date = dateBirth,
+            employee_number= employeeN,
+            type = "Empleado",
+            authorized = True
         )
     insert_employee(
         dni,

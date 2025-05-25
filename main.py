@@ -126,6 +126,7 @@ def load_login():
 
 
 @app.route("/reserve.html")
+@login_required
 def load_reserve():
     return render_template("/reserve.html")
 
@@ -142,28 +143,40 @@ def load_singin():
     return render_template("/singin.html")
 
 @app.route("/panelUsuario.html")
+@login_required
 def load_panelUsuario():
     return render_template("/panelUsuario.html")
 
+@app.route("/panelAdmin.html")
+@login_required
+def load_panelAdministrador():
+    if (current_user.type  == "Admin"):
+        return render_template("/panelAdmin.html")
+    else: 
+        return "No tiene permiso de estar aqui"
 
 @app.route("/categorie.html")  #Lara estuvo aki
 def categorias():
     return render_template("categorie.html")
 
 @app.route("/register_machinery.html")
+@login_required
 def register_machine():
-    return render_template("register_machinery.html")
+    if (current_user.type  == "Admin"):
+        return render_template("register_machinery.html")
+    else:
+        return "Solo los admin pueden cargar maquinarias"
 
 
 # ---- METODOS USUARIO ---- #
 
 @app.route("/login", methods=["POST"])
 def login():
-    #try:
+    try:
         data = request.get_json()
         userModel  = Auth.usecase_login(dni=data["dni"], password=data["password"])
         user = User(userModel)  # ✅ forma correcta
-        login_user(user)
+        login_user(user,remember= False)
         return jsonify({
             "user": {
                 "dni": userModel.dni,
@@ -174,15 +187,14 @@ def login():
             }
         }), 200
     
-   # except Exception as e:
-    #    return jsonify({"error": str(e)}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
 
 
 @app.route("/logout", methods=["GET"])
-@login_required
 def logout():
     logout_user()
-    return jsonify({"message": "Sesión cerrada exitosamente"}), 200
+    return redirect(url_for('load_login'))
 
 
 @app.route("/signin", methods=["POST"])
@@ -238,16 +250,19 @@ def change_password():
 @login_required
 def add_employee():
     request_value = request.get_json()
-    AddEmployee.usecase_add_employee(
-        name = request_value.get("name"),
-        lastname = request_value.get("lastname"),
-        dni = request_value.get("DNI"),
-        email = request_value.get("email"),
-        phone = request_value.get("phone"),
-        dateBirth = request_value.get("dateBirth"),
-        employeeN = request_value.get("employeeN")
-    )
-    
+    if (current_user.type == "Admin"):
+        AddEmployee.usecase_add_employee(
+            name = request_value.get("name"),
+            lastname = request_value.get("lastname"),
+            dni = request_value.get("DNI"),
+            email = request_value.get("email"),
+            phone = request_value.get("phone"),
+            dateBirth = request_value.get("dateBirth"),
+            employeeN = request_value.get("employeeN")
+        )
+    else:
+        return "Debe ser administrador para agrgar un empleados", 404
+    return "Empleado agregado", 204
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE

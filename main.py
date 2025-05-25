@@ -11,7 +11,7 @@ from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -361,6 +361,19 @@ def machine_reservations():
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/reservation/cancel_reservation", methods=["POST"])
+def cancel_reservation():
+    try:
+        request_value = request.get_json()
+        CancelReservation.usecase_cancel_reservation(
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            start_day=request_value.get("start_day")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO REAL PARA RESERVAR MAQUINAS
 def reserve_machine():
@@ -381,7 +394,7 @@ def reserve_machine():
 
 # ---- PAGOS ---- # 
 
-@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # METODO PROVISORIO
+@app.route("/pay/redirect_to_pay", methods=["GET"]) # METODO PROVISORIO
 def redirect_to_pay():
     try:
         return jsonify({ "preference": PayByMercadoPago.execute() }), 200 

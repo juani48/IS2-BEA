@@ -7,7 +7,7 @@ from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
 from core.usecase.reserve import MachineReservations, AddReservation
@@ -170,10 +170,10 @@ def register_machine():
 
 # ---- METODOS USUARIO ---- #
 
-def getType():
+def getType():                                   #Chequeado ✅
     return str(current_user.type)
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST"])           #Chequeado ✅
 def login():
     try:
         data = request.get_json()
@@ -194,13 +194,13 @@ def login():
         return jsonify({"error": str(e)}), 401
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["POST"])          #Chequeado ✅
 def logout():
     logout_user()
     return redirect(url_for('load_login'))
 
 
-@app.route("/signin", methods=["POST"])
+@app.route("/signin", methods=["POST"])          #Chequeado ✅
 def signin():
     try:
         dni = request.form["dni"]
@@ -225,31 +225,39 @@ def signin():
         flash(str(e))
         return redirect(url_for("load_singin"))
 
-@app.route("/user/update_user", methods=["PUT"])
+@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required
-def update_user():
+def update_user():         
     request_value = request.get_json()
-    UpdateUser.usecase_update_user(
-        #email=request_value.get("email"),
-        dni = request_value.get("dni"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        UpdateUser.usecase_update_user(
+            #email=request_value.get("email"),
+            dni = request_value.get("dni"),
+            name =request_value.get("name"),
+            lastname =request_value.get("lastname"),
+        )
+        return "", 204
+    else:   
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/user/change_password", methods=["PUT"])
+
+@app.route("/user/change_password", methods=["PUT"]) #Chequeado ✅ (falta aplicar hash)
 @login_required
 def change_password():
     request_value = request.get_json()
-    ChangePassword(
-        dni = request_value.get("dni"),
-        password_Act = request_value.get("passwordAct"),
-        password_New_1 = request_value.get("password1"),
-        password_New_2 = request_value.get("password2")
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        ChangePassword(
+            dni = request_value.get("dni"),
+            password_Act = request_value.get("passwordAct"),
+            password_New_1 = request_value.get("password1"),
+            password_New_2 = request_value.get("password2")
+        )
+        return "", 204
+    else: 
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/admin/add_employee", methods=["PUT"])
+
+@app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
 @login_required
 def add_employee():
     request_value = request.get_json()
@@ -257,15 +265,24 @@ def add_employee():
         AddEmployee.usecase_add_employee(
             name = request_value.get("name"),
             lastname = request_value.get("lastname"),
-            dni = request_value.get("DNI"),
+            dni = request_value.get("dni"),
             email = request_value.get("email"),
             phone = request_value.get("phone"),
             dateBirth = request_value.get("dateBirth"),
             employeeN = request_value.get("employeeN")
         )
     else:
-        return "Debe ser administrador para agrgar un empleados", 404
+        return "Debe ser administrador para agregar un empleado", 404
     return "Empleado agregado", 204
+
+@app.route("/employee/requests", methods= ["PUT"])
+@login_required
+def reply_request():
+    reply = request.get_json()
+    if (reply):
+        return 0
+    
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE

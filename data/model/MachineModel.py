@@ -29,7 +29,7 @@ class MachineModel(Base):
             "refund": self.refund,
             "disable": self.disable,
             "description": self.description,
-            "image": self.image
+            "image": None
         }
 
     def include(self, string):
@@ -50,4 +50,4 @@ class MachineModel(Base):
         self.refund = refund
         self.disable = False
         self.description = description
-        # self.image = image
+        #self.image = image

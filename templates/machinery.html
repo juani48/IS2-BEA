@@ -191,6 +191,31 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Error al cargar:", error);
     });
 
+  function renderMachine(machine, imageSrc) {
+    const card = `
+      <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
+        <div class="w-full aspect-square overflow-hidden">
+          <img src="${imageSrc}"
+              onerror="this.src='/static/image/machines/default.png'"
+              alt="Imagen de ${machine.model}"
+              class="w-full h-full object-cover" />
+        </div>
+        <div class="flex-grow p-2 text-center flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
+            <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
+            <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
+          </div>
+          <a href="/reserve.html?machine_id=${machine.patent}"
+            class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
+            Reservar
+          </a>
+        </div>
+      </div>
+    `;
+    container.innerHTML += card;
+  }
+
   function renderPage(page) {
     container.innerHTML = "";
     const start = (page - 1) * cardsPerPage;
@@ -198,42 +223,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const items = machines.slice(start, end);
 
     items.forEach((machine) => {
-      const normalizedPatent = machine.patent.replace(/\s+/g, "_");  // reemplaza espacios por guiones bajos
-      const imageSrc = `/static/image/machines/${normalizedPatent}.jpg`;
+      const normalizedPatent = machine.patent.replace(/\s+/g, "_");
+      const basePath = `/static/image/machines/${normalizedPatent}`;
+      const validExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+      let found = false;
 
+      validExtensions.forEach((ext) => {
+        const testImage = new Image();
+        testImage.src = basePath + ext;
 
-  const card = `
-  <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
+        testImage.onload = () => {
+          if (!found) {
+            found = true;
+            renderMachine(machine, testImage.src);
+          }
+        };
 
-    <!-- Imagen cuadrada -->
-    <div class="w-full aspect-square overflow-hidden">
-      <img src="${imageSrc}"
-           onerror="this.src='/static/image/machines/default.png'"
-           alt="Imagen de ${machine.model}"
-           class="w-full h-full object-cover" />
-    </div>
-
-    <!-- Texto dentro del cuadrado -->
-    <div class="flex-grow p-2 text-center flex flex-col justify-between">
-      <div>
-        <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
-        <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
-        <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
-      </div>
-      <a href="/reserve.html?machine_id=${machine.patent}"
-         class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
-         Reservar
-      </a>
-    </div>
-
-  </div>
-`;
-
-
-
-
-
-      container.innerHTML += card;
+        testImage.onerror = () => {
+          if (!found && ext === validExtensions[validExtensions.length - 1]) {
+            // última extensión fallida → mostrar default
+            renderMachine(machine, "/static/image/machines/default.png");
+          }
+        };
+      });
     });
   }
 
@@ -241,7 +253,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPages = Math.ceil(machines.length / cardsPerPage);
     pagination.innerHTML = "";
 
-    // Anterior
     const prev = document.createElement("button");
     prev.textContent = "‹ Anterior";
     prev.disabled = currentPage === 1;
@@ -255,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     pagination.appendChild(prev);
 
-    // Botones de página
     for (let i = 1; i <= totalPages; i++) {
       const btn = document.createElement("button");
       btn.textContent = i;
@@ -270,7 +280,6 @@ document.addEventListener("DOMContentLoaded", function () {
       pagination.appendChild(btn);
     }
 
-    // Siguiente
     const next = document.createElement("button");
     next.textContent = "Siguiente ›";
     next.disabled = currentPage === totalPages;
@@ -286,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 </script>
+
 
 
 

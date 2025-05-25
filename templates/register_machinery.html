@@ -271,7 +271,7 @@
 
 
       function loadCategoires() {
-      fetch("/categorie/enable_categorie_get", { method: "GET" })
+      fetch("/categorie/enable_categorie", { method: "GET" })
         .then(res => res.json())
         .then(data => {
           const categorias = data.categories || [];

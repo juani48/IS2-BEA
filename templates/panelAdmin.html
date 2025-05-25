@@ -56,28 +56,28 @@
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
                 <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
                 <li class="relative" id="dropdown-container">
-  <span id="dropdown-toggle"
-        class="cursor-pointer text-white hover:underline inline-block">
-    Gestionar <i class="fas fa-caret-down ml-1"></i>
-  </span>
+                <span id="dropdown-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Gestionar <i class="fas fa-caret-down ml-1"></i>
+                </span>
 
-  <div id="dropdown-menu"
-       class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-       style="color: #7f1d1d;">
-   <a href="register_machinery.html"
-   class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-   style="color: #7f1d1d !important;">
-  ➕ Dar de alta una maquinaria
-</a>
+                <div id="dropdown-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                <a href="register_machinery.html"
+                class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                style="color: #7f1d1d !important;">
+                ➕ Dar de alta una maquinaria
+              </a>
 
-    <a href="register_categorie.html"
-   class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-   style="color: #7f1d1d !important;">
-  ➕ Dar de alta una categoría
-</a>
+                  <a href="register_categorie.html"
+                class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                style="color: #7f1d1d !important;">
+                ➕ Dar de alta una categoría
+              </a>
 
-  </div>
-</li>
+                </div>
+              </li>
 
 <!-- ESTO COSTO MUCHISIMO, LA IDEA SERIA QUE SE MANTENGA MEJOR, de ultima lo cambiamos porque me enoje-->
 
@@ -181,23 +181,27 @@
     </footer>
 
 <script>
-  const toggle = document.getElementById("dropdown-toggle");
-  const menu = document.getElementById("dropdown-menu");
-  const container = document.getElementById("dropdown-container");
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dropdown-toggle");
+    const menu = document.getElementById("dropdown-menu");
+    const container = document.getElementById("dropdown-container");
 
-  // Mostrar menú al entrar al toggle o al menú
-  toggle.addEventListener("mouseenter", () => {
-    menu.classList.remove("hidden");
-  });
-  menu.addEventListener("mouseenter", () => {
-    menu.classList.remove("hidden");
-  });
+    if (toggle && menu && container) {
+      toggle.addEventListener("mouseenter", () => {
+        menu.classList.remove("hidden");
+      });
 
-  // Ocultar solo cuando se va de todo el contenedor
-  container.addEventListener("mouseleave", () => {
-    menu.classList.add("hidden");
+      menu.addEventListener("mouseenter", () => {
+        menu.classList.remove("hidden");
+      });
+
+      container.addEventListener("mouseleave", () => {
+        menu.classList.add("hidden");
+      });
+    }
   });
 </script>
+
 
 
 </body>

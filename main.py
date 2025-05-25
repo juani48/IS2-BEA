@@ -37,8 +37,6 @@ app.config['UPLOAD_FOLDER_MACHINE'] = UPLOAD_FOLDER_MACHINE
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-import os
-from werkzeug.utils import secure_filename
 
 @app.route("/machine/create_with_image", methods=["POST"])
 def create_machine_with_image():
@@ -46,16 +44,23 @@ def create_machine_with_image():
         form = request.form
         file = request.files.get("image")
 
-        patent = f"{form.get('mark')}-{form.get('model')}"
-        # ✅ Guardar imagen en static/image/machines/ si existe
+        from werkzeug.utils import secure_filename
+
+        patent_raw = f"{form.get('mark')}-{form.get('model')}"
+        patent = secure_filename(patent_raw)
+        extension = os.path.splitext(file.filename)[1].lower()  # incluye el punto, ej. ".png"
+        filename = patent + extension
+
+
+        # Guardar imagen en static/image/machines/ si existe
         if file and file.filename != "":
             filename = secure_filename(patent + ".jpg")
             folder_path = os.path.join("static", "image", "machines")
             os.makedirs(folder_path, exist_ok=True)
             file.save(os.path.join(folder_path, filename))
-            # No se guarda en base de datos ❌
+            # No se guarda en base de datos 
 
-        # ✅ Registrar la máquina sin imagen
+        # Registrar la máquina sin imagen
         from core.usecase.machine import AddMachine  # si no lo importaste arriba
 
         AddMachine.usecase_add_machine(
@@ -166,6 +171,10 @@ def register_machine():
         return render_template("register_machinery.html")
     else:
         return "Solo los admin pueden cargar maquinarias"
+    
+@app.route("/register_categorie.html")
+def register_categorie():
+    return render_template("register_categorie.html")
 
 
 # ---- METODOS USUARIO ---- #
@@ -191,7 +200,7 @@ def login():
         }), 200
     
     except Exception as e:
-        return jsonify({"error": str(e)}), 401
+        return jsonify({"error": str(e)}), 401 
 
 
 @app.route("/logout", methods=["POST"])
@@ -320,16 +329,31 @@ def get_all_machines_filter():
 
 # ---- CATEGORIAS ----
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
+#@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
+#def add_categorie():
+#    try:
+#        request_value = request.get_json()
+#        AddCategorie.usecase_add_categorie(
+#            categorie=request_value.get("categorie")
+#        )
+#        return "", 204
+#    except Exception as e:
+#        return jsonify({ "message": str(e) }), 404
+    
+@app.route("/categorie/add_categorie", methods=["POST"])
 def add_categorie():
+    if request.content_type != "application/json":
+        return jsonify({"message": "Tipo de contenido inválido"}), 415
+
     try:
-        request_value = request.get_json()
+        data = request.get_json()
         AddCategorie.usecase_add_categorie(
-            categorie=request_value.get("categorie")
+            categorie=data.get("categorie")
         )
         return "", 204
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"message": str(e)}), 400
+
 
 @app.route("/categorie/enable_categorie", methods=["GET", "POST"])
 def enable_categorie():

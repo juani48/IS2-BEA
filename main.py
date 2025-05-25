@@ -170,6 +170,9 @@ def register_machine():
 
 # ---- METODOS USUARIO ---- #
 
+def getType():
+    return str(current_user.type)
+
 @app.route("/login", methods=["POST"])
 def login():
     try:
@@ -191,7 +194,7 @@ def login():
         return jsonify({"error": str(e)}), 401
 
 
-@app.route("/logout", methods=["GET"])
+@app.route("/logout", methods=["POST"])
 def logout():
     logout_user()
     return redirect(url_for('load_login'))

@@ -278,10 +278,20 @@ def add_employee():
 @app.route("/employee/requests", methods= ["PUT"])
 @login_required
 def reply_request():
-    reply = request.get_json()
-    if (reply):
-        return 0
+    if current_user.type not in ["Admin", "Empleado"]:
+        return jsonify({"error": "No tiene acceso aquí"}), 403
+    try:
+        request_value = request.get_json()
+        reply = request_value.get("reply")
+        dni = request_value.get("dni")
+        if reply is None or dni is None:
+            return jsonify({"error": "Faltan datos obligatorios (Reply o DNI)"}), 400
+        RequestUser(reply=reply, dni=dni)
+        return jsonify({"message": "Solicitud procesada correctamente"}), 200
     
+    except Exception as e:
+        return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
+
 
 # ---- MAQUINAS ----
 

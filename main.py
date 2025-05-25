@@ -153,7 +153,7 @@ def load_panelAdministrador():
     if (current_user.type  == "Admin"):
         return render_template("/panelAdmin.html")
     else: 
-        return "No tiene permiso de estar aqui"
+        return render_template('/main.html')
 
 @app.route("/categorie.html")  #Lara estuvo aki
 def categorias():

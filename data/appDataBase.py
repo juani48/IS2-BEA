@@ -26,9 +26,9 @@ def TEST_USER(dni, user):
     #query_insert_user.execute(dni, user)
 
 
-def insert_user(dni, user):
+def insert_user(dni, user, email):
     #query_TEST_USER.execute(dni, user)
-    query_insert_user.execute(dni, user)
+    query_insert_user.execute(dni, user, email)
 
 def insert_machine(patent, categorie, machine, machine_categorie):
     query_insert_machine.execute(patent, machine)

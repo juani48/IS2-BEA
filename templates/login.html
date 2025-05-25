@@ -212,9 +212,9 @@
             // Redirigir después de login exitoso
             localStorage.setItem('user', JSON.stringify(data.user));
             console.log("info guardada");
-            if (data.user.type === "admin") {
+            if (data.user.type === "Admin") {
                 window.location.href = "/panelAdmin.html";
-            } else if (data.user.type === "employee") {
+            } else if (data.user.type === "Employee") {
                 window.location.href = "/panelEmpleado.html";
             } else {
                 window.location.href = "/panelUsuario.html";

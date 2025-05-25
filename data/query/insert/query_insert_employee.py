@@ -5,6 +5,6 @@ def execute(employeeN, user):
     local_employee = session.query(UserModel).filter(UserModel.employee_number == employeeN).first()
     if (local_employee != None):
         raise Exception("Empleado existente")
-
-    session.add(user)
-    session.commit()
+    else:
+        session.add(user)
+        session.commit()

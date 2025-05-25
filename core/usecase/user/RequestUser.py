@@ -1,7 +1,7 @@
 from core.usecase.service import SendMail
 from core.usecase.user import Signin
 from data.model.UserModel import UserModel
-from data.appDataBase import get_user, TEST_USER
+from data.appDataBase import insert_user,get_all_employees
 from datetime import datetime, date
 import secrets
 import string
@@ -22,15 +22,10 @@ def usecase_request_user(dni, email, name, lastname, phone, birthDate):
         phone=phone,
         type = "Cliente"
     )
-
-    #user = UserModel(dni=1, email="email", name="name", lastname="lastname", password="password", phone=1234, birth_date="fecha")
-
-    TEST_USER(dni=dni, user=user)
-
-
+    insert_user(dni=dni,user=user,email=email)
     #Signin.usecase_signing(dni, password, email, name, lastname, phone, birthDate)
-
-    #return True
+    sendMailEmployees(dni=dni)
+    return True
 
 def _validator(dni, email, name, lastname, birth_date_str, minimum_age):
     required_fields = {
@@ -62,36 +57,26 @@ def _validator(dni, email, name, lastname, birth_date_str, minimum_age):
         raise Exception(f"El usuario debe tener al menos {minimum_age} años")
     
 def _random_password(longitud=12):
-    caracteres = string.ascii_letters + string.digits + string.punctuation
+    caracteres = string.ascii_letters + string.digits + "."  # solo letras, dígitos y punto
     return ''.join(secrets.choice(caracteres) for _ in range(longitud))
 
 
 
+def sendMailEmployees(dni):
+    empleados = get_all_employees()
+    dni_str = str(dni)
+    for empleado in empleados:
+        SendMail.usecase_send_mail(
+            emailDest=empleado.email,
+            subject="Solicitud de registro",
+            body=f"""
+                Hola equipo,
 
+                    Se ha recibido una nueva solicitud de registro por parte de un usuario con DNI: {dni_str}
 
+                    Por favor, ingrese al sistema para revisar y aprobar o rechazar el registro según corresponda.
 
-
-    #dni_str = str(dni)
-
-    #user_by_dni = get_user(dni)
-    #if user_by_dni is not None:
-    #    raise Exception("DNI ya registrado")
-
-    #user_by_email = get_user(0, email)
-    #if user_by_email is not None:
-    #    raise Exception("Email ya registrado")
-
-    #SendMail.usecase_send_mail(
-        #emailDest=email,
-        #subject="Solicitud de registro",
-        #body=f"""
-            #Hola equipo,
-
-            #Se ha recibido una nueva solicitud de registro por parte de un usuario con DNI: {dni_str}
-
-            #Por favor, ingrese al sistema para revisar y aprobar o rechazar el registro según corresponda.
-
-            #Gracias y saludos,
-            #Sistema de Gestión BEA
-        #"""
-    #)
+                    Gracias y saludos,
+                    Sistema de Gestión BEA
+            """
+        )

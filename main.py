@@ -327,7 +327,7 @@ def add_categorie():
         return jsonify({"error": str(e)}), 400
     
 @app.route("/categorie/enable_categorie", methods=["GET"])
-def enable_categorie():
+def get_enable_categorie():
     try:
         return jsonify({ "categories": GetAllCategories.usecase_get_all_categories() })
     except Exception as e:

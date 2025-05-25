@@ -38,18 +38,15 @@
                 </div>
             </div>
 
-            <!-- MI CUENTA -->
+            <!-- Iniciar sesión -->
             <a href="login.html"
                 class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
                 <!-- Ícono normal -->
                 <i class="fas fa-user text-lg group-hover:hidden"></i>
                 <!-- Ícono alternativo que aparece en hover -->
                 <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
+                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
             </a>
-
-
-        </div>
         </div>
 
         <!-- Navigation debajo, 100% ancho -->
@@ -79,50 +76,56 @@
 </header>
 
 <main class="flex justify-center bg-gradient-to-br from-red-100 to-red-200 py-10">
-
-
-  <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-    <div class="flex justify-end">
-      <a href="/" title="Volver al inicio"
-          class="text-gray-400 hover:text-red-500 font-bold text-xl transition duration-200">&times;
-      </a>
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+        <div class="flex justify-end">
+            <a href="/" title="Volver al inicio"
+                class="text-gray-400 hover:text-red-500 font-bold text-xl transition duration-200">&times;
+            </a>  
+        </div>
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form id="login-form" class="space-y-5" novalidate>  <!-- Quitamos action/method -->
+            <div>
+                <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+                <input
+                    type="text"
+                    id="dni"
+                    name="dni"
+                    required
+                    maxlength="8"
+                    minlength="7"
+                    pattern="\d+"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                    placeholder="Solo números"
+                >
+                <p id="dni-error" class="text-red-600 text-sm mt-1 hidden">⚠️ Ingresá un DNI válido (7 u 8 dígitos).</p>
+            </div>
+            <div>
+                <label for="login-input-password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                <input type="password" id="login-input-password" required
+                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+            <button type="submit"
+                class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
+                Ingresar
+            </button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            ¿No tenés cuenta? <a href="singin.html" class="text-red-500 hover:underline">Registrate</a>
+        </p>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            ¿Olvidaste tu contraseña? <a href="recuperarContraseña.html" class="text-red-500 hover:underline">Recuperala</a>
+        </p>
     </div>
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h2>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg text-center">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form id="login-form" class="space-y-5">  <!-- Quitamos action/method -->
-  <div>
-    <label for="login-input-dni" class="block text-sm font-medium text-gray-700">DNI</label>
-    <input type="text" id="login-input-dni" required
-           class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-  </div>
-
-  <div>
-    <label for="login-input-password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-    <input type="password" id="login-input-password" required
-           class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-  </div>
-
-  <button type="submit"
-          class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition duration-300">
-    Ingresar
-  </button>
-</form>
-
-    <p class="mt-4 text-center text-sm text-gray-600">
-      ¿No tenés cuenta? <a href="singin.html" class="text-red-500 hover:underline">Registrate</a>
-    </p>
-    <p class="mt-4 text-center text-sm text-gray-600">
-      ¿Olvidaste tu contraseña? <a href="recuperarContraseña.html" class="text-red-500 hover:underline">Recuperala</a>
-    </p>
-  </div>
 </main>
 
 <footer class="bg-bob-dark-red text-white py-10">
@@ -179,17 +182,37 @@
         </div>
     </footer>
 </body>
-<script>
-  setTimeout(() => {
-    const alert = document.querySelector(".bg-green-100");
-    if (alert) alert.remove();
-  }, 4000); // se borra a los 4 segundos
 
-  document.getElementById("login-form").addEventListener("submit", function(event) {  //<--------------------------------------------------------------------------------
+<script>
+    setTimeout(() => {
+        const alert = document.querySelector(".bg-green-100");
+        if (alert) alert.remove();
+    }, 4000); // se borra a los 4 segundos
+
+    // VALIDACIÓN Y ENVÍO LOGIN
+    document.getElementById("login-form").addEventListener("submit", function(event) {
         event.preventDefault();
-        
-        const dni = document.getElementById("login-input-dni").value;
-        const password = document.getElementById("login-input-password").value;
+        const dniInput = document.getElementById("dni");
+        const passwordInput = document.getElementById("login-input-password");
+        const dni = dniInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // Limpiar errores anteriores
+        const existingError = document.getElementById("login-error-message");
+        if (existingError) existingError.remove();
+
+        //Validar DNI: 7 u 8 dígitos numéricos
+        if (!/^\d{7,8}$/.test(dni)) {
+            const errorDiv = document.createElement("div");
+            errorDiv.id = "login-error-message";
+            errorDiv.className = "mt-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center";
+            errorDiv.textContent = "⚠️ Ingresá un DNI válido (7 u 8 dígitos numéricos).";
+            event.target.appendChild(errorDiv);
+            dniInput.classList.add("border-red-500", "focus:ring-red-500");
+        return; // no continúa con el envío
+        } else {
+            dniInput.classList.remove("border-red-500", "focus:ring-red-500");
+        }
 
         // Mostrar loader (opcional)
         const button = event.target.querySelector('button[type="submit"]');
@@ -209,22 +232,18 @@
             return response.json();
         })
         .then(data => {
-            // Redirigir después de login exitoso
+        // Redirigir después de login exitoso
             localStorage.setItem('user', JSON.stringify(data.user));
             console.log("info guardada");
             window.location.href = "/panelUsuario.html";  // Ajusta esta ruta
         })
         .catch(error => {
             // Mostrar error al usuario
-            const errorElement = document.createElement('p');
-            errorElement.className = 'mt-2 text-center text-sm text-red-600';
-            errorElement.textContent = error.message;
-            
-            // Limpiar errores anteriores
-            const existingError = document.querySelector('.login-error');
-            if (existingError) existingError.remove();
-            
-            errorElement.classList.add('login-error');
+            const errorElement = document.createElement('div');
+            errorElement.id = "login-error-message";
+            errorElement.className = 'mt-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center';
+            errorElement.textContent = "⚠️ " + error.message;
+        // Limpiar errores anteriores (ya hecho arriba por seguridad)
             event.target.appendChild(errorElement);
         })
         .finally(() => {

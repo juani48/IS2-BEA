@@ -216,42 +216,47 @@
     </footer>
 
     <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("category-form");
-    const nameInput = document.getElementById("name");
-    const success = document.getElementById("success");
-    const error = document.getElementById("error");
+  document
+    .getElementById("category-form")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
+      const nameInput = document.getElementById("name");
+      const name = nameInput.value.trim();  // Elimina espacios antes/después
+      const success = document.getElementById("success");
+      const error = document.getElementById("error");
 
-        const name = nameInput.value;
+      // Validación: que no esté vacío
+      if (name === "") {
+        success.classList.add("hidden");
+        error.textContent = "⚠️ El nombre de la categoría no puede estar vacío.";
+        error.classList.remove("hidden");
+        nameInput.focus();
+        return;
+      }
 
-        fetch("/categorie/add_categorie", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ categorie: name }),
+      fetch("/categorie/add_categorie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categorie: name }),
+      })
+        .then((res) => {
+          if (res.status === 204) {
+            success.classList.remove("hidden");
+            error.classList.add("hidden");
+            e.target.reset();
+          } else {
+            throw new Error(res.status === 404 ? "Ya existe esa categoría." : "Error inesperado al registrar.");
+          }
         })
-          .then((res) => {
-            if (res.status === 204) {
-              success.classList.remove("hidden");
-              error.classList.add("hidden");
-              form.reset();
-            } else {
-              throw new Error("Ya existe esa categoría o falló el registro.");
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            success.classList.add("hidden");
-            error.textContent = `⚠️ ${err.message}`;
-            error.classList.remove("hidden");
-          });
-      });
-    }
-  });
+        .catch((err) => {
+          success.classList.add("hidden");
+          error.textContent = `⚠️ ${err.message}`;
+          error.classList.remove("hidden");
+        });
+    });
 </script>
+
 
   </body>
 </html> 

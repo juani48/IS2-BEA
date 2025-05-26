@@ -9,7 +9,7 @@ from core.service.mercado_pago import PayByMercadoPago
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
-from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie
+from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation
 from templates import *
 import os
@@ -277,24 +277,25 @@ def add_employee():
     return "Empleado agregado", 204
 # ---- MAQUINAS ----
 
-@app.route("/machine/add_machine", methods=["GET", "POST"]) # TESTEADO -> TRUE
+@app.route("/machine/add_machine", methods=["POST"])
 @login_required
 def add_machine():
     try:
-        request_value = request.get_json()
+        form = request.form  # en lugar de get_json
         AddMachine.usecase_add_machine(
-            patent=request_value.get("patent"),
-            mark=request_value.get("patent"),
-            model=request_value.get("model"),
-            price_day=request_value.get("price_day"),
-            ubication=request_value.get("ubication"),
-            refund=request_value.get("refund"),
-            categorie=request_value.get("categorie"),
-            description=request_value.get("description")
+            patent=form.get("patent"),
+            mark=form.get("mark"),
+            model=form.get("model"),
+            price_day=float(form.get("price_day")),
+            ubication=form.get("ubication"),
+            refund=0,
+            categorie=form.get("categorie"),
+            description=form.get("description")
         )
         return "", 204
     except Exception as e:
-        return jsonify( { "message": e } ), 404
+        return jsonify({"message": str(e)}), 404
+
 
 @app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
@@ -327,32 +328,42 @@ def get_all_machines_filter():
     except Exception as e:
         return jsonify({ "message": e }), 404
 
-# ---- CATEGORIAS ----
+#    ---- CATEGORIAS ----
 
-#@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
-#def add_categorie():
-#    try:
-#        request_value = request.get_json()
-#        AddCategorie.usecase_add_categorie(
-#            categorie=request_value.get("categorie")
-#        )
-#        return "", 204
-#    except Exception as e:
-#        return jsonify({ "message": str(e) }), 404
-    
-@app.route("/categorie/add_categorie", methods=["POST"])
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def add_categorie():
-    if request.content_type != "application/json":
-        return jsonify({"message": "Tipo de contenido inválido"}), 415
-
     try:
-        data = request.get_json()
+        request_value = request.get_json()
+        #print(request_value.get("categorie"))
         AddCategorie.usecase_add_categorie(
-            categorie=data.get("categorie")
+            categorie=request_value.get("categorie")
+            
         )
         return "", 204
     except Exception as e:
-        return jsonify({"message": str(e)}), 400
+        print(str(e))
+        return jsonify({ "message": str(e) }), 404
+    
+#@app.route("/categorie/add_categorie", methods=["POST"])
+#def add_categorie():
+#    if request.content_type != "application/json":
+#        return jsonify({"message": "Tipo de contenido inválido"}), 415
+#
+#    try:
+#       data = request.get_json()
+#        AddCategorie.usecase_add_categorie(
+#            categorie=data.get("categorie")
+#       )
+#        return "", 204
+#    except Exception as e:
+#        return jsonify({"message": str(e)}), 400
+
+@app.route("/categorie/get_all_categories", methods=["GET"])
+def get_all_categories():
+    try:
+        return jsonify({ "categories": GetAllCategories.usecase_get_all_categories()}) 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400 
 
 
 @app.route("/categorie/enable_categorie", methods=["GET", "POST"])
@@ -428,3 +439,4 @@ def successful_payment():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    appDataBase.create_database()

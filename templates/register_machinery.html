@@ -271,19 +271,20 @@
 
 
       function loadCategoires() {
-      fetch("/categorie/enable_categorie", { method: "GET" })
+      fetch("/categorie/get_all_categories", { method: "GET" })
         .then(res => res.json())
         .then(data => {
           const categorias = data.categories || [];
           const select = document.getElementById("categorie");
+          console.log(categorias)
 
           categorias.forEach(cat => {
-            if (!cat.disable) {
+            //if (!cat.disable) {
               const option = document.createElement("option");
               option.value = cat.name;
               option.textContent = cat.name;
               select.appendChild(option);
-            }
+           // }
           });
         })
         .catch(err => {
@@ -360,28 +361,8 @@ formData.set("refund", refundValue);
         // no se como hacer para que avise antes de ir la main.html que se cargo la maquina
         // O LO MOSTRAMOS ACA O EN EL HOME
         window.location.href = "/main.html"
-      } else {
-        return res.json().then(err => {
-          throw new Error(err.error || "Error al registrar la máquina");
-        });
-      }
+      } 
     })
-    .catch(err => {
-      if (errorDiv) {
-        console.log("error", err)
-        errorText.textContent = "⚠️ " + err.message;
-        errorDiv.classList.remove("hidden");
-        errorDiv.scrollIntoView({ behavior: "smooth" });
-      }
-      if (successDiv) successDiv.classList.add("hidden");
-    })
-    .finally(() => {
-      // Reactivar botón
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Cargar Máquina";
-      }
-    });
 });
 </script>
 

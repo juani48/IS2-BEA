@@ -12,6 +12,11 @@
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 
 </head>
 
@@ -21,39 +26,63 @@
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-        <!-- LOGO -->
-        <div class="shrink-0">
-            <a href="/main.html">
-                <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-            </a>
-        </div>
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="/panelUsuario.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
+            </div>
 
-        <!-- BARRA DE BÚSQUEDA -->
-        <div class="flex-grow flex justify-center">
-            <div class="relative w-full max-w-xl">
-                <input type="text" placeholder="Buscar maquinaria..."
-                    class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                    <input type="text" placeholder="Buscar maquinaria..."
+                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
                     <i class="fas fa-search"></i>
-                </button>
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <!-- MI CUENTA (usuario logueado) -->
-        <div class="relative">
-            <button onclick="toggleDropdown()"
-                class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+            <!-- MI CUENTA (usuario logueado) -->
+            <div class="relative">
+                <button onclick="toggleDropdown()"
+                    class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
                 <i class="fas fa-user text-lg"></i>
-                <span id="userNameDisplay" class="text-sm font-semibold tracking-wide">Cargando...</span>
-            </button>
+                    <span id="userNameDisplay" class="text-sm font-semibold tracking-wide">Cargando...</span>
+                </button>
 
-            <!-- Dropdown -->
-            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
-                <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
-                <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
-                <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                <!-- Dropdown -->
+                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                    <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                    <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                    <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                </div>
             </div>
         </div>
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="/panelUsuario.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
     </div>
 </header>
 
@@ -314,7 +343,7 @@
     </section>
 
 
-    <footer class="bg-bob-dark-red text-white py-10">
+    <footer id="contacto"  class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->

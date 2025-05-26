@@ -224,6 +224,19 @@ def signin():
     except Exception as e:
         flash(str(e))
         return redirect(url_for("load_singin"))
+    
+@app.route("/session/status", methods=["GET"])
+def session_status():
+    if current_user.is_authenticated:
+        return jsonify({
+            "authenticated": True,
+            "name": current_user.name,
+            "type": current_user.type
+        }), 200
+    else:
+        return jsonify({ "authenticated": False }), 200
+
+
 
 @app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required

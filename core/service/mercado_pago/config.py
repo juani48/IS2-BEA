@@ -5,7 +5,7 @@ __ACCESS_TOKEN_TEST__ = "APP_USR-5208819603646835-052017-0d91fab01a4d5ecf50714f5
 MP_SDK = mercadopago.SDK(__ACCESS_TOKEN_TEST__)
 __UNIT__ = 1
 __CURRENCY__ = "ARS"
-__BASE_URL__ = "https://c8fe-181-231-168-220.ngrok-free.app" # ngrok http http://127.0.0.1:5000 -> Se debe reemplazar esta url por lo que salga en la terminal
+__BASE_URL__ = "https://2845-181-231-168-220.ngrok-free.app" # ngrok http http://127.0.0.1:5000 -> Se debe reemplazar esta url por lo que salga en la terminal
 __SUCCESS_URL__ = f"{__BASE_URL__}/successful_reservation.html"
 __FAILURE_URL__ = f"{__BASE_URL__}/failure_reservation.html"
 __PENDING_URL__ = f"{__BASE_URL__}/failure_reservation.html"
@@ -44,6 +44,7 @@ def make_preferences_test():
         "notification_url": __NOTIFICATION_URL__,
         "items": [
             { 
+                "id": "ID TANTO",
                 "title": f"COMPRAR RESERVA DE LA MAQUINA: JAUN_XD - ABC1", 
                 "quantity": 1, 
                 "unit_price": 10,

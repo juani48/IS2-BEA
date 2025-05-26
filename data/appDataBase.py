@@ -106,3 +106,6 @@ def get_all_reservations_by_machine(machine_id):
 # ---- delete ---- #
 def delete_reservation(client_id, start_day, machine_id):
     query_delete_reservation.execute(client_id, start_day, machine_id)
+
+def delete_reservation(preference_id):
+    query_delete_reservation.execute(preference_id)

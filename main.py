@@ -380,15 +380,24 @@ def reserve_machine():
     try:
         #request_value = request.get_json()
 
-        #preference = AddReservation.usecase_add_reserve(
-           # start_day=request_value.get("start_day"),
-           # end_day=request_value.get("end_day"),
-           # client_id=request_value.get("client_id"),
-           # machine_id=request_value.get("machine_id"),
-           # shipment=request_value.get("shipment"),   
+        preference = PayByMercadoPago.execute()
+            #client_id=,
+           # machine_id=,
+            #start_day=,
+           # machine_model=,
+            #unit_price=
+        #)
+        
+        #AddReservation.usecase_add_reserve(
+            #start_day=request_value.get("start_day"),
+            #end_day=request_value.get("end_day"),
+            #client_id=request_value.get("client_id"),
+            #machine_id=request_value.get("machine_id"),
+            #shipment=request_value.get("shipment"),
+            #preference_id=preference.get("id")  
         #)
 
-        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
+        return jsonify({ "preference": preference }), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -412,7 +421,9 @@ def reserve_machine():
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
 def failure_reservation():
-    
+    preference_id = request.args.get('preference_id')
+    print(preference_id)
+    CancelReservation.usecase_cancel_reservation(preferences_id=preference_id)
     return render_template("failure_reservation.html")
 
 @app.route("/pay/pay_notification", methods=["POST"]) # Verificar que se realizo el pago y enviar un correo

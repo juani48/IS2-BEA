@@ -13,3 +13,11 @@ def execute(client_id, start_day, machine_id):
         )
     ).delete()
     session.commit()
+
+def execute(preference_id):
+    session.query(
+        ReservationModel
+    ).filter(
+        ReservationModel.preference_id == preference_id
+    ).delete()
+    session.commit()

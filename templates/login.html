@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+    <title>Iniciar sesion - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -212,7 +212,14 @@
             // Redirigir después de login exitoso
             localStorage.setItem('user', JSON.stringify(data.user));
             console.log("info guardada");
-            window.location.href = "/panelUsuario.html";  // Ajusta esta ruta
+            if (data.user.type === "Admin") {
+                window.location.href = "/panelAdmin.html";
+             } else if (data.user.type === "Empleado") {
+                window.location.href = "/panelEmpleado.html";
+            } else {
+                window.location.href = "/panelUsuario.html";
+            }
+
         })
         .catch(error => {
             // Mostrar error al usuario

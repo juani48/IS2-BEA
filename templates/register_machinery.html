@@ -144,22 +144,19 @@
           />
         </div>
 
-        <!-- Categoria -->
-        <!-- Cambiar a un SELECT -->
-        <div>
-          <label for="categorie" class="block text-sm font-medium text-gray-700"
-            >Categoria</label
-          >
-          <input
-            type="text"
-            id="categorie"
-            name="categorie"
-            required
-            minlength="2"
-            maxlength="20"
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
-          />
-        </div>
+            <!-- Categoria -->
+      <div>
+        <label for="categorie" class="block text-sm font-medium text-gray-700">Categoría</label>
+        <select
+          id="categorie"
+          name="categorie"
+          required
+          class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+        >
+          <option value="">Seleccioná una categoría</option>
+        </select>
+      </div>
+
 
         <!-- Ubicación -->
         <div>
@@ -193,18 +190,31 @@
         <!-- LARA ESTO HAY QUE CAMBIARLO PARA QUE EL USUARIO SELECCIONE -->
         <!-- reembolso total, nulo, o parcial (si elige el parcil debe introducir el % de reembolso) -->
         <!-- Si es reembolso total mandame 100.0, si es nulo mandame = 0.0, si es parcial mandame lo que se ingrese -->
+        <!-- Política de reembolso -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Política de reembolso</label>
+
+      <div class="space-y-2 mt-2">
         <div>
-          <label for="refund" class="block text-sm font-medium text-gray-700"
-            >Politica de rembolso</label
-          >
-          <input
-            type="float"
-            id="refund"
-            name="refund"
-            required
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
-          />
+          <input type="radio" id="refund_total" name="refund_option" value="total" checked class="mr-2">
+          <label for="refund_total">Reembolso total (100%)</label>
         </div>
+
+        <div>
+          <input type="radio" id="refund_partial" name="refund_option" value="partial" class="mr-2">
+          <label for="refund_partial">Reembolso parcial</label>
+          <input type="number" id="refund_partial_value" placeholder="%"
+                class="ml-2 w-20 border border-gray-300 rounded-md p-1"
+                min="1" max="99" disabled>
+        </div>
+
+        <div>
+          <input type="radio" id="refund_none" name="refund_option" value="none" class="mr-2">
+          <label for="refund_none">Sin reembolso</label>
+        </div>
+      </div>
+    </div>
+
 
         <!-- Descripción -->
         <div>
@@ -245,12 +255,43 @@
     </div>
 
   <script>
-    let categorie = []
-    document.addEventListener('DOMContentLoaded', loadCategoires())
+        let categorie = []
+        document.addEventListener('DOMContentLoaded', () => {
+      loadCategoires();
 
-    function loadCategoires(){
-      // TENES QUE HACER UN FETCH ACA PARA TRAERTE LAS CATEGOIRAS Y AGREGARLAS AL SELECT DE LA CATEGORIA DE LA MAQUINA
+      // Activar/desactivar input de reembolso parcial
+      document.querySelectorAll("input[name='refund_option']").forEach(radio => {
+        radio.addEventListener("change", () => {
+          const partialInput = document.getElementById("refund_partial_value");
+          partialInput.disabled = !document.getElementById("refund_partial").checked;
+        });
+      });
+    });
+
+
+
+      function loadCategoires() {
+      fetch("/categorie/get_all_categories", { method: "GET" })
+        .then(res => res.json())
+        .then(data => {
+          const categorias = data.categories || [];
+          const select = document.getElementById("categorie");
+          console.log(categorias)
+
+          categorias.forEach(cat => {
+            //if (!cat.disable) {
+              const option = document.createElement("option");
+              option.value = cat.name;
+              option.textContent = cat.name;
+              select.appendChild(option);
+           // }
+          });
+        })
+        .catch(err => {
+          console.error("Error al cargar categorías:", err);
+        });
     }
+
 
 document.getElementById("machine-form").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -272,6 +313,29 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
     submitBtn.disabled = true;
     submitBtn.textContent = "Cargando...";
   }
+
+  // Obtener la opción de reembolso seleccionada
+let refundValue = 0.0;
+const option = form.querySelector('input[name="refund_option"]:checked').value;
+
+if (option === "total") {
+  refundValue = 100.0;
+} else if (option === "none") {
+  refundValue = 0.0;
+} else if (option === "partial") {
+  const partial = parseFloat(document.getElementById("refund_partial_value").value);
+  if (isNaN(partial) || partial <= 0 || partial >= 100) {
+    alert("Ingresá un valor válido entre 1 y 99 para el reembolso parcial.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Cargar Máquina";
+    return;
+  }
+  refundValue = partial;
+}
+
+// Insertamos el valor correcto en el FormData
+formData.set("refund", refundValue);
+
 
   fetch("/machine/add_machine", {
     method: "POST",
@@ -297,28 +361,8 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
         // no se como hacer para que avise antes de ir la main.html que se cargo la maquina
         // O LO MOSTRAMOS ACA O EN EL HOME
         window.location.href = "/main.html"
-      } else {
-        return res.json().then(err => {
-          throw new Error(err.error || "Error al registrar la máquina");
-        });
-      }
+      } 
     })
-    .catch(err => {
-      if (errorDiv) {
-        console.log("error", err)
-        errorText.textContent = "⚠️ " + err.message;
-        errorDiv.classList.remove("hidden");
-        errorDiv.scrollIntoView({ behavior: "smooth" });
-      }
-      if (successDiv) successDiv.classList.add("hidden");
-    })
-    .finally(() => {
-      // Reactivar botón
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Cargar Máquina";
-      }
-    });
 });
 </script>
 

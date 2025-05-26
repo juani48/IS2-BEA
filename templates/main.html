@@ -11,6 +11,11 @@
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 
 </head>
 
@@ -21,9 +26,8 @@
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="/main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
@@ -39,14 +43,8 @@
             </div>
 
             <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
-            </a>
+            <div id="accountArea">
+            </div>
         </div>
 
         <!-- Navigation debajo, 100% ancho -->
@@ -174,11 +172,12 @@
                         <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$35.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
+                          <a href="#" 
+                            class="reservar-btn reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" 
+                            data-id="A1">
+                            Reservar
+                        </a>
+
                         </div>
                     </div>
                 </div>
@@ -427,7 +426,7 @@
         </div>
     </section> -->
 
-    <footer class="bg-bob-dark-red text-white py-10">
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->
@@ -484,5 +483,90 @@
 
 
 </body>
+<script>
+  // Muestra el botón de sesión o usuario según la sesión
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("/session/status")
+      .then(response => response.json())
+      .then(data => {
+        const accountArea = document.getElementById("accountArea");
+
+        if (data.authenticated) {
+          accountArea.innerHTML = `
+            <div class="relative">
+              <button onclick="toggleDropdown()"
+                class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+                <i class="fas fa-user text-lg"></i>
+                <span class="text-sm font-semibold tracking-wide">${data.name}</span>
+              </button>
+              <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+              </div>
+            </div>
+          `;
+        } else {
+          accountArea.innerHTML = `
+            <a href="login.html"
+              class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+              <i class="fas fa-user text-lg group-hover:hidden"></i>
+              <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+              <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
+            </a>
+          `;
+        }
+      });
+
+    // Vincular botones "Reservar" si están presentes
+    document.querySelectorAll(".reservar-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const machineId = btn.getAttribute("data-id");
+
+        fetch("/session/status")
+          .then(res => res.json())
+          .then(data => {
+            if (data.authenticated) {
+              window.location.href = `/reserve.html?machine_id=${machineId}`;
+            } else {
+              window.location.href = "/login.html";
+            }
+          })
+          .catch(err => {
+            console.error("Error al verificar sesión:", err);
+            window.location.href = "/login.html";  // fallback
+          });
+      });
+    });
+  });
+
+  // Alternar menú desplegable
+  function toggleDropdown() {
+    document.getElementById("userDropdown")?.classList.toggle("hidden");
+  }
+
+  // Logout del servidor y redirige
+  function logout() {
+    fetch('/logout', { method: 'POST' }).then(() => {
+      window.location.href = '/login.html';
+    });
+  }
+
+  // Botón de logo/menu: redirige según sesión
+  function goHome() {
+    fetch("/session/status")
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          window.location.href = "/panelUsuario.html";
+        } else {
+          window.location.href = "/main.html";
+        }
+      });
+  }
+</script>
+
+
 
 </html>

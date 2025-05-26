@@ -375,31 +375,40 @@ def cancel_reservation():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO REAL PARA RESERVAR MAQUINAS
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
 def reserve_machine():
+    try:
+        #request_value = request.get_json()
+
+        #preference = AddReservation.usecase_add_reserve(
+           # start_day=request_value.get("start_day"),
+           # end_day=request_value.get("end_day"),
+           # client_id=request_value.get("client_id"),
+           # machine_id=request_value.get("machine_id"),
+           # shipment=request_value.get("shipment"),   
+        #)
+
+        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# ---- PAGOS ---- # 
+
+#@app.route("/pay/redirect_to_pay", methods=["GET"]) # PROVISORIO
+#def redirect_to_pay():
     try:
         request_value = request.get_json()
 
-        preference = AddReservation.usecase_add_reserve(
+        AddReservation.usecase_add_reserve(
             start_day=request_value.get("start_day"),
             end_day=request_value.get("end_day"),
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
             shipment=request_value.get("shipment"),
         )
-
-        return jsonify({ "preference": preference }), 200 # LARA TE DEVUELVO ESTO Y TENES QUE SACAR EL "init_point" Y GUARDARTELO EN CACHE
+        return "", 204
     except Exception as e:
-        return jsonify({ "message": e }), 404
-
-# ---- PAGOS ---- # 
-
-@app.route("/pay/redirect_to_pay", methods=["GET"]) # METODO PROVISORIO
-def redirect_to_pay():
-    try:
-        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
-    except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
 def failure_reservation():
@@ -415,7 +424,7 @@ def pay_notification():
             ConfirmReservation.usecase_confirm_reservation(topic, request_value)
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
 
 # ---- MAIN ----

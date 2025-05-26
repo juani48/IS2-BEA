@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 import json
 from flask import Flask, jsonify, render_template, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from core.entity import User
+from core.entity.User import User
 from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation
@@ -93,6 +93,7 @@ def load_login():
 
 
 @app.route("/reserve.html")
+@login_required
 def load_reserve():
     return render_template("/reserve.html")
 
@@ -109,73 +110,64 @@ def load_singin():
     return render_template("/singin.html")
 
 @app.route("/panelUsuario.html")
+@login_required
 def load_panelUsuario():
     return render_template("/panelUsuario.html")
 
+@app.route("/panelAdmin.html")
+@login_required
+def load_panelAdministrador():
+    if (current_user.type  == "Admin"):
+        return render_template("/panelAdmin.html")
+    else: 
+        return render_template('/main.html')
 
 @app.route("/categorie.html")  #Lara estuvo aki
 def categorias():
     return render_template("categorie.html")
 
 @app.route("/register_machinery.html")
+@login_required
 def register_machine():
-    return render_template("register_machinery.html")
+    if (current_user.type  == "Admin"):
+        return render_template("register_machinery.html")
+    else:
+        return "Solo los admin pueden cargar maquinarias"
 
 
 # ---- METODOS USUARIO ---- #
 
-@app.route("/login", methods=["POST"])
+def getType():                                   #Chequeado ✅
+    return str(current_user.type)
+
+@app.route("/login", methods=["POST"])           #Chequeado ✅
 def login():
-    
-    #request_value = request.get_json()
-    
-   # if not request_value:
-    #    return jsonify({"error": "No se recibieron datos JSON"}), 400
-
-    #dni = request_value.get("dni")
-    #password = request_value.get("password")
-
-    #if not dni or not password:
-    #    return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
-
-    #try:
-    #    user = Auth.usecase_login(dni=dni, password=password)
-    #    login_user(user)
-#
-    #    return jsonify({
-    #        "user": {
-    #            "dni": user.dni,
-     #           "name": user.name,
-    #            "lastname": user.lastname,
-    #            "email": user.email
-     #       }
-    #    }), 200
-   # except Exception as e:
-    #    return jsonify({"error": str(e)}), 401
     try:
         data = request.get_json()
-        user = Auth.usecase_login(dni=data['dni'], password=data['password'])  #<<------------------------------------------------------------
+        userModel  = Auth.usecase_login(dni=data["dni"], password=data["password"])
+        user = User(userModel)  # ✅ forma correcta
+        login_user(user,remember= False)
         return jsonify({
             "user": {
-                "dni": user.dni,
-                "name": user.name,
-                "lastname": user.lastname,
-                "email": user.email
+                "dni": userModel.dni,
+                "name": userModel.name,
+                "lastname": userModel.lastname,
+                "email": userModel.email,
+                "type" : userModel.type
             }
         }), 200
-        
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 401
 
 
-@app.route("/logout", methods=["GET"])
-@login_required
+@app.route("/logout", methods=["POST"])          #Chequeado ✅
 def logout():
     logout_user()
-    return jsonify({"message": "Sesión cerrada exitosamente"}), 200
+    return redirect(url_for('load_login'))
 
 
-@app.route("/signin", methods=["POST"])
+@app.route("/signin", methods=["POST"])          #Chequeado ✅
 def signin():
     try:
         dni = request.form["dni"]
@@ -184,10 +176,8 @@ def signin():
         lastname = request.form["lastname"]
         phone = request.form["phone"]
         birthdate = request.form["birthdate"]
-        terms_accepted = "terms" in request.form
         dni_photo = request.files["dni_photo"]
-        #employee_number=request_value.get("employee_number"),
-        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate, terms_accepted)
+        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate)
 
         if dni_photo:
             filename = secure_filename(f"{dni}_{lastname}.jpg")
@@ -202,45 +192,75 @@ def signin():
         flash(str(e))
         return redirect(url_for("load_singin"))
 
-@app.route("/user/update_user", methods=["PUT"])
+@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required
-def update_user():
+def update_user():         
     request_value = request.get_json()
-    UpdateUser.usecase_update_user(
-        #email=request_value.get("email"),
-        dni = request_value.get("dni"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        UpdateUser.usecase_update_user(
+            #email=request_value.get("email"),
+            dni = request_value.get("dni"),
+            name =request_value.get("name"),
+            lastname =request_value.get("lastname"),
+        )
+        return "", 204
+    else:   
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/user/change_password", methods=["PUT"])
+
+@app.route("/user/change_password", methods=["PUT"]) #Chequeado ✅ (falta aplicar hash)
 @login_required
 def change_password():
     request_value = request.get_json()
-    ChangePassword(
-        dni = request_value.get("dni"),
-        password_Act = request_value.get("passwordAct"),
-        password_New_1 = request_value.get("password1"),
-        password_New_2 = request_value.get("password2")
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        ChangePassword(
+            dni = request_value.get("dni"),
+            password_Act = request_value.get("passwordAct"),
+            password_New_1 = request_value.get("password1"),
+            password_New_2 = request_value.get("password2")
+        )
+        return "", 204
+    else: 
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/admin/add_employee", methods=["PUT"])
+
+@app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
 @login_required
 def add_employee():
     request_value = request.get_json()
-    AddEmployee.usecase_add_employee(
-        name = request_value.get("name"),
-        lastname = request_value.get("lastname"),
-        dni = request_value.get("DNI"),
-        email = request_value.get("email"),
-        phone = request_value.get("phone"),
-        dateBirth = request_value.get("dateBirth"),
-        employeeN = request_value.get("employeeN")
-    )
+    if (current_user.type == "Admin"):
+        AddEmployee.usecase_add_employee(
+            name = request_value.get("name"),
+            lastname = request_value.get("lastname"),
+            dni = request_value.get("dni"),
+            email = request_value.get("email"),
+            phone = request_value.get("phone"),
+            dateBirth = request_value.get("dateBirth"),
+            employeeN = request_value.get("employeeN")
+        )
+    else:
+        return "Debe ser administrador para agregar un empleado", 404
+    return "Empleado agregado", 204
+
+@app.route("/employee/requests", methods= ["PUT"])
+@login_required
+def reply_request():
+    if current_user.type not in ["Admin", "Empleado"]:
+        return jsonify({"error": "No tiene acceso aquí"}), 403
+    try:
+        request_value = request.get_json()
+        reply = request_value.get("reply")
+        dni = request_value.get("dni")
+        if reply is None or dni is None:
+            return jsonify({"error": "Faltan datos obligatorios (Reply o DNI)"}), 400
+        RequestUser(reply=reply, dni=dni)
+        return jsonify({"message": "Solicitud procesada correctamente"}), 200
     
-# ---- MAQUINAS ---- #
+    except Exception as e:
+        return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
+
+
+# ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
 #@login_required
@@ -276,34 +296,27 @@ def add_machine():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/machine/enable_machine", methods=["POST"]) 
+@app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
-    try:
-        request_value = request.get_json().get("patent")
-        EnableMachine.usecase_enable_machine(patent=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("patent")
+    EnableMachine.usecase_enable_machine(patent=request_value)
+    return "", 204
 
-@app.route("/machine/disable_machine", methods=["POST"])
+@app.route("/machine/disable_machine", methods=["GET", "POST"])
 def disable_machine():
-    try:
-        request_value = request.get_json().get("patent")
-        DisableMachine.usecase_disable_machine(patent=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("patent")
+    DisableMachine.usecase_disable_machine(patent=request_value)
+    return "", 204
 
 @app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    try:
-        return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
+
     try:
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
             categorie_filter=request.get_json().get("categoire"),
@@ -312,18 +325,18 @@ def get_all_machines_filter():
             mark_filter=request.get_json().get("mark"),
             model_filter=request.get_json().get("model"))), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({ "message": e }), 404
 
 # ---- CATEGORIAS ---- #
 
-@app.route("/categorie/add_categorie", methods=["POST"])  # TESTEADO -> TRUE
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def add_categorie():
     try:
         request_value = request.get_json()
         AddCategorie.usecase_add_categorie(
             categorie=request_value.get("categorie")
         )
-        return "", 201
+        return "", 204
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
@@ -336,26 +349,21 @@ def get_all_categories():
 
 @app.route("/categorie/enable_categorie", methods=["POST"])
 def enable_categorie():
-    try:
-        request_value = request.get_json().get("categorie")
-        EnableCategorie.usecase_enable_categorie(categorie=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("categorie")
+    EnableCategorie.usecase_enable_categorie(categorie=request_value)
+    return "", 204
 
-@app.route("/categorie/disable_categorie", methods=["POST"])
+@app.route("/categorie/disable_categorie", methods=["GET", "POST"])
 def disable_categorie():
-    try:
-        request_value = request.get_json().get("categorie")
-        DisableCategorie.usecase_disable_categorie(categorie=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("categorie")
+    DisableCategorie.usecase_disable_categorie(categorie=request_value)
+    return "", 204
 
 # ---- RESERVAS ---- #
 
 @app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
 def machine_reservations():
+    
     try:
         request_value = request.get_json().get("machine_id")
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
@@ -373,7 +381,7 @@ def cancel_reservation():
         )
         return "", 204
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({ "message": e }), 404
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
 def reserve_machine():
@@ -442,4 +450,3 @@ def pay_notification():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    appDataBase.create_database()

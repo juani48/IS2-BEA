@@ -4,7 +4,7 @@
 #SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 import os	
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 

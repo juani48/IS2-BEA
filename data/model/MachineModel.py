@@ -27,9 +27,9 @@ class MachineModel(Base):
             "price_day": self.price_day,
             "ubication": self.ubication,
             "refund": self.refund,
-            "disable": self.disable
-            # "description": self.description,
-            # "image": self.image
+            "disable": self.disable,
+            "description": self.description,
+            "image": self.image
         }
 
     def include(self, string):

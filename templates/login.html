@@ -213,6 +213,7 @@
             localStorage.setItem('user', JSON.stringify(data.user));
             console.log("info guardada");
             if (data.user.type === "Admin") {
+            if (data.user.type === "Admin") {
                 window.location.href = "/panelAdmin.html";
              } else if (data.user.type === "Empleado") {
                 window.location.href = "/panelEmpleado.html";

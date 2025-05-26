@@ -45,7 +45,7 @@
                 <i class="fas fa-user text-lg group-hover:hidden"></i>
                 <!-- Ícono alternativo que aparece en hover -->
                 <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
+                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
             </a>
 
 
@@ -176,7 +176,6 @@
       ></div>
 
       <button
-      onclick="goToPriorToPaying()"
         type="submit"
         class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
       >
@@ -263,11 +262,8 @@
           const direccion = document.getElementById("direccion").value;
           const client_id = localStorage.getItem("dni"); // o ajustalo si viene de sesión
 
-          // Precio total (esto deberías traerlo desde la API de la máquina si querés hacerlo real)
-          const precioPorDia = 10000; // TEMPORAL: reemplazar por valor real
-          const total = precioPorDia * dias;
 
-          fetch("/reservation/create", {
+          fetch("/reservation/reserve_machine", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -276,18 +272,14 @@
               client_id: client_id,
               machine_id: machineId,
               shipment: shipment,
-              total_value: total,
-              direccion: direccion,
             }),
           })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.message) {
-                alert("✅ Reserva creada con éxito");
-                window.location.href = "/"; // redirigir a home
-              } else {
-                throw new Error(data.error || "Error al reservar");
-              }
+            .then(response => 
+              {if (response.ok){ return response.json() }}
+            )
+            .then(data => {
+              alert("✅ Reserva creada con éxito");
+                window.location.href = data.preference.init_point; // redirigir al pagar
             })
             .catch((err) => {
               errorDiv.textContent = "Error: " + err.message;
@@ -296,28 +288,4 @@
         });
     </script>
   </body>
-  <script >
-    function goToPriorToPaying(){
-      window.location.href = "/prior_to_paying.html"
-    }
-
-    // CODIGO QUE AGREGO JUANI PARA REDIRIGIR A MERCADO PAGO
-    function loadLink(){
-      fetch("/pay/redirect_to_pay",
-        
-      )
-      .then(response => { 
-        if(!response.ok){
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();  
-      })
-      .then( preference => {
-        console.log("preference", preference)
-        window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
-      })
-      .catch(error => { console.log("Error: ", "error") });
-    }
-    //src="{{ url_for('static', filename='script/scripts.js') }}"
-  </script>
 </html>

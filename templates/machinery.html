@@ -11,7 +11,11 @@
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
-
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 
 
@@ -21,9 +25,9 @@
     <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
       <!-- LOGO -->
       <div class="shrink-0">
-        <a href="main.html">
-          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16" />
-        </a>
+        <a href="#" onclick="goHome()" title="Ir al inicio">
+        <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+      </a>
       </div>
 
       <!-- BARRA DE BÚSQUEDA -->
@@ -38,16 +42,8 @@
       </div>
 
       <!-- MI CUENTA -->
-      <a href="login.html"
-        class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-        <!-- Ícono normal -->
-        <i class="fas fa-user text-lg group-hover:hidden"></i>
-        <!-- Ícono alternativo que aparece en hover -->
-        <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-        <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
-      </a>
-    </div>
-    </div>
+      <div id="accountArea"></div> <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+      </div>
 
     <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
@@ -172,6 +168,64 @@
 </body>
 
 <script>
+  
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/session/status")
+    .then(response => response.json())
+    .then(data => {
+      const accountArea = document.getElementById("accountArea");
+
+      if (data.authenticated) {
+        accountArea.innerHTML = `
+          <div class="relative">
+            <button onclick="toggleDropdown()"
+              class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+              <i class="fas fa-user text-lg"></i>
+              <span class="text-sm font-semibold tracking-wide">${data.name}</span>
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+              <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+              <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+            </div>
+          </div>
+        `;
+      } else {
+        accountArea.innerHTML = `
+          <a href="login.html"
+            class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+            <i class="fas fa-user text-lg group-hover:hidden"></i>
+            <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+            <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
+          </a>
+        `;
+      }
+    });
+});
+
+function toggleDropdown() {
+  document.getElementById("userDropdown")?.classList.toggle("hidden");
+}
+
+function logout() {
+  fetch('/logout', { method: 'POST' }).then(() => {
+    window.location.href = '/login.html';
+  });
+}
+
+function goHome() {
+  fetch("/session/status")
+    .then(res => res.json())
+    .then(data => {
+      if (data.authenticated) {
+        window.location.href = "/panelUsuario.html";
+      } else {
+        window.location.href = "/main.html";
+      }
+    });
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const container = document.getElementById("machine-list");
   const pagination = document.getElementById("pagination");
@@ -191,6 +245,31 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Error al cargar:", error);
     });
 
+  function renderMachine(machine, imageSrc) {
+    const card = `
+      <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
+        <div class="w-full aspect-square overflow-hidden">
+          <img src="${imageSrc}"
+              onerror="this.src='/static/image/machines/default.png'"
+              alt="Imagen de ${machine.model}"
+              class="w-full h-full object-cover" />
+        </div>
+        <div class="flex-grow p-2 text-center flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
+            <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
+            <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
+          </div>
+          <a href="/reserve.html?machine_id=${machine.patent}"
+            class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
+            Reservar
+          </a>
+        </div>
+      </div>
+    `;
+    container.innerHTML += card;
+  }
+
   function renderPage(page) {
     container.innerHTML = "";
     const start = (page - 1) * cardsPerPage;
@@ -198,42 +277,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const items = machines.slice(start, end);
 
     items.forEach((machine) => {
-      const normalizedPatent = machine.patent.replace(/\s+/g, "_");  // reemplaza espacios por guiones bajos
-      const imageSrc = `/static/image/machines/${normalizedPatent}.jpg`;
+      const normalizedPatent = machine.patent.replace(/\s+/g, "_");
+      const basePath = `/static/image/machines/${normalizedPatent}`;
+      const validExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+      let found = false;
 
+      validExtensions.forEach((ext) => {
+        const testImage = new Image();
+        testImage.src = basePath + ext;
 
-  const card = `
-  <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
+        testImage.onload = () => {
+          if (!found) {
+            found = true;
+            renderMachine(machine, testImage.src);
+          }
+        };
 
-    <!-- Imagen cuadrada -->
-    <div class="w-full aspect-square overflow-hidden">
-      <img src="${imageSrc}"
-           onerror="this.src='/static/image/machines/default.png'"
-           alt="Imagen de ${machine.model}"
-           class="w-full h-full object-cover" />
-    </div>
-
-    <!-- Texto dentro del cuadrado -->
-    <div class="flex-grow p-2 text-center flex flex-col justify-between">
-      <div>
-        <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
-        <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
-        <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
-      </div>
-      <a href="/reserve.html?machine_id=${machine.patent}"
-         class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
-         Reservar
-      </a>
-    </div>
-
-  </div>
-`;
-
-
-
-
-
-      container.innerHTML += card;
+        testImage.onerror = () => {
+          if (!found && ext === validExtensions[validExtensions.length - 1]) {
+            // última extensión fallida → mostrar default
+            renderMachine(machine, "/static/image/machines/default.png");
+          }
+        };
+      });
     });
   }
 
@@ -241,7 +307,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPages = Math.ceil(machines.length / cardsPerPage);
     pagination.innerHTML = "";
 
-    // Anterior
     const prev = document.createElement("button");
     prev.textContent = "‹ Anterior";
     prev.disabled = currentPage === 1;
@@ -255,7 +320,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     pagination.appendChild(prev);
 
-    // Botones de página
     for (let i = 1; i <= totalPages; i++) {
       const btn = document.createElement("button");
       btn.textContent = i;
@@ -270,7 +334,6 @@ document.addEventListener("DOMContentLoaded", function () {
       pagination.appendChild(btn);
     }
 
-    // Siguiente
     const next = document.createElement("button");
     next.textContent = "Siguiente ›";
     next.disabled = currentPage === totalPages;
@@ -286,6 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 </script>
+
 
 
 

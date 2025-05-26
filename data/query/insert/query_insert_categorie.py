@@ -6,3 +6,4 @@ def execute(name, categorie):
     if(local_categorie != None):
         raise Exception("Categoria existente")
     session.add(categorie)
+    session.commit()

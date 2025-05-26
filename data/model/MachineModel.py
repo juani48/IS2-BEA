@@ -27,9 +27,9 @@ class MachineModel(Base):
             "price_day": self.price_day,
             "ubication": self.ubication,
             "refund": self.refund,
-            "disable": self.disable
-            # "description": self.description,
-            # "image": self.image
+            "disable": self.disable,
+            "description": self.description,
+            "image": None
         }
 
     def include(self, string):
@@ -37,7 +37,8 @@ class MachineModel(Base):
         return (str in self.patent.lower() or
                 str in self.mark.lower() or
                 str in self.model.lower() or
-                str in self.ubication.lower())
+                str in self.ubication.lower() or
+                str in self.description.lower())
         # if self.description:
         #     return str in self.description.lower()
 
@@ -50,4 +51,4 @@ class MachineModel(Base):
         self.refund = refund
         self.disable = False
         self.description = description
-        # self.image = image
+        #self.image = image

@@ -16,11 +16,13 @@ class UserModel(Base):
     birth_date = Column(String, nullable=False)  # <-- Campo nuevo
     phone = Column(Integer, nullable=False)
     points = Column(Integer, default=0)
+    type = Column(String(20), nullable=False, default="cliente") 
+
 
     def __repr__(self):
         return "{" + f"""dni:{self.dni}, password:{self.password}, email: {self.email}, name:{self.name}, lastname: {self.lastname}, employee_number: {self.employee_number} , authorized: {self.authorized}, birth_date: {self.birth_date}, phone: {self.phone}, points: {self.points}""" + "}"
 
-    def __init__(self, dni, email, name, lastname, phone, birth_date, password):
+    def __init__(self, dni, email, name, lastname, phone, birth_date, password,type):
         self.dni = dni
         self.email = email
         self.name = name
@@ -31,4 +33,17 @@ class UserModel(Base):
         self.employee_number = 0
         self.authorized = False
         self.points = 0
+        self.type = type
 
+
+
+
+"""
+def execute ():
+
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE user_table ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'cliente'"))
+FORMA PARA AGREGAR COLUMNAS EN CONFIG.PY
+if __name__ == '__main__':
+    execute()
+"""

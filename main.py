@@ -2,20 +2,24 @@ from datetime import datetime, timedelta
 import json
 from flask import Flask, jsonify, render_template, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from core.entity import User
+from core.entity.User import User
 from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
+from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation
 from templates import *
 import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
+
+from data.query.insert import query_TEST_USER
+from data.model.UserModel import UserModel
 
 
 
@@ -55,10 +59,18 @@ def load_user(user_id):
 def home():
     #AddCategorie.usecase_add_categorie("categoria1")
     #AddCategorie.usecase_add_categorie("categoria2")
-    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "", "")
-    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
-    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
-    # GetAllMachinesByFilter.usecase_get_all_machines_by(categorie_filter={"apply": True, "categorie": "categoria1"}, string_filer=request.get_json().get("string"),price_filter=request.get_json().get("price"),            mark_filter=request.get_json().get("mark"),            model_filter=request.get_json().get("model"))
+    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
+    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
+    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
+    
+    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
+        #categorie_filter={"apply": False, "categorie": "categoria1"}, 
+        #string_filer={ "apply": True, "string": "lob" },
+        #price_filter={ "apply": False, "price": 5 },
+        #mark_filter={ "apply": False },           
+        #model_filter={ "apply": False },
+        #)
+    #)
 
     # prueba de reservas
     # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
@@ -66,6 +78,10 @@ def home():
     #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
     #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
     #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
+
+    #query_TEST_USER.execute(22333444, user=UserModel(
+    #    dni=22333444, email="bb@gmail.com", name="robertito", lastname="robertito", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
+    #))
 
     return render_template('/main.html')
 
@@ -92,6 +108,7 @@ def load_login():
 
 
 @app.route("/reserve.html")
+@login_required
 def load_reserve():
     return render_template("/reserve.html")
 
@@ -108,73 +125,68 @@ def load_singin():
     return render_template("/singin.html")
 
 @app.route("/panelUsuario.html")
+@login_required
 def load_panelUsuario():
     return render_template("/panelUsuario.html")
 
+@app.route("/panelAdmin.html")
+@login_required
+def load_panelAdministrador():
+    if (current_user.type  == "Admin"):
+        return render_template("/panelAdmin.html")
+    else: 
+        return render_template('/main.html')
 
 @app.route("/categorie.html")  #Lara estuvo aki
 def categorias():
     return render_template("categorie.html")
 
 @app.route("/register_machinery.html")
+@login_required
 def register_machine():
-    return render_template("register_machinery.html")
+    if (current_user.type  == "Admin"):
+        return render_template("register_machinery.html")
+    else:
+        return "Solo los admin pueden cargar maquinarias"
+    
+@app.route("/register_categorie.html")
+def register_categorie():
+    return render_template("register_categorie.html")
 
 
 # ---- METODOS USUARIO ---- #
 
-@app.route("/login", methods=["POST"])
+def getType():                                   #Chequeado ✅
+    return str(current_user.type)
+
+@app.route("/login", methods=["POST"])           #Chequeado ✅
 def login():
-    
-    #request_value = request.get_json()
-    
-   # if not request_value:
-    #    return jsonify({"error": "No se recibieron datos JSON"}), 400
-
-    #dni = request_value.get("dni")
-    #password = request_value.get("password")
-
-    #if not dni or not password:
-    #    return jsonify({"error": "DNI y contraseña son obligatorios"}), 400
-
-    #try:
-    #    user = Auth.usecase_login(dni=dni, password=password)
-    #    login_user(user)
-#
-    #    return jsonify({
-    #        "user": {
-    #            "dni": user.dni,
-     #           "name": user.name,
-    #            "lastname": user.lastname,
-    #            "email": user.email
-     #       }
-    #    }), 200
-   # except Exception as e:
-    #    return jsonify({"error": str(e)}), 401
     try:
         data = request.get_json()
-        user = Auth.usecase_login(dni=data['dni'], password=data['password'])  #<<------------------------------------------------------------
+        userModel  = Auth.usecase_login(dni=data["dni"], password=data["password"])
+        user = User(userModel)  # ✅ forma correcta
+        login_user(user,remember= False)
         return jsonify({
             "user": {
-                "dni": user.dni,
-                "name": user.name,
-                "lastname": user.lastname,
-                "email": user.email
+                "dni": userModel.dni,
+                "name": userModel.name,
+                "lastname": userModel.lastname,
+                "email": userModel.email,
+                "type" : userModel.type
             }
         }), 200
-        
+    
     except Exception as e:
-        return jsonify({"error": str(e)}), 401
+        return jsonify({"error": str(e)}), 401 
 
 
-@app.route("/logout", methods=["GET"])
-@login_required
+@app.route("/logout", methods=["POST"])          #Chequeado ✅
 def logout():
     logout_user()
-    return jsonify({"message": "Sesión cerrada exitosamente"}), 200
+    return redirect(url_for('load_login'))
 
 
-@app.route("/signin", methods=["POST"])
+@app.route("/signin", methods=["POST"])          #Chequeado ✅
 def signin():
     try:
         dni = request.form["dni"]
@@ -183,10 +195,8 @@ def signin():
         lastname = request.form["lastname"]
         phone = request.form["phone"]
         birthdate = request.form["birthdate"]
-        terms_accepted = "terms" in request.form
         dni_photo = request.files["dni_photo"]
-        #employee_number=request_value.get("employee_number"),
-        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate, terms_accepted)
+        RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate)
 
         if dni_photo:
             filename = secure_filename(f"{dni}_{lastname}.jpg")
@@ -200,45 +210,88 @@ def signin():
     except Exception as e:
         flash(str(e))
         return redirect(url_for("load_singin"))
+    
+@app.route("/session/status", methods=["GET"])
+def session_status():
+    if current_user.is_authenticated:
+        return jsonify({
+            "authenticated": True,
+            "name": current_user.name,
+            "type": current_user.type
+        }), 200
+    else:
+        return jsonify({ "authenticated": False }), 200
 
-@app.route("/user/update_user", methods=["PUT"])
+
+
+@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required
-def update_user():
+def update_user():         
     request_value = request.get_json()
-    UpdateUser.usecase_update_user(
-        #email=request_value.get("email"),
-        dni = request_value.get("dni"),
-        name=request_value.get("name"),
-        lastname=request_value.get("lastname"),
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        UpdateUser.usecase_update_user(
+            #email=request_value.get("email"),
+            dni = request_value.get("dni"),
+            name =request_value.get("name"),
+            lastname =request_value.get("lastname"),
+        )
+        return "", 204
+    else:   
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/user/change_password", methods=["PUT"])
+
+@app.route("/user/change_password", methods=["PUT"]) #Chequeado ✅ (falta aplicar hash)
 @login_required
 def change_password():
     request_value = request.get_json()
-    ChangePassword(
-        dni = request_value.get("dni"),
-        password_Act = request_value.get("passwordAct"),
-        password_New_1 = request_value.get("password1"),
-        password_New_2 = request_value.get("password2")
-    )
-    return "", 204
+    if (current_user.dni == request_value.dni):
+        ChangePassword(
+            dni = request_value.get("dni"),
+            password_Act = request_value.get("passwordAct"),
+            password_New_1 = request_value.get("password1"),
+            password_New_2 = request_value.get("password2")
+        )
+        return "", 204
+    else: 
+        return jsonify("DNI incoincidente"), 401
 
-@app.route("/admin/add_employee", methods=["PUT"])
+
+@app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
 @login_required
 def add_employee():
     request_value = request.get_json()
-    AddEmployee.usecase_add_employee(
-        name = request_value.get("name"),
-        lastname = request_value.get("lastname"),
-        dni = request_value.get("DNI"),
-        email = request_value.get("email"),
-        phone = request_value.get("phone"),
-        dateBirth = request_value.get("dateBirth"),
-        employeeN = request_value.get("employeeN")
-    )
+    if (current_user.type == "Admin"):
+        AddEmployee.usecase_add_employee(
+            name = request_value.get("name"),
+            lastname = request_value.get("lastname"),
+            dni = request_value.get("dni"),
+            email = request_value.get("email"),
+            phone = request_value.get("phone"),
+            dateBirth = request_value.get("dateBirth"),
+            employeeN = request_value.get("employeeN")
+        )
+    else:
+        return "Debe ser administrador para agregar un empleado", 404
+    return "Empleado agregado", 204
+
+@app.route("/employee/requests", methods= ["PUT"])
+@login_required
+def reply_request():
+    if current_user.type not in ["Admin", "Empleado"]:
+        return jsonify({"error": "No tiene acceso aquí"}), 403
+    try:
+        request_value = request.get_json()
+        reply = request_value.get("reply")
+        dni = request_value.get("dni")
+        if reply is None or dni is None:
+            return jsonify({"error": "Faltan datos obligatorios (Reply o DNI)"}), 400
+        RequestUser(reply=reply, dni=dni)
+        return jsonify({"message": "Solicitud procesada correctamente"}), 200
     
+    except Exception as e:
+        return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
+
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
@@ -275,34 +328,27 @@ def add_machine():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/machine/enable_machine", methods=["POST"]) 
+@app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
-    try:
-        request_value = request.get_json().get("patent")
-        EnableMachine.usecase_enable_machine(patent=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("patent")
+    EnableMachine.usecase_enable_machine(patent=request_value)
+    return "", 204
 
-@app.route("/machine/disable_machine", methods=["POST"])
+@app.route("/machine/disable_machine", methods=["GET", "POST"])
 def disable_machine():
-    try:
-        request_value = request.get_json().get("patent")
-        DisableMachine.usecase_disable_machine(patent=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("patent")
+    DisableMachine.usecase_disable_machine(patent=request_value)
+    return "", 204
 
 @app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    try:
-        return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def get_all_machines_filter():
     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
+
     try:
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
             categorie_filter=request.get_json().get("categoire"),
@@ -311,80 +357,79 @@ def get_all_machines_filter():
             mark_filter=request.get_json().get("mark"),
             model_filter=request.get_json().get("model"))), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({ "message": e }), 404
 
-# ---- CATEGORIAS ----
+#    ---- CATEGORIAS ---- #
 
-@app.route("/categorie/add_categorie", methods=["POST"])  # TESTEADO -> TRUE
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
 def add_categorie():
     try:
         request_value = request.get_json()
+        #print(request_value.get("categorie"))
         AddCategorie.usecase_add_categorie(
             categorie=request_value.get("categorie")
+            
         )
-        return "", 201
+        return "", 204
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
-@app.route("/categorie/enable_categorie", methods=["GET"])
-def enable_categorie():
+@app.route("/categorie/get_all_categories", methods=["GET"])
+def get_all_categories():
     try:
-        return jsonify({ "categories": GetAllCategories.usecase_get_all_categories() })
+        return jsonify({ "categories": GetAllCategories.usecase_get_all_categories()}) 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 400 
+
 
 @app.route("/categorie/enable_categorie", methods=["POST"])
 def enable_categorie():
-    try:
-        request_value = request.get_json().get("categorie")
-        EnableCategorie.usecase_enable_categorie(categorie=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("categorie")
+    EnableCategorie.usecase_enable_categorie(categorie=request_value)
+    return "", 204
 
-@app.route("/categorie/disable_categorie", methods=["POST"])
+@app.route("/categorie/disable_categorie", methods=["GET", "POST"])
 def disable_categorie():
-    try:
-        request_value = request.get_json().get("categorie")
-        DisableCategorie.usecase_disable_categorie(categorie=request_value)
-        return "", 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    request_value = request.get_json().get("categorie")
+    DisableCategorie.usecase_disable_categorie(categorie=request_value)
+    return "", 204
 
-# ---- RESERVAS ----
+# ---- RESERVAS ---- #
 
 @app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
 def machine_reservations():
+    
     try:
         request_value = request.get_json().get("machine_id")
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # obtener reservas de una maquina
-def reserve_machine():
-
-    # fecha_hora = datetime.now()
-    # fecha_hora = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
-    # formate de las fechas
-
-    # now = datetime.now()
-    # date2 = now + timedelta(days=3)
-    # date2_1 = now + timedelta(days=4)
+    
+@app.route("/reservation/cancel_reservation", methods=["POST"])
+def cancel_reservation():
     try:
-        print()
-        return "", 201
+        request_value = request.get_json()
+        CancelReservation.usecase_cancel_reservation(
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            start_day=request_value.get("start_day")
+        )
+        return "", 204
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({ "message": e }), 404
 
-
-# ---- PAGOS ---- # COMENTADO A DREDE
-
-@app.route("/pay/redirect_to_pay", methods=["GET", "POST"]) # Metodo iniciado por el boton de 'reservar'
-def redirect_to_pay():
+@app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
+def reserve_machine():
     try:
         #request_value = request.get_json()
 
+        preference = PayByMercadoPago.execute()
+            #client_id=,
+           # machine_id=,
+            #start_day=,
+           # machine_model=,
+        #)
+        
         #preference = AddReservation.usecase_add_reserve(
             #start_day=request_value.get("start_day"),
             #end_day=request_value.get("end_day"),
@@ -393,19 +438,46 @@ def redirect_to_pay():
             #shipment=request_value.get("shipment"),
         #)
 
-        return jsonify({ "preference": PayByMercadoPago.execute() }), 200 
+        return jsonify({ "preference": preference }), 200 
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
-# RESPUESTAS DE PAGO
+# ---- PAGOS ---- # 
 
-@app.route("/pay/successful_payment", methods=["GET"]) # Llamar al caso de uso que confirme la reserva
-def successful_payment():
+#@app.route("/pay/redirect_to_pay", methods=["GET"]) # PROVISORIO
+#def redirect_to_pay():
     try:
+        request_value = request.get_json()
 
+        AddReservation.usecase_add_reserve(
+            start_day=request_value.get("start_day"),
+            end_day=request_value.get("end_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            shipment=request_value.get("shipment"),
+        )
         return "", 204
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
+def failure_reservation():
+    preference_id = request.args.get('preference_id')
+    print(preference_id)
+    CancelReservation.usecase_cancel_reservation(preferences_id=preference_id)
+    return render_template("failure_reservation.html")
+
+@app.route("/pay/pay_notification", methods=["POST"]) # Verificar que se realizo el pago y enviar un correo
+def pay_notification():
+    try:
+        request_value = request.get_json()
+        topic = request_value.get("topic")
+        if topic != None:
+            ConfirmReservation.usecase_confirm_reservation(topic, request_value)
+        return "", 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 # ---- MAIN ----
 

@@ -62,7 +62,7 @@ def home():
     #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
     #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
     #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
-    
+
     #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
         #categorie_filter={"apply": False, "categorie": "categoria1"}, 
         #string_filer={ "apply": True, "string": "lob" },
@@ -71,7 +71,7 @@ def home():
         #model_filter={ "apply": False },
         #)
     #)
-
+    
     # prueba de reservas
     # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
     
@@ -80,7 +80,7 @@ def home():
     #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
 
     #query_TEST_USER.execute(22333444, user=UserModel(
-    #    dni=22333444, email="bb@gmail.com", name="robertito", lastname="robertito", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
+        #dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
     #))
 
     return render_template('/main.html')
@@ -350,12 +350,12 @@ def get_all_machines_filter():
     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
 
     try:
-        return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+        return jsonify({ "value" : GetAllMachinesByFilter.usecase_get_all_machines_by( 
             categorie_filter=request.get_json().get("categoire"),
             string_filer=request.get_json().get("string"),
             price_filter=request.get_json().get("price"),
             mark_filter=request.get_json().get("mark"),
-            model_filter=request.get_json().get("model"))), 200
+            model_filter=request.get_json().get("model"))}), 200
     except Exception as e:
         return jsonify({ "message": e }), 404
 
@@ -421,22 +421,15 @@ def cancel_reservation():
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
 def reserve_machine():
     try:
-        #request_value = request.get_json()
+        request_value = request.get_json()
 
-        preference = PayByMercadoPago.execute()
-            #client_id=,
-           # machine_id=,
-            #start_day=,
-           # machine_model=,
-        #)
-        
-        #preference = AddReservation.usecase_add_reserve(
-            #start_day=request_value.get("start_day"),
-            #end_day=request_value.get("end_day"),
-            #client_id=request_value.get("client_id"),
-            #machine_id=request_value.get("machine_id"),
-            #shipment=request_value.get("shipment"),
-        #)
+        preference = AddReservation.usecase_add_reserve(
+            start_day=request_value.get("start_day"),
+            end_day=request_value.get("end_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            shipment=request_value.get("shipment"),
+        )
 
         return jsonify({ "preference": preference }), 200 
     except Exception as e:
@@ -472,6 +465,7 @@ def pay_notification():
     try:
         request_value = request.get_json()
         topic = request_value.get("topic")
+        
         if topic != None:
             ConfirmReservation.usecase_confirm_reservation(topic, request_value)
         return "", 201

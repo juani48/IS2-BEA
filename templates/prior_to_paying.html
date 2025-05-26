@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+
+</head>
+
+<body class="bg-gray-50">
+  <!-- Header -->
+  <!-- Encabezado del usuario logueado -->
+  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+      <!-- LOGO -->
+      <div class="shrink-0">
+        <a href="#" onclick="goHome()" title="Ir al inicio">
+          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+        </a>
+      </div>
+
+      <!-- BARRA DE BÚSQUEDA -->
+      <div class="flex-grow flex justify-center">
+        <div class="relative w-full max-w-xl">
+          <input type="text" placeholder="Buscar maquinaria..."
+            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+          <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- MI CUENTA (usuario logueado) -->
+      <div class="relative">
+        <button onclick="toggleDropdown()"
+          class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+          <i class="fas fa-user text-lg"></i>
+          <span id="userNameDisplay" class="text-sm font-semibold tracking-wide">Cargando...</span>
+        </button>
+
+        <!-- Dropdown -->
+        <div id="userDropdown"
+          class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+          <button onclick="window.location.href='/editar_perfil'"
+            class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+          <button onclick="window.location.href='/historial'"
+            class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+          <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+    <!-- Navigation debajo, 100% ancho -->
+    <nav class="main-nav w-full">
+      <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+        <li><a href="/panelUsuario.html">Menú</a></li>
+        <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+        <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg-->
+        <li><a href="#">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto">Contáctanos</a></li>
+      </ul>
+    </nav>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+      <ul class="flex flex-col space-y-3">
+        <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+        <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+        <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+        <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una
+            maquinaria</a></li <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas
+          Frecuentes</a></li>
+        <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+      </ul>
+    </div>
+  </header>
+  </div>
+  </header>
+  <!-- Contenedor centrado -->
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <h1 class="text-2xl font-bold text-bob-red mb-6">ESTÁ POR PAGAR</h1>
+
+      <button onclick="redirectToMercadoPago()"
+        class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-300 shadow-md">
+        Confirmar Reserva - PAGAR
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      fetch("/session/status")
+        .then(response => response.json())
+        .then(data => {
+          const accountArea = document.getElementById("accountArea");
+
+          if (data.authenticated) {
+            accountArea.innerHTML = `
+          <div class="relative">
+            <button onclick="toggleDropdown()"
+              class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+              <i class="fas fa-user text-lg"></i>
+              <span class="text-sm font-semibold tracking-wide">${data.name}</span>
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+              <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+              <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+            </div>
+          </div>
+        `;
+          } else {
+            accountArea.innerHTML = `
+          <a href="login.html"
+            class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+            <i class="fas fa-user text-lg group-hover:hidden"></i>
+            <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+            <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
+          </a>
+        `;
+          }
+        });
+    });
+
+    function toggleDropdown() {
+      document.getElementById("userDropdown")?.classList.toggle("hidden");
+    }
+
+    function logout() {
+      fetch('/logout', { method: 'POST' }).then(() => {
+        window.location.href = '/login.html';
+      });
+    }
+
+    function goHome() {
+      fetch("/session/status")
+        .then(res => res.json())
+        .then(data => {
+          if (data.authenticated) {
+            window.location.href = "/panelUsuario.html";
+          } else {
+            window.location.href = "/main.html";
+          }
+        });
+    }
+
+    function redirectToMercadoPago() {
+      fetch("/reservation/reserve_machine",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("reserve")
+        }
+      )
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(preference => {
+          localStorage.removeItem("reserve")
+          console.log("preference", preference)
+          window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
+        })
+        .catch(error => { console.log("Error: ", error) });
+    }
+
+    // CODIGO QUE AGREGO JUANI PARA REDIRIGIR A MERCADO PAGO
+  </script>

@@ -260,9 +260,21 @@
             document.querySelector('input[name="entrega"]:checked').value ===
             "domicilio";
           const direccion = document.getElementById("direccion").value;
-          const client_id = localStorage.getItem("dni"); // o ajustalo si viene de sesión
+          const user = JSON.parse(localStorage.getItem("user")); // o ajustalo si viene de sesión
+
+          const reserve = ({ 
+            start_day: document.getElementById("fechaInicio").value,
+            end_day: document.getElementById("fechaFin").value,
+            client_id: user.dni,
+            machine_id: machineId,
+            shipment: shipment,
+          });
+          
+          localStorage.setItem("reserve", JSON.stringify(reserve));
+          window.location.href = "prior_to_paying.html";
 
 
+          /*
           fetch("/reservation/reserve_machine", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -285,6 +297,7 @@
               errorDiv.textContent = "Error: " + err.message;
               errorDiv.classList.remove("hidden");
             });
+        */
         });
     </script>
   </body>

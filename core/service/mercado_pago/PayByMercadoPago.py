@@ -3,7 +3,7 @@ from core.service.mercado_pago.config import make_preferences, make_preferences_
 def execute(client_id, machine_id, start_day, machine_model, unit_price):
     return make_preferences(client_id, machine_id, start_day, machine_model, unit_price)
 
-def execute():
+#def execute():
     return make_preferences_test()
 
 def get_payment(id):

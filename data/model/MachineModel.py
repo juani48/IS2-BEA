@@ -37,7 +37,8 @@ class MachineModel(Base):
         return (str in self.patent.lower() or
                 str in self.mark.lower() or
                 str in self.model.lower() or
-                str in self.ubication.lower())
+                str in self.ubication.lower() or
+                str in self.description.lower())
         # if self.description:
         #     return str in self.description.lower()
 

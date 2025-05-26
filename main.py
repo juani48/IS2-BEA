@@ -18,6 +18,9 @@ from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
 
+from data.query.insert import query_TEST_USER
+from data.model.UserModel import UserModel
+
 
 
 app = Flask(__name__)
@@ -56,10 +59,18 @@ def load_user(user_id):
 def home():
     #AddCategorie.usecase_add_categorie("categoria1")
     #AddCategorie.usecase_add_categorie("categoria2")
-    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "", "")
-    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "", "")
-    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "", "")
-    # GetAllMachinesByFilter.usecase_get_all_machines_by(categorie_filter={"apply": True, "categorie": "categoria1"}, string_filer=request.get_json().get("string"),price_filter=request.get_json().get("price"),            mark_filter=request.get_json().get("mark"),            model_filter=request.get_json().get("model"))
+    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
+    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
+    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
+    
+    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
+        #categorie_filter={"apply": False, "categorie": "categoria1"}, 
+        #string_filer={ "apply": True, "string": "lob" },
+        #price_filter={ "apply": False, "price": 5 },
+        #mark_filter={ "apply": False },           
+        #model_filter={ "apply": False },
+        #)
+    #)
 
     # prueba de reservas
     # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
@@ -67,6 +78,10 @@ def home():
     #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
     #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
     #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
+
+    #query_TEST_USER.execute(22333444, user=UserModel(
+    #    dni=22333444, email="bb@gmail.com", name="robertito", lastname="robertito", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
+    #))
 
     return render_template('/main.html')
 
@@ -413,16 +428,14 @@ def reserve_machine():
            # machine_id=,
             #start_day=,
            # machine_model=,
-            #unit_price=
         #)
         
-        #AddReservation.usecase_add_reserve(
+        #preference = AddReservation.usecase_add_reserve(
             #start_day=request_value.get("start_day"),
             #end_day=request_value.get("end_day"),
             #client_id=request_value.get("client_id"),
             #machine_id=request_value.get("machine_id"),
             #shipment=request_value.get("shipment"),
-            #preference_id=preference.get("id")  
         #)
 
         return jsonify({ "preference": preference }), 200 

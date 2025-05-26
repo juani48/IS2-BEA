@@ -235,7 +235,14 @@
         // Redirigir después de login exitoso
             localStorage.setItem('user', JSON.stringify(data.user));
             console.log("info guardada");
-            window.location.href = "/panelUsuario.html";  // Ajusta esta ruta
+            if (data.user.type === "Admin") {
+                window.location.href = "/panelAdmin.html";
+            } else if (data.user.type === "Employee") {
+                window.location.href = "/panelEmpleado.html";
+            } else {
+                window.location.href = "/panelUsuario.html";
+            }
+
         })
         .catch(error => {
             // Mostrar error al usuario

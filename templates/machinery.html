@@ -5,27 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maquinarias - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="{{ url_for('static', filename='script/scripts.js') }}"
-      defer
-    ></script>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style/style.css') }}"
-    />
-    <link
-      rel="icon"
-      type="svg"
-      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <script src="{{ url_for('static', filename='script/scripts.js') }}"defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}"/>
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}"/>
     <style>
       html {
         scroll-behavior: smooth;
@@ -41,13 +25,9 @@
       >
         <!-- LOGO -->
         <div class="shrink-0">
-          <a href="/main.html">
-            <img
-              src="{{ url_for('static', filename='image/Completo.svg') }}"
-              alt="Bob el Alquilador"
-              class="h-16"
-            />
-          </a>
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
         </div>
 
         <!-- BARRA DE BÚSQUEDA -->
@@ -81,7 +61,6 @@
           <li><a href="main.html">Menú</a></li>
           <li><a href="machinery.html">Maquinarias</a></li>
           <!-- onclick="getMachine()" no funciona si no son botones -->
-          <li><a href="/categorie.html">Categorías</a></li>
           <!-- borrar el # para enlazar con una pg-->
           <li><a href="#">Preguntas Frecuentes</a></li>
           <li><a href="#contacto">Contáctanos</a></li>
@@ -276,7 +255,7 @@
             <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
             <ul class="space-y-2">
               <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
+                <a href="main.html" class="hover:text-gray-300 transition duration-300"
                   >Inicio</a
                 >
               </li>
@@ -516,6 +495,62 @@
         window.location.href = `/machinery.html?search=${encoded}`;
       }
     }
+    document.addEventListener("DOMContentLoaded", () => {
+  fetch("/session/status")
+    .then(response => response.json())
+    .then(data => {
+      const accountArea = document.getElementById("accountArea");
+
+      if (data.authenticated) {
+        accountArea.innerHTML = `
+          <div class="relative">
+            <button onclick="toggleDropdown()"
+              class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+              <i class="fas fa-user text-lg"></i>
+              <span class="text-sm font-semibold tracking-wide">${data.name}</span>
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+              <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+              <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+              <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+            </div>
+          </div>
+        `;
+      } else {
+        accountArea.innerHTML = `
+          <a href="login.html"
+            class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
+            <i class="fas fa-user text-lg group-hover:hidden"></i>
+            <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
+            <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
+          </a>
+        `;
+      }
+    });
+});
+
+function toggleDropdown() {
+  document.getElementById("userDropdown")?.classList.toggle("hidden");
+}
+
+function logout() {
+  fetch('/logout', { method: 'POST' }).then(() => {
+    window.location.href = '/login.html';
+  });
+}
+
+function goHome() {
+  fetch("/session/status")
+    .then(res => res.json())
+    .then(data => {
+      if (data.authenticated) {
+        window.location.href = "/panelUsuario.html";
+      } else {
+        window.location.href = "/main.html";
+      }
+    });
+}
+
   </script>
 
   <script>

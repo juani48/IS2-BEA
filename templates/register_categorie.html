@@ -54,7 +54,6 @@
 
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
                 <li class="relative" id="dropdown-container">
               <span id="dropdown-toggle"
                     class="cursor-pointer text-white hover:underline inline-block">
@@ -89,7 +88,6 @@
             <ul class="flex flex-col space-y-3">
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
                 <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
                 <li><strong>Gestionar</strong></li>
                 <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
                 <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
@@ -265,6 +263,23 @@
 
     }
   });
+
+   // Obtener datos del usuario de la memoria del navegador                      <<-------------------------------------------------------------------
+    const userData = JSON.parse(localStorage.getItem('user'));
+
+    // Función para mostrar los datos del usuario
+    function displayUserData() {
+        if (userData) {
+            // Reemplazar {{ usuario_nombre }} con el nombre real
+            const userNameElement = document.querySelector('.relative button span');
+            if (userNameElement) {
+                userNameElement.textContent = userData.name;
+            }
+        } else {
+            // Si no hay datos de usuario, redirigir al login
+            window.location.href = '/login.html';
+        }
+    }
 
 
     </script>

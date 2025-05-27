@@ -117,6 +117,7 @@ def load_reserve():
     return render_template("/reserve.html")
 
 @app.route("/prior_to_paying.html")
+@login_required
 def load_prior_to_paying():
     return render_template("/prior_to_paying.html")
 
@@ -141,9 +142,6 @@ def load_panelAdministrador():
     else: 
         return render_template('/main.html')
 
-@app.route("/categorie.html") 
-def categorias():
-    return render_template("categorie.html")
 
 @app.route("/register_machinery.html")
 @login_required
@@ -154,8 +152,12 @@ def register_machine():
         return "Solo los admin pueden cargar maquinarias"
     
 @app.route("/register_categorie.html")
+@login_required
 def register_categorie():
-    return render_template("register_categorie.html")
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("register_categorie.html")
+    else:
+        return "Solo administradores o empleados pueden cargar categorías."
 
 
 @app.route('/description_machinery.html')

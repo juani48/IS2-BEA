@@ -40,12 +40,9 @@
       </div>
 
       <!-- MI CUENTA (usuario logueado) -->
-      <div class="relative">
-        <button onclick="toggleDropdown()"
-          class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-          <i class="fas fa-user text-lg"></i>
-          <span id="userNameDisplay" class="text-sm font-semibold tracking-wide">Cargando...</span>
-        </button>
+      <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+          </div>
 
         <!-- Dropdown -->
         <div id="userDropdown"
@@ -63,7 +60,6 @@
       <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
         <li><a href="/panelUsuario.html">Menú</a></li>
         <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-        <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg-->
         <li><a href="#">Preguntas Frecuentes</a></li>
         <li><a href="#contacto">Contáctanos</a></li>
       </ul>
@@ -74,7 +70,6 @@
       <ul class="flex flex-col space-y-3">
         <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
         <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-        <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
         <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una
             maquinaria</a></li <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas
           Frecuentes</a></li>
@@ -98,14 +93,13 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+  fetch("/session/status")
+    .then(response => response.json())
+    .then(data => {
+      const accountArea = document.getElementById("accountArea");
 
-      fetch("/session/status")
-        .then(response => response.json())
-        .then(data => {
-          const accountArea = document.getElementById("accountArea");
-
-          if (data.authenticated) {
-            accountArea.innerHTML = `
+      if (data.authenticated) {
+        accountArea.innerHTML = `
           <div class="relative">
             <button onclick="toggleDropdown()"
               class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
@@ -119,8 +113,8 @@
             </div>
           </div>
         `;
-          } else {
-            accountArea.innerHTML = `
+      } else {
+        accountArea.innerHTML = `
           <a href="login.html"
             class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
             <i class="fas fa-user text-lg group-hover:hidden"></i>
@@ -128,32 +122,31 @@
             <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
           </a>
         `;
-          }
-        });
+      }
     });
+});
 
-    function toggleDropdown() {
-      document.getElementById("userDropdown")?.classList.toggle("hidden");
-    }
+function toggleDropdown() {
+  document.getElementById("userDropdown")?.classList.toggle("hidden");
+}
 
-    function logout() {
-      fetch('/logout', { method: 'POST' }).then(() => {
-        window.location.href = '/login.html';
-      });
-    }
+function logout() {
+  fetch('/logout', { method: 'POST' }).then(() => {
+    window.location.href = '/login.html';
+  });
+}
 
-    function goHome() {
-      fetch("/session/status")
-        .then(res => res.json())
-        .then(data => {
-          if (data.authenticated) {
-            window.location.href = "/panelUsuario.html";
-          } else {
-            window.location.href = "/main.html";
-          }
-        });
-    }
-
+function goHome() {
+  fetch("/session/status")
+    .then(res => res.json())
+    .then(data => {
+      if (data.authenticated) {
+        window.location.href = "/panelUsuario.html";
+      } else {
+        window.location.href = "/main.html";
+      }
+    });
+}
     function redirectToMercadoPago() {
       fetch("/reservation/reserve_machine",
         {

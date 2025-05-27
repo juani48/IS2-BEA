@@ -17,9 +17,13 @@ import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
-
 from data.query.insert import query_TEST_USER
 from data.model.UserModel import UserModel
+from data.query.get.query_get_machine import execute
+from data.config import session
+from data.model.MachineCategorieModel import MachineCategorieModel
+from data.model.CategorieModel import CategorieModel
+
 
 
 
@@ -137,7 +141,7 @@ def load_panelAdministrador():
     else: 
         return render_template('/main.html')
 
-@app.route("/categorie.html")  #Lara estuvo aki
+@app.route("/categorie.html") 
 def categorias():
     return render_template("categorie.html")
 
@@ -152,6 +156,11 @@ def register_machine():
 @app.route("/register_categorie.html")
 def register_categorie():
     return render_template("register_categorie.html")
+
+
+@app.route('/description_machinery.html')
+def description_machinery():
+    return render_template('description_machinery.html')
 
 
 # ---- METODOS USUARIO ---- #
@@ -344,20 +353,47 @@ def disable_machine():
 def get_all_machines():
     return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
 
-
-@app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
+    
+@app.route("/machine/get_all_filter", methods=["GET" , "POST"])
 def get_all_machines_filter():
-    # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
+     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False },
+     #  "price": { "apply": True, "price": 10.5 }}
 
     try:
+        data = request.get_json()
+
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
-            categorie_filter=request.get_json().get("categoire"),
-            string_filer=request.get_json().get("string"),
-            price_filter=request.get_json().get("price"),
-            mark_filter=request.get_json().get("mark"),
-            model_filter=request.get_json().get("model"))), 200
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model"))), 200
+
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "message": str(e) }), 404
+    
+
+@app.route("/machine/get_by_id/<string:machine_id>", methods=["GET"])
+def get_machine_by_id(machine_id):
+    machine = execute(machine_id)
+    if not machine:
+        return jsonify({"error": "Maquinaria no encontrada"}), 404
+
+    # Obtener categorías asociadas
+    categories = (
+        session.query(CategorieModel.name)
+        .join(MachineCategorieModel, MachineCategorieModel.categorie_id == CategorieModel.name)
+        .filter(MachineCategorieModel.machine_id == machine_id)
+        .all()
+    )
+    category_names = [cat.name for cat in categories]  # lista de strings
+
+    machine_dict = machine.json()
+    machine_dict["categories"] = category_names  #  sobrescribo "categorie" con lista
+
+    return jsonify(machine_dict)
+
+
 
 #    ---- CATEGORIAS ---- #
 

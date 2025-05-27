@@ -3,7 +3,6 @@ from data.appDataBase import get_all_machines, get_all_machines_by_categorie
 # Dicccionarios con booleano y filtro
 # {"categorie":"categoria2", "apply": True}
 def usecase_get_all_machines_by(categorie_filter, string_filer, price_filter, mark_filter, model_filter):
-    print(categorie_filter)
     if (categorie_filter.get("apply")):
         list = get_all_machines_by_categorie(categorie_filter.get("categorie"))
     else:

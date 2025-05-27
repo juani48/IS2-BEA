@@ -27,14 +27,14 @@
                 </a>
             </div>
 
-            <!-- BARRA DE BÚSQUEDA -->
+           <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
                 </div>
             </div>
 
@@ -58,7 +58,27 @@
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
                 <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
+                 <li class="relative" id="dropdown-container">
+              <span id="dropdown-toggle"
+                    class="cursor-pointer text-white hover:underline inline-block">
+                Gestionar <i class="fas fa-caret-down ml-1"></i>
+              </span>
+
+              <div id="dropdown-menu"
+                  class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                  style="color: #7f1d1d;">
+                <a href="register_machinery.html"
+                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                  style="color: #7f1d1d !important;">
+                  ➕ Dar de alta una maquinaria
+                </a>
+                <a href="register_categorie.html"
+                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                  style="color: #7f1d1d !important;">
+                  ➕ Dar de alta una categoría
+                </a>
+              </div>
+            </li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -347,7 +367,7 @@ formData.set("refund", refundValue);
 
         if (successDiv) {
           successDiv.classList.remove("hidden");
-          successDiv.textContent = "✅ Máquina cargada correctamente.";
+          successDiv.textContent = "Máquina cargada correctamente.";
           successDiv.scrollIntoView({ behavior: "smooth" });
 
           // Ocultar automáticamente a los 3 segundos
@@ -364,6 +384,35 @@ formData.set("refund", refundValue);
       } 
     })
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dropdown-toggle");
+    const menu = document.getElementById("dropdown-menu");
+    const container = document.getElementById("dropdown-container");
+
+    if (toggle && menu && container) {
+      toggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // evita que el documento lo cierre enseguida
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+});
+
+    }
+  });
+
+  function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+
 </script>
 
 

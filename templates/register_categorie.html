@@ -14,7 +14,6 @@
 <body class="bg-gray-50">
 
   <!-- Header -->
-    <!-- Header -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
@@ -29,11 +28,11 @@
             <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
                 </div>
             </div>
 
@@ -57,32 +56,26 @@
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
                 <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
                 <li class="relative" id="dropdown-container">
-                <span id="dropdown-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Gestionar <i class="fas fa-caret-down ml-1"></i>
-                </span>
+              <span id="dropdown-toggle"
+                    class="cursor-pointer text-white hover:underline inline-block">
+                Gestionar <i class="fas fa-caret-down ml-1"></i>
+              </span>
 
-                <div id="dropdown-menu"
-                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                    style="color: #7f1d1d;">
+              <div id="dropdown-menu"
+                  class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                  style="color: #7f1d1d;">
                 <a href="register_machinery.html"
-                class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                style="color: #7f1d1d !important;">
-                ➕ Dar de alta una maquinaria
-              </a>
-
-                  <a href="register_categorie.html"
-                class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                style="color: #7f1d1d !important;">
-                ➕ Dar de alta una categoría
-              </a>
-
-                </div>
-              </li>
-
-<!-- ESTO COSTO MUCHISIMO, LA IDEA SERIA QUE SE MANTENGA MEJOR, de ultima lo cambiamos porque me enoje-->
-
-
+                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                  style="color: #7f1d1d !important;">
+                  ➕ Dar de alta una maquinaria
+                </a>
+                <a href="register_categorie.html"
+                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                  style="color: #7f1d1d !important;">
+                  ➕ Dar de alta una categoría
+                </a>
+              </div>
+            </li>
 
             
 
@@ -216,47 +209,64 @@
     </footer>
 
     <script>
-  document
-    .getElementById("category-form")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+      document
+        .getElementById("category-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-      const nameInput = document.getElementById("name");
-      const name = nameInput.value.trim();  // Elimina espacios antes/después
-      const success = document.getElementById("success");
-      const error = document.getElementById("error");
+          const name = document.getElementById("name").value;
+          const success = document.getElementById("success");
+          const error = document.getElementById("error");
 
-      // Validación: que no esté vacío
-      if (name === "") {
-        success.classList.add("hidden");
-        error.textContent = "⚠️ El nombre de la categoría no puede estar vacío.";
-        error.classList.remove("hidden");
-        nameInput.focus();
-        return;
+          fetch("/categorie/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+          })
+            .then((res) => {
+              if (res.status === 201) {
+                success.classList.remove("hidden");
+                error.classList.add("hidden");
+                e.target.reset();
+              } else {
+                throw new Error("Ya existe esa categoría o falló el registro.");
+              }
+            })
+            .catch(() => {
+              success.classList.add("hidden");
+              error.classList.remove("hidden");
+            });
+        });
+
+        function buscarMaquinaria() {
+        const input = document.getElementById("searchInput")?.value.trim();
+        if (input !== "") {
+          const encoded = encodeURIComponent(input);
+          window.location.href = `/machinery.html?search=${encoded}`;
+        }
       }
 
-      fetch("/categorie/add_categorie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ categorie: name }),
-      })
-        .then((res) => {
-          if (res.status === 204) {
-            success.classList.remove("hidden");
-            error.classList.add("hidden");
-            e.target.reset();
-          } else {
-            throw new Error(res.status === 404 ? "Ya existe esa categoría." : "Error inesperado al registrar.");
-          }
-        })
-        .catch((err) => {
-          success.classList.add("hidden");
-          error.textContent = `⚠️ ${err.message}`;
-          error.classList.remove("hidden");
-        });
+      document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dropdown-toggle");
+    const menu = document.getElementById("dropdown-menu");
+    const container = document.getElementById("dropdown-container");
+
+    if (toggle && menu && container) {
+      toggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // evita que el documento lo cierre enseguida
+      menu.classList.toggle("hidden");
     });
-</script>
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+});
+
+    }
+  });
 
 
+    </script>
   </body>
-</html> 
+</html>

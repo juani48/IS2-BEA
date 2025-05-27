@@ -36,11 +36,11 @@
             <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
                     <i class="fas fa-search"></i>
-                    </button>
+                </button>
                 </div>
             </div>
 
@@ -451,5 +451,14 @@
                 window.location.href = '/login.html';
             });
     }
+
+    function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+
 </script>
 </html>

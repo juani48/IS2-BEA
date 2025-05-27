@@ -1,9 +1,9 @@
 from data.model.ReservationModel import ReservationModel
-from data.appDataBase import insert_reserve, get_machine
+from data.appDataBase import insert_reserve, get_machine, get_discount, update_user_points
 from core.service.mercado_pago import PayByMercadoPago
-from datetime import date, datetime
+from datetime import datetime
 
-def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment):
+def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, type, apply_discount):
     
     machine = get_machine(machine_id)
 
@@ -12,6 +12,13 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment):
 
     days = (end - start).days
     total_value = machine.price_day * days
+
+    if (type == "Empleado"):
+        total_value -= total_value * (0.01 *(get_discount("Employee").discount))
+    elif(type == "Client" and apply_discount):
+        point = int(days/7) - 5
+        update_user_points(client_id, point)
+        total_value -= total_value * (0.01 * (get_discount("Points").discount))
 
     preference = PayByMercadoPago.execute(client_id, machine_id, start_day, machine.model, total_value)
 

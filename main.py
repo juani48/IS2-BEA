@@ -8,10 +8,10 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -429,29 +429,30 @@ def reserve_machine():
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
             shipment=request_value.get("shipment"),
+            type=request_value.get("type"), # TIPO DE USUARIO - STRING
+            apply_discount=request_value.get("apply_discount") # DESCUENTO - BOOLEANO
         )
 
         return jsonify({ "preference": preference }), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ---- PAGOS ---- # 
-
-#@app.route("/pay/redirect_to_pay", methods=["GET"]) # PROVISORIO
-#def redirect_to_pay():
-    try:
-        request_value = request.get_json()
-
-        AddReservation.usecase_add_reserve(
-            start_day=request_value.get("start_day"),
-            end_day=request_value.get("end_day"),
-            client_id=request_value.get("client_id"),
-            machine_id=request_value.get("machine_id"),
-            shipment=request_value.get("shipment"),
-        )
-        return "", 204
+@app.route("/user/user_points", methods=["GET","POST"])
+def user_points():
+    try: 
+        request_value = request.get_json() # { "id": 12345 }
+        return jsonify({ "points": GetUserPoints.usecase_get_user_points(request_value.get("id")) }), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/reservation/get_daily_reservations", methods=["POST"])
+def get_daily_reserve():
+    try:
+        return jsonify({ GetDailyReservations.usecase_get_daily_reservations() }), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# ---- PAGOS ---- # 
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
 def failure_reservation():

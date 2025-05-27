@@ -261,7 +261,7 @@
               </li>
               <li>
                 <a
-                  href="#maquinarias"
+                  href="/machinery.html"
                   class="hover:text-gray-300 transition duration-300"
                   >Maquinarias</a
                 >
@@ -495,62 +495,10 @@
         window.location.href = `/machinery.html?search=${encoded}`;
       }
     }
-    document.addEventListener("DOMContentLoaded", () => {
-  fetch("/session/status")
-    .then(response => response.json())
-    .then(data => {
-      const accountArea = document.getElementById("accountArea");
-
-      if (data.authenticated) {
-        accountArea.innerHTML = `
-          <div class="relative">
-            <button onclick="toggleDropdown()"
-              class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-              <i class="fas fa-user text-lg"></i>
-              <span class="text-sm font-semibold tracking-wide">${data.name}</span>
-            </button>
-            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
-              <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
-              <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
-              <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
-            </div>
-          </div>
-        `;
-      } else {
-        accountArea.innerHTML = `
-          <a href="login.html"
-            class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-            <i class="fas fa-user text-lg group-hover:hidden"></i>
-            <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-            <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
-          </a>
-        `;
-      }
-    });
-});
-
-function toggleDropdown() {
-  document.getElementById("userDropdown")?.classList.toggle("hidden");
-}
-
-function logout() {
-  fetch('/logout', { method: 'POST' }).then(() => {
-    window.location.href = '/login.html';
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar() 
   });
-}
-
-function goHome() {
-  fetch("/session/status")
-    .then(res => res.json())
-    .then(data => {
-      if (data.authenticated) {
-        window.location.href = "/panelUsuario.html";
-      } else {
-        window.location.href = "/main.html";
-      }
-    });
-}
-
   </script>
 
   <script>

@@ -41,13 +41,9 @@
       >
         <!-- LOGO -->
         <div class="shrink-0">
-          <a href="/main.html">
-            <img
-              src="{{ url_for('static', filename='image/Completo.svg') }}"
-              alt="Bob el Alquilador"
-              class="h-16"
-            />
-          </a>
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
         </div>
 
         <!-- BARRA DE BÚSQUEDA -->
@@ -184,15 +180,6 @@
         }
       }
 
-      function goHome() {
-        fetch("/session/status")
-          .then((res) => res.json())
-          .then((data) => {
-            window.location.href = data.authenticated
-              ? "/panelUsuario.html"
-              : "/main.html";
-          });
-      }
 
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
@@ -235,6 +222,11 @@
             console.error(err);
           });
       });
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarHeaderUsuario();
+        configurarDropdownGestionar() 
+      });
+
     </script>
 
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">

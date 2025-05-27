@@ -9,6 +9,8 @@ def usecase_login(dni, password):
 
     if user_model is None:
         raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
+    if user_model.authorized == 0: 
+        raise Exception("Usuario no habilitado.")
     if password == user_model.password:
         return user_model #retorno directamente la clase Usuario modelo 
     else:

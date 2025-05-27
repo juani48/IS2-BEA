@@ -15,13 +15,16 @@ from data.query.update import query_update_machine, query_update_user, query_upd
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine
+from data.query.get import query_get_user, query_get_machine, query_get_discount
 
 from data.query.delete import query_delete_reservation
+
+from data.query.init import query_init_discount
 
 def create_database():
     if (not os.path.isfile("///db/database.db")):
         Base.metadata.create_all(engine)
+        query_init_discount.execute()
 
 
 # ---- inserts -----
@@ -86,12 +89,15 @@ def change_password(dni,password):
     query_change_password_user.execute(dni,password)
 
 
-# ----   get  -----
+# ----  get  -----
 def get_user (dni):
     return query_get_user.execute(dni)
 
 def get_machine(machine_id):
     return query_get_machine.execute(machine_id)
+
+def get_discount(name):
+    return query_get_discount(name)
 
 # ---- get all ----
 def get_all_users():

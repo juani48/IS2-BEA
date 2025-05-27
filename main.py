@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation
@@ -429,9 +429,19 @@ def reserve_machine():
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
             shipment=request_value.get("shipment"),
+            type=request_value.get("type"), # TIPO DE USUARIO
+            apply_discount=request_value.get("apply_discount") # DESCUENTO
         )
 
         return jsonify({ "preference": preference }), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/user/user_points", methods=["GET","POST"])
+def user_points():
+    try: 
+        request_value = request.get_json() # { "id": 12345 }
+        return jsonify({ "points": GetUserPoints.usecase_get_user_points(request_value.get("id")) }), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

@@ -22,7 +22,7 @@ class UserModel(Base):
     def __repr__(self):
         return "{" + f"""dni:{self.dni}, password:{self.password}, email: {self.email}, name:{self.name}, lastname: {self.lastname}, employee_number: {self.employee_number} , authorized: {self.authorized}, birth_date: {self.birth_date}, phone: {self.phone}, points: {self.points}""" + "}"
 
-    def __init__(self, dni, email, name, lastname, phone, birth_date, password,type):
+    def __init__(self, dni, email, name, lastname, phone, birth_date, password,employee_number,type,authorized):
         self.dni = dni
         self.email = email
         self.name = name
@@ -30,8 +30,8 @@ class UserModel(Base):
         self.phone = phone
         self.birth_date = birth_date
         self.password = password
-        self.employee_number = 0
-        self.authorized = False
+        self.employee_number = employee_number
+        self.authorized = authorized
         self.points = 0
         self.type = type
 

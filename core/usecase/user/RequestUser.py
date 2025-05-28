@@ -20,7 +20,9 @@ def usecase_request_user(dni, email, name, lastname, phone, birthDate):
         lastname=lastname,        
         birth_date=birthDate,
         phone=phone,
-        type = "Cliente"
+        type = "Cliente",
+        authorized= 0,
+        employee_number= 0
     )
     insert_user(dni=dni,user=user,email=email)
     sendMailEmployees(dni=dni)

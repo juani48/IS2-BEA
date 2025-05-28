@@ -20,7 +20,8 @@
 
 </head>
 
-<body class="bg-gray-50">
+<body class="min-h-screen bg-gradient-to-br from-red-100 to-red-200 flex flex-col">
+
     <!-- Header -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
@@ -69,8 +70,7 @@
             </ul>
         </div>
     </header>
-
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-200">
+<div class="flex flex-grow justify-center items-center py-12">
     <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div class="flex justify-end">
             <a href="/" title="Volver al inicio" 
@@ -87,105 +87,121 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div id="form-error" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 mb-4 text-center"></div>
-        <form id= "register-form" action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    minlength="3"
-                    maxlength="30"
-                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
-            </div>
+        <!-- Mensaje de error (afuera del form) -->
+<div id="form-error" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 mb-4 text-center">
+</div>
 
-            <div>
-                <label for="lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
-                <input
-                    type="text"
-                    id="lastname"
-                    name="lastname"
-                    required
-                    minlength="3"
-                    maxlength="30"
-                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
-            </div>
+<!-- Formulario completo -->
+<form id="register-form" action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
+  <!-- Nombre -->
+  <div>
+    <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      minlength="3"
+      maxlength="30"
+      pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+      oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
 
-            <div>
-                <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
-                <input
-                    type="text"
-                    id="dni"
-                    name="dni"
-                    required
-                    maxlength="8"
-                    minlength="7"
-                    pattern="\d+"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Sin puntos ni espacios"
-                >
-            </div>
+  <!-- Apellido -->
+  <div>
+    <label for="lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+    <input
+      type="text"
+      id="lastname"
+      name="lastname"
+      required
+      minlength="3"
+      maxlength="30"
+      pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+      oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                <input type="email" id="email" name="email" required
-                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-            </div>
+  <!-- DNI -->
+  <div>
+    <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+    <input
+      type="text"
+      id="dni"
+      name="dni"
+      required
+      maxlength="8"
+      minlength="7"
+      pattern="\d+"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+      placeholder="Sin puntos ni espacios"
+    />
+  </div>
 
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    required
-                    maxlength="15"
-                    pattern="\d+"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
-            </div>
+  <!-- Email -->
+  <div>
+    <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+    <input type="email" id="email" name="email" required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
 
-            <div>
-                <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
-                <input type="date" id="birthdate" name="birthdate" required
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-            </div>
+  <!-- Teléfono -->
+  <div>
+    <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+    <input
+      type="text"
+      id="phone"
+      name="phone"
+      required
+      maxlength="15"
+      pattern="\d+"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
 
-            <div>
-                <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
-                <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                        file:rounded-lg file:border-0 file:text-sm file:font-semibold
-                        file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-            </div>
+  <!-- Fecha nacimiento -->
+  <div>
+    <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+    <input type="date" id="birthdate" name="birthdate" required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
 
-            <div class="flex items-start">
-                <input id="terms" name="terms" type="checkbox" required
-                    class="mt-1 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500">
-                <label for="terms" class="text-sm text-gray-600">
-                    Acepto los <a href="/terminos" class="text-red-500 hover:underline">Términos y Condiciones</a>
-                </label>
-            </div>
+  <!-- Foto DNI -->
+  <div>
+    <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
+    <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
+      class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" />
+  </div>
 
-            <button title= "Debe aceptar los términos y condiciones para continuar" type="submit" id="submit-btn" disabled
-                class="w-full bg-gray-300 text-white py-2 rounded-lg transition duration-300 cursor-not-allowed">
-                Confirmar
-            </button>
-        </form>
-        <p class="mt-4 text-center text-sm text-gray-600">
-            ¿Ya tenés cuenta? <a href="login.html" class="text-red-500 hover:underline">Iniciar sesión</a>
-        </p>
-    </div>    
+  <!-- Términos -->
+  <div class="flex items-start">
+    <input id="terms" name="terms" type="checkbox" required
+      class="mt-1 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500" />
+    <label for="terms" class="text-sm text-gray-600">
+      Acepto los <a href="/terminos" class="text-red-500 hover:underline">Términos y Condiciones</a>
+    </label>
+  </div>
+
+  <!-- Botón submit -->
+  <button title="Debe aceptar los términos y condiciones para continuar" type="submit" id="submit-btn" disabled
+    class="w-full bg-gray-300 text-white py-2 rounded-lg transition duration-300 cursor-not-allowed">
+    Confirmar
+  </button>
+</form>
+
+
+<!-- Link alternativo -->
+<p class="mt-4 text-center text-sm text-gray-600">
+  ¿Ya tenés cuenta? <a href="login.html" class="text-red-500 hover:underline">Iniciar sesión</a>
+</p>
+</div>
+</div>
+
     
      <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">

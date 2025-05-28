@@ -21,9 +21,8 @@
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
@@ -39,17 +38,11 @@
             </div>
 
             <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
-            </a>
+           <div id="accountArea">
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+          </div>
 
 
-        </div>
         </div>
 
         <!-- Navigation debajo, 100% ancho -->
@@ -57,27 +50,6 @@
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones --> 
-                <li class="relative" id="dropdown-container">
-              <span id="dropdown-toggle"
-                    class="cursor-pointer text-white hover:underline inline-block">
-                Gestionar <i class="fas fa-caret-down ml-1"></i>
-              </span>
-
-              <div id="dropdown-menu"
-                  class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                  style="color: #7f1d1d;">
-                <a href="register_machinery.html"
-                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                  style="color: #7f1d1d !important;">
-                  ➕ Dar de alta una maquinaria
-                </a>
-                <a href="register_categorie.html"
-                  class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                  style="color: #7f1d1d !important;">
-                  ➕ Dar de alta una categoría
-                </a>
-              </div>
-            </li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -416,11 +388,15 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `/machinery.html?search=${encoded}`;
     }
   }
+   document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar();
+  });
 
 </script>
 
 
-<footer class="bg-bob-dark-red text-white py-10">
+<footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->

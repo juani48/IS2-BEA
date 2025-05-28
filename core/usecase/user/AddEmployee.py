@@ -2,8 +2,11 @@ from data.model.UserModel import UserModel
 from data.appDataBase import insert_employee
 from core.usecase.user.RequestUser import _random_password
 from core.usecase.service import SendMail
+from data.query.get.query_get_user import execute
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
+    if execute(dni):
+        raise Exception("El DNI ya se encuentra registrado")
     if (_validator(dni, email, name, lastname)):        
         password = _random_password()
         user = UserModel(

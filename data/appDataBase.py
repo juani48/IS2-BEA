@@ -1,7 +1,7 @@
 import os
 from data.config import Base, engine
 
-from data.query.disable import query_disable_categorie, query_disable_machine
+from data.query.disable import query_disable_categorie, query_disable_machine,query_disable_employee
 
 from data.query.delete import query_delete_user
 
@@ -15,7 +15,7 @@ from data.query.update import query_update_machine, query_update_user, query_upd
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee
 
 from data.query.delete import query_delete_reservation
 
@@ -56,6 +56,9 @@ def disable_categorie(categorie):
 
 def disable_machine(patent):
     query_disable_machine.execute(patent=patent)
+
+def disable_employee(employeeN):
+    query_disable_employee.execute(employeeN=employeeN)
 
 # ---- delete ----
 def delete_user(dni):
@@ -98,6 +101,9 @@ def get_machine(machine_id):
 
 def get_discount(name):
     return query_get_discount(name)
+
+def get_employee(employeeN):
+    return query_get_employee(employeeN)
 
 # ---- get all ----
 def get_all_users():

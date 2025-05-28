@@ -369,17 +369,22 @@ formData.set("refund", refundValue);
           successDiv.textContent = "Máquina cargada correctamente.";
           successDiv.scrollIntoView({ behavior: "smooth" });
 
-          // Ocultar automáticamente a los 3 segundos
+          // Hacer scroll al top del documento suavemente
+          window.scrollTo({ top: 0, behavior: "smooth" });
+
+          // Esperar 3 segundos antes de redirigir
           setTimeout(() => {
             successDiv.classList.add("hidden");
-          }, 3000);
+            window.location.href = "/machinery.html";
+          }, 1500);
+
         }
 
         if (errorDiv) errorDiv.classList.add("hidden");
 
         // no se como hacer para que avise antes de ir la main.html que se cargo la maquina
         // O LO MOSTRAMOS ACA O EN EL HOME
-        window.location.href = "/main.html"
+        //window.location.href = "/machinery.html"
       } 
     })
 });

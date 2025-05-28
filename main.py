@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -285,12 +285,15 @@ def reply_request():
         dni = request_value.get("dni")
         if reply is None or dni is None:
             return jsonify({"error": "Faltan datos obligatorios (Reply o DNI)"}), 400
-        RequestUser(reply=reply, dni=dni)
+        ReplyRequest(reply=reply, dni=dni)
         return jsonify({"message": "Solicitud procesada correctamente"}), 200
     
     except Exception as e:
         return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
 
+@app.route("/requests/get_all", methods=["GET"])  
+def get_all_machines():
+    return jsonify( { "value" : GetAllRequests.usecase_get_all_requests()} ), 200 
 
 # ---- MAQUINAS ----
 

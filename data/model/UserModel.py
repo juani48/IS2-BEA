@@ -35,7 +35,16 @@ class UserModel(Base):
         self.points = 0
         self.type = type
 
-
+    def json(self):
+        return {
+            "dni": self.dni,
+            "name": self.name,
+            "email": self.email,
+            "type": self.type,
+            "authorized": self.authorized,
+            "points": self.points,
+            "employee_number": self.employee_number
+        }
 
 
 """

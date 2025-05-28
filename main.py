@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests,DisableEmployee,RecoverPassword
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -223,7 +223,6 @@ def session_status():
         return jsonify({ "authenticated": False }), 200
 
 
-
 @app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required
 def update_user():         
@@ -259,7 +258,6 @@ def change_password():
 def recover_password():
     emailUser = request.get_json()
     RecoverPassword.usecase_recover_password(emailUser)
-    
 
 
 @app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
@@ -289,6 +287,10 @@ def disable_employee():
     else:
         return "Debe ser administrador."
     return "Empleado deshabilitado", 204
+
+@app.route("/employee/get_all", methods=["GET"])  
+def get_all_employees():
+    return jsonify( { "value" : GetAllEmployees.usecase_get_all_employees()} ), 200 
 
 @app.route("/employee/requests", methods= ["PUT"])
 @login_required

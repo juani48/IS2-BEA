@@ -314,6 +314,9 @@ def add_employee():
             employeeN = request_value.get("employeeN")
         )
         return "Empleado agregado", 204
+    except Exception as e:
+        return jsonify({"error": "Ocurrió un error al procesar alta de empleado", "detalles": str(e)}), 500
+
 
 @app.route("/admin/disable_employee", methods=["PUT"])   #Chequeado ✅
 @login_required

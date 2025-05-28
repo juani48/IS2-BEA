@@ -284,8 +284,8 @@
     }
 
     // 🔁 Renombrar campo para que el backend lo entienda
-    data.employee_number = data.employeeN;
-    delete data.employeeN;
+    //data.employee_number = data.employeeN;
+    //delete data.employeeN;
 
     fetch("/admin/add_employee", {
       method: "PUT",

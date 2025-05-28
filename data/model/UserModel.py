@@ -35,6 +35,7 @@ class UserModel(Base):
         self.points = 0
         self.type = type
 
+
     def json(self):
         return {
             "dni": self.dni,

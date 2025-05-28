@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests,DisableEmployee
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests,DisableEmployee,RecoverPassword
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -293,6 +293,11 @@ def change_password():
     else:
         return jsonify({ "error": "DNI incoincidente" }), 401
 
+@app.route("/user/recover_password", methods=["PUT"])
+def recover_password():
+    emailUser = request.get_json()
+    RecoverPassword.usecase_recover_password(emailUser)
+    
 
 
 

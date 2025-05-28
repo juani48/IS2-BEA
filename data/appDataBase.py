@@ -7,7 +7,7 @@ from data.query.delete import query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user
 
-from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests
+from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
@@ -15,7 +15,7 @@ from data.query.update import query_update_machine, query_update_user, query_upd
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email
 
 from data.query.delete import query_delete_reservation
 
@@ -95,6 +95,9 @@ def change_password(dni,password):
 # ----  get  -----
 def get_user (dni):
     return query_get_user.execute(dni)
+
+def get_user_by_email(email):
+    return query_get_user_by_email.execute(email)
 
 def get_machine(machine_id):
     return query_get_machine.execute(machine_id)

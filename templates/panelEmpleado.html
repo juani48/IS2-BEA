@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
@@ -21,14 +22,14 @@
 
 <body class="bg-gray-50">
     <!-- Header -->
+    <!-- Encabezado del usuario logueado -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="/main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="/panelUsuario.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
@@ -43,15 +44,21 @@
                 </div>
             </div>
 
-            <!-- MI CUENTA -->
-            <div id="accountArea">
+          <!-- MI CUENTA (se completa automáticamente si hay sesión) -->
+        <div id="accountArea"></div>
+
+                <!-- Dropdown -->
+                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                    <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                    <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                    <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                </div>
             </div>
         </div>
-
         <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
+                <li><a href="/panelUsuario.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
@@ -62,13 +69,15 @@
         <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
             <ul class="flex flex-col space-y-3">
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
         </div>
     </header>
+    </div>
+</header>
+
 
     <!-- Hero Section -->
     <section class="relative h-[500px] overflow-visible bg-white">
@@ -93,29 +102,9 @@
                     class="bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
                     Ver Maquinarias
                 </a>
-
             </div>
         </div>
     </section>
-
-
-    <!--Pasar esto a un archivo js-->
-    <script>
-        const zoomElement = document.getElementById('hero-zoom');
-
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxZoomOut = 0.9; // 90% tamaño
-            const maxScroll = 300; // hasta dónde empieza a escalar
-
-            // calcular cuánto scroll proporcionalmente 
-            let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
-            if (scale < maxZoomOut) scale = maxZoomOut;
-            if (scale > 1) scale = 1;
-
-            zoomElement.style.transform = `scale(${scale})`;
-        });
-    </script>
     </section>
 
     <!-- Featured Machines -->
@@ -170,12 +159,11 @@
                         <p class="text-gray-600 mb-4">Descripción corta.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-bob-red font-bold">$35.000/día</span>
-                          <a href="#" 
-                            class="reservar-btn reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" 
-                            data-id="A1">
-                            Reservar
-                        </a>
-
+                            <a href="reserve.html"
+                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
+                                data-id="1">
+                                Reservar
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -209,7 +197,7 @@
             </div>
 
             <div class="text-center mt-12">
-                <a href="machinery.html"
+                <a href="#"
                     class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
                     Ver todas las maquinarias
                 </a>
@@ -346,85 +334,8 @@
         </div>
     </section>
 
-    <!--  Testimonials 
-   <section class="py-16 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Lo que dicen nuestros clientes</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 Testimonial 1 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Excelente servicio. Las máquinas estaban en perfecto estado y el proceso de alquiler fue muy sencillo. Definitivamente volveré a alquilar con Bob el Alquilador."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            JR
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Juan Rodríguez</h4>
-                            <p class="text-gray-500 text-sm">Constructor</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 2 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Muy buena atención al cliente y precios competitivos. La maquinaria funcionó perfectamente durante todo el proyecto. Recomendado."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            ML
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">María López</h4>
-                            <p class="text-gray-500 text-sm">Arquitecta</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 3 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"La mejor empresa de alquiler de maquinaria con la que he trabajado. Entrega puntual y equipos de primera calidad. El sistema de reservas online es muy práctico."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            CG
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Carlos Gómez</h4>
-                            <p class="text-gray-500 text-sm">Contratista</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
-    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+    <footer id="contacto"  class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->
@@ -477,26 +388,12 @@
             © 2025 Bob El Alquilador. Todos los derechos reservados.
         </div>
     </footer>
-
-
-
 </body>
-<script>
-
-function buscarMaquinaria() {
-    const input = document.getElementById("searchInput")?.value.trim();
-    if (input !== "") {
-      const encoded = encodeURIComponent(input);
-      window.location.href = `/machinery.html?search=${encoded}`;
-    }
-  }
-
-document.addEventListener("DOMContentLoaded", () => {
+<script>  
+    document.addEventListener("DOMContentLoaded", () => {
     cargarHeaderUsuario();
-    configurarDropdownGestionar()
-    mostraraBotonEmpleado(); 
-  });
+    configurarDropdownGestionar();
+    mostrarBotonEmpleado(); // --> agregar a todas las paginas en comun
 
-</script>
-
+  });</script>
 </html>

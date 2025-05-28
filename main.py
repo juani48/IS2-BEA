@@ -135,7 +135,7 @@ def load_singin():
 @app.route("/panelUsuario.html")
 @login_required
 def load_panelUsuario():
-    return render_template("/panelUsuario.html")
+    return render_template("/panelEmpleado.html")
 
 @app.route("/panelAdmin.html")
 @login_required
@@ -144,6 +144,14 @@ def load_panelAdministrador():
         return render_template("/panelAdmin.html")
     else: 
         return render_template('/main.html')
+
+@app.route("/panelEmpleado.html")
+@login_required
+def load_panelEmpleado():
+    if(current_user.type == "Cliente"): #--> cambiar a empleado, es para probar
+        return render_template("/panelEmpleado.html")
+    else:
+        return render_template("/main.html")
 
 @app.route("/change_password.html")
 @login_required
@@ -175,12 +183,20 @@ def register_categorie():
         return render_template("register_categorie.html")
     else:
         return "Solo administradores o empleados pueden cargar categorías."
-
+    
+@app.route("/pending_requests.html")
+@login_required
+def load_pending_request():
+    return render_template("pending_requests.html")
 
 @app.route('/description_machinery.html')
 def description_machinery():
     return render_template('description_machinery.html')
 
+@app.route("/list_reservation.html")
+@login_required
+def load_list_reservation():
+    return render_template("list_reservation.html")
 
 # ---- METODOS USUARIO ---- #
 

@@ -22,7 +22,7 @@ def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN
             dni,
             user,
         )
-        send_Mail(email=email,name=name,lastname=lastname,password=password)
+        sendMailEmployee(email=email,name=name,lastname=lastname,password=password)
 
     return True
 
@@ -37,7 +37,7 @@ def _validator(dni, email, name, lastname):
         raise Exception("El apellido  no puede estar vacío")
     return True
     
-def send_Mail(email,name,lastname,password):
+def sendMailEmployee(email,name,lastname,password):
     SendMail.usecase_send_mail(
         emailDest=email,
         subject="Bienvenido al equipo de trabajo",

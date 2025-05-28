@@ -23,9 +23,9 @@ def usecase_request_user(dni, email, name, lastname, phone, birthDate):
         type = "Cliente"
     )
     insert_user(dni=dni,user=user,email=email)
-    #Signin.usecase_signing(dni, password, email, name, lastname, phone, birthDate)
     sendMailEmployees(dni=dni)
-    return True
+    sendMailUser(email=email,name=name,lastname=lastname)
+    
 
 def _validator(dni, email, name, lastname, birth_date_str, minimum_age):
     required_fields = {
@@ -60,7 +60,24 @@ def _random_password(longitud=12):
     caracteres = string.ascii_letters + string.digits + "."  # solo letras, dígitos y punto
     return ''.join(secrets.choice(caracteres) for _ in range(longitud))
 
+def sendMailUser(email,name,lastname):
+    SendMail.usecase_send_mail(
+        emailDest=email,
+        subject="Solicitud enviada - Bob el Alquilador",
+        body=f"""
+                Hola {name} {lastname},
 
+                ¡Bienvenido/a a Bob El Alquilador!
+
+                Gracias por registrarse con nosotros. Su solicitud ha sido recibida y se encuentra actualmente pendiente de confirmación. 
+                    En cuanto sea aprobada, le notificaremos para que pueda acceder al sistema y comenzar a disfrutar de nuestros servicios.
+
+                Agradecemos su confianza.
+
+                Saludos cordiales,  
+                Sistema de Gestión BEA
+                """
+    )
 
 def sendMailEmployees(dni):
     empleados = get_all_employees()

@@ -14,3 +14,4 @@ def execute(dni, user,email):
     # Insertar nuevo usuario
     session.add(user)
     session.commit()
+    return True

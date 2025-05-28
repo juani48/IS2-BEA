@@ -31,7 +31,7 @@ function cargarHeaderUsuario() {
               <span class="text-sm font-semibold tracking-wide">${data.name}</span>
             </button>
             <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
-              <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+              <button onclick="window.location.href='/edit_profile.html'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
               <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
               <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
             </div>

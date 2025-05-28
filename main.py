@@ -109,6 +109,9 @@ def load_machinery():
 def load_login():
     return render_template("login.html")
 
+@app.route("/forgot_password.html")
+def load_forgot_password():
+    return render_template("forgot_password.html")
 
 
 @app.route("/reserve.html")
@@ -142,6 +145,20 @@ def load_panelAdministrador():
     else: 
         return render_template('/main.html')
 
+@app.route("/change_password.html")
+@login_required
+def load_change_password():
+    return render_template("/change_password.html")
+
+@app.route("/edit_profile.html")
+@login_required
+def load_edit_profile():
+    return render_template("/edit_profile.html")
+
+@app.route("/edit_personal_data.html")
+@login_required
+def load_edit_personal_data():
+    return render_template("/edit_personal_data.html")
 
 @app.route("/register_machinery.html")
 @login_required
@@ -234,7 +251,6 @@ def session_status():
         return jsonify({ "authenticated": False }), 200
 
 
-
 @app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
 @login_required
 def update_user():         
@@ -251,20 +267,25 @@ def update_user():
         return jsonify("DNI incoincidente"), 401
 
 
-@app.route("/user/change_password", methods=["PUT"]) #Chequeado ✅ (falta aplicar hash)
+@app.route("/user/change_password", methods=["PUT"])
 @login_required
 def change_password():
     request_value = request.get_json()
-    if (current_user.dni == request_value.dni):
-        ChangePassword(
-            dni = request_value.get("dni"),
-            password_Act = request_value.get("passwordAct"),
-            password_New_1 = request_value.get("password1"),
-            password_New_2 = request_value.get("password2")
-        )
-        return "", 204
-    else: 
-        return jsonify("DNI incoincidente"), 401
+    if current_user.dni == request_value.get("dni"):
+        try:
+            ChangePassword.usecase_change_password(
+                dni=request_value.get("dni"),
+                password_Act=request_value.get("passwordAct"),
+                password_New_1=request_value.get("password1"),
+                password_New_2=request_value.get("password2")
+            )
+            return "", 204
+        except Exception as e:
+            return jsonify({ "error": str(e) }), 400  # ✅ Mejora acá
+    else:
+        return jsonify({ "error": "DNI incoincidente" }), 401
+
+
 
 
 @app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅

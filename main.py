@@ -175,6 +175,14 @@ def register_categorie():
         return render_template("register_categorie.html")
     else:
         return "Solo administradores o empleados pueden cargar categorías."
+    
+@app.route("/register_employee.html")
+@login_required
+def register_employee():
+    if (current_user.type  == "Admin"):
+        return render_template("register_employee.html")
+    else:
+        return "Solo los admin pueden dar de alta un empleado"
 
 
 @app.route('/description_machinery.html')
@@ -287,12 +295,14 @@ def change_password():
 
 
 
-
-@app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
+@app.route("/admin/add_employee", methods=["PUT"])
 @login_required
 def add_employee():
     request_value = request.get_json()
-    if (current_user.type == "Admin"):
+    if current_user.type != "Admin":
+        return "Debe ser administrador para agregar un empleado", 403
+
+    try:
         AddEmployee.usecase_add_employee(
             name = request_value.get("name"),
             lastname = request_value.get("lastname"),
@@ -302,9 +312,11 @@ def add_employee():
             dateBirth = request_value.get("dateBirth"),
             employeeN = request_value.get("employeeN")
         )
-    else:
-        return "Debe ser administrador para agregar un empleado", 404
-    return "Empleado agregado", 204
+        return "Empleado agregado", 204
+
+    except Exception as e:
+        return str(e), 400
+
 
 @app.route("/employee/requests", methods= ["PUT"])
 @login_required

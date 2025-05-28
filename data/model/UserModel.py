@@ -13,7 +13,7 @@ class UserModel(Base):
     lastname = Column(String(100), nullable=False)
     employee_number = Column(Integer, nullable=True, default=0)
     authorized = Column(Boolean, nullable=False, default=False)
-    birth_date = Column(String, nullable=False)  # <-- Campo nuevo
+    birth_date = Column(String, nullable=False)  
     phone = Column(Integer, nullable=False)
     points = Column(Integer, default=0)
     type = Column(String(20), nullable=False, default="cliente") 
@@ -35,15 +35,3 @@ class UserModel(Base):
         self.points = 0
         self.type = type
 
-
-
-
-"""
-def execute ():
-
-    with engine.connect() as conn:
-        conn.execute(text("ALTER TABLE user_table ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'cliente'"))
-FORMA PARA AGREGAR COLUMNAS EN CONFIG.PY
-if __name__ == '__main__':
-    execute()
-"""

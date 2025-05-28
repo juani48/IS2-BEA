@@ -1,6 +1,6 @@
-<!DOCTYPE html> <!-- http://localhost:5000/panelAdmin.html  LINK PARA ABRIRLA -->
+<!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
@@ -37,8 +37,7 @@
 
             <!-- MI CUENTA -->
             <div id="accountArea"></div>
-                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante
-                 jajajaj te amo -->
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
           </div>
         </div>
 
@@ -49,33 +48,6 @@
 
                 <li><a href="main.html" class="hover:underline" > Menú </a></li>
                 <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li class="relative" id="dropdown-container">
-                  <span id="dropdown-toggle"
-                        class="cursor-pointer text-white hover:underline inline-block">
-                    Gestionar <i class="fas fa-caret-down ml-1"></i>
-                  </span>
-
-                  <div id="dropdown-menu"
-                      class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                      style="color: #7f1d1d;">
-                    <a href="register_machinery.html"
-                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                      style="color: #7f1d1d !important;">
-                      ➕ Dar de alta una maquinaria
-                    </a>
-                    <a href="register_categorie.html"
-                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                      style="color: #7f1d1d !important;">
-                      ➕ Dar de alta una categoría
-                    </a>
-                    <a href="register_employee.html"
-                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
-                      style="color: #7f1d1d !important;">
-                      ➕ Dar de alta un empleado
-                    </a>
-                  </div>
-                </li>
-
                 <li><a href="#" class="hover:underline" >Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="hover:underline" >Contáctanos</a></li>
                 </ul>
@@ -97,30 +69,122 @@
         </div>
     </header>
 
-  <!-- CONTENIDO -->
-  <main class="max-w-6xl mx-auto py-12 px-6 text-center">
-    <h1 class="text-3xl font-bold text-bob-red mb-6">Panel del Administrador</h1>
-    <p class="text-lg text-gray-700 mb-10">
-      Desde aquí podés gestionar las maquinarias y categorías disponibles en el sistema.
-    </p>
+    <main class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold mb-6 text-center text-bob-red">
+        Dar de alta un Empleado
+      </h1>
+      <form id="formEmpleado" class="space-y-4">
+        <div>
+          <label for="dni" class="block text-sm font-medium text-gray-700"
+            >DNI</label
+          >
+          <input
+            type="number"
+            id="dni"
+            name="dni"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700"
+            >Nombre</label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+          <label for="lastname" class="block text-sm font-medium text-gray-700"
+            >Apellido</label
+          >
+          <input
+            type="text"
+            id="lastname"
+            name="lastname"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700"
+            >Teléfono</label
+          >
+          <input
+            type="number"
+            id="phone"
+            name="phone"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+          <label for="dateBirth" class="block text-sm font-medium text-gray-700"
+            >Fecha de nacimiento</label
+          >
+          <input
+            type="date"
+            id="dateBirth"
+            name="dateBirth"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <div>
+            <label for="employeeN" class="block text-sm font-medium text-gray-700">
+                Número de empleado
+            </label>
+            <input
+                type="number"
+                id="employeeN"
+                name="employeeN"
+                required
+                class="mt-1 w-full border border-gray-300 rounded-md p-2"
+            />
+            </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <a href="register_machinery.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta una maquinaria
-      </a>
-      <a href="register_categorie.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta una categoría
-      </a>
-      <a href="register_employee.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta un empleado
-      </a>
-    </div>
-  </main>
+        <div class="text-center">
+          <button
+            type="submit"
+            class="bg-bob-red text-white px-6 py-2 rounded-lg font-semibold hover:bg-bob-dark-red transition"
+          >
+            Registrar
+          </button>
+        </div>
 
-  <!-- FOOTER -->
+        <div
+          id="mensajeExito"
+          class="hidden mt-4 bg-green-100 border border-green-400 text-green-800 p-3 rounded text-center font-bold"
+        >
+          Empleado registrado correctamente
+        </div>
+
+        <div
+          id="mensajeError"
+          class="hidden mt-4 bg-red-100 border border-red-400 text-red-800 p-3 rounded text-center font-bold"
+        >
+          Error al registrar empleado
+        </div>
+      </form>
+    </main>
+
+    <!-- FOOTER -->
   
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -176,28 +240,75 @@
         </div>
     </footer>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.getElementById("dropdown-toggle");
-    const menu = document.getElementById("dropdown-menu");
-    const container = document.getElementById("dropdown-container");
+    <script>
+  document.getElementById("formEmpleado").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form));
 
-    if (toggle && menu && container) {
-      toggle.addEventListener("click", (e) => {
-      e.stopPropagation(); // evita que el documento lo cierre enseguida
-      menu.classList.toggle("hidden");
-    });
+    // Validaciones personalizadas
+    const nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
+    const numeroRegex = /^\d+$/;
+    const errorDiv = document.getElementById("mensajeError");
+    errorDiv.classList.add("hidden");
+    errorDiv.textContent = "";
 
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-});
-
+    if (!nombreRegex.test(data.name) || !nombreRegex.test(data.lastname)) {
+      errorDiv.textContent = "Nombre y Apellido solo deben contener letras.";
+      errorDiv.classList.remove("hidden");
+      return;
     }
+
+    if (
+      !numeroRegex.test(data.dni) ||
+      !numeroRegex.test(data.phone) ||
+      !numeroRegex.test(data.employeeN)
+    ) {
+      errorDiv.textContent = "DNI, teléfono y número de empleado deben ser numéricos.";
+      errorDiv.classList.remove("hidden");
+      return;
+    }
+
+    // Validar edad mínima 18 años
+    const hoy = new Date();
+    const fechaNacimiento = new Date(data.dateBirth);
+    const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+    const cumpleEsteAnio = mes > 0 || (mes === 0 && hoy.getDate() >= fechaNacimiento.getDate());
+    const edadReal = cumpleEsteAnio ? edad : edad - 1;
+
+    if (edadReal < 18) {
+      errorDiv.textContent = "El empleado debe tener al menos 18 años.";
+      errorDiv.classList.remove("hidden");
+      return;
+    }
+
+    // 🔁 Renombrar campo para que el backend lo entienda
+    data.employee_number = data.employeeN;
+    delete data.employeeN;
+
+    fetch("/admin/add_employee", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.status === 204) {
+          document.getElementById("mensajeExito").classList.remove("hidden");
+          setTimeout(() => {
+            window.location.href = "panelAdmin.html";
+          }, 1500);
+        } else {
+          return res.text().then((msg) => {
+            throw new Error(msg);
+          });
+        }
+      })
+      .catch((err) => {
+        errorDiv.textContent = err.message;
+        errorDiv.classList.remove("hidden");
+      });
   });
-
-
 
   function buscarMaquinaria() {
     const input = document.getElementById("searchInput")?.value.trim();
@@ -206,8 +317,8 @@
       window.location.href = `/machinery.html?search=${encoded}`;
     }
   }
-
- 
 </script>
-</body>
+
+
+  </body>
 </html>

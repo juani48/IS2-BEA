@@ -1,5 +1,5 @@
 # usecases/auth.py
-from flask_login import login_user, logout_user
+from flask_login import logout_user
 from data.appDataBase import get_user
 from core.entity import User
 import bcrypt
@@ -9,10 +9,9 @@ def usecase_login(dni, password):
 
     if user_model is None:
         raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
-    if user_model.authorized == 0: 
-        raise Exception("Usuario no habilitado.")
-    if password == user_model.password:
-        return user_model #retorno directamente la clase Usuario modelo 
+    if (user_model.type == "Admin") or (user_model.authorized == 1):         
+            if (password == user_model.password): 
+                return user_model
     else:
         raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
     

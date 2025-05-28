@@ -15,7 +15,7 @@ from data.query.update import query_update_machine, query_update_user, query_upd
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email
 
 from data.query.delete import query_delete_reservation
 
@@ -95,6 +95,9 @@ def change_password(dni,password):
 # ----  get  -----
 def get_user (dni):
     return query_get_user.execute(dni)
+
+def get_user_by_email(email):
+    return query_get_user_by_email.execute(email)
 
 def get_machine(machine_id):
     return query_get_machine.execute(machine_id)

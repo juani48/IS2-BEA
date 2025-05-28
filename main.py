@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints,GetAllRequests,DisableEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -295,6 +295,7 @@ def change_password():
 
 
 
+
 @app.route("/admin/add_employee", methods=["PUT"])
 @login_required
 def add_employee():
@@ -314,9 +315,15 @@ def add_employee():
         )
         return "Empleado agregado", 204
 
-    except Exception as e:
-        return str(e), 400
-
+@app.route("/admin/disable_employee", methods=["PUT"])   #Chequeado ✅
+@login_required
+def disable_employee():
+    if (current_user.type == "Admin"):
+        request_value = request.get_json().get("employeeN")
+        DisableEmployee.usecase_disable_employee(employeeN= request_value)
+    else:
+        return "Debe ser administrador."
+    return "Empleado deshabilitado", 204
 
 @app.route("/employee/requests", methods= ["PUT"])
 @login_required
@@ -336,7 +343,7 @@ def reply_request():
         return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
 
 @app.route("/requests/get_all", methods=["GET"])  
-def get_all_machines():
+def get_all_requests():
     return jsonify( { "value" : GetAllRequests.usecase_get_all_requests()} ), 200 
 
 # ---- MAQUINAS ----

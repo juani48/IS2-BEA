@@ -1,3 +1,4 @@
+import init_db_proyect
 from datetime import datetime, timedelta
 import json
 from flask import Flask, jsonify, render_template, request
@@ -5,7 +6,6 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from core.entity.User import User
 from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
-from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees
@@ -18,8 +18,6 @@ from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
 
-from data.query.insert import query_TEST_USER
-from data.model.UserModel import UserModel
 
 
 
@@ -54,40 +52,19 @@ def load_user(user_id):
     return User(user_model) if user_model else None
 
 
-
 @app.route('/')
 def home():
-    #AddCategorie.usecase_add_categorie("categoria1")
-    #AddCategorie.usecase_add_categorie("categoria2")
-    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
-    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
-    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
-    #query_TEST_USER.execute(22333444, user=UserModel(dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"))
-    
-    #now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
-    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A", False, )
-    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A", False, )
-
-
-    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
-        #categorie_filter={"apply": False, "categorie": "categoria1"}, 
-        #string_filer={ "apply": True, "string": "lob" },
-        #price_filter={ "apply": False, "price": 5 },
-        #mark_filter={ "apply": False },           
-        #model_filter={ "apply": False },
-        #)
-    #)
-    
-    # prueba de reservas
-    # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
-    
-    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
-    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
-    #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
-
-    
-
+    appDataBase.create_database()
     return render_template('/main.html')
+
+@app.route('/init_db_proyect')
+def __init_db_proyect__():
+    init_db_proyect.__init_db__()
+    return load_home()
+@app.route('/add_points')
+def __add_points__():
+    init_db_proyect.add_points()
+    return redirect(url_for("/main.html"))
 
 # ---- RENDERIZAR PAGINAS ---- #
 

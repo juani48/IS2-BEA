@@ -9,7 +9,7 @@ from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
 from templates import *
@@ -33,7 +33,7 @@ os.makedirs(UPLOAD_FOLDER_USER, exist_ok=True)
 import os
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER_MACHINE = 'static/image/machine'
+UPLOAD_FOLDER_MACHINE = 'static/image/machines'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 os.makedirs(UPLOAD_FOLDER_MACHINE, exist_ok=True)  # crea la carpeta si no existe
 app.config['UPLOAD_FOLDER_MACHINE'] = UPLOAD_FOLDER_MACHINE
@@ -62,6 +62,12 @@ def home():
     #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
     #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
     #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
+    #query_TEST_USER.execute(22333444, user=UserModel(dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"))
+    
+    #now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
+    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A", False, )
+    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A", False, )
+
 
     #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
         #categorie_filter={"apply": False, "categorie": "categoria1"}, 
@@ -79,9 +85,7 @@ def home():
     #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
     #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
 
-    #query_TEST_USER.execute(22333444, user=UserModel(
-        #dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
-    #))
+    
 
     return render_template('/main.html')
 
@@ -327,22 +331,46 @@ def add_machine():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/machine/update_machine", methods=["POST"])
+def update_machine():
+    try:
+        request_value = request.get_json()
+        UpdateMachine.usecase_update_machine(
+            patent=request_value.get("patent"),
+            mark=request_value.get("mark"),
+            price_day=request_value.get("price_day"),
+            ubication=request_value.get("ubication"),
+            refund=request_value.get("refund"),
+            description=request_value.get("description"),
+        )
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 @app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 def enable_machine():
-    request_value = request.get_json().get("patent")
-    EnableMachine.usecase_enable_machine(patent=request_value)
-    return "", 204
+    try:
+        request_value = request.get_json().get("patent")
+        EnableMachine.usecase_enable_machine(patent=request_value)
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 @app.route("/machine/disable_machine", methods=["GET", "POST"])
 def disable_machine():
-    request_value = request.get_json().get("patent")
-    DisableMachine.usecase_disable_machine(patent=request_value)
-    return "", 204
+    try:
+        request_value = request.get_json().get("patent")
+        DisableMachine.usecase_disable_machine(patent=request_value)
+        return "", 204
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 @app.route("/machine/get_all", methods=["GET"])  # TESTEADO -> TRUE
 def get_all_machines():
-    return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+    try:
+        return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 
 @app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE

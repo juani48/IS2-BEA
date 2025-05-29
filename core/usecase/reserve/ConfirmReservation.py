@@ -31,7 +31,7 @@ def usecase_confirm_reservation(topic, request):
     if (total_value >= merchant_order.get("response").get("total_amount")):
        
         usecase_send_mail(
-            emailDest="jibyrab@gmail.com", 
+            emailDest=user.email, 
             subject="Su pago se realizo exitosamente", 
             body=f"""
                 Hola {user.name} {user.lastname},

@@ -133,7 +133,7 @@ def load_panelAdministrador():
 @app.route("/panelEmpleado.html")
 @login_required
 def load_panelEmpleado():
-    if(current_user.type == "Empleado"): #--> cambiar a empleado, es para probar
+    if(current_user.type == "Empleado"): 
         return render_template("/panelEmpleado.html")
     else:
         return render_template("/main.html")
@@ -260,7 +260,7 @@ def session_status():
 @login_required
 def update_user():         
     request_value = request.get_json()
-    if (current_user.dni == request_value.dni):
+    if current_user.dni == int(request_value.get("dni")):
         UpdateUser.usecase_update_user(
             #email=request_value.get("email"),
             dni = request_value.get("dni"),
@@ -613,4 +613,3 @@ def pay_notification():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    appDataBase.create_database()

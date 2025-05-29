@@ -1,5 +1,5 @@
 from data.config import session
-from data.model.DiscountMoudel import DiscountModel
+from data.model.DiscountModel import DiscountModel
 
 def execute():
     session.add(DiscountModel(

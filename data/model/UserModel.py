@@ -44,6 +44,9 @@ class UserModel(Base):
             "type": self.type,
             "authorized": self.authorized,
             "points": self.points,
-            "employee_number": self.employee_number
+            "employee_number": self.employee_number,
+            "lastname": self.lastname,
+            "phone": self.phone,
+            "birth_date": self.birth_date
         }
 

@@ -134,103 +134,22 @@
     </section>
 
     <!-- Featured Machines -->
-    <section id="maquinarias" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Nuestras Maquinarias Destacadas</h2>
+<section id="maquinarias" class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Nuestras Maquinarias</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Machine 1 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <path d="M50,150 L100,150 L100,120 L300,120 L300,150 L350,150 L350,180 L50,180 Z"
-                                fill="#FFD700"></path>
-                            <rect x="250" y="130" width="40" height="20" fill="#333"></rect>
-                            <rect x="70" y="150" width="20" height="30" fill="#333"></rect>
-                            <rect x="310" y="150" width="20" height="30" fill="#333"></rect>
-                            <rect x="120" y="90" width="60" height="30" fill="#555"></rect>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$25.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <div id="featured-machines" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      <!-- Se completa dinámicamente -->
+    </div>
 
-                <!-- Machine 2 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <rect x="50" y="140" width="300" height="40" fill="#FFD700"></rect>
-                            <circle cx="100" cy="180" r="20" fill="#333"></circle>
-                            <circle cx="300" cy="180" r="20" fill="#333"></circle>
-                            <rect x="80" y="100" width="240" height="40" fill="#FFD700"></rect>
-                            <rect x="150" y="60" width="100" height="40" fill="#555"></rect>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$35.000/día</span>
-                          <a href="#" 
-                            class="reservar-btn reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300" 
-                            data-id="A1">
-                            Reservar
-                        </a>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Machine 3 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <rect x="100" y="120" width="200" height="60" rx="10" fill="#FFD700"></rect>
-                            <rect x="120" y="80" width="160" height="40" fill="#FFD700"></rect>
-                            <rect x="150" y="40" width="100" height="40" fill="#555"></rect>
-                            <circle cx="140" cy="180" r="20" fill="#333"></circle>
-                            <circle cx="260" cy="180" r="20" fill="#333"></circle>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$18.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-12">
-                <a href="machinery.html"
-                    class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                    Ver todas las maquinarias
-                </a>
-            </div>
-        </div>
-    </section>
+    <div class="text-center">
+      <a href="machinery.html"
+        class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
+        Ver todas las maquinarias
+      </a>
+    </div>
+  </div>
+</section>
 
     <!-- Categories -->
     <section id="categorias" class="py-16 bg-gray-100">
@@ -361,83 +280,6 @@
         </div>
     </section>
 
-    <!--  Testimonials 
-   <section class="py-16 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Lo que dicen nuestros clientes</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 Testimonial 1 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Excelente servicio. Las máquinas estaban en perfecto estado y el proceso de alquiler fue muy sencillo. Definitivamente volveré a alquilar con Bob el Alquilador."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            JR
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Juan Rodríguez</h4>
-                            <p class="text-gray-500 text-sm">Constructor</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 2 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Muy buena atención al cliente y precios competitivos. La maquinaria funcionó perfectamente durante todo el proyecto. Recomendado."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            ML
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">María López</h4>
-                            <p class="text-gray-500 text-sm">Arquitecta</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 Testimonial 3 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-bob-red">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-4">"La mejor empresa de alquiler de maquinaria con la que he trabajado. Entrega puntual y equipos de primera calidad. El sistema de reservas online es muy práctico."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-bob-light-red rounded-full flex items-center justify-center text-white font-bold mr-3">
-                            CG
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Carlos Gómez</h4>
-                            <p class="text-gray-500 text-sm">Contratista</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -504,6 +346,59 @@ function buscarMaquinaria() {
       const encoded = encodeURIComponent(input);
       window.location.href = `/machinery.html?search=${encoded}`;
     }
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+  fetch("/machine/top3")
+    .then(res => res.json())
+    .then(machines => {
+      const container = document.getElementById("featured-machines");
+      container.innerHTML = "";
+
+      if (!Array.isArray(machines) || machines.length === 0) return;
+
+      machines.forEach(machine => {
+  const card = `
+    <a href="/description_machinery.html?machine_id=${machine.patent}" class="block transition duration-300 hover:shadow-2xl">
+      <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
+        <div class="h-48 overflow-hidden bg-gray-100">
+          <img src="/static/image/machines/${machine.patent}.jpg" 
+               alt="${machine.model}" 
+               class="w-full h-full object-cover" 
+               onerror="this.src='/static/image/machines/default.png'">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold mb-2 text-gray-800">${machine.mark} ${machine.model}</h3>
+          <p class="text-gray-600 mb-4">${machine.description}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-bob-red font-bold">$${machine.price_day}/día</span>
+            <button onclick='iniciarReserva(${JSON.stringify(machine)})'
+                    class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300">
+              Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </a>`;
+  container.insertAdjacentHTML("beforeend", card);
+});
+
+    })
+    .catch(err => {
+      console.error("Error al cargar las máquinas destacadas:", err);
+    });
+});
+
+
+   function iniciarReserva(machine) {
+    localStorage.setItem("reserve", JSON.stringify({
+      machine_id: machine.id,
+      model: machine.model,
+      mark: machine.mark,
+      description: machine.description,
+      price_day: machine.price_day,
+      image: `/static/image/machines/${machine.patent}.jpg`
+    }));
+    window.location.href = "reserve.html";
   }
 
 </script>

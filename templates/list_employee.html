@@ -1,9 +1,9 @@
-<!DOCTYPE html> <!-- http://localhost:5000/panelAdmin.html  LINK PARA ABRIRLA -->
+<!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+  <title>Listado de empleados -     Bob el Alquilador</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -112,41 +112,33 @@
                 <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
                 <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
                 <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
-                <li><a href="list_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">📋 Ver lista de empleados</a></li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
         </div>
     </header>
 
-  <!-- CONTENIDO -->
-  <main class="max-w-6xl mx-auto py-12 px-6 text-center">
-    <h1 class="text-3xl font-bold text-bob-red mb-6">Panel del Administrador</h1>
-    <p class="text-lg text-gray-700 mb-10">
-      Desde aquí podés gestionar las maquinarias y categorías disponibles en el sistema.
-    </p>
+    <main class="max-w-5xl mx-auto mt-10 px-4">
+      <h1 class="text-3xl font-bold text-bob-red text-center mb-8">
+        Listado de Empleados
+      </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <a href="register_machinery.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta una maquinaria
-      </a>
-      <a href="register_categorie.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta una categoría
-      </a>
-      <a href="register_employee.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        ➕ Dar de alta un empleado
-      </a>
-      <a href="list_employee.html"
-        class="bg-white hover:bg-red-100 border border-bob-red rounded-lg p-6 text-bob-red font-semibold text-xl shadow-md transition">
-        📋 Ver lista de empleados
-      </a>
-    </div>
-  </main>
+      <div
+        id="employee-list"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <!-- Aquí se insertan las tarjetas -->
+      </div>
 
-  <!-- FOOTER -->
+      <p
+        id="no-employees"
+        class="hidden text-center text-red-700 font-bold mt-10"
+      >
+        No hay empleados registrados.
+      </p>
+    </main>
+
+ <!-- FOOTER -->
   
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -166,6 +158,9 @@
                 <ul class="space-y-1">
                     <li>
                         <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+                    </li>
+                    <li>
+                        <a href="privacidad.html" class="hover:underline">Política de Privacidad</a>
                     </li>
                 </ul>
             </div>
@@ -199,73 +194,47 @@
         </div>
     </footer>
 
- 
-</body>
-<script> 
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.getElementById("dropdown-toggle");
-    const menu = document.getElementById("dropdown-menu");
-    const container = document.getElementById("dropdown-container");
-
-    if (toggle && menu && container) {
-      toggle.addEventListener("click", (e) => {
-      e.stopPropagation(); // evita que el documento lo cierre enseguida
-      menu.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-});
-
-    configurarDropdownCategorias();
-
-    }
-  });
-
-  function configurarDropdownCategorias() {
-  const toggle = document.getElementById("dropdown-categorias-toggle");
-  const menu = document.getElementById("dropdown-categorias-menu");
-  const container = document.getElementById("dropdown-categorias-container");
-
-  if (toggle && menu && container) {
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-    });
-
-    fetch("/categories/enabled")
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/employee/get_all")
   .then(res => res.json())
-  .then(categories => {
-    const menu = document.getElementById("dropdown-categorias-menu");
-    menu.innerHTML = "";
-    categories.forEach(cat => {
-      const link = document.createElement("a");
-      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
-      link.textContent = cat;
-      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
-      link.style.color = "#7f1d1d";
-      menu.appendChild(link);
-    });
-  });
-  }
-}
-  function buscarMaquinaria() {
-    const input = document.getElementById("searchInput")?.value.trim();
-    if (input !== "") {
-      const encoded = encodeURIComponent(input);
-      window.location.href = `/machinery.html?search=${encoded}`;
+  .then(data => {
+    const container = document.getElementById("employee-list");
+    const noDataMsg = document.getElementById("no-employees");
+
+    const empleados = data.value; // accedemos a data.value
+
+    if (!Array.isArray(empleados) || empleados.length === 0) {
+      noDataMsg.classList.remove("hidden");
+      return;
     }
-  }
 
+    console.log(empleados)
+    empleados.forEach(emp => {
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-lg shadow-md p-6 border border-bob-red";
 
-</script>
+      card.innerHTML = `
+        <h2 class="text-lg font-bold text-bob-red mb-2">${emp.name} ${emp.lastname}</h2>
+        <p><strong>DNI:</strong> ${emp.dni}</p>
+        <p><strong>Email:</strong> ${emp.email}</p>
+        <p><strong>Teléfono:</strong> ${emp.phone}</p>
+        <p><strong>Número de Empleado:</strong> ${emp.employee_number}</p>
+        <p><strong>Nacimiento:</strong> ${emp.birth_date}</p>
+        <p><strong>Autorizado:</strong> ${emp.authorized ? "Sí" : "No"}</p>
+      `;
+      container.appendChild(card);
+    });
+  })
+  .catch(err => {
+    console.error("Error al cargar empleados:", err);
+    document.getElementById("employee-list").innerHTML = `
+      <p class="text-red-600 text-center font-bold mt-4">
+        ⚠️ Error al cargar empleados.
+      </p>`;
+  });
+
+      });
+    </script>
+  </body>
 </html>

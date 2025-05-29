@@ -47,7 +47,7 @@ def sendMailEmployee(email,name,lastname,password):
         body=f"""
             Hola {name}, {lastname}.
 
-            Le damos la bienvenida al equipo de trabajo de Bob El Alquilador, a continuación le dejamos la contraseña para su ininio de sesión, recuerde que puede cambiarla cuando desee:
+            Le damos la bienvenida al equipo de trabajo de Bob El Alquilador, a continuación le dejamos la contraseña para su inicio de sesión, recuerde que puede cambiarla cuando desee:
               {password}
 
             Gracias y saludos,

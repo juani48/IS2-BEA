@@ -99,10 +99,6 @@ def home():
 def load_home():
     return render_template('/main.html')
 
-#@app.route('/machinery.html')
-#def load_machinery():
-#    return render_template('/machinery.html') 
-
 @app.route('/machinery.html')
 def load_machinery():
     machines = GetAllMachines.usecase_get_all_machines()  # obtiene todas las máquinas activas
@@ -192,6 +188,14 @@ def register_employee():
 @app.route('/description_machinery.html')
 def description_machinery():
     return render_template('description_machinery.html')
+
+@app.route('/list_employee.html')
+def list_employee():
+    return render_template('list_employee.html')
+
+@app.route('/terminos.html')
+def terminos():
+    return render_template('terminos.html')
 
 
 # ---- METODOS USUARIO ---- #
@@ -342,6 +346,7 @@ def disable_employee():
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():
+
     return jsonify( { "value" : GetAllEmployees.usecase_get_all_employees()} ), 200 
 
 @app.route("/employee/requests", methods= ["PUT"])
@@ -492,6 +497,13 @@ def get_machine_by_id(machine_id):
     machine_dict["categories"] = category_names  #  sobrescribo "categorie" con lista
 
     return jsonify(machine_dict)
+
+@app.route("/machine/top3", methods=["GET"])
+def get_top3_machines():
+    all = GetAllMachines.usecase_get_all_machines()
+    return jsonify(all[:3]), 200
+
+
 
 
 

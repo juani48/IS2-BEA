@@ -1,13 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
+
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-200">
+
+<body class="min-h-screen bg-gradient-to-br from-red-100 to-red-200 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="/main.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
+                        class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
+
+            <!-- MI CUENTA -->
+            <div id="accountArea">
+            </div>
+        </div>
+
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
+<div class="flex flex-grow justify-center items-center py-12">
     <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div class="flex justify-end">
             <a href="/" title="Volver al inicio" 
@@ -24,105 +87,176 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div id="form-error" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 mb-4 text-center"></div>
-        <form id= "register-form" action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <!-- Mensaje de error (afuera del form) -->
+<div id="form-error" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 mb-4 text-center">
+</div>
+
+<!-- Formulario completo -->
+<form id="register-form" action="/signin" method="POST" enctype="multipart/form-data" class="space-y-5">
+  <!-- Nombre -->
+  <div>
+    <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      minlength="3"
+      maxlength="30"
+      pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+      oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
+
+  <!-- Apellido -->
+  <div>
+    <label for="lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+    <input
+      type="text"
+      id="lastname"
+      name="lastname"
+      required
+      minlength="3"
+      maxlength="30"
+      pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+      oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
+
+  <!-- DNI -->
+  <div>
+    <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+    <input
+      type="text"
+      id="dni"
+      name="dni"
+      required
+      maxlength="8"
+      minlength="7"
+      pattern="\d+"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+      placeholder="Sin puntos ni espacios"
+    />
+  </div>
+
+  <!-- Email -->
+  <div>
+    <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+    <input type="email" id="email" name="email" required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
+
+  <!-- Teléfono -->
+  <div>
+    <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+    <input
+      type="text"
+      id="phone"
+      name="phone"
+      required
+      maxlength="15"
+      pattern="\d+"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
+  </div>
+
+  <!-- Fecha nacimiento -->
+  <div>
+    <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+    <input type="date" id="birthdate" name="birthdate" required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
+
+  <!-- Foto DNI -->
+  <div>
+    <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
+    <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
+      class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" />
+  </div>
+
+  <!-- Términos -->
+  <div class="flex items-start">
+    <input id="terms" name="terms" type="checkbox" required
+      class="mt-1 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500" />
+    <label for="terms" class="text-sm text-gray-600">
+      Acepto los <a href="/terminos" class="text-red-500 hover:underline">Términos y Condiciones</a>
+    </label>
+  </div>
+
+  <!-- Botón submit -->
+  <button title="Debe aceptar los términos y condiciones para continuar" type="submit" id="submit-btn" disabled
+    class="w-full bg-gray-300 text-white py-2 rounded-lg transition duration-300 cursor-not-allowed">
+    Confirmar
+  </button>
+</form>
+
+
+<!-- Link alternativo -->
+<p class="mt-4 text-center text-sm text-gray-600">
+  ¿Ya tenés cuenta? <a href="login.html" class="text-red-500 hover:underline">Iniciar sesión</a>
+</p>
+</div>
+</div>
+
+    
+     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Columna 1: Redes + legales -->
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    minlength="3"
-                    maxlength="30"
-                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
+                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="https://instagram.com/bobelalquilador" target="_blank"
+                        class="hover:text-gray-300 transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+                    </li>
+                    <li>
+                        <a href="privacidad.html" class="hover:underline">Política de Privacidad</a>
+                    </li>
+                </ul>
             </div>
 
+            <!-- Columna 2: Contacto -->
             <div>
-                <label for="lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
-                <input
-                    type="text"
-                    id="lastname"
-                    name="lastname"
-                    required
-                    minlength="3"
-                    maxlength="30"
-                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
+                <h3 class="text-lg font-bold mb-2">Contacto</h3>
+                <ul class="space-y-2">
+                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+                </ul>
             </div>
 
+            <!-- Columna 3: Mapa -->
             <div>
-                <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
-                <input
-                    type="text"
-                    id="dni"
-                    name="dni"
-                    required
-                    maxlength="8"
-                    minlength="7"
-                    pattern="\d+"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Sin puntos ni espacios"
-                >
+                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
             </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                <input type="email" id="email" name="email" required
-                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-            </div>
+        </div>
 
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    required
-                    maxlength="15"
-                    pattern="\d+"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
-            </div>
-
-            <div>
-                <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
-                <input type="date" id="birthdate" name="birthdate" required
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
-            </div>
-
-            <div>
-                <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
-                <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                        file:rounded-lg file:border-0 file:text-sm file:font-semibold
-                        file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-            </div>
-
-            <div class="flex items-start">
-                <input id="terms" name="terms" type="checkbox" required
-                    class="mt-1 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500">
-                <label for="terms" class="text-sm text-gray-600">
-                    Acepto los <a href="/terminos" class="text-red-500 hover:underline">Términos y Condiciones</a>
-                </label>
-            </div>
-
-            <button title= "Debe aceptar los términos y condiciones para continuar" type="submit" id="submit-btn" disabled
-                class="w-full bg-gray-300 text-white py-2 rounded-lg transition duration-300 cursor-not-allowed">
-                Confirmar
-            </button>
-        </form>
-        <p class="mt-4 text-center text-sm text-gray-600">
-            ¿Ya tenés cuenta? <a href="login.html" class="text-red-500 hover:underline">Iniciar sesión</a>
-        </p>
-    </div>      
+        <!-- Línea inferior -->
+        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+            © 2025 Bob El Alquilador. Todos los derechos reservados.
+        </div>
+    </footer>
+    
 </body>
 
 <script>
@@ -181,42 +315,16 @@ function mostrarError(mensaje) {
     errorDiv.classList.remove("hidden");
     errorDiv.scrollIntoView({ behavior: "smooth" });
 }
+
+function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+
 </script>
 
 
-
-<!--<script >
-    function singin(){
-        let dni = document.getElementById("singin-input-dni").value;
-        let password = document.getElementById("singin-input-password").value;
-        let email = document.getElementById("singin-input-email").value;
-        let name = document.getElementById("singin-input-name").value;
-        let lastname = document.getElementById("singin-input-lastname").value;
-        let employee_number = 0;
-
-        try{
-            fetch(
-                "/signin",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(
-                        {
-                            dni: dni,
-                            password: password,
-                            email: email,
-                            name: name,
-                            lastname: lastname,
-                            employee_number: employee_number
-                        }
-                    )
-                }
-            ).then(response =>  response.json());
-        }
-        catch (error){
-                console.error("Error: ", error.message);
-        }
-        
-    }
-</script>-->
 </html>

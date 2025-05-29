@@ -28,7 +28,7 @@
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="/panelUsuario.html">
+                <a href="/panelEmpleado.html">
                     <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
@@ -58,7 +58,7 @@
         <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="/panelUsuario.html">Menú</a></li>
+                <li><a href="/panelEmpleado.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
@@ -389,63 +389,11 @@
         </div>
     </footer>
 </body>
-<script>
-    const zoomElement = document.getElementById('hero-zoom');
-
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        const maxZoomOut = 0.9; // 90% tamaño
-        const maxScroll = 300; // hasta dónde empieza a escalar
-
-        // calcular cuánto scroll proporcionalmente 
-        let scale = 1 - (scrollY / maxScroll) * (1 - maxZoomOut);
-        if (scale < maxZoomOut) scale = maxZoomOut;
-        if (scale > 1) scale = 1;
-
-        zoomElement.style.transform = `scale(${scale})`;
-    });
- 
-    function toggleDropdown() {
-        const dropdown = document.getElementById('userDropdown');
-        dropdown.classList.toggle('hidden');
-    }
-
-
-    // Obtener datos del usuario de la memoria del navegador                      <<-------------------------------------------------------------------
-    const userData = JSON.parse(localStorage.getItem('user'));
-
-    // Función para mostrar los datos del usuario
-    function displayUserData() {
-        if (userData) {
-            // Reemplazar {{ usuario_nombre }} con el nombre real
-            const userNameElement = document.querySelector('.relative button span');
-            if (userNameElement) {
-                userNameElement.textContent = userData.name;
-            }
-        } else {
-            // Si no hay datos de usuario, redirigir al login
-            window.location.href = '/login.html';
-        }
-    }
-
-    // Llamar a la función cuando la página cargue
-    document.addEventListener('DOMContentLoaded', displayUserData);
-    //---------------------------------
-
-
-    function buscarMaquinaria() {
-    const input = document.getElementById("searchInput")?.value.trim();
-    if (input !== "") {
-      const encoded = encodeURIComponent(input);
-      window.location.href = `/machinery.html?search=${encoded}`;
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
+<script>  
+    document.addEventListener("DOMContentLoaded", () => {
     cargarHeaderUsuario();
     configurarDropdownGestionar();
-  });
+    mostrarBotonEmpleado(); // --> agregar a todas las paginas en comun
 
-
-</script>
+  });</script>
 </html>

@@ -2,4 +2,4 @@ from data.config import session
 from data.model.ReservationModel import ReservationModel
 
 def execute():
-    return session.query(RecursionError).all()
+    return session.query(ReservationModel).all()

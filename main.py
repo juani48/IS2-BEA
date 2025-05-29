@@ -17,7 +17,15 @@ import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
-
+from data.query.get.query_get_machine import execute
+from data.config import session
+from data.model.MachineCategorieModel import MachineCategorieModel
+from data.model.CategorieModel import CategorieModel
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from datetime import datetime
 
 
 
@@ -86,6 +94,9 @@ def load_machinery():
 def load_login():
     return render_template("login.html")
 
+@app.route("/forgot_password.html")
+def load_forgot_password():
+    return render_template("forgot_password.html")
 
 
 @app.route("/reserve.html")
@@ -94,6 +105,7 @@ def load_reserve():
     return render_template("/reserve.html")
 
 @app.route("/prior_to_paying.html")
+@login_required
 def load_prior_to_paying():
     return render_template("/prior_to_paying.html")
 
@@ -118,9 +130,28 @@ def load_panelAdministrador():
     else: 
         return render_template('/main.html')
 
-@app.route("/categorie.html")  #Lara estuvo aki
-def categorias():
-    return render_template("categorie.html")
+@app.route("/panelEmpleado.html")
+@login_required
+def load_panelEmpleado():
+    if(current_user.type == "Empleado"): #--> cambiar a empleado, es para probar
+        return render_template("/panelEmpleado.html")
+    else:
+        return render_template("/main.html")
+
+@app.route("/change_password.html")
+@login_required
+def load_change_password():
+    return render_template("/change_password.html")
+
+@app.route("/edit_profile.html")
+@login_required
+def load_edit_profile():
+    return render_template("/edit_profile.html")
+
+@app.route("/edit_personal_data.html")
+@login_required
+def load_edit_personal_data():
+    return render_template("/edit_personal_data.html")
 
 @app.route("/register_machinery.html")
 @login_required
@@ -131,9 +162,26 @@ def register_machine():
         return "Solo los admin pueden cargar maquinarias"
     
 @app.route("/register_categorie.html")
+@login_required
 def register_categorie():
-    return render_template("register_categorie.html")
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("register_categorie.html")
+    else:
+        return "Solo administradores o empleados pueden cargar categorías."
+    
+@app.route("/pending_requests.html")
+@login_required
+def load_pending_request():
+    return render_template("pending_requests.html")
 
+@app.route('/description_machinery.html')
+def description_machinery():
+    return render_template('description_machinery.html')
+
+@app.route("/list_reservation.html")
+#@login_required
+def load_list_reservation():
+    return render_template("list_reservation.html")
 
 # ---- METODOS USUARIO ---- #
 
@@ -224,20 +272,25 @@ def update_user():
         return jsonify("DNI incoincidente"), 401
 
 
-@app.route("/user/change_password", methods=["PUT"]) #Chequeado ✅ (falta aplicar hash)
+@app.route("/user/change_password", methods=["PUT"])
 @login_required
 def change_password():
     request_value = request.get_json()
-    if (current_user.dni == request_value.dni):
-        ChangePassword(
-            dni = request_value.get("dni"),
-            password_Act = request_value.get("passwordAct"),
-            password_New_1 = request_value.get("password1"),
-            password_New_2 = request_value.get("password2")
-        )
-        return "", 204
-    else: 
-        return jsonify("DNI incoincidente"), 401
+    if current_user.dni == request_value.get("dni"):
+        try:
+            ChangePassword.usecase_change_password(
+                dni=request_value.get("dni"),
+                password_Act=request_value.get("passwordAct"),
+                password_New_1=request_value.get("password1"),
+                password_New_2=request_value.get("password2")
+            )
+            return "", 204
+        except Exception as e:
+            return jsonify({ "error": str(e) }), 400  # ✅ Mejora acá
+    else:
+        return jsonify({ "error": "DNI incoincidente" }), 401
+
+
 
 @app.route("/user/recover_password", methods=["PUT"])
 def recover_password():
@@ -386,20 +439,47 @@ def get_all_machines():
     except Exception as e:
         return jsonify({ "message": e }), 404
 
-
-@app.route("/machine/get_all_filter", methods=["GET", "POST"])  # TESTEADO -> TRUE
+    
+@app.route("/machine/get_all_filter", methods=["GET" , "POST"])
 def get_all_machines_filter():
-    # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False }, "price": { "apply": True, "price": 10.5 }}
+     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False },
+     #  "price": { "apply": True, "price": 10.5 }}
 
     try:
-        return jsonify({ "value" : GetAllMachinesByFilter.usecase_get_all_machines_by( 
-            categorie_filter=request.get_json().get("categoire"),
-            string_filer=request.get_json().get("string"),
-            price_filter=request.get_json().get("price"),
-            mark_filter=request.get_json().get("mark"),
-            model_filter=request.get_json().get("model"))}), 200
+        data = request.get_json()
+
+        return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model"))), 200
+
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "message": str(e) }), 404
+    
+
+@app.route("/machine/get_by_id/<string:machine_id>", methods=["GET"])
+def get_machine_by_id(machine_id):
+    machine = execute(machine_id)
+    if not machine:
+        return jsonify({"error": "Maquinaria no encontrada"}), 404
+
+    # Obtener categorías asociadas
+    categories = (
+        session.query(CategorieModel.name)
+        .join(MachineCategorieModel, MachineCategorieModel.categorie_id == CategorieModel.name)
+        .filter(MachineCategorieModel.machine_id == machine_id)
+        .all()
+    )
+    category_names = [cat.name for cat in categories]  # lista de strings
+
+    machine_dict = machine.json()
+    machine_dict["categories"] = category_names  #  sobrescribo "categorie" con lista
+
+    return jsonify(machine_dict)
+
+
 
 #    ---- CATEGORIAS ---- #
 
@@ -490,7 +570,7 @@ def user_points():
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():
     try:
-        return jsonify({ GetDailyReservations.usecase_get_daily_reservations() }), 200 
+        return jsonify( GetDailyReservations.usecase_get_daily_reservations() ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -515,6 +595,11 @@ def pay_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
+@app.route("/init_db")
+def initdb():
+    appDataBase.create_database()
+    return "LA PUTA MADREEEEE", 200
 
 # ---- MAIN ----
 

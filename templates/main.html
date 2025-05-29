@@ -25,35 +25,41 @@
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
             <!-- LOGO -->
-            <div class="shrink-0">
+        <div class="shrink-0">
                 <a href="#" onclick="goHome()" title="Ir al inicio">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
-            </div>
-
-            <!-- BARRA DE BÚSQUEDA -->
-            <div class="flex-grow flex justify-center">
-                <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- MI CUENTA -->
-            <div id="accountArea">
-            </div>
         </div>
 
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              onclick="buscarMaquinaria()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- MI CUENTA -->
+        <div id="accountArea"></div>
+        <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+      </div>
+
+      
         <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -65,7 +71,6 @@
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
                 <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
                 <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -211,7 +216,7 @@
             </div>
 
             <div class="text-center mt-12">
-                <a href="#"
+                <a href="machinery.html"
                     class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
                     Ver todas las maquinarias
                 </a>
@@ -484,89 +489,21 @@
 
 </body>
 <script>
-  // Muestra el botón de sesión o usuario según la sesión
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("/session/status")
-      .then(response => response.json())
-      .then(data => {
-        const accountArea = document.getElementById("accountArea");
 
-        if (data.authenticated) {
-          accountArea.innerHTML = `
-            <div class="relative">
-              <button onclick="toggleDropdown()"
-                class="shrink-0 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <i class="fas fa-user text-lg"></i>
-                <span class="text-sm font-semibold tracking-wide">${data.name}</span>
-              </button>
-              <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
-                <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
-                <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
-                <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
-              </div>
-            </div>
-          `;
-        } else {
-          accountArea.innerHTML = `
-            <a href="login.html"
-              class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-              <i class="fas fa-user text-lg group-hover:hidden"></i>
-              <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-              <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
-            </a>
-          `;
-        }
-      });
+function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
 
-    // Vincular botones "Reservar" si están presentes
-    document.querySelectorAll(".reservar-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const machineId = btn.getAttribute("data-id");
-
-        fetch("/session/status")
-          .then(res => res.json())
-          .then(data => {
-            if (data.authenticated) {
-              window.location.href = `/reserve.html?machine_id=${machineId}`;
-            } else {
-              window.location.href = "/login.html";
-            }
-          })
-          .catch(err => {
-            console.error("Error al verificar sesión:", err);
-            window.location.href = "/login.html";  // fallback
-          });
-      });
-    });
+document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar()
+    mostraraBotonEmpleado(); 
   });
 
-  // Alternar menú desplegable
-  function toggleDropdown() {
-    document.getElementById("userDropdown")?.classList.toggle("hidden");
-  }
-
-  // Logout del servidor y redirige
-  function logout() {
-    fetch('/logout', { method: 'POST' }).then(() => {
-      window.location.href = '/login.html';
-    });
-  }
-
-  // Botón de logo/menu: redirige según sesión
-  function goHome() {
-    fetch("/session/status")
-      .then(res => res.json())
-      .then(data => {
-        if (data.authenticated) {
-          window.location.href = "/panelUsuario.html";
-        } else {
-          window.location.href = "/main.html";
-        }
-      });
-  }
 </script>
-
-
 
 </html>

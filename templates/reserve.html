@@ -21,32 +21,26 @@
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
             <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
                 </div>
             </div>
 
             <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
-            </a>
+            <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+          </div>
 
 
         </div>
@@ -57,8 +51,6 @@
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -69,8 +61,6 @@
             <ul class="flex flex-col space-y-3">
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
                 <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -183,6 +173,7 @@
       </button>
     </form>
     </main>
+</body>
 
     <script>
       const machineId = new URLSearchParams(window.location.search).get(
@@ -272,33 +263,21 @@
           
           localStorage.setItem("reserve", JSON.stringify(reserve));
           window.location.href = "prior_to_paying.html";
-
-
-          /*
-          fetch("/reservation/reserve_machine", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              start_day: document.getElementById("fechaInicio").value,
-              end_day: document.getElementById("fechaFin").value,
-              client_id: client_id,
-              machine_id: machineId,
-              shipment: shipment,
-            }),
-          })
-            .then(response => 
-              {if (response.ok){ return response.json() }}
-            )
-            .then(data => {
-              alert("✅ Reserva creada con éxito");
-                window.location.href = data.preference.init_point; // redirigir al pagar
-            })
-            .catch((err) => {
-              errorDiv.textContent = "Error: " + err.message;
-              errorDiv.classList.remove("hidden");
-            });
-        */
         });
+
+        function buscarMaquinaria() {
+        const input = document.getElementById("searchInput")?.value.trim();
+        if (input !== "") {
+          const encoded = encodeURIComponent(input);
+          window.location.href = `/machinery.html?search=${encoded}`;
+        }
+      }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar();
+    mostrarBotonEmpleado();
+  });
     </script>
-  </body>
+  
 </html>

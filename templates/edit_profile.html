@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Perfil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='image/Solo logo.svg') }}" type="image/svg">
+</head>
+<body class="bg-gray-100 font-sans">
+
+ <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
+
+            <!-- MI CUENTA -->
+            <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+          </div>
+
+
+        </div>
+        </div>
+
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>  
+
+    </header>
+<section class="text-center mt-10">
+  <h1 class="text-3xl font-bold text-bob-red">
+    <i class="fas fa-user-cog mr-2"></i>Editar Perfil
+  </h1>
+  <p class="text-gray-600 mt-2">Desde aquí podés actualizar tus datos o cambiar tu contraseña</p>
+</section>
+
+
+
+  <main class="max-w-xl mx-auto mt-10 space-y-6">
+    <a href="/change_password.html" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition text-bob-red font-semibold text-lg">
+      🔒 Cambiar Contraseña
+    </a>
+    <a href="/edit_personal_data.html" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition text-bob-red font-semibold text-lg">
+      📝 Modificar Datos Personales
+    </a>
+  </main>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar() 
+  });
+</script>
+</html>

@@ -21,44 +21,35 @@
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
-            <!-- BARRA DE BÚSQUEDA -->
+           <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
                 </div>
             </div>
 
             <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Iniciar sesión</span>
-            </a>
+           <div id="accountArea">
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+          </div>
 
 
-        </div>
         </div>
 
         <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones --> 
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -347,7 +338,7 @@ formData.set("refund", refundValue);
 
         if (successDiv) {
           successDiv.classList.remove("hidden");
-          successDiv.textContent = "✅ Máquina cargada correctamente.";
+          successDiv.textContent = "Máquina cargada correctamente.";
           successDiv.scrollIntoView({ behavior: "smooth" });
 
           // Ocultar automáticamente a los 3 segundos
@@ -364,10 +355,43 @@ formData.set("refund", refundValue);
       } 
     })
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dropdown-toggle");
+    const menu = document.getElementById("dropdown-menu");
+    const container = document.getElementById("dropdown-container");
+
+    if (toggle && menu && container) {
+      toggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // evita que el documento lo cierre enseguida
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+});
+
+    }
+  });
+
+  function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+   document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar();
+  });
+
 </script>
 
 
-<footer class="bg-bob-dark-red text-white py-10">
+<footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->

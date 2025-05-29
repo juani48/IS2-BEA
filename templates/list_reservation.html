@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservas - Bob el Alquilador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='image/Solo logo.svg') }}" type="image/svg">
+</head>
+
+<body class="bg-gray-50 font-sans">
+  <!-- Header -->
+     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="/panelUsuario.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
+
+          <!-- MI CUENTA (se completa automáticamente si hay sesión) -->
+        <div id="accountArea"></div>
+
+                <!-- Dropdown -->
+                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                    <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                    <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                    <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                </div>
+            </div>
+        </div>
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="/panelUsuario.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
+    </div>
+</header>
+
+
+  <!-- Contenido principal -->
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">📄 Listado de Reservas</h1>
+
+    <div id="reservasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
+
+    <!-- Paginación -->
+    <div id="paginacion" class="flex justify-center space-x-2 mt-6"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contacto"  class="bg-bob-dark-red text-white py-10">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Columna 1: Redes + legales -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="https://instagram.com/bobelalquilador" target="_blank"
+                        class="hover:text-gray-300 transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+                    </li>
+                    <li>
+                        <a href="privacidad.html" class="hover:underline">Política de Privacidad</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Columna 2: Contacto -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Contacto</h3>
+                <ul class="space-y-2">
+                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Mapa -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Línea inferior -->
+        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+            © 2025 Bob El Alquilador. Todos los derechos reservados.
+        </div>
+    </footer>
+
+</body>
+
+  <script>
+    const reservasContainer = document.getElementById("reservasContainer");
+    const paginacion = document.getElementById("paginacion");
+
+    let reservas = [];
+    const porPagina = 10;
+    let paginaActual = 1;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarHeaderUsuario();
+      configurarDropdownGestionar();
+      cargarReservas();
+    });
+
+    async function cargarReservas() {
+      try {
+        const res = await fetch("/reservation/get_daily_reservations", {
+          method: "POST"
+        });
+
+        const data = await res.json();
+        console.log(data); //para imprimir la lista de reservas obtenida
+        reservas = Array.isArray(data) ? data : Object.values(data)[0] || [];
+
+        mostrarReservas();
+        construirPaginacion();
+      } catch (error) {
+        console.error("Error al cargar reservas:", error);
+        reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No se pudieron cargar las reservas.</p>`;
+      }
+    }
+
+    function mostrarReservas() {
+      reservasContainer.innerHTML = "";
+
+      const inicio = (paginaActual - 1) * porPagina;
+      const reservasPagina = reservas.slice(inicio, inicio + porPagina);
+
+      if (reservasPagina.length === 0) {
+        reservasContainer.innerHTML = `<p class="text-center text-gray-600">No hay reservas para mostrar.</p>`;
+        return;
+      }
+
+      reservasPagina.forEach(r => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
+
+        tarjeta.innerHTML = `
+          <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
+          <p><strong>Cliente:</strong> ${r.cliente}</p>
+          <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
+          <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
+          <button class="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition">
+            Cancelar Reserva
+          </button>
+        `;
+
+        reservasContainer.appendChild(tarjeta);
+      });
+    }
+
+    function construirPaginacion() {
+      paginacion.innerHTML = "";
+      const totalPaginas = Math.ceil(reservas.length / porPagina);
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        const btn = document.createElement("button");
+        btn.className = `px-3 py-1 rounded ${i === paginaActual ? 'bg-red-700 text-white' : 'bg-white text-red-700 border border-red-300'} hover:bg-red-600 hover:text-white transition`;
+        btn.textContent = i;
+
+        btn.addEventListener("click", () => {
+          paginaActual = i;
+          mostrarReservas();
+          construirPaginacion();
+        });
+
+        paginacion.appendChild(btn);
+      }
+    }
+  </script>
+
+</html>

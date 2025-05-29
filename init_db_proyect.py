@@ -14,6 +14,7 @@ def __init_db__():
         __CATEGORIAS__()
         __MAQUINAS__()
         __ADMIN__()
+        __USUARIOS__()
         __EMPLEADOS__()
         __RESERVAS__()
     except Exception as e:
@@ -134,12 +135,12 @@ def __USUARIOS__():
 
     usuario_sin_puntos = UserModel(
         dni=45872513,
-        email="usuario_con_puntos@gmail.com",
+        email="usuario_sin_puntos@gmail.com",
         name="Usuario",
         lastname="Sin Puntos",
         phone=0000,
         birth_date="4-1-0001",
-        password="usuarioSinPntos",
+        password="usuarioSinPuntos",
         employee_number=0,
         type="User",
         authorized=True)

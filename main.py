@@ -62,17 +62,17 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    appDataBase.create_database()
     return render_template('/main.html')
 
 @app.route('/init_db_proyect')
 def __init_db_proyect__():
     init_db_proyect.__init_db__()
     return load_home()
+
 @app.route('/add_points')
 def __add_points__():
     init_db_proyect.add_points()
-    return redirect(url_for("/main.html"))
+    return load_home()
 
 # ---- RENDERIZAR PAGINAS ---- #
 
@@ -635,4 +635,3 @@ def pay_notification():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    appDataBase.create_database()

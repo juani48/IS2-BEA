@@ -80,10 +80,6 @@ def __add_points__():
 def load_home():
     return render_template('/main.html')
 
-#@app.route('/machinery.html')
-#def load_machinery():
-#    return render_template('/machinery.html') 
-
 @app.route('/machinery.html')
 def load_machinery():
     machines = GetAllMachines.usecase_get_all_machines()  # obtiene todas las máquinas activas
@@ -169,6 +165,14 @@ def register_categorie():
     else:
         return "Solo administradores o empleados pueden cargar categorías."
     
+@app.route("/register_employee.html")
+@login_required
+def register_employee():
+    if (current_user.type  == "Admin"):
+        return render_template("register_employee.html")
+    else:
+        return "Solo los admin pueden dar de alta un empleado"
+    
 @app.route("/pending_requests.html")
 @login_required
 def load_pending_request():
@@ -178,10 +182,6 @@ def load_pending_request():
 def description_machinery():
     return render_template('description_machinery.html')
 
-@app.route("/list_reservation.html")
-#@login_required
-def load_list_reservation():
-    return render_template("list_reservation.html")
 
 # ---- METODOS USUARIO ---- #
 
@@ -290,19 +290,21 @@ def change_password():
     else:
         return jsonify({ "error": "DNI incoincidente" }), 401
 
-
-
 @app.route("/user/recover_password", methods=["PUT"])
 def recover_password():
     emailUser = request.get_json()
     RecoverPassword.usecase_recover_password(emailUser)
 
 
-@app.route("/admin/add_employee", methods=["PUT"])   #Chequeado ✅
+
+@app.route("/admin/add_employee", methods=["PUT"])
 @login_required
 def add_employee():
     request_value = request.get_json()
-    if (current_user.type == "Admin"):
+    if current_user.type != "Admin":
+        return "Debe ser administrador para agregar un empleado", 403
+
+    try:
         AddEmployee.usecase_add_employee(
             name = request_value.get("name"),
             lastname = request_value.get("lastname"),
@@ -312,9 +314,10 @@ def add_employee():
             dateBirth = request_value.get("dateBirth"),
             employeeN = request_value.get("employeeN")
         )
-    else:
-        return "Debe ser administrador para agregar un empleado", 404
-    return "Empleado agregado", 204
+        return "Empleado agregado", 204
+    except Exception as e:
+        return jsonify({"error": "Ocurrió un error al procesar alta de empleado", "detalles": str(e)}), 500
+
 
 @app.route("/admin/disable_employee", methods=["PUT"])   #Chequeado ✅
 @login_required
@@ -328,6 +331,7 @@ def disable_employee():
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():
+
     return jsonify( { "value" : GetAllEmployees.usecase_get_all_employees()} ), 200 
 
 @app.route("/employee/requests", methods= ["PUT"])
@@ -492,6 +496,13 @@ def get_machine_by_id(machine_id):
 
     return jsonify(machine_dict)
 
+@app.route("/machine/top3", methods=["GET"])
+def get_top3_machines():
+    all = GetAllMachines.usecase_get_all_machines()
+    return jsonify(all[:3]), 200
+
+
+
 
 
 #    ---- CATEGORIAS ---- #
@@ -516,7 +527,7 @@ def get_all_categories():
     except Exception as e:
         return jsonify({"error": str(e)}), 400 
 
-
+# este es para habilitar una categoria (para u  admin/empleado)
 @app.route("/categorie/enable_categorie", methods=["POST"])
 def enable_categorie():
     request_value = request.get_json().get("categorie")
@@ -528,6 +539,17 @@ def disable_categorie():
     request_value = request.get_json().get("categorie")
     DisableCategorie.usecase_disable_categorie(categorie=request_value)
     return "", 204
+
+# este es para hacer la lista de categorias disponibles
+@app.route("/categories/enabled", methods=["GET"])
+def get_enabled_categories():
+    from data.config import session
+    from data.model.CategorieModel import CategorieModel
+
+    # Traer categorías con disabled=False
+    categories = session.query(CategorieModel).filter_by(disabled=False).all()
+    return jsonify([cat.name for cat in categories])
+
 
 # ---- RESERVAS ---- #
 

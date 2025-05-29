@@ -5,11 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maquinarias - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <script src="{{ url_for('static', filename='script/scripts.js') }}"defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}"/>
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="{{ url_for('static', filename='script/scripts.js') }}"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style/style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="svg"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
     <style>
       html {
         scroll-behavior: smooth;
@@ -25,9 +41,13 @@
       >
         <!-- LOGO -->
         <div class="shrink-0">
-                <a href="#" onclick="goHome()" title="Ir al inicio">
-                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-                </a>
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
         </div>
 
         <!-- BARRA DE BÚSQUEDA -->
@@ -179,122 +199,75 @@
       class="flex justify-center flex-wrap mt-6 mb-12 gap-2"
     ></div>
 
-    <!-- Footer -->
-    <footer id="contacto" class="bg-bob-dark-red text-white py-12">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Company Info -->
-          <div>
-            <div class="flex items-center mb-4">
-              <svg
-                class="w-10 h-10 mr-2"
-                viewBox="0 0 50 50"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="50" height="50" rx="10" fill="white"></rect>
-                <path
-                  d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z"
-                  fill="#D10000"
-                ></path>
-                <path
-                  d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z"
-                  fill="white"
-                ></path>
-                <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
-              </svg>
-              <span class="font-bold text-xl">Bob El Alquilador</span>
-            </div>
-            <p class="mb-4">
-              Soluciones de alquiler de maquinaria para construcción desde 2005.
-              Calidad y servicio garantizado.
-            </p>
-            <div class="flex space-x-4">
-              <a
-                href="https://instagram.com/bobelalquilador"
-                class="hover:text-gray-300 transition duration-300"
-              >
-                <i class="fab fa-instagram text-2xl"></i>
-              </a>
-              <a
-                href="https://wa.me/5492245400777"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="hover:text-gray-300 transition duration-300"
-              >
-                <i class="fab fa-whatsapp text-2xl"></i>
-              </a>
-            </div>
-          </div>
+    <!-- FOOTER -->
 
-          <!-- Contact Info -->
-          <div>
-            <h3 class="text-xl font-bold mb-4">Contacto</h3>
-            <ul class="space-y-3">
-              <li class="flex items-center">
-                <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
-                <span>poner link al mapa de ubicaciones</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-phone mr-3 text-bob-light-red"></i>
-                <span>+54 11 5555-5555</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
-                <span>info@bobelaquilador.com</span>
-              </li>
-              <li class="flex items-center">
-                <i class="fas fa-clock mr-3 text-bob-light-red"></i>
-                <span>Lun-Vie: 9:00 - 17:00</span>
-              </li>
-            </ul>
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Columna 1: Redes + legales -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+          <div class="flex space-x-4 mb-4">
+            <a
+              href="https://instagram.com/bobelalquilador"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+            >
+              <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a
+              href="https://wa.me/5492245400777"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+            >
+              <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
           </div>
-
-          <!-- Quick Links -->
-          <div>
-            <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
-            <ul class="space-y-2">
-              <li>
-                <a href="main.html" class="hover:text-gray-300 transition duration-300"
-                  >Inicio</a
-                >
-              </li>
-              <li>
-                <a
-                  href="/machinery.html"
-                  class="hover:text-gray-300 transition duration-300"
-                  >Maquinarias</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#categorias"
-                  class="hover:text-gray-300 transition duration-300"
-                  >Categorías</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Preguntas Frecuentes</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Términos y Condiciones</a
-                >
-              </li>
-              <li>
-                <a href="#" class="hover:text-gray-300 transition duration-300"
-                  >Política de Privacidad</a
-                >
-              </li>
-            </ul>
-          </div>
+          <ul class="space-y-1">
+            <li>
+              <a href="terminos.html" class="hover:underline"
+                >Términos y Condiciones</a
+              >
+            </li>
+            <li>
+              <a href="privacidad.html" class="hover:underline"
+                >Política de Privacidad</a
+              >
+            </li>
+          </ul>
         </div>
 
-        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p>© 2025 Bob El Alquilador. Todos los derechos reservados.</p>
+        <!-- Columna 2: Contacto -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Contacto</h3>
+          <ul class="space-y-2">
+            <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+            <li>
+              <i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com
+            </li>
+            <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+          </ul>
         </div>
+
+        <!-- Columna 3: Mapa -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Línea inferior -->
+      <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+        © 2025 Bob El Alquilador. Todos los derechos reservados.
       </div>
     </footer>
   </body>
@@ -303,15 +276,8 @@
     let machines = [];
     let currentPage = 1;
     const cardsPerPage = 3;
-
-    function getFilters() {
-      return {
-        mark: document.getElementById("filter-mark")?.value || "",
-        model: document.getElementById("filter-model")?.value || "",
-        price: parseFloat(document.getElementById("filter-price")?.value) || 0,
-        categorie: document.getElementById("filter-categorie")?.value || "",
-      };
-    }
+    const params = new URLSearchParams(window.location.search);
+    const categoryFromURL = params.get("category") || "";
 
     function fetchMachinesWithFilters() {
       const filters = getFilters();
@@ -319,6 +285,7 @@
       //  Leer palabra del parámetro "search" en la URL
       const params = new URLSearchParams(window.location.search);
       const search = params.get("search") || "";
+      const categoryFromURL = params.get("filter") || "";
 
       fetch("/machine/get_all_filter", {
         method: "POST",
@@ -334,14 +301,26 @@
           model: { apply: filters.model !== "", model: filters.model },
         }),
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!Array.isArray(data)) {
-            console.error("⚠️ La respuesta del backend no es una lista:", data);
+        .then(async (res) => {
+          const data = await res.json();
+          console.log(data);
+
+          if (!res.ok) {
+            const msg =
+              data?.message || "Ocurrió un error al obtener las maquinarias.";
             document.getElementById("machine-list").innerHTML = `
-          <p class="text-red-600 text-center font-bold mt-4">
-            Ocurrió un error al cargar las máquinas.
-          </p>`;
+      <div class="text-red-700 text-center font-semibold mt-2 max-w-sm mx-auto">
+        ⚠️ ${msg}
+      </div>`;
+            return;
+          }
+
+          if (!Array.isArray(data)) {
+            console.error("La respuesta del backend no es una lista:", data);
+            document.getElementById("machine-list").innerHTML = `
+      <p class="text-red-600 text-center font-bold mt-4">
+        Ocurrió un error al cargar las máquinas.
+      </p>`;
             return;
           }
 
@@ -350,7 +329,23 @@
           renderPage(currentPage);
           renderPagination();
         })
-        .catch((err) => console.error("Error al filtrar", err));
+        .catch((err) => {
+          console.error("Error al filtrar", err);
+          document.getElementById("machine-list").innerHTML = `
+    <p class="text-red-600 text-center font-bold mt-4">
+      ⚠️ No se pudo conectar con el servidor.
+    </p>`;
+        });
+    }
+
+    function getFilters() {
+      return {
+        mark: document.getElementById("filter-mark")?.value || "",
+        model: document.getElementById("filter-model")?.value || "",
+        price: parseFloat(document.getElementById("filter-price")?.value) || 0,
+        categorie:
+          document.getElementById("filter-categorie")?.value || categoryFromURL,
+      };
     }
 
     function renderMachine(machine, imageSrc) {
@@ -467,24 +462,26 @@
         .then((res) => res.json())
         .then((data) => {
           const select = document.getElementById("filter-categorie");
-          const categories = data.categories; // 🟢 accedemos correctamente al array
+          const categories = data.categories;
 
           if (Array.isArray(categories)) {
             categories.forEach((cat) => {
               const opt = document.createElement("option");
               opt.value = cat.name;
               opt.textContent = cat.name;
+              if (cat.name === categoryFromURL) {
+                opt.selected = true; // ← Selecciona automáticamente
+              }
               select.appendChild(opt);
             });
           }
-        })
-        .catch((err) => console.error("Error cargando categorías", err));
+        });
 
       document.getElementById("filter-apply")?.addEventListener("click", () => {
         fetchMachinesWithFilters();
       });
 
-      fetchMachinesWithFilters();
+      fetchMachinesWithFilters(); // Aplica filtros iniciales
     });
 
     function buscarMaquinaria() {

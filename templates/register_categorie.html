@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dar de alta una Categoría - Bob el Alquilador</title>
+  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -36,11 +36,10 @@
             </div>
 
             <!-- MI CUENTA -->
-          <div id="accountArea">
-                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+            <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante
+                 jajajaj te amo -->
           </div>
-
-
         </div>
 
             <!-- Navigation debajo, 100% ancho -->
@@ -48,24 +47,50 @@
                 <ul class="flex space-x-4 justify-center px-4 text-sm md:text-base relative text-white">
 
 
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="main.html" class="hover:underline" > Menú </a></li>
+                <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li class="relative" id="dropdown-container">
+                  <span id="dropdown-toggle"
+                        class="cursor-pointer text-white hover:underline inline-block">
+                    Gestionar <i class="fas fa-caret-down ml-1"></i>
+                  </span>
 
-            
+                  <div id="dropdown-menu"
+                      class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                      style="color: #7f1d1d;">
+                    <a href="register_machinery.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      ➕ Dar de alta una maquinaria
+                    </a>
+                    <a href="register_categorie.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      ➕ Dar de alta una categoría
+                    </a>
+                    <a href="register_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      ➕ Dar de alta un empleado
+                    </a>
+                  </div>
+                </li>
 
-    <li><a href="#">Preguntas Frecuentes</a></li>
-    <li><a href="#contacto">Contáctanos</a></li>
-    </ul>
-    </nav>
+                <li><a href="#" class="hover:underline" >Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="hover:underline" >Contáctanos</a></li>
+                </ul>
+            </nav>
 
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
             <ul class="flex flex-col space-y-3">
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
                 <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
                 <li><strong>Gestionar</strong></li>
                 <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
                 <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
+                <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -191,25 +216,32 @@
           const success = document.getElementById("success");
           const error = document.getElementById("error");
 
-          fetch("/categorie/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name }),
-          })
-            .then((res) => {
-              if (res.status === 201) {
-                success.classList.remove("hidden");
-                error.classList.add("hidden");
-                e.target.reset();
-              } else {
-                throw new Error("Ya existe esa categoría o falló el registro.");
-              }
-            })
-            .catch(() => {
-              success.classList.add("hidden");
-              error.classList.remove("hidden");
-            });
-        });
+          fetch("/categorie/add_categorie", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ categorie: name }),
+})
+  .then(async (res) => {
+    const data = await res.json().catch(() => ({})); // intentamos parsear la respuesta
+    if (res.ok || res.status === 201 || res.status === 204) {
+      success.textContent = "✅ Categoría registrada correctamente";
+      success.classList.remove("hidden");
+      error.classList.add("hidden");
+      e.target.reset();
+    } else {
+      // Mostramos mensaje personalizado si lo envió el backend
+      throw new Error(data.error || "Error desconocido al registrar");
+    }
+  })
+  .catch((err) => {
+    error.textContent = "⚠️ " + err.message;
+    error.classList.remove("hidden");
+    success.classList.add("hidden");
+  });
+
+        
+        
+          });
 
         function buscarMaquinaria() {
         const input = document.getElementById("searchInput")?.value.trim();
@@ -255,11 +287,6 @@
             window.location.href = '/login.html';
         }
     }
- document.addEventListener("DOMContentLoaded", () => {
-    cargarHeaderUsuario();
-    configurarDropdownGestionar();
-  });
-
 
 
     </script>

@@ -2,8 +2,11 @@ from data.model.UserModel import UserModel
 from data.appDataBase import insert_employee
 from core.usecase.user.RequestUser import _random_password
 from core.usecase.service import SendMail
+from data.query.get.query_get_user import execute
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
+    if execute(dni):
+        raise Exception("El DNI ya se encuentra registrado")
     if (_validator(dni, email, name, lastname)):        
         password = _random_password()
         user = UserModel(
@@ -44,7 +47,7 @@ def sendMailEmployee(email,name,lastname,password):
         body=f"""
             Hola {name}, {lastname}.
 
-            Le damos la bienvenida al equipo de trabajo de Bob El Alquilador, a continuación le dejamos la contraseña para su ininio de sesión, recuerde que puede cambiarla cuando desee:
+            Le damos la bienvenida al equipo de trabajo de Bob El Alquilador, a continuación le dejamos la contraseña para su inicio de sesión, recuerde que puede cambiarla cuando desee:
               {password}
 
             Gracias y saludos,

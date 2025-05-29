@@ -182,6 +182,11 @@ def load_pending_request():
 def description_machinery():
     return render_template('description_machinery.html')
 
+@app.route("/list_reservation.html")
+#@login_required
+def load_list_reservation():
+    return render_template("list_reservation.html")
+
 
 # ---- METODOS USUARIO ---- #
 

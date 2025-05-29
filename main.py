@@ -394,7 +394,7 @@ def add_machine():
             categorie=form.get("categorie"),
             description=description
         )
-        return "", 204
+        return "", 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     

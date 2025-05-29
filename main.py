@@ -400,6 +400,19 @@ def reply_request():
 def get_all_requests():
     return jsonify( { "value" : GetAllRequests.usecase_get_all_requests()} ), 200 
 
+@app.route("/requests/reply", methods=["POST"])
+def reply_user_request():
+    data = request.get_json()
+    reply = data.get("reply")
+    dni = data.get("dni")
+
+    try:
+        mensaje = ReplyRequest.usecase_reply_request(reply, dni)
+        return jsonify({"mensaje": mensaje}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
@@ -608,11 +621,6 @@ def pay_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
-@app.route("/init_db")
-def initdb():
-    appDataBase.create_database()
-    return "LA PUTA MADREEEEE", 200
 
 # ---- MAIN ----
 

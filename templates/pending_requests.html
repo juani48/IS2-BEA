@@ -271,14 +271,15 @@
         <p class="text-sm text-gray-500 mb-4">DNI: ${dni}</p>
         <p class="text-sm text-gray-500 mb-4">Fecha de nacimiento: ${birth_date}</p>
 
-        <div class="flex gap-4">
-          <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
-            <i class="fas fa-check"></i>
-          </button>
-          <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
+       <div class="flex gap-4">
+  <button onclick="responderSolicitud(true, '${dni}', this)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+    <i class="fas fa-check"></i>
+  </button>
+  <button onclick="responderSolicitud(false, '${dni}', this)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+    <i class="fas fa-times"></i>
+  </button>
+  </div>
+
       `;
       container.appendChild(div);
     });
@@ -302,6 +303,30 @@
       paginacion.appendChild(btn);
     }
   }
+
+  async function responderSolicitud(aceptar, dni, boton) {
+  try {
+    const res = await fetch(`/requests/reply`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reply: aceptar, dni }),
+    });
+
+    const data = await res.json();
+    alert(data.mensaje || (aceptar ? "Solicitud aceptada" : "Solicitud rechazada"));
+
+    // Eliminar visualmente la tarjeta
+    const card = boton.closest(".bg-white.rounded-lg.shadow");
+    if (card) card.remove();
+
+  } catch (error) {
+    console.error("Error al procesar solicitud:", error);
+    alert("Ocurrió un error al procesar la solicitud.");
+  }
+}
+
 </script>
 
 </html>

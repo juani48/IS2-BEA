@@ -12,3 +12,7 @@ def execute(start_day, client_id, machine_id, reserve):
         raise Exception("Ya existes una reserva para estas fechas.")
     session.add(reserve)
     session.commit()
+
+def init_execute(reserve):
+    session.add(reserve)
+    session.commit()

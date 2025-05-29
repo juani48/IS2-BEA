@@ -200,73 +200,87 @@ def __EMPLEADOS__():
     query_TEST_USER.execute(user=empleado2)
 
 def __RESERVAS__():
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 5, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 5, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-5-2",
+        #start_day=datetime.datetime(2025, 5, 2, 0, 0, 0),
+        end_day="2025-5-9",
+        #end_day=datetime.datetime(2025, 5, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC1",
         shipment=False,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-6-2",
+        #start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
+        end_day="2025-6-9",
+        #end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC1",
         shipment=False,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-7-2",
+        #start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
+        end_day="2025-7-9",
+        #end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC1",
         shipment=False,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-6-2",
+        #start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
+        end_day="2025-6-9",
+        #end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC2",
         shipment=False,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-7-3",
+        #start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
+        end_day="2025-7-9",
+        #end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="123A",
         shipment=True,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-6-2",
+        #start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
+        end_day="2025-6-9",
+        #end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
         client_id=45400389, # ----> RESERVA DE JUAN
         machine_id="ABC2",
         shipment=False,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 
-    AddReservation.usecase_add_reserve(
-        start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
-        end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-7-2",
+        #start_day=datetime.datetime(2025, 7, 2, 0, 0, 0),
+        end_day="2025-7-9",
+        #end_day=datetime.datetime(2025, 7, 9, 0, 0, 0),
         client_id=45400389, # ----> RESERVA DE JUAN
         machine_id="ABC2",
         shipment=True,
-        type="Client",
+        type="Cliente",
         apply_discount=False
     )
 

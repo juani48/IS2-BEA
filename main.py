@@ -23,7 +23,11 @@ from data.query.get.query_get_machine import execute
 from data.config import session
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.model.CategorieModel import CategorieModel
-
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from datetime import datetime
 
 
 
@@ -66,26 +70,68 @@ def home():
     #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
     #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
     #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
+    #query_TEST_USER.execute(22333444, user=UserModel(
+    #   dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="Pri", phone=22333444, birth_date="cumpleañitos", password="admin1234", type="Admin"
+    #))
+    #query_TEST_USER.execute(33444555, user=UserModel(
+    #    dni=33444555, email="jjgg@gmail.com", name="Empleado", lastname="Empleadito", phone=22333444, birth_date="cumpleañitos", password="empleado1234", type="Empleado"
+    #))
 
+    #reserva = session.query(ReservationModel).first()  # o filtrá por ID si lo sabés
+    #reserva.start_day = "2025-05-27 12:00:00"
+    #session.commit()
+
+
+# Obtener todas las reservas
+    #reservas = session.query(ReservationModel).all()
+    #for r in reservas:
+    #    r.start_day = "2025-05-29 00:00:00"
+    #session.commit()
+    #print("Todas las fechas mal formateadas fueron corregidas.")
+
+
+    #query_TEST_USER.execute(66777888, user=UserModel(
+    #    dni=66777888, email="lll@gmail.com", name="Cliente", lastname="piola", phone=22333444, birth_date="cumpleañitos", password="cliente1234", type="Cliente"
+    #))
+    #user = session.query(UserModel).filter_by(dni=33444555).first()
+    #if user:
+    #    user.authorized = True
+    #    session.commit()
+    #    print("Cliente autorizado.")
+    #else:
+    #    print("No se encontró el usuario.")
+
+     
+
+    
     #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
-        #categorie_filter={"apply": False, "categorie": "categoria1"}, 
-        #string_filer={ "apply": True, "string": "lob" },
-        #price_filter={ "apply": False, "price": 5 },
-        #mark_filter={ "apply": False },           
-        #model_filter={ "apply": False },
-        #)
+    #    categorie_filter={"apply": False, "categorie": "categoria1"}, 
+    #    string_filer={ "apply": True, "string": "lob" },
+    #    price_filter={ "apply": False, "price": 5 },
+    #    mark_filter={ "apply": False },           
+    #    model_filter={ "apply": False },
+    #    )
     #)
     
-    # prueba de reservas
-    # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
+
+    #prueba de reservas
+    #now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
     
-    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
+    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", "Cliente", False)
     #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
     #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
+    #AddReservation.usecase_add_reserve(
+    #start_day="2025-05-29",
+    #end_day="2025-06-12",
+    #client_id=66777888,
+    #machine_id="A",
+    #shipment=False,
+    #type="Cliente",
+    #apply_discount=True
+#)
 
-    #query_TEST_USER.execute(22333444, user=UserModel(
-        #dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"
-    #))
+
+   
 
     return render_template('/main.html')
 
@@ -135,7 +181,7 @@ def load_singin():
 @app.route("/panelUsuario.html")
 @login_required
 def load_panelUsuario():
-    return render_template("/panelEmpleado.html")
+    return render_template("/panelUsuario.html")
 
 @app.route("/panelAdmin.html")
 @login_required
@@ -148,7 +194,7 @@ def load_panelAdministrador():
 @app.route("/panelEmpleado.html")
 @login_required
 def load_panelEmpleado():
-    if(current_user.type == "Cliente"): #--> cambiar a empleado, es para probar
+    if(current_user.type == "Empleado"): #--> cambiar a empleado, es para probar
         return render_template("/panelEmpleado.html")
     else:
         return render_template("/main.html")
@@ -194,7 +240,7 @@ def description_machinery():
     return render_template('description_machinery.html')
 
 @app.route("/list_reservation.html")
-@login_required
+#@login_required
 def load_list_reservation():
     return render_template("list_reservation.html")
 
@@ -537,7 +583,7 @@ def user_points():
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():
     try:
-        return jsonify({ GetDailyReservations.usecase_get_daily_reservations() }), 200 
+        return jsonify( GetDailyReservations.usecase_get_daily_reservations() ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -562,6 +608,11 @@ def pay_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
+@app.route("/init_db")
+def initdb():
+    appDataBase.create_database()
+    return "LA PUTA MADREEEEE", 200
 
 # ---- MAIN ----
 

@@ -39,7 +39,9 @@ class UserModel(Base):
         return {
             "dni": self.dni,
             "name": self.name,
+            "lastname": self.lastname,
             "email": self.email,
+            "birth_date": self.birth_date,
             "type": self.type,
             "authorized": self.authorized,
             "points": self.points,

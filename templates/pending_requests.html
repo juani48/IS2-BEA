@@ -223,77 +223,85 @@
 
 
 
-  <script>
-    const solicitudes = [
-      { dni: "45872514", nombre: "Camila", apellido: "Potulnisky" },
-      { dni: "413414", nombre: "Lucas", apellido: "jjnnj" },
-      { dni: "41723123", nombre: "Sofía", apellido: "Martínez" },
-      { dni: "39321456", nombre: "Martín", apellido: "López" },
-      { dni: "43879220", nombre: "Ana", apellido: "Fernández" },
-      { dni: "35001778", nombre: "Diego", apellido: "Sánchez" },
-      { dni: "42131414", nombre: "Lucía", apellido: "Gutiérrez" }
-    ];
+<script>
+  const porPagina = 6;
+  let paginaActual = 1;
+  let solicitudes = [];
 
-    const porPagina = 6;
-    let paginaActual = 1;
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarHeaderUsuario();
+    configurarDropdownGestionar();
+    mostrarBotonEmpleado();
+    cargarSolicitudes();
+  });
 
-    function mostrarSolicitudes() {
-      const container = document.getElementById("solicitudesContainer");
-      container.innerHTML = "";
+  async function cargarSolicitudes() {
+    try {
+      const res = await fetch("/requests/get_all");
+      const data = await res.json();
+      solicitudes = data.value || [];
 
-      const inicio = (paginaActual - 1) * porPagina;
-      const fin = inicio + porPagina;
-      const visibles = solicitudes.slice(inicio, fin);
-
-      visibles.forEach(({ dni, nombre, apellido }) => {
-        const div = document.createElement("div");
-        div.className = "bg-white rounded-lg shadow p-4 flex flex-col items-center text-center";
-
-        div.innerHTML = `
-          <img src="/static/image/users/${dni}_${apellido}.jpg" 
-               onerror="this.src='/static/image/users/default.jpg'" 
-               alt="Foto de ${nombre}" 
-               class="w-24 h-24 object-cover rounded-full mb-4 border border-gray-300"/>
-
-          <h2 class="text-lg font-semibold text-gray-800">${nombre} ${apellido}</h2>
-          <p class="text-sm text-gray-500 mb-4">DNI: ${dni}</p>
-
-          <div class="flex gap-4">
-            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
-              <i class="fas fa-check"></i>
-            </button>
-            <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-
-      renderizarPaginacion();
-    }
-
-    function renderizarPaginacion() {
-      const totalPaginas = Math.ceil(solicitudes.length / porPagina);
-      const paginacion = document.getElementById("paginacion");
-      paginacion.innerHTML = "";
-
-      for (let i = 1; i <= totalPaginas; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = `px-3 py-1 rounded ${i === paginaActual ? "bg-red-700 text-white" : "bg-white text-red-700 border border-red-700 hover:bg-red-100"}`;
-        btn.addEventListener("click", () => {
-          paginaActual = i;
-          mostrarSolicitudes();
-        });
-        paginacion.appendChild(btn);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      cargarHeaderUsuario();
-      configurarDropdownGestionar();
       mostrarSolicitudes();
+    } catch (error) {
+      console.error("Error al cargar solicitudes:", error);
+      document.getElementById("solicitudesContainer").innerHTML =
+        `<p class="text-red-700 font-semibold text-center">No se pudieron cargar las solicitudes.</p>`;
+    }
+  }
+
+  function mostrarSolicitudes() {
+    const container = document.getElementById("solicitudesContainer");
+    container.innerHTML = "";
+
+    const inicio = (paginaActual - 1) * porPagina;
+    const fin = inicio + porPagina;
+    const visibles = solicitudes.slice(inicio, fin);
+
+    visibles.forEach(({ dni, name, lastname, birth_date }) => {
+      const div = document.createElement("div");
+      div.className = "bg-white rounded-lg shadow p-4 flex flex-col items-center text-center";
+
+      div.innerHTML = `
+        <img src="/static/image/users/${dni}_${lastname}.jpg" 
+             onerror="this.src='/static/image/users/default.jpg'" 
+             alt="Foto de ${name}" 
+             class="w-24 h-24 object-cover rounded-full mb-4 border border-gray-300"/>
+
+        <h2 class="text-lg font-semibold text-gray-800">${name} ${lastname}</h2>
+        <p class="text-sm text-gray-500 mb-4">DNI: ${dni}</p>
+        <p class="text-sm text-gray-500 mb-4">Fecha de nacimiento: ${birth_date}</p>
+
+        <div class="flex gap-4">
+          <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+            <i class="fas fa-check"></i>
+          </button>
+          <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+      container.appendChild(div);
     });
-  </script>
+
+    renderizarPaginacion();
+  }
+
+  function renderizarPaginacion() {
+    const totalPaginas = Math.ceil(solicitudes.length / porPagina);
+    const paginacion = document.getElementById("paginacion");
+    paginacion.innerHTML = "";
+
+    for (let i = 1; i <= totalPaginas; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className = `px-3 py-1 rounded ${i === paginaActual ? "bg-red-700 text-white" : "bg-white text-red-700 border border-red-700 hover:bg-red-100"}`;
+      btn.addEventListener("click", () => {
+        paginaActual = i;
+        mostrarSolicitudes();
+      });
+      paginacion.appendChild(btn);
+    }
+  }
+</script>
+
 </html>

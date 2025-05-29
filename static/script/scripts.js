@@ -81,7 +81,7 @@ function goHome() {
       if (data.authenticated) {
         switch (data.type) {
           case "Cliente":
-            window.location.href = "/panelEmpleado.html";
+            window.location.href = "/panelUsuario.html";
             break;
           case "Empleado":
             window.location.href = "/panelEmpleado.html";
@@ -143,7 +143,7 @@ function configurarDropdownGestionar() {
 
 function mostrarBotonEmpleado() {
   const user = JSON.parse(localStorage.getItem("user"));
-  if (user?.type === "Cliente") { //--> cambiar por empleado
+  if (user?.type === "Empleado") { 
     const nav = document.querySelector(".main-nav ul");
     if (nav) {
       const li = document.createElement("li");

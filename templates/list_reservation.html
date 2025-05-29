@@ -158,6 +158,7 @@
         });
 
         const data = await res.json();
+        console.log(data); //para imprimir la lista de reservas obtenida
         reservas = Array.isArray(data) ? data : Object.values(data)[0] || [];
 
         mostrarReservas();

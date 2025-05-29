@@ -8,7 +8,7 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -186,8 +186,12 @@ def login():
 
 @app.route("/logout", methods=["POST"])          #Chequeado ✅
 def logout():
-    logout_user()
-    return redirect(url_for('load_login'))
+    try:
+        logout_user()
+        return redirect(url_for('load_login'))
+    except Exception as e:
+        flash(str(e))
+        return redirect(url_for("load_singin"))
 
 
 @app.route("/signin", methods=["POST"])          #Chequeado ✅
@@ -295,6 +299,18 @@ def reply_request():
     except Exception as e:
         return jsonify({"error": "Ocurrió un error al procesar la solicitud", "detalles": str(e)}), 500
 
+@app.route("/user/update_user_dni", methods= ["POST"])
+def update_user_dni():
+    try:
+        request_value = request.get_json()
+        UpdateUserDni.usecase_update_user_dni(
+            dni=request_value.get("dni"),
+            new_dni=request_value.get("new_dni")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 # ---- MAQUINAS ----
 
@@ -327,8 +343,7 @@ def add_machine():
             categorie=form.get("categorie"),
             description=description
         )
-        return "", 201
-
+        return "", 204
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
@@ -344,6 +359,7 @@ def update_machine():
             refund=request_value.get("refund"),
             description=request_value.get("description"),
         )
+        return "", 204
     except Exception as e:
         return jsonify({ "message": e }), 404
 

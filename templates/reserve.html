@@ -86,12 +86,7 @@
           class="flex items-center space-x-3 text-red-800 font-semibold"
         >
           <span id="maquinaNombre">Cargando...</span>
-          <img
-            id="maquinaImagen"
-            src=""
-            alt="Imagen máquina"
-            class="w-12 h-12 rounded-lg border border-red-300 hidden"
-          />
+         
         </div>
       </div>
 
@@ -184,25 +179,19 @@
 
       if (machineId) {
         // Consultar al backend para obtener nombre e imagen
-        fetch(`/api/maquinas/${machineId}`)
+        fetch(`/machine/get_by_id/${machineId}`)
           .then((response) => {
             if (!response.ok) throw new Error("No se encontró la máquina");
             return response.json();
           })
           .then((data) => {
             // Mostrar nombre completo
-            maquinaNombre.textContent = `${data.nombre} (ID: ${machineId})`;
-
-            // Cargar imagen desde la URL exacta que da el backend
-            maquinaImagen.src = data.imagen_url;
-            maquinaImagen.onerror = function () {
-              this.src = "/static/image/default.png";
-            };
-            maquinaImagen.classList.remove("hidden");
+            maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
+          
           })
           .catch((error) => {
             console.error(error);
-            maquinaNombre.textContent = `Máquina ID: ${machineId}`;
+            maquinaNombre.textContent = `${machineId}`;
           });
       } else {
         maquinaNombre.textContent = "No se seleccionó ninguna máquina";

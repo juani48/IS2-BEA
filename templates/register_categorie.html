@@ -216,25 +216,32 @@
           const success = document.getElementById("success");
           const error = document.getElementById("error");
 
-          fetch("/categorie/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name }),
-          })
-            .then((res) => {
-              if (res.status === 201) {
-                success.classList.remove("hidden");
-                error.classList.add("hidden");
-                e.target.reset();
-              } else {
-                throw new Error("Ya existe esa categoría o falló el registro.");
-              }
-            })
-            .catch(() => {
-              success.classList.add("hidden");
-              error.classList.remove("hidden");
-            });
-        });
+          fetch("/categorie/add_categorie", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ categorie: name }),
+})
+  .then(async (res) => {
+    const data = await res.json().catch(() => ({})); // intentamos parsear la respuesta
+    if (res.ok || res.status === 201 || res.status === 204) {
+      success.textContent = "✅ Categoría registrada correctamente";
+      success.classList.remove("hidden");
+      error.classList.add("hidden");
+      e.target.reset();
+    } else {
+      // Mostramos mensaje personalizado si lo envió el backend
+      throw new Error(data.error || "Error desconocido al registrar");
+    }
+  })
+  .catch((err) => {
+    error.textContent = "⚠️ " + err.message;
+    error.classList.remove("hidden");
+    success.classList.add("hidden");
+  });
+
+        
+        
+          });
 
         function buscarMaquinaria() {
         const input = document.getElementById("searchInput")?.value.trim();
@@ -280,11 +287,6 @@
             window.location.href = '/login.html';
         }
     }
- document.addEventListener("DOMContentLoaded", () => {
-    cargarHeaderUsuario();
-    configurarDropdownGestionar();
-  });
-
 
 
     </script>

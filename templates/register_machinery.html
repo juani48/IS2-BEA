@@ -355,34 +355,46 @@ formData.set("refund", refundValue);
 
 
   fetch("/machine/add_machine", {
-    method: "POST",
-    body: formData
+  method: "POST",
+  body: formData
+})
+  .then(async res => {
+    if (res.status === 204 || res.status === 201) {
+      form.reset();
+
+      if (successDiv) {
+        successDiv.classList.remove("hidden");
+        successDiv.textContent = "Máquina cargada correctamente.";
+        successDiv.scrollIntoView({ behavior: "smooth" });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        setTimeout(() => {
+          successDiv.classList.add("hidden");
+          window.location.href = "/machinery.html";
+        }, 1500);
+      }
+
+      if (errorDiv) errorDiv.classList.add("hidden");
+
+    } else {
+      const data = await res.json();
+      throw new Error(data?.error || "Error al registrar la máquina");
+    }
   })
-    .then(res => {
-      if (res.status === 201) {
-        form.reset();
+  .catch(err => {
+    if (errorDiv) {
+      errorDiv.classList.remove("hidden");
+      errorText.textContent = `⚠️ ${err.message}`;
+      errorDiv.scrollIntoView({ behavior: "smooth" });
+    }
 
-        if (successDiv) {
-          successDiv.classList.remove("hidden");
-          successDiv.textContent = "Máquina cargada correctamente.";
-          successDiv.scrollIntoView({ behavior: "smooth" });
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Cargar Máquina";
+    }
+  });
 
-          // Hacer scroll al top del documento suavemente
-          window.scrollTo({ top: 0, behavior: "smooth" });
-
-          // Esperar 3 segundos antes de redirigir
-          setTimeout(() => {
-            successDiv.classList.add("hidden");
-            window.location.href = "/machinery.html";
-          }, 1500);
-
-        }
-
-        if (errorDiv) errorDiv.classList.add("hidden");
-
-          
-      } 
-    })
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -412,10 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `/machinery.html?search=${encoded}`;
     }
   }
-   document.addEventListener("DOMContentLoaded", () => {
-    cargarHeaderUsuario();
-    configurarDropdownGestionar();
-  });
+
 
 </script>
 

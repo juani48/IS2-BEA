@@ -49,6 +49,21 @@
 
                 <li><a href="main.html" class="hover:underline" > Menú </a></li>
                 <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                
+                <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
+
+
                 <li class="relative" id="dropdown-container">
                   <span id="dropdown-toggle"
                         class="cursor-pointer text-white hover:underline inline-block">
@@ -176,7 +191,10 @@
         </div>
     </footer>
 
-<script>
+ 
+</body>
+<script> 
+
   document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("dropdown-toggle");
     const menu = document.getElementById("dropdown-menu");
@@ -194,11 +212,44 @@
       }
 });
 
+    configurarDropdownCategorias();
+
     }
   });
 
+  function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
 
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
 
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    fetch("/categories/enabled")
+  .then(res => res.json())
+  .then(categories => {
+    const menu = document.getElementById("dropdown-categorias-menu");
+    menu.innerHTML = "";
+    categories.forEach(cat => {
+      const link = document.createElement("a");
+      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+      link.textContent = cat;
+      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+      link.style.color = "#7f1d1d";
+      menu.appendChild(link);
+    });
+  });
+  }
+}
   function buscarMaquinaria() {
     const input = document.getElementById("searchInput")?.value.trim();
     if (input !== "") {
@@ -207,7 +258,6 @@
     }
   }
 
- 
+
 </script>
-</body>
 </html>

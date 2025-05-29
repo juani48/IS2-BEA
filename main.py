@@ -517,7 +517,7 @@ def get_all_categories():
     except Exception as e:
         return jsonify({"error": str(e)}), 400 
 
-
+# este es para habilitar una categoria (para u  admin/empleado)
 @app.route("/categorie/enable_categorie", methods=["POST"])
 def enable_categorie():
     request_value = request.get_json().get("categorie")
@@ -529,6 +529,17 @@ def disable_categorie():
     request_value = request.get_json().get("categorie")
     DisableCategorie.usecase_disable_categorie(categorie=request_value)
     return "", 204
+
+# este es para hacer la lista de categorias disponibles
+@app.route("/categories/enabled", methods=["GET"])
+def get_enabled_categories():
+    from data.config import session
+    from data.model.CategorieModel import CategorieModel
+
+    # Traer categorías con disabled=False
+    categories = session.query(CategorieModel).filter_by(disabled=False).all()
+    return jsonify([cat.name for cat in categories])
+
 
 # ---- RESERVAS ---- #
 

@@ -5,11 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maquinarias - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <script src="{{ url_for('static', filename='script/scripts.js') }}"defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}"/>
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="{{ url_for('static', filename='script/scripts.js') }}"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style/style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="svg"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
     <style>
       html {
         scroll-behavior: smooth;
@@ -25,9 +41,13 @@
       >
         <!-- LOGO -->
         <div class="shrink-0">
-                <a href="#" onclick="goHome()" title="Ir al inicio">
-                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-                </a>
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
         </div>
 
         <!-- BARRA DE BÚSQUEDA -->
@@ -255,7 +275,9 @@
             <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
             <ul class="space-y-2">
               <li>
-                <a href="main.html" class="hover:text-gray-300 transition duration-300"
+                <a
+                  href="main.html"
+                  class="hover:text-gray-300 transition duration-300"
                   >Inicio</a
                 >
               </li>
@@ -303,15 +325,8 @@
     let machines = [];
     let currentPage = 1;
     const cardsPerPage = 3;
-
-    function getFilters() {
-      return {
-        mark: document.getElementById("filter-mark")?.value || "",
-        model: document.getElementById("filter-model")?.value || "",
-        price: parseFloat(document.getElementById("filter-price")?.value) || 0,
-        categorie: document.getElementById("filter-categorie")?.value || "",
-      };
-    }
+    const params = new URLSearchParams(window.location.search);
+    const categoryFromURL = params.get("category") || "";
 
     function fetchMachinesWithFilters() {
       const filters = getFilters();
@@ -319,6 +334,7 @@
       //  Leer palabra del parámetro "search" en la URL
       const params = new URLSearchParams(window.location.search);
       const search = params.get("search") || "";
+      const categoryFromURL = params.get("filter") || "";
 
       fetch("/machine/get_all_filter", {
         method: "POST",
@@ -334,14 +350,26 @@
           model: { apply: filters.model !== "", model: filters.model },
         }),
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!Array.isArray(data)) {
-            console.error("⚠️ La respuesta del backend no es una lista:", data);
+        .then(async (res) => {
+          const data = await res.json();
+          console.log(data);
+
+          if (!res.ok) {
+            const msg =
+              data?.message || "Ocurrió un error al obtener las maquinarias.";
             document.getElementById("machine-list").innerHTML = `
-          <p class="text-red-600 text-center font-bold mt-4">
-            Ocurrió un error al cargar las máquinas.
-          </p>`;
+      <div class="text-red-700 text-center font-semibold mt-2 max-w-sm mx-auto">
+        ⚠️ ${msg}
+      </div>`;
+            return;
+          }
+
+          if (!Array.isArray(data)) {
+            console.error("La respuesta del backend no es una lista:", data);
+            document.getElementById("machine-list").innerHTML = `
+      <p class="text-red-600 text-center font-bold mt-4">
+        Ocurrió un error al cargar las máquinas.
+      </p>`;
             return;
           }
 
@@ -350,7 +378,23 @@
           renderPage(currentPage);
           renderPagination();
         })
-        .catch((err) => console.error("Error al filtrar", err));
+        .catch((err) => {
+          console.error("Error al filtrar", err);
+          document.getElementById("machine-list").innerHTML = `
+    <p class="text-red-600 text-center font-bold mt-4">
+      ⚠️ No se pudo conectar con el servidor.
+    </p>`;
+        });
+    }
+
+    function getFilters() {
+      return {
+        mark: document.getElementById("filter-mark")?.value || "",
+        model: document.getElementById("filter-model")?.value || "",
+        price: parseFloat(document.getElementById("filter-price")?.value) || 0,
+        categorie:
+          document.getElementById("filter-categorie")?.value || categoryFromURL,
+      };
     }
 
     function renderMachine(machine, imageSrc) {
@@ -467,24 +511,26 @@
         .then((res) => res.json())
         .then((data) => {
           const select = document.getElementById("filter-categorie");
-          const categories = data.categories; // 🟢 accedemos correctamente al array
+          const categories = data.categories;
 
           if (Array.isArray(categories)) {
             categories.forEach((cat) => {
               const opt = document.createElement("option");
               opt.value = cat.name;
               opt.textContent = cat.name;
+              if (cat.name === categoryFromURL) {
+                opt.selected = true; // ← Selecciona automáticamente
+              }
               select.appendChild(opt);
             });
           }
-        })
-        .catch((err) => console.error("Error cargando categorías", err));
+        });
 
       document.getElementById("filter-apply")?.addEventListener("click", () => {
         fetchMachinesWithFilters();
       });
 
-      fetchMachinesWithFilters();
+      fetchMachinesWithFilters(); // Aplica filtros iniciales
     });
 
     function buscarMaquinaria() {
@@ -495,10 +541,10 @@
         window.location.href = `/machinery.html?search=${encoded}`;
       }
     }
-  document.addEventListener("DOMContentLoaded", () => {
-    cargarHeaderUsuario();
-    configurarDropdownGestionar() 
-  });
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarHeaderUsuario();
+      configurarDropdownGestionar();
+    });
   </script>
 
   <script>

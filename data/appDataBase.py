@@ -11,7 +11,7 @@ from data.query.get_all import query_get_all_machines, query_get_all_machines_by
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
-from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation
+from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni
 
 from data.query.change import query_change_password_user
 
@@ -86,6 +86,9 @@ def update_user(dni, name, lastname):
 
 def update_confirm_reservation(client_id, start_day, machine_id):
     query_update_confirm_reservation.execute(client_id, start_day, machine_id)
+
+def update_user_dni(dni, new_dni):
+    query_update_user_dni.execute(dni, new_dni)
 
 # ---- change  ----
 def change_password(dni,password):

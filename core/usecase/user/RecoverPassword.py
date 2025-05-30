@@ -17,21 +17,24 @@ def send_Mail_new_password(user):
         emailDest=user.email,
         subject="Nueva contraseña  - Bob El Alquilador",
         body = f"""
-                Hola {user.name} {user.lastname},
+                ¡Hola {user.name}!
 
-                    Se ha generado una nueva contraseña para tu cuenta en Bob El Alquilador.
+                Para mantener tu cuenta segura, hemos generado una contraseña temporal para acceder a Bob El Alquilador 🌟
 
-                    A continuación, te compartimos tu nueva contraseña temporal para que puedas iniciar sesión en nuestro sistema.
-                      Recuerda que puedes cambiarla en cualquier momento desde tu perfil:
+                Tu nueva contraseña: {user.password}
 
-                        🔐 Nueva contraseña: {user.password}
+                Puedes iniciar sesión ahora mismo y cambiarla fácilmente:
+                1. Ingresa con esta contraseña temporal
+                2. Ve a "{user.name}"
+                3. Presiona "Editar perfil"
+                3. Selecciona "Cambiar contraseña"
 
-                Si no solicitaste este cambio o necesitas ayuda, por favor contáctanos de inmediato.
+                ¿No fuiste tú? Por favor avísanos inmediatamente respondiendo este correo.
 
-                Gracias por seguir confiando en nosotros.
+                Gracias por confiar en nosotros para cuidar de tus alquileres ¡Estamos aquí para ayudarte en lo que necesites!
 
-                Saludos cordiales,  
-                Sistema de Gestión BEA
-"""
+                Saludos cordiales, El equipo de Bob El Alquilador 
 
-    )
+                PS: Recuerda que tu seguridad es nuestra prioridad. Nunca te pediremos tu contraseña por correo.
+                """
+                )

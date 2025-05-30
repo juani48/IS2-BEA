@@ -187,6 +187,10 @@ def description_machinery():
 def load_list_reservation():
     return render_template("list_reservation.html")
 
+@app.route('/list_employee.html')
+def list_employee():
+    return render_template('list_employee.html')
+
 
 # ---- METODOS USUARIO ---- #
 

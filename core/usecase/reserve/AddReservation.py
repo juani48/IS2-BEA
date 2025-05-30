@@ -13,10 +13,13 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, typ
     days = (end - start).days
     total_value = machine.price_day * days
 
+    point = int(days/7)
+    update_user_points(client_id, point)
+
     if (type == "Empleado"):
         total_value -= total_value * (0.01 *(get_discount("Employee").discount))
     elif(type == "Client" and apply_discount):
-        point = int(days/7) - 5
+        point = -5
         update_user_points(client_id, point)
         total_value -= total_value * (0.01 * (get_discount("Points").discount))
 

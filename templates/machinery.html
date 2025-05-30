@@ -80,8 +80,18 @@
         >
           <li><a href="main.html">Menú</a></li>
           <li><a href="machinery.html">Maquinarias</a></li>
-          <!-- onclick="getMachine()" no funciona si no son botones -->
-          <!-- borrar el # para enlazar con una pg-->
+          <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
           <li><a href="#">Preguntas Frecuentes</a></li>
           <li><a href="#contacto">Contáctanos</a></li>
         </ul>
@@ -275,7 +285,7 @@
   <script>
     let machines = [];
     let currentPage = 1;
-    const cardsPerPage = 3;
+    const cardsPerPage = 9;
     const params = new URLSearchParams(window.location.search);
     const categoryFromURL = params.get("category") || "";
 
@@ -390,18 +400,28 @@
       const items = machines.slice(start, end);
 
       items.forEach((machine) => {
-        const imagePath = `/static/image/machines/${machine.patent}.jpg`;
+        const basePath = `/static/image/machines/`;
+        const jsonPath = `${basePath}${machine.patent}.json`;
+        const fallbackImg = `${basePath}${machine.patent}.jpg`;
+        const defaultImg = `${basePath}default.png`;
 
-        const testImage = new Image();
-        testImage.src = imagePath;
+        fetch(jsonPath)
+          .then((res) => {
+            if (!res.ok) throw new Error("No JSON");
+            return res.json();
+          })
+          .then((lista) => {
+            const img = lista?.[0] ? `${basePath}${lista[0]}` : fallbackImg;
+            renderMachine(machine, img);
+          })
+          .catch(() => {
+            // Si falla el JSON, probamos con .jpg directo
+            const testImage = new Image();
+            testImage.src = fallbackImg;
 
-        testImage.onload = () => {
-          renderMachine(machine, imagePath);
-        };
-
-        testImage.onerror = () => {
-          renderMachine(machine, "/static/image/machines/default.png");
-        };
+            testImage.onload = () => renderMachine(machine, fallbackImg);
+            testImage.onerror = () => renderMachine(machine, defaultImg);
+          });
       });
     }
 
@@ -482,6 +502,7 @@
       });
 
       fetchMachinesWithFilters(); // Aplica filtros iniciales
+      configurarDropdownCategorias();
     });
 
     function buscarMaquinaria() {
@@ -492,11 +513,49 @@
         window.location.href = `/machinery.html?search=${encoded}`;
       }
     }
-  document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
     cargarHeaderUsuario();
     configurarDropdownGestionar();
     mostrarBotonEmpleado();
   });
+
+
+    function configurarDropdownCategorias() {
+      const toggle = document.getElementById("dropdown-categorias-toggle");
+      const menu = document.getElementById("dropdown-categorias-menu");
+      const container = document.getElementById(
+        "dropdown-categorias-container"
+      );
+
+      if (toggle && menu && container) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          menu.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+            menu.classList.add("hidden");
+          }
+        });
+
+        fetch("/categories/enabled")
+          .then((res) => res.json())
+          .then((categories) => {
+            const menu = document.getElementById("dropdown-categorias-menu");
+            menu.innerHTML = "";
+            categories.forEach((cat) => {
+              const link = document.createElement("a");
+              link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+              link.textContent = cat;
+              link.className =
+                "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+              link.style.color = "#7f1d1d";
+              menu.appendChild(link);
+            });
+          });
+      }
+    }
   </script>
 
   <script>

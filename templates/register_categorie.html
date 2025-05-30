@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+ <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
@@ -49,6 +49,21 @@
 
                 <li><a href="main.html" class="hover:underline" > Menú </a></li>
                 <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                
+                <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
+
+
                 <li class="relative" id="dropdown-container">
                   <span id="dropdown-toggle"
                         class="cursor-pointer text-white hover:underline inline-block">
@@ -73,6 +88,12 @@
                       style="color: #7f1d1d !important;">
                       ➕ Dar de alta un empleado
                     </a>
+                    <a href="list_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      📋 Ver lista de empleados
+                    </a>
+
                   </div>
                 </li>
 
@@ -91,6 +112,7 @@
                 <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
                 <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
                 <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
+                <li><a href="list_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">📋 Ver lista de empleados</a></li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -217,33 +239,30 @@
           const error = document.getElementById("error");
 
           fetch("/categorie/add_categorie", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ categorie: name }),
-})
-  .then(async (res) => {
-    const data = await res.json().catch(() => ({})); // intentamos parsear la respuesta
-    if (res.ok || res.status === 201 || res.status === 204) {
-      success.textContent = "✅ Categoría registrada correctamente";
-      success.classList.remove("hidden");
-      error.classList.add("hidden");
-      e.target.reset();
-    } else {
-      // Mostramos mensaje personalizado si lo envió el backend
-      throw new Error(data.error || "Error desconocido al registrar");
-    }
-  })
-  .catch((err) => {
-    error.textContent = "⚠️ " + err.message;
-    error.classList.remove("hidden");
-    success.classList.add("hidden");
-  });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ categorie: name }),
+          })
+            .then(async (res) => {
+              const data = await res.json().catch(() => ({})); // intentamos parsear la respuesta
+              if (res.ok || res.status === 201 || res.status === 204) {
+                success.textContent = "✅ Categoría registrada correctamente";
+                success.classList.remove("hidden");
+                error.classList.add("hidden");
+                e.target.reset();
+              } else {
+                // Mostramos mensaje personalizado si lo envió el backend
+                throw new Error(data.error || "Error desconocido al registrar");
+              }
+            })
+            .catch((err) => {
+              error.textContent = "⚠️ " + err.message;
+              error.classList.remove("hidden");
+              success.classList.add("hidden");
+            });
+        });
 
-        
-        
-          });
-
-        function buscarMaquinaria() {
+      function buscarMaquinaria() {
         const input = document.getElementById("searchInput")?.value.trim();
         if (input !== "") {
           const encoded = encodeURIComponent(input);
@@ -251,14 +270,14 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.getElementById("dropdown-toggle");
-    const menu = document.getElementById("dropdown-menu");
-    const container = document.getElementById("dropdown-container");
+       function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
 
-    if (toggle && menu && container) {
-      toggle.addEventListener("click", (e) => {
-      e.stopPropagation(); // evita que el documento lo cierre enseguida
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
       menu.classList.toggle("hidden");
     });
 
@@ -266,29 +285,64 @@
       if (!menu.contains(e.target) && !toggle.contains(e.target)) {
         menu.classList.add("hidden");
       }
-});
+    });
 
-    }
+    fetch("/categories/enabled")
+  .then(res => res.json())
+  .then(categories => {
+    const menu = document.getElementById("dropdown-categorias-menu");
+    menu.innerHTML = "";
+    categories.forEach(cat => {
+      const link = document.createElement("a");
+      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+      link.textContent = cat;
+      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+      link.style.color = "#7f1d1d";
+      menu.appendChild(link);
+    });
   });
+  }
+}
 
-   // Obtener datos del usuario de la memoria del navegador                      <<-------------------------------------------------------------------
-    const userData = JSON.parse(localStorage.getItem('user'));
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById("dropdown-toggle");
+        const menu = document.getElementById("dropdown-menu");
+        const container = document.getElementById("dropdown-container");
 
-    // Función para mostrar los datos del usuario
-    function displayUserData() {
-        if (userData) {
-            // Reemplazar {{ usuario_nombre }} con el nombre real
-            const userNameElement = document.querySelector('.relative button span');
-            if (userNameElement) {
-                userNameElement.textContent = userData.name;
+        if (toggle && menu && container) {
+          toggle.addEventListener("click", (e) => {
+            e.stopPropagation(); // evita que el documento lo cierre enseguida
+            menu.classList.toggle("hidden");
+          });
+
+          document.addEventListener("click", (e) => {
+            if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+              menu.classList.add("hidden");
             }
-        } else {
-            // Si no hay datos de usuario, redirigir al login
-            window.location.href = '/login.html';
+          });
         }
-    }
 
+           configurarDropdownCategorias();
+      });
 
+      // Obtener datos del usuario de la memoria del navegador                      <<-------------------------------------------------------------------
+      const userData = JSON.parse(localStorage.getItem("user"));
+
+      // Función para mostrar los datos del usuario
+      function displayUserData() {
+        if (userData) {
+          // Reemplazar {{ usuario_nombre }} con el nombre real
+          const userNameElement = document.querySelector(
+            ".relative button span"
+          );
+          if (userNameElement) {
+            userNameElement.textContent = userData.name;
+          }
+        } else {
+          // Si no hay datos de usuario, redirigir al login
+          window.location.href = "/login.html";
+        }
+      }
     </script>
   </body>
 </html>

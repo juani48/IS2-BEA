@@ -3,7 +3,7 @@
   <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Listado de empleados -     Bob el Alquilador</title>
+  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -112,6 +112,7 @@
                 <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
                 <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
                 <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
+                <li><a href="list_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">📋 Ver lista de empleados</a></li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -234,7 +235,44 @@
       </p>`;
   });
 
+  
+           configurarDropdownCategorias();
+
       });
+
+       function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
+
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    fetch("/categories/enabled")
+  .then(res => res.json())
+  .then(categories => {
+    const menu = document.getElementById("dropdown-categorias-menu");
+    menu.innerHTML = "";
+    categories.forEach(cat => {
+      const link = document.createElement("a");
+      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+      link.textContent = cat;
+      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+      link.style.color = "#7f1d1d";
+      menu.appendChild(link);
+    });
+  });
+  }
+}
     </script>
   </body>
 </html>

@@ -46,23 +46,16 @@
                 </a>
         </div>
 
-        <!-- BARRA DE BÚSQUEDA -->
-        <div class="flex-grow flex justify-center">
-          <div class="relative w-full max-w-xl">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Buscar maquinaria..."
-              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
-            />
-            <button
-              onclick="buscarMaquinaria()"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
+         <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
 
         <!-- MI CUENTA -->
         <div id="accountArea"></div>
@@ -75,8 +68,18 @@
         >
           <li><a href="main.html">Menú</a></li>
           <li><a href="machinery.html">Maquinarias</a></li>
-          <!-- onclick="getMachine()" no funciona si no son botones -->
-          <!-- borrar el # para enlazar con una pg-->
+          <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
           <li><a href="#">Preguntas Frecuentes</a></li>
           <li><a href="#contacto">Contáctanos</a></li>
         </ul>
@@ -125,19 +128,28 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-5xl mx-auto p-6 mt-8 bg-white rounded-xl shadow-md">
       <div class="grid md:grid-cols-2 gap-6">
-        <!-- Imagen -->
-        <div class="aspect-square overflow-hidden rounded-xl shadow">
-          <img
-            id="machineImage"
-            src=""
-            alt="Imagen maquinaria"
-            onerror="this.src='/static/image/machines/default.png'"
-            class="w-full h-full object-cover"
-          />
-        </div>
+  <!-- IZQUIERDA: Imagen principal + miniaturas -->
+  <div>
+    <!-- Imagen principal -->
+    <div class="aspect-square overflow-hidden rounded-xl shadow mb-4">
+      <img
+        id="machineImage"
+        src=""
+        alt="Imagen principal"
+        class="w-full h-full object-cover"
+        onerror="this.src='/static/image/machines/default.png'"
+      />
+    </div>
+
+    <!-- Miniaturas -->
+    <div id="imagenes-maquina" class="flex flex-wrap gap-4 justify-center"></div>
+  </div>
+
+
+
 
         <!-- Detalles -->
-        <div>
+        <div class="md:w-1/2">  
           <h1 id="machineTitle" class="text-3xl font-bold text-bob-red mb-4">
             Cargando...
           </h1>
@@ -180,6 +192,47 @@
         }
       }
 
+   function cargarImagenes(patente) {
+  const contenedor = document.getElementById("imagenes-maquina");
+  contenedor.innerHTML = "";
+
+  const basePath = `/static/image/machines/`;
+  const jsonPath = `${basePath}${patente}.json`;
+
+  fetch(jsonPath)
+    .then((res) => {
+      if (!res.ok) throw new Error("No hay JSON");
+      return res.json();
+    })
+    .then((lista) => {
+      if (Array.isArray(lista) && lista.length > 0) {
+        const principal = `${basePath}${lista[0]}`;
+        document.getElementById("machineImage").src = principal;
+
+        for (let i = 0; i < lista.length; i++) {
+          const img = document.createElement("img");
+          img.src = basePath + lista[i];
+          img.className =
+            "w-24 h-24 object-cover rounded-xl shadow cursor-pointer";
+          img.onclick = () => {
+            document.getElementById("machineImage").src = img.src;
+          };
+          contenedor.appendChild(img);
+        }
+      }
+    })
+    .catch((err) => {
+      console.warn("No se pudieron cargar miniaturas:", err);
+      const fallback = `${basePath}${patente}.jpg`;
+      document.getElementById("machineImage").src = fallback;
+    });
+}
+
+
+
+
+
+
 
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
@@ -208,9 +261,13 @@
               machine.ubication;
             document.getElementById("machineCategories").innerText = (machine.categories || []).join(", ");
             document.getElementById("machinePatent").innerText = machine.patent;
+  
 
-            const img = `/static/image/machines/${machine.patent}.jpg`;
-            document.getElementById("machineImage").src = img;
+              cargarImagenes(machine.patent);
+
+           // Mostrar imagen principal desde JSON o .jpg
+document.getElementById("machineImage").src = "";
+
 
             document.getElementById(
               "reserveBtn"
@@ -221,7 +278,52 @@
               "Error al cargar la maquinaria.";
             console.error(err);
           });
+
+          
+           configurarDropdownCategorias();
       });
+
+       function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+
+   function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
+
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    fetch("/categories/enabled")
+  .then(res => res.json())
+  .then(categories => {
+    const menu = document.getElementById("dropdown-categorias-menu");
+    menu.innerHTML = "";
+    categories.forEach(cat => {
+      const link = document.createElement("a");
+      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+      link.textContent = cat;
+      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+      link.style.color = "#7f1d1d";
+      menu.appendChild(link);
+    });
+  });
+  }
+}
 
     </script>
 

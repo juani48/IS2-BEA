@@ -3,11 +3,11 @@ from core.usecase.user.RequestUser import _random_password
 from core.usecase.service import SendMail
 
 
-def usecase_recover_password(emailUser):
-    localUser= get_user_by_email(email=emailUser)
-    if (localUser is not None):
-        newPassword= _random_password()
-        change_password(dni= localUser.dni,password=newPassword)
+def usecase_recover_password(email):
+    localUser = get_user_by_email(email=email)
+    if localUser is not None:
+        newPassword = _random_password()
+        change_password(dni=localUser.dni, password=newPassword)
         send_Mail_new_password(user=localUser)
 
 

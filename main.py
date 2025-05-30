@@ -292,8 +292,10 @@ def change_password():
 
 @app.route("/user/recover_password", methods=["PUT"])
 def recover_password():
-    emailUser = request.get_json()
-    RecoverPassword.usecase_recover_password(emailUser)
+    data = request.get_json()
+    email = data.get("email")  # <- EXTRAÉS SOLO EL STRING
+    RecoverPassword.usecase_recover_password(email)
+    return "", 204  # <-- devolvé un 204 o lo que prefieras
 
 
 

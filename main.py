@@ -398,15 +398,28 @@ def reply_user_request():
 def add_machine():
     try:
         form = request.form
-        file = request.files.get("image")
+        imagenes = request.files.getlist("images")
 
         patent=form.get('patent')
 
-        if file and file.filename != "":
-            filename = secure_filename(patent + ".jpg")
-            folder_path = os.path.join("static", "image", "machines")
-            os.makedirs(folder_path, exist_ok=True)
-            file.save(os.path.join(folder_path, filename))
+                        
+        folder_path = os.path.join("static", "image", "machines")
+        os.makedirs(folder_path, exist_ok=True)
+
+        lista_nombres = []
+
+        for i, img in enumerate(imagenes):
+            if img and img.filename != "":
+                extension = os.path.splitext(img.filename)[1] or ".jpg"
+                nombre = f"{patent}({i+1}){extension}"
+                img.save(os.path.join(folder_path, nombre))
+                lista_nombres.append(nombre)
+
+        # Guardar JSON con los nombres
+        with open(os.path.join(folder_path, f"{patent}.json"), "w") as f:
+            json.dump(lista_nombres, f)
+
+
 
         description = form.get("description")
         if description == None:

@@ -8,7 +8,7 @@ from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, UserHistory
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -391,6 +391,15 @@ def reply_user_request():
         return jsonify({"error": str(e)}), 400
 
 
+@app.route("/user/user_history", methods=["GET", "POST"])
+def user_history():
+    try:
+        request_value = request.get_json()
+        return jsonify({ UserHistory.usecase_user_history(request_value.get("dni")) })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
@@ -619,6 +628,8 @@ def get_daily_reserve():
         return jsonify( GetDailyReservations.usecase_get_daily_reservations() ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+
 
 # ---- PAGOS ---- # 
 

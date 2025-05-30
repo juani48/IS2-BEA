@@ -1,3 +1,4 @@
+import init_db_proyect
 from datetime import datetime, timedelta
 import json
 from flask import Flask, jsonify, render_template, request
@@ -5,10 +6,9 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from core.entity.User import User
 from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
-from core.service.mercado_pago import PayByMercadoPago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, UserHistory
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -17,13 +17,15 @@ import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
-from data.query.insert import query_TEST_USER
-from data.model.UserModel import UserModel
 from data.query.get.query_get_machine import execute
 from data.config import session
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.model.CategorieModel import CategorieModel
-
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from data.config import session
+from data.model.ReservationModel import ReservationModel
+from datetime import datetime
 
 
 
@@ -58,40 +60,19 @@ def load_user(user_id):
     return User(user_model) if user_model else None
 
 
-
 @app.route('/')
 def home():
-    #AddCategorie.usecase_add_categorie("categoria1")
-    #AddCategorie.usecase_add_categorie("categoria2")
-    #AddMachine.usecase_add_machine("A", "marcaA", "modeloA", 10, "ubicacionA", 10, "categoria1", "")
-    #AddMachine.usecase_add_machine("B", "marcaB", "modeloB", 4, "ubicacionB", 30, "categoria1", "")
-    #AddMachine.usecase_add_machine("C", "marcaC", "modeloC", 10, "ubicacionC", 15, "categoria2", "")
-    #query_TEST_USER.execute(22333444, user=UserModel(dni=22333444, email="bb@gmail.com", name="ADMIN", lastname="JUAN", phone=22333444, birth_date="cumpleañitos", password=12345, type="Admin"))
-    
-    #now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
-    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A", False, )
-    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A", False, )
-
-
-    #print(GetAllMachinesByFilter.usecase_get_all_machines_by(
-        #categorie_filter={"apply": False, "categorie": "categoria1"}, 
-        #string_filer={ "apply": True, "string": "lob" },
-        #price_filter={ "apply": False, "price": 5 },
-        #mark_filter={ "apply": False },           
-        #model_filter={ "apply": False },
-        #)
-    #)
-    
-    # prueba de reservas
-    # now = datetime.now(); date1 = now + timedelta(days=1); date1_1 = now + timedelta(days=2); date2 = now + timedelta(days=3); date2_1 = now + timedelta(days=4)
-    
-    #AddReservation.usecase_add_reserve(date1, date1_1, 1, "A1", 0, False)
-    #AddReservation.usecase_add_reserve(date2, date2_1, 1, "A1", 0, False)
-    #print({"value" : MachineReservations.usecase_get_all_reservations_by_machine("A1")})
-
-    
-
     return render_template('/main.html')
+
+@app.route('/init_db_proyect')
+def __init_db_proyect__():
+    init_db_proyect.__init_db__()
+    return load_home()
+
+@app.route('/add_points')
+def __add_points__():
+    init_db_proyect.add_points()
+    return load_home()
 
 # ---- RENDERIZAR PAGINAS ---- #
 
@@ -145,6 +126,14 @@ def load_panelAdministrador():
     else: 
         return render_template('/main.html')
 
+@app.route("/panelEmpleado.html")
+@login_required
+def load_panelEmpleado():
+    if(current_user.type == "Empleado"): 
+        return render_template("/panelEmpleado.html")
+    else:
+        return render_template("/main.html")
+
 @app.route("/change_password.html")
 @login_required
 def load_change_password():
@@ -183,19 +172,24 @@ def register_employee():
         return render_template("register_employee.html")
     else:
         return "Solo los admin pueden dar de alta un empleado"
-
+    
+@app.route("/pending_requests.html")
+@login_required
+def load_pending_request():
+    return render_template("pending_requests.html")
 
 @app.route('/description_machinery.html')
 def description_machinery():
     return render_template('description_machinery.html')
 
+@app.route("/list_reservation.html")
+#@login_required
+def load_list_reservation():
+    return render_template("list_reservation.html")
+
 @app.route('/list_employee.html')
 def list_employee():
     return render_template('list_employee.html')
-
-@app.route('/terminos.html')
-def terminos():
-    return render_template('terminos.html')
 
 
 # ---- METODOS USUARIO ---- #
@@ -275,7 +269,7 @@ def session_status():
 @login_required
 def update_user():         
     request_value = request.get_json()
-    if (current_user.dni == request_value.dni):
+    if current_user.dni == int(request_value.get("dni")):
         UpdateUser.usecase_update_user(
             #email=request_value.get("email"),
             dni = request_value.get("dni"),
@@ -307,8 +301,10 @@ def change_password():
 
 @app.route("/user/recover_password", methods=["PUT"])
 def recover_password():
-    emailUser = request.get_json()
-    RecoverPassword.usecase_recover_password(emailUser)
+    data = request.get_json()
+    email = data.get("email")  # <- EXTRAÉS SOLO EL STRING
+    RecoverPassword.usecase_recover_password(email)
+    return "", 204  # <-- devolvé un 204 o lo que prefieras
 
 
 
@@ -382,6 +378,28 @@ def update_user_dni():
         return jsonify({"error": str(e)}), 400
 
 
+@app.route("/requests/reply", methods=["POST"])
+def reply_user_request():
+    data = request.get_json()
+    reply = data.get("reply")
+    dni = data.get("dni")
+
+    try:
+        mensaje = ReplyRequest.usecase_reply_request(reply, dni)
+        return jsonify({"mensaje": mensaje}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/user/user_history", methods=["GET", "POST"])
+def user_history():
+    try:
+        request_value = request.get_json()
+        return jsonify({ UserHistory.usecase_user_history(request_value.get("dni")) })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE
@@ -426,7 +444,7 @@ def add_machine():
             categorie=form.get("categorie"),
             description=description
         )
-        return "", 204
+        return "", 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
@@ -620,9 +638,11 @@ def user_points():
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():
     try:
-        return jsonify({ GetDailyReservations.usecase_get_daily_reservations() }), 200 
+        return jsonify( GetDailyReservations.usecase_get_daily_reservations() ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+
 
 # ---- PAGOS ---- # 
 
@@ -650,4 +670,3 @@ def pay_notification():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    appDataBase.create_database()

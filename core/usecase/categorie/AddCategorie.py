@@ -7,5 +7,4 @@ def usecase_add_categorie(categorie):
     c = CategorieModel(
         name=categorie
     )
-    print(c.name)
     insert_categorie(name=categorie, categorie=c)

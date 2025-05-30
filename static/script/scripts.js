@@ -140,3 +140,53 @@ function configurarDropdownGestionar() {
     }
   });
 }
+
+function mostrarBotonEmpleado() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user?.type === "Empleado") { 
+    const nav = document.querySelector(".main-nav ul");
+    if (nav) {
+      const li = document.createElement("li");
+      li.classList.add("relative");
+
+      li.innerHTML = `
+   <span id="empleadoDropdownToggle" class="cursor-pointer hover:underline text-yellow-300 font-semibold">
+  👷 Panel Empleado <i class="fas fa-caret-down ml-1"></i>
+</span>
+<div id="empleadoDropdownMenu"
+     class="hidden absolute bg-white shadow-lg rounded-md mt-2 z-50 min-w-[200px]">
+ <a href="/pending_requests.html"
+   class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">
+   📋 Listar Solicitudes
+</a>
+<a href="/list_reservation.html"
+   class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">
+   📄 Listar Reservas
+</a>
+
+</div>
+
+
+      `;
+
+      nav.appendChild(li);
+
+      // Comportamiento del toggle (click abre/cierra)
+      const toggle = li.querySelector("#empleadoDropdownToggle");
+      const menu = li.querySelector("#empleadoDropdownMenu");
+
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!li.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    }
+  }
+}
+
+

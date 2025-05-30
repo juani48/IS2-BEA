@@ -282,6 +282,12 @@ document.getElementById("machineImage").src = "";
           
            configurarDropdownCategorias();
       });
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarHeaderUsuario();
+        configurarDropdownGestionar();
+        mostrarBotonEmpleado();
+
+      });
 
        function buscarMaquinaria() {
     const input = document.getElementById("searchInput")?.value.trim();

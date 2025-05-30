@@ -30,36 +30,52 @@
     </form>
   </main>
   <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    document.getElementById("nombre").value = user.name;
-    document.getElementById("apellido").value = user.lastname;
+  const user = JSON.parse(localStorage.getItem("user"));
+  document.getElementById("nombre").value = user.name;
+  document.getElementById("apellido").value = user.lastname;
 
-    document.getElementById("formDatos").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const mensaje = document.getElementById("mensaje");
-      mensaje.classList.add("hidden");
+  document.getElementById("formDatos").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const mensaje = document.getElementById("mensaje");
+    mensaje.classList.add("hidden");
 
-      const res = await fetch("/user/update_user", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dni: user.dni,
-          name: document.getElementById("nombre").value.trim(),
-          lastname: document.getElementById("apellido").value.trim()
-        })
-      });
+    const nuevoNombre = document.getElementById("nombre").value.trim();
+    const nuevoApellido = document.getElementById("apellido").value.trim();
 
-      if (res.status === 204) {
-        mensaje.className = "bg-green-100 text-green-700 border border-green-300 p-3 rounded text-center font-semibold";
-        mensaje.textContent = "Datos actualizados con éxito.";
-        mensaje.classList.remove("hidden");
-      } else {
-        const data = await res.json();
-        mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
-        mensaje.textContent = data;
-        mensaje.classList.remove("hidden");
-      }
+    const res = await fetch("/user/update_user", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        dni: user.dni,
+        name: nuevoNombre,
+        lastname: nuevoApellido
+      })
     });
-  </script>
+
+    console.log(res); // para debug
+
+    if (res.status === 204) {
+      // ✅ Actualizamos localStorage con los nuevos datos
+      const updatedUser = { ...user, name: nuevoNombre, lastname: nuevoApellido };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // ✅ Mostramos mensaje
+      mensaje.className = "bg-green-100 text-green-700 border border-green-300 p-3 rounded text-center font-semibold";
+      mensaje.textContent = "Datos actualizados con éxito.";
+      mensaje.classList.remove("hidden");
+
+      // ✅ Redireccionamos luego de 1 segundo
+      setTimeout(() => {
+        window.location.href = "edit_profile.html";
+      }, 1000);
+    } else {
+      const data = await res.json();
+      mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+      mensaje.textContent = data;
+      mensaje.classList.remove("hidden");
+    }
+  });
+</script>
+
 </body>
 </html>

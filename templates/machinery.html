@@ -1,570 +1,140 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maquinarias - Bob el Alquilador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="{{ url_for('static', filename='script/scripts.js') }}"
-      defer
-    ></script>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style/style.css') }}"
-    />
-    <link
-      rel="icon"
-      type="svg"
-      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
-    />
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maquinarias - Bob el Alquilador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='script/machinery.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
+  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
+</head>
 
-  <body class="bg-gray-100 text-gray-900">
-    <!-- Header -->
-    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-      <div
-        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
-      >
-        <!-- LOGO -->
-        <div class="shrink-0">
-          <a href="#" onclick="goHome()" title="Ir al inicio">
-            <img
-              src="{{ url_for('static', filename='image/Completo.svg') }}"
-              alt="Bob el Alquilador"
-              class="h-16"
-            />
-          </a>
-        </div>
-
-        <!-- BARRA DE BÚSQUEDA -->
-        <div class="flex-grow flex justify-center">
-          <div class="relative w-full max-w-xl">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Buscar maquinaria..."
-              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
-            />
-            <button
-              onclick="buscarMaquinaria()"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- MI CUENTA -->
-        <div id="accountArea"></div>
-        <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+<body class="bg-gray-100 text-gray-900">
+  <!-- Header -->
+  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="shrink-0">
+        <a href="#" onclick="goHome()" title="Ir al inicio">
+          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16" />
+        </a>
       </div>
 
-      <!-- Navigation debajo, 100% ancho -->
-      <nav class="main-nav w-full">
-        <ul
-          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
-        >
-          <li><a href="main.html">Menú</a></li>
-          <li><a href="machinery.html">Maquinarias</a></li>
-          <li class="relative" id="dropdown-categorias-container">
-            <span
-              id="dropdown-categorias-toggle"
-              class="cursor-pointer text-white hover:underline inline-block"
-            >
-              Categorías <i class="fas fa-caret-down ml-1"></i>
-            </span>
-
-            <div
-              id="dropdown-categorias-menu"
-              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-              style="color: #7f1d1d"
-            >
-              <!-- Se rellena dinámicamente -->
-            </div>
-          </li>
-          <li><a href="#">Preguntas Frecuentes</a></li>
-          <li><a href="#contacto">Contáctanos</a></li>
-        </ul>
-      </nav>
-
-      <!-- Mobile Navigation Menu -->
-      <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-        <ul class="flex flex-col space-y-3">
-          <li>
-            <a
-              href="main.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Menú</a
-            >
-          </li>
-          <li>
-            <a
-              href="machinery.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Maquinarias</a
-            >
-          </li>
-          <li>
-            <a
-              href="categorie.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Categorías</a
-            >
-          </li>
-          <li>
-            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Preguntas Frecuentes</a
-            >
-          </li>
-          <li>
-            <a
-              href="#contacto"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Contáctanos</a
-            >
-          </li>
-        </ul>
-      </div>
-    </header>
-
-    <div class="flex flex-col lg:flex-row p-6 gap-6">
-      <!-- Filtros -->
-      <aside
-        class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0"
-      >
-        <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium">Marca</label>
-            <input
-              type="text"
-              id="filter-mark"
-              class="w-full border border-gray-300 rounded px-2 py-1"
-              placeholder="Ej: CAT"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium">Modelo</label>
-            <input
-              type="text"
-              id="filter-model"
-              class="w-full border border-gray-300 rounded px-2 py-1"
-              placeholder="Ej: 420F"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium">Precio máximo</label>
-            <input
-              type="number"
-              id="filter-price"
-              class="w-full border border-gray-300 rounded px-2 py-1"
-              min="0"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium">Categoría</label>
-            <select
-              id="filter-categorie"
-              class="w-full border border-gray-300 rounded px-2 py-1"
-            >
-              <option value="">-- Todas --</option>
-            </select>
-          </div>
-
-          <div class="text-center">
-            <button
-              id="filter-apply"
-              class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full"
-            >
-              Aplicar filtros
-            </button>
-          </div>
+      <div class="flex-grow flex justify-center">
+        <div class="relative w-full max-w-xl">
+          <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md" />
+          <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+            <i class="fas fa-search"></i>
+          </button>
         </div>
-      </aside>
+      </div>
 
-      <!-- CONTENEDOR DE LAS TARJETAS  -->
-      <div
-        id="machine-list"
-        class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"
-      ></div>
+      <div id="accountArea"></div>
     </div>
 
-    <!-- PAGINADO -->
-    <div
-      id="pagination"
-      class="flex justify-center flex-wrap mt-6 mb-12 gap-2"
-    ></div>
-
-    <!-- FOOTER -->
-
-    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
-      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Columna 1: Redes + legales -->
-        <div>
-          <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
-          <div class="flex space-x-4 mb-4">
-            <a
-              href="https://instagram.com/bobelalquilador"
-              target="_blank"
-              class="hover:text-gray-300 transition"
-            >
-              <i class="fab fa-instagram text-2xl"></i>
-            </a>
-            <a
-              href="https://wa.me/5492245400777"
-              target="_blank"
-              class="hover:text-gray-300 transition"
-            >
-              <i class="fab fa-whatsapp text-2xl"></i>
-            </a>
+    <nav class="main-nav w-full">
+      <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+        <li><a href="main.html">Menú</a></li>
+        <li><a href="machinery.html">Maquinarias</a></li>
+        <li class="relative" id="dropdown-categorias-container">
+          <span id="dropdown-categorias-toggle" class="cursor-pointer text-white hover:underline inline-block">
+            Categorías <i class="fas fa-caret-down ml-1"></i>
+          </span>
+          <div id="dropdown-categorias-menu"
+              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+              style="color: #7f1d1d">
           </div>
-          <ul class="space-y-1">
-            <li>
-              <a href="terminos.html" class="hover:underline"
-                >Términos y Condiciones</a
-              >
-            </li>
-            <li>
-              <a href="privacidad.html" class="hover:underline"
-                >Política de Privacidad</a
-              >
-            </li>
-          </ul>
-        </div>
+        </li>
+        <li><a href="#">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto">Contáctanos</a></li>
+      </ul>
+    </nav>
+  </header>
 
-        <!-- Columna 2: Contacto -->
+  <!-- Contenido -->
+  <div class="flex flex-col lg:flex-row p-6 gap-6">
+    <!-- Filtros -->
+    <aside class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0">
+      <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
+      <div class="space-y-4">
         <div>
-          <h3 class="text-lg font-bold mb-2">Contacto</h3>
-          <ul class="space-y-2">
-            <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
-            <li>
-              <i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com
-            </li>
-            <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
-          </ul>
+          <label class="block text-sm font-medium">Marca</label>
+          <input type="text" id="filter-mark" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: CAT" />
         </div>
-
-        <!-- Columna 3: Mapa -->
         <div>
-          <h3 class="text-lg font-bold mb-2">Ubicación</h3>
-          <div class="rounded-lg overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
-              width="100%"
-              height="200"
-              style="border: 0"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
+          <label class="block text-sm font-medium">Modelo</label>
+          <input type="text" id="filter-model" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: 420F" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Precio máximo</label>
+          <input type="number" id="filter-price" class="w-full border border-gray-300 rounded px-2 py-1" min="0" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Categoría</label>
+          <select id="filter-categorie" class="w-full border border-gray-300 rounded px-2 py-1">
+            <option value="">-- Todas --</option>
+          </select>
+        </div>
+        <div class="text-center">
+          <button id="filter-apply" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full">Aplicar filtros</button>
         </div>
       </div>
+    </aside>
 
-      <!-- Línea inferior -->
-      <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
-        © 2025 Bob El Alquilador. Todos los derechos reservados.
+    <!-- Listado -->
+    <div id="machine-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"></div>
+  </div>
+
+  <!-- Paginación -->
+  <div id="pagination" class="flex justify-center flex-wrap mt-6 mb-12 gap-2"></div>
+
+  <!-- Footer -->
+  <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+        <div class="flex space-x-4 mb-4">
+          <a href="https://instagram.com/bobelalquilador" target="_blank" class="hover:text-gray-300 transition"><i class="fab fa-instagram text-2xl"></i></a>
+          <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition"><i class="fab fa-whatsapp text-2xl"></i></a>
+        </div>
+        <ul class="space-y-1">
+          <li><a href="terminos.html" class="hover:underline">Términos y Condiciones</a></li>
+          <li><a href="privacidad.html" class="hover:underline">Política de Privacidad</a></li>
+        </ul>
       </div>
-    </footer>
-  </body>
-
-  <script>
-    let machines = [];
-    let currentPage = 1;
-    const cardsPerPage = 9;
-    const params = new URLSearchParams(window.location.search);
-    const categoryFromURL = params.get("category") || "";
-
-    function fetchMachinesWithFilters() {
-      const filters = getFilters();
-
-      //  Leer palabra del parámetro "search" en la URL
-      const params = new URLSearchParams(window.location.search);
-      const search = params.get("search") || "";
-      const categoryFromURL = params.get("filter") || "";
-
-      fetch("/machine/get_all_filter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          categorie: {
-            apply: filters.categorie !== "",
-            categorie: filters.categorie,
-          },
-          string: { apply: search !== "", string: search }, // Aplicamos filtro por palabra
-          price: { apply: filters.price > 0, price: filters.price },
-          mark: { apply: filters.mark !== "", mark: filters.mark },
-          model: { apply: filters.model !== "", model: filters.model },
-        }),
-      })
-        .then(async (res) => {
-          const data = await res.json();
-          console.log(data);
-
-          if (!res.ok) {
-            const msg =
-              data?.message || "Ocurrió un error al obtener las maquinarias.";
-            document.getElementById("machine-list").innerHTML = `
-      <div class="text-red-700 text-center font-semibold mt-2 max-w-sm mx-auto">
-        ⚠️ ${msg}
-      </div>`;
-            return;
-          }
-
-          if (!Array.isArray(data)) {
-            console.error("La respuesta del backend no es una lista:", data);
-            document.getElementById("machine-list").innerHTML = `
-      <p class="text-red-600 text-center font-bold mt-4">
-        Ocurrió un error al cargar las máquinas.
-      </p>`;
-            return;
-          }
-
-          machines = data;
-          currentPage = 1;
-          renderPage(currentPage);
-          renderPagination();
-        })
-        .catch((err) => {
-          console.error("Error al filtrar", err);
-          document.getElementById("machine-list").innerHTML = `
-    <p class="text-red-600 text-center font-bold mt-4">
-      ⚠️ No se pudo conectar con el servidor.
-    </p>`;
-        });
-    }
-
-    function getFilters() {
-      return {
-        mark: document.getElementById("filter-mark")?.value || "",
-        model: document.getElementById("filter-model")?.value || "",
-        price: parseFloat(document.getElementById("filter-price")?.value) || 0,
-        categorie:
-          document.getElementById("filter-categorie")?.value || categoryFromURL,
-      };
-    }
-
-    function renderMachine(machine, imageSrc) {
-      const container = document.getElementById("machine-list");
-      const card = document.createElement("div");
-
-      card.innerHTML = `
-    <a href="/description_machinery.html?machine_id=${machine.patent}" 
-       class="block w-full max-w-[320px] aspect-auto bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 hover:shadow-xl transition duration-300 group relative">
-
-      <!-- Imagen -->
-      <div class="w-full aspect-square overflow-hidden">
-        <img src="${imageSrc}"
-             onerror="this.src='/static/image/machines/default.png'"
-             alt="Imagen de ${machine.model}"
-             class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+      <div>
+        <h3 class="text-lg font-bold mb-2">Contacto</h3>
+        <ul class="space-y-2">
+          <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+          <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+          <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+        </ul>
       </div>
-
-      <!-- Contenido -->
-      <div class="p-4 text-center">
-        <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
-        <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
-        <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
-
-        <button class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
-                onclick="irAReserva(event, '${machine.patent}')">
-          Reservar
-        </button>
+      <div>
+        <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+        <div class="rounded-lg overflow-hidden shadow-lg">
+          <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
-    </a>
-  `;
-
-      container.appendChild(card.firstElementChild);
-    }
-
-    function renderPage(page) {
-      const container = document.getElementById("machine-list");
-      container.innerHTML = "";
-
-      const start = (page - 1) * cardsPerPage;
-      const end = start + cardsPerPage;
-      const items = machines.slice(start, end);
-
-      items.forEach((machine) => {
-        const basePath = `/static/image/machines/`;
-        const jsonPath = `${basePath}${machine.patent}.json`;
-        const fallbackImg = `${basePath}${machine.patent}.jpg`;
-        const defaultImg = `${basePath}default.png`;
-
-        fetch(jsonPath)
-          .then((res) => {
-            if (!res.ok) throw new Error("No JSON");
-            return res.json();
-          })
-          .then((lista) => {
-            const img = lista?.[0] ? `${basePath}${lista[0]}` : fallbackImg;
-            renderMachine(machine, img);
-          })
-          .catch(() => {
-            // Si falla el JSON, probamos con .jpg directo
-            const testImage = new Image();
-            testImage.src = fallbackImg;
-
-            testImage.onload = () => renderMachine(machine, fallbackImg);
-            testImage.onerror = () => renderMachine(machine, defaultImg);
-          });
-      });
-    }
-
-    function renderPagination() {
-      const pagination = document.getElementById("pagination");
-      const totalPages = Math.ceil(machines.length / cardsPerPage);
-      pagination.innerHTML = "";
-
-      const prev = document.createElement("button");
-      prev.textContent = "‹ Anterior";
-      prev.disabled = currentPage === 1;
-      prev.className =
-        "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
-      prev.onclick = () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderPage(currentPage);
-          renderPagination();
-        }
-      };
-      pagination.appendChild(prev);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className =
-          "px-3 py-1 rounded border " +
-          (i === currentPage
-            ? "bg-red-600 text-white"
-            : "bg-white text-gray-700 hover:bg-gray-200");
-        btn.onclick = () => {
-          currentPage = i;
-          renderPage(currentPage);
-          renderPagination();
-        };
-        pagination.appendChild(btn);
-      }
-
-      const next = document.createElement("button");
-      next.textContent = "Siguiente ›";
-      next.disabled = currentPage === totalPages;
-      next.className =
-        "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
-      next.onclick = () => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          renderPage(currentPage);
-          renderPagination();
-        }
-      };
-      pagination.appendChild(next);
-    }
-
-    // Inicialización
-
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("/categorie/get_all_categories")
-        .then((res) => res.json())
-        .then((data) => {
-          const select = document.getElementById("filter-categorie");
-          const categories = data.categories;
-
-          if (Array.isArray(categories)) {
-            categories.forEach((cat) => {
-              const opt = document.createElement("option");
-              opt.value = cat.name;
-              opt.textContent = cat.name;
-              if (cat.name === categoryFromURL) {
-                opt.selected = true; // ← Selecciona automáticamente
-              }
-              select.appendChild(opt);
-            });
-          }
-        });
-
-      document.getElementById("filter-apply")?.addEventListener("click", () => {
-        fetchMachinesWithFilters();
-      });
-
-      fetchMachinesWithFilters(); // Aplica filtros iniciales
-      configurarDropdownCategorias();
-      cargarHeaderUsuario();
-      configurarDropdownGestionar();
-      mostrarBotonEmpleado();
-
-    });
-
-    function buscarMaquinaria() {
-      const input = document.getElementById("searchInput").value.trim();
-
-      if (input !== "") {
-        const encoded = encodeURIComponent(input);
-        window.location.href = `/machinery.html?search=${encoded}`;
-      }
-    }
-
-    function configurarDropdownCategorias() {
-      const toggle = document.getElementById("dropdown-categorias-toggle");
-      const menu = document.getElementById("dropdown-categorias-menu");
-      const container = document.getElementById(
-        "dropdown-categorias-container"
-      );
-
-      if (toggle && menu && container) {
-        toggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          menu.classList.toggle("hidden");
-        });
-
-        document.addEventListener("click", (e) => {
-          if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-            menu.classList.add("hidden");
-          }
-        });
-
-        fetch("/categories/enabled")
-          .then((res) => res.json())
-          .then((categories) => {
-            const menu = document.getElementById("dropdown-categorias-menu");
-            menu.innerHTML = "";
-            categories.forEach((cat) => {
-              const link = document.createElement("a");
-              link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
-              link.textContent = cat;
-              link.className =
-                "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
-              link.style.color = "#7f1d1d";
-              menu.appendChild(link);
-            });
-          });
-      }
-    }
-  </script>
+    </div>
+    <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+      © 2025 Bob El Alquilador. Todos los derechos reservados.
+    </div>
+  </footer>
 
   <script>
     function irAReserva(event, patent) {
-      event.stopPropagation(); // Evita que se dispare el link general
+      event.stopPropagation();
       event.preventDefault();
       window.location.href = `/reserve.html?machine_id=${patent}`;
     }
   </script>
+</body>
 </html>

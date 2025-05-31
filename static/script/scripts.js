@@ -121,6 +121,16 @@ function mostrarDropdownGestionar() {
       <a href="register_categorie.html" class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900" style="color: #7f1d1d !important;">
         ➕ Dar de alta una categoría
       </a>
+      <a href="register_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      ➕ Dar de alta un empleado
+                    </a>
+                    <a href="list_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      📋 Ver lista de empleados
+                    </a>
     </div>
   `;
   navList.insertBefore(gestionar, navList.children[2]); // lo ponemos antes de Preguntas Frecuentes

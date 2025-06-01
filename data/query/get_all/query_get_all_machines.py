@@ -3,7 +3,7 @@ from data.model.MachineModel import MachineModel
 
 def execute():
     machine_list = session.query(MachineModel).filter(MachineModel.disable == False).all()
-    if(machine_list == None):
-        raise Exception("No hay maquinas para mostrar")
+    #if(machine_list == None):
+    #    raise Exception("No hay maquinarias para mostrar.")
     return machine_list
 

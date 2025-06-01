@@ -17,5 +17,5 @@ def execute(categorie):
     ).all()
 
     if(not machine_list):
-        raise Exception("No hay maquinas para mostrar de esta categoria")
+        raise Exception("No hay maquinarias para mostrar.")
     return machine_list

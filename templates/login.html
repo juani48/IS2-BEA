@@ -135,7 +135,7 @@
     </div>
 </main>
 
-<footer class="bg-bob-dark-red text-white py-10">
+<footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->
@@ -272,47 +272,5 @@
           
     });
 
-    function buscarMaquinaria() {
-    const input = document.getElementById("searchInput")?.value.trim();
-    if (input !== "") {
-      const encoded = encodeURIComponent(input);
-      window.location.href = `/machinery.html?search=${encoded}`;
-    }
-  }
-
-   function configurarDropdownCategorias() {
-  const toggle = document.getElementById("dropdown-categorias-toggle");
-  const menu = document.getElementById("dropdown-categorias-menu");
-  const container = document.getElementById("dropdown-categorias-container");
-
-  if (toggle && menu && container) {
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-    });
-
-    fetch("/categories/enabled")
-  .then(res => res.json())
-  .then(categories => {
-    const menu = document.getElementById("dropdown-categorias-menu");
-    menu.innerHTML = "";
-    categories.forEach(cat => {
-      const link = document.createElement("a");
-      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
-      link.textContent = cat;
-      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
-      link.style.color = "#7f1d1d";
-      menu.appendChild(link);
-    });
-  });
-  }
-}
-// configurarDropdownCategorias();    falta poner eso en donde va (no se donde va)
 </script>
 </html>

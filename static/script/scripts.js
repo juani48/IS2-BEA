@@ -14,15 +14,24 @@
         }
 // static/script/scripts.js
 
-// 👤 Carga el header con nombre de usuario o botón de login
+// ✅ Al cargar la página, arma todo el header dinámico
+document.addEventListener("DOMContentLoaded", () => {
+  cargarHeaderUsuario();         // Muestra nombre o botón login
+  configurarDropdownGestionar(); // Desplegable Gestionar si existe
+  configurarDropdownCategorias(); // Desplegable Categorías
+  mostrarBotonEmpleado();       // Agrega "Panel Empleado" si corresponde
+});
+
+// ✅ Carga la cuenta de usuario o login
 function cargarHeaderUsuario() {
   const accountArea = document.getElementById("accountArea");
   if (!accountArea) return;
 
   fetch("/session/status")
-    .then((res) => res.json())
-    .then((data) => {
+    .then(res => res.json())
+    .then(data => {
       if (data.authenticated) {
+        localStorage.setItem("user", JSON.stringify(data));
         accountArea.innerHTML = `
           <div class="relative">
             <button onclick="toggleDropdown()"
@@ -38,7 +47,6 @@ function cargarHeaderUsuario() {
           </div>
         `;
 
-        // Si es admin, mostrar menú Gestionar
         if (data.type === "Admin") mostrarDropdownGestionar();
       } else {
         accountArea.innerHTML = `
@@ -51,29 +59,25 @@ function cargarHeaderUsuario() {
         `;
       }
     })
-    .catch((err) => console.error("Error al cargar sesión:", err));
+    .catch(err => console.error("Error al cargar sesión:", err));
 }
 
-// 👤 Alterna el menú del usuario
+// ✅ Alternar menú del usuario
 function toggleDropdown() {
   const dropdown = document.getElementById("userDropdown");
   if (dropdown) dropdown.classList.toggle("hidden");
 }
 
-// 🔚 Cierra sesión
+// ✅ Cerrar sesión y limpiar almacenamiento
 function logout() {
-        // Eliminar datos de usuario del almacenamiento
-        localStorage.removeItem('user');
-        sessionStorage.removeItem('user');
-        
-        // Opcional: hacer logout también en el servidor
-        fetch('/logout', { method: 'POST' })
-            .then(() => {
-                window.location.href = '/login.html';
-            });
-    }
+  localStorage.removeItem("user");
+  sessionStorage.removeItem("user");
+  fetch('/logout', { method: 'POST' }).then(() => {
+    window.location.href = '/login.html';
+  });
+}
 
-// 🏠 Redirige a home según tipo de usuario
+// ✅ Redirigir a home correcto según usuario
 function goHome() {
   fetch("/session/status")
     .then((res) => res.json())
@@ -102,15 +106,15 @@ function goHome() {
     });
 }
 
-// 🧩 Inyecta el dropdown Gestionar si corresponde (solo Admin)
+// ✅ Inyectar dropdown "Gestionar" solo para Admin
 function mostrarDropdownGestionar() {
   const navList = document.querySelector("nav ul");
   if (!navList) return;
 
-  const gestionar = document.createElement("li");
-  gestionar.className = "relative";
-  gestionar.id = "dropdown-container";
-  gestionar.innerHTML = `
+  const li = document.createElement("li");
+  li.className = "relative";
+  li.id = "dropdown-container";
+  li.innerHTML = `
     <span id="dropdown-toggle" class="cursor-pointer text-white hover:underline inline-block">
       Gestionar <i class="fas fa-caret-down ml-1"></i>
     </span>
@@ -133,10 +137,10 @@ function mostrarDropdownGestionar() {
                     </a>
     </div>
   `;
-  navList.insertBefore(gestionar, navList.children[2]); // lo ponemos antes de Preguntas Frecuentes
+  navList.insertBefore(li, navList.children[3]);
 }
 
-// 📌 Configura comportamiento del dropdown Gestionar
+// ✅ Comportamiento del desplegable "Gestionar"
 function configurarDropdownGestionar() {
   document.addEventListener("click", (e) => {
     const toggle = document.getElementById("dropdown-toggle");
@@ -151,52 +155,86 @@ function configurarDropdownGestionar() {
   });
 }
 
+// ✅ Agregar botón Panel Empleado solo si corresponde
 function mostrarBotonEmpleado() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user?.type === "Empleado") { 
-    const nav = document.querySelector(".main-nav ul");
-    if (nav) {
-      const li = document.createElement("li");
-      li.classList.add("relative");
+  fetch("/session/status")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.authenticated && (data.type === "Empleado" || data.type === "Admin")) {
+        const nav = document.querySelector(".main-nav ul");
+        if (nav) {
+          const li = document.createElement("li");
+          li.classList.add("relative");
+          li.innerHTML = `
+            <span id="empleadoDropdownToggle" class="cursor-pointer hover:underline text-yellow-300 font-semibold">
+              👷 Panel Empleado <i class="fas fa-caret-down ml-1"></i>
+            </span>
+            <div id="empleadoDropdownMenu" class="hidden absolute bg-white shadow-lg rounded-md mt-2 z-50 min-w-[200px]">
+              <a href="/pending_requests.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Listar Solicitudes</a>
+              <a href="/list_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar Reservas</a>
+            </div>
+          `;
+          nav.appendChild(li);
 
-      li.innerHTML = `
-   <span id="empleadoDropdownToggle" class="cursor-pointer hover:underline text-yellow-300 font-semibold">
-  👷 Panel Empleado <i class="fas fa-caret-down ml-1"></i>
-</span>
-<div id="empleadoDropdownMenu"
-     class="hidden absolute bg-white shadow-lg rounded-md mt-2 z-50 min-w-[200px]">
- <a href="/pending_requests.html"
-   class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">
-   📋 Listar Solicitudes
-</a>
-<a href="/list_reservation.html"
-   class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">
-   📄 Listar Reservas
-</a>
+          const toggle = li.querySelector("#empleadoDropdownToggle");
+          const menu = li.querySelector("#empleadoDropdownMenu");
 
-</div>
+          toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            menu.classList.toggle("hidden");
+          });
 
-
-      `;
-
-      nav.appendChild(li);
-
-      // Comportamiento del toggle (click abre/cierra)
-      const toggle = li.querySelector("#empleadoDropdownToggle");
-      const menu = li.querySelector("#empleadoDropdownMenu");
-
-      toggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        menu.classList.toggle("hidden");
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!li.contains(e.target)) {
-          menu.classList.add("hidden");
+          document.addEventListener("click", (e) => {
+            if (!li.contains(e.target)) menu.classList.add("hidden");
+          });
         }
+      }
+    })
+    .catch(err => console.error("Error al verificar tipo de usuario:", err));
+}
+
+// ✅ Configura desplegable de Categorías + fetch a backend
+function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
+
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    // cargar categorías habilitadas
+    fetch("/categories/enabled")
+      .then(res => res.json())
+      .then(categories => {
+        menu.innerHTML = "";
+        categories.forEach(cat => {
+          const link = document.createElement("a");
+          link.href = `/machinery.html?category=${encodeURIComponent(cat)}`;
+          link.textContent = cat;
+          link.className = "block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+          link.style.color = "#7f1d1d";
+          menu.appendChild(link);
+        });
+      })
+      .catch(err => {
+        console.error("Error al cargar categorías:", err);
       });
-    }
   }
 }
 
-
+function buscarMaquinaria() {
+  const input = document.getElementById("searchInput").value.trim();
+  if (input !== "") {
+    const encoded = encodeURIComponent(input);
+    window.location.href = `/machinery.html?search=${encoded}`;
+  }
+}

@@ -49,8 +49,19 @@
         <!-- Navigation debajo, 100% ancho -->
         <nav class="main-nav w-full">
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="/panelUsuario.html">Menú</a></li>
+                <li><a href="/main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                 <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+                 <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+                </li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -60,7 +71,13 @@
         <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
             <ul class="flex flex-col space-y-3">
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li>
+                <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+                </li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -146,8 +163,6 @@
     let paginaActual = 1;
 
     document.addEventListener("DOMContentLoaded", () => {
-      cargarHeaderUsuario();
-      configurarDropdownGestionar();
       cargarReservas();
     });
 
@@ -163,6 +178,7 @@
 
         mostrarReservas();
         construirPaginacion();
+
       } catch (error) {
         console.error("Error al cargar reservas:", error);
         reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No se pudieron cargar las reservas.</p>`;

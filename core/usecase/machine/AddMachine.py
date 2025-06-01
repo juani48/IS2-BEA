@@ -1,6 +1,6 @@
 from data.model.MachineModel import MachineModel
 from data.model.MachineCategorieModel import MachineCategorieModel
-from data.appDataBase import insert_machine
+from data.appDataBase import insert_machine, insert_machine_categorie
 
 def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description):
     validator(patent, mark, model, price_day, ubication, refund, categorie)
@@ -14,17 +14,15 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
         refund=refund,
         description=description,
     )
-    
-    mc = MachineCategorieModel(
-        machine_id=patent,
-        categorie_id=categorie
-    )
-    insert_machine(
-        patent=patent,
-        categorie=categorie,
-        machine=machine,
-        machine_categorie=mc
-    )
+    insert_machine(patent, machine)
+
+    for c in categorie:
+        mc = MachineCategorieModel(
+            machine_id=patent,
+            categorie_id=categorie
+        )
+        insert_machine_categorie(patent, c, mc)
+        
 
 def validator(patent, mark, model, price_day, ubication, refund, categorie):
     if (patent == ""):

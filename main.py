@@ -441,7 +441,7 @@ def add_machine():
             price_day=float(form.get("price_day")),
             ubication=form.get("ubication"),
             refund=float(form.get("refund")),
-            categorie=form.get("categorie"),
+            categorie=form.get("categorie"), # TIENE QUE SER UN ARREGLO AUNQUE SEA UNA CATEGORIA = { "cagorie": [ "PEPITO" ] }
             description=description
         )
         return "", 201

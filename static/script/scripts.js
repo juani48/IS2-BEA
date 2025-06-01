@@ -135,6 +135,12 @@ function mostrarDropdownGestionar() {
                       style="color: #7f1d1d !important;">
                       📋 Ver lista de empleados
                     </a>
+                    <a href="list_categories.html"
+                    class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                    style="color: #7f1d1d !important;">
+                    📋 Ver lista de categorías
+                  </a>
+
     </div>
   `;
   navList.insertBefore(li, navList.children[3]);

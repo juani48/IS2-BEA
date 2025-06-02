@@ -5,7 +5,7 @@ from data.query.disable import query_disable_categorie, query_disable_machine,qu
 
 from data.query.delete import query_delete_user
 
-from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user
+from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
 from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation, query_get_all_reservations_by_dni
 
@@ -57,8 +57,8 @@ def disable_categorie(categorie):
 def disable_machine(patent):
     query_disable_machine.execute(patent=patent)
 
-def disable_employee(employeeN):
-    query_disable_employee.execute(employeeN=employeeN)
+def disable_employee(nro_employee):
+    query_disable_employee.execute(nro_employee=nro_employee)
 
 # ---- delete ----
 def delete_user(dni):
@@ -73,6 +73,9 @@ def enable_machine(patent):
 
 def enable_user(dni):
     query_enable_user.execute(dni=dni)
+
+def enable_employee(nro_employee):
+    query_enable_employee.execute(nro_employee)
 
 # ---- update ----
 def update_machine(patent, machine):

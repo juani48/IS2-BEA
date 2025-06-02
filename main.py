@@ -8,7 +8,7 @@ from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, UserHistory
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, UserHistory,EnableEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
@@ -334,11 +334,21 @@ def add_employee():
 @login_required
 def disable_employee():
     if (current_user.type == "Admin"):
-        request_value = request.get_json().get("employeeN")
-        DisableEmployee.usecase_disable_employee(employeeN= request_value)
+        request_value = request.get_json().get("dni")
+        DisableEmployee.usecase_disable_employee(dni= request_value)
     else:
         return "Debe ser administrador."
     return "Empleado deshabilitado", 204
+
+@app.route("/admin/enable_employee", methods=["GET", "POST"]) 
+@login_required
+def enable_employee():
+    if (current_user.type == "Admin"):
+        request_value = request.get_json().get("dni")
+        EnableEmployee.usecase_enable_employee(dni= request_value)
+    else:
+        return "Debe ser administrador."
+    return "Empleado habilitado", 204
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():

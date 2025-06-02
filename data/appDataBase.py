@@ -7,7 +7,7 @@ from data.query.delete import query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
-from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation, query_get_all_reservations_by_dni
+from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation, query_get_all_reservations_by_dni,query_get_all_disable_employees
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
@@ -123,6 +123,9 @@ def get_all_requests():
 
 def get_all_employees():
     return query_get_all_employees.execute()
+
+def get_all_disable_employees():
+    return query_get_all_disable_employees.execute()
 
 def get_all_machines():
     return query_get_all_machines.execute()

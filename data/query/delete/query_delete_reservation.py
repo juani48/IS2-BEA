@@ -14,7 +14,7 @@ def execute(client_id, start_day, machine_id):
     ).delete()
     session.commit()
 
-def execute(preference_id):
+def execute_by_client(preference_id):
     session.query(
         ReservationModel
     ).filter(

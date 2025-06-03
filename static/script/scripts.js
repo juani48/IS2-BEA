@@ -41,7 +41,7 @@ function cargarHeaderUsuario() {
             </button>
             <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
               <button onclick="window.location.href='/edit_profile.html'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
-              <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+              <button onclick="window.location.href='/user_history.html'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
               <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
             </div>
           </div>
@@ -123,6 +123,8 @@ function mostrarDropdownGestionar() {
       <a href="register_categorie.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">➕ Dar de alta una categoría</a>
       <a href="register_employee.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">➕ Dar de alta un empleado</a>
       <a href="list_employee.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Ver lista de empleados</a>
+      <a href="list_all_users.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Ver lista de usuarios</a>
+
     </div>
   `;
   navList.insertBefore(li, navList.children[3]);
@@ -159,7 +161,8 @@ function mostrarBotonEmpleado() {
             </span>
             <div id="empleadoDropdownMenu" class="hidden absolute bg-white shadow-lg rounded-md mt-2 z-50 min-w-[200px]">
               <a href="/pending_requests.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Listar Solicitudes</a>
-              <a href="/list_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar Reservas</a>
+              <a href="/list_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar reservas hasta el día actual</a>
+              <a href="/list_all_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar todas las reservas</a>
             </div>
           `;
           nav.appendChild(li);

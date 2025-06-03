@@ -8,10 +8,10 @@ from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -208,6 +208,29 @@ def list_employee():
 @app.route("/terminos.html")
 def load_terminos():
     return render_template("terminos.html")
+
+@app.route("/list_all_reservation.html")
+@login_required                     
+def load_all_reservation():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("list_all_reservation.html")
+    else:
+        return render_template("/main.html")
+    
+@app.route("/list_all_users.html")
+@login_required
+def load_list_clients():
+    if current_user.type == "Admin":
+        return render_template("list_all_users.html")
+    return redirect("/main.html")
+
+@app.route("/user_history.html")
+@login_required
+def user_history_page():
+    return render_template("user_history.html")
+
+
+
 # ---- METODOS USUARIO ---- #
 
 def getType():                                   
@@ -358,7 +381,6 @@ def disable_employee():
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():
-
     return jsonify( { "value" : GetAllEmployees.usecase_get_all_employees()} ), 200 
 
 @app.route("/employee/requests", methods= ["PUT"])
@@ -418,6 +440,11 @@ def reply_user_request():
             return jsonify({"error": str(e)}), 400
     else:
         return render_template ("/main.html")
+
+@app.route("/users/get_all_users")
+@login_required
+def get_all_clients():
+    return jsonify(GetAllUsers.usecase_get_all_users()), 200
 
 
 # ---- MAQUINAS ----
@@ -648,14 +675,28 @@ def machine_reservations():
 def cancel_reservation():
     try:
         request_value = request.get_json()
-        CancelReservation.usecase_cancel_reservation(
+        CancelReservation.usecase_cancel_reservation_by_employee(
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
             start_day=request_value.get("start_day")
         )
         return "", 204
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "message": str(e) }), 400
+
+@app.route("/reservation/cancel_by_client", methods=["POST"])
+@login_required
+def cancel_reservation_by_client():
+    try:
+        data = request.get_json()
+        # Opcional: validar que la reserva sea suya con current_user.id
+        CancelReservation.usecase_cancel_reservation_by_client(
+            preference_id=data.get("preference_id")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
 @login_required
@@ -691,6 +732,27 @@ def get_daily_reserve():
         return jsonify( GetDailyReservations.usecase_get_daily_reservations() ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
+@app.route("/reservation/get_all_reservation", methods=["POST"])
+def get_all_reservation():
+    try:
+        return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/user/user_history", methods=["GET"])
+@login_required
+def user_history():
+    try:
+        resultado = UserHistory.usecase_user_history(current_user.dni)
+        return jsonify({ "value": [r.json() for r in resultado] })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
 
 # ---- PAGOS ---- # 
 

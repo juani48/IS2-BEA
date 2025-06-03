@@ -1,5 +1,5 @@
 from core.service.mercado_pago import PayByMercadoPago
-from data.appDataBase import delete_reservation, update_confirm_reservation
+from data.appDataBase import delete_reservation_by_employee, update_confirm_reservation
 from core.usecase.service.SendMail import usecase_send_mail
 from data.appDataBase import get_user
 
@@ -90,6 +90,6 @@ def usecase_confirm_reservation(topic, request):
                 Este mensaje se generó automáticamente. Para respuestas inmediatas, por favor responde directamente este correo.
                 """
             )
-        delete_reservation(client_id=client, start_day=start_day, machine_id=machine)
+        delete_reservation_by_employee(client_id=client, start_day=start_day, machine_id=machine)
     
 

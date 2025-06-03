@@ -49,6 +49,5 @@ class UserModel(Base):
             "employee_number": self.employee_number,
             "lastname": self.lastname,
             "phone": self.phone,
-            "birth_date": self.birth_date
         }
 

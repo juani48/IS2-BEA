@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios - Bob el Alquilador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
+  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
+
+</head>
+ <style>/* Chrome, Safari, Edge, Opera */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>
+
+
+<body class="bg-gray-50">
+
+  <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
+
+            <!-- MI CUENTA -->
+            <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante
+                 jajajaj te amo -->
+          </div>
+        </div>
+
+            <!-- Navigation debajo, 100% ancho -->
+            <nav class="main-nav w-full bg-bob-dark-red">
+                <ul class="flex space-x-4 justify-center px-4 text-sm md:text-base relative text-white">
+
+
+                <li><a href="main.html" class="hover:underline" > Menú </a></li>
+                <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                
+                <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
+
+                <li><a href="#" class="hover:underline" >Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="hover:underline" >Contáctanos</a></li>
+                </ul>
+            </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
+                <li><strong>Gestionar</strong></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
+                <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
+                <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
+                <li><a href="list_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">📋 Ver lista de empleados</a></li>
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-10 px-6">
+  <h1 class="text-2xl font-bold text-bob-red mb-6">📋 Lista de usuarios</h1>
+  <div id="clientes-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  <div id="paginacion-clientes" class="flex justify-center mt-6 gap-2"></div>
+</main>
+
+
+<script>
+    let clientes = [];
+let clientesPorPagina = 10;
+let paginaActual = 1;
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/users/get_all_users")
+    .then(res => res.json())
+    .then(data => {
+      clientes = data;
+      mostrarPaginaClientes(paginaActual);
+      generarPaginacionClientes();
+    });
+});
+
+function mostrarPaginaClientes(pagina) {
+  const container = document.getElementById("clientes-container");
+  container.innerHTML = "";
+  const inicio = (pagina - 1) * clientesPorPagina;
+  const fin = inicio + clientesPorPagina;
+  const clientesPagina = clientes.slice(inicio, fin);
+
+  clientesPagina.forEach(cliente => {
+    const card = document.createElement("div");
+    card.className = "bg-white border rounded-lg shadow-md p-6 text-left";
+    card.innerHTML = `
+      <div id="card-${cliente.dni}" class="bg-white p-4 rounded shadow">
+  <p class="font-bold text-lg">👤 ${cliente.name} ${cliente.lastname}</p>
+  <p>DNI actual: ${cliente.dni}</p>
+  <p>Email: ${cliente.email}</p>
+  <p>Teléfono: ${cliente.phone}</p>
+  <p>Fecha nacimiento: ${cliente.birth_date}</p>
+
+  <div class="mt-4 flex items-center gap-2">
+    <input id="new-dni-${cliente.dni}" type="number" placeholder="Nuevo DNI"
+           class="border px-3 py-1 rounded w-48">
+    <button onclick="modificarDni(${cliente.dni})"
+            class="bg-bob-red hover:bg-red-700 text-white px-4 py-1 rounded">
+      Modificar DNI
+    </button>
+  </div>
+</div>`
+
+    container.appendChild(card);
+  });
+}
+
+function generarPaginacionClientes() {
+  const contenedor = document.getElementById("paginacion-clientes");
+  contenedor.innerHTML = "";
+  const totalPaginas = Math.ceil(clientes.length / clientesPorPagina);
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = `px-3 py-1 rounded ${i === paginaActual ? 'bg-bob-red text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+    btn.onclick = () => {
+      paginaActual = i;
+      mostrarPaginaClientes(paginaActual);
+    };
+    contenedor.appendChild(btn);
+  }
+}
+
+function modificarDni(dniActual) {
+  const nuevoDni = document.getElementById(`new-dni-${dniActual}`).value.trim();
+
+  if (!nuevoDni || isNaN(nuevoDni)) {
+    mostrarMensaje("❌ Ingresá un DNI válido");
+    return;
+  }
+
+  fetch("/user/update_user_dni", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      dni: dniActual,
+      new_dni: parseInt(nuevoDni)
+    })
+  })
+  .then(res => {
+    if (res.status === 204) {
+      mostrarMensaje("✅ DNI modificado exitosamente");
+      document.getElementById(`card-${dniActual}`).remove(); // o actualizar el contenido si querés
+    } else {
+      return res.json().then(data => {
+        mostrarMensaje(`❌ ${data.error}`);
+      });
+    }
+  })
+  .catch(err => {
+    console.error("Error al modificar DNI:", err);
+    mostrarMensaje("❌ Error al intentar modificar el DNI");
+  });
+}
+function mostrarMensaje(mensaje) {
+  const div = document.createElement("div");
+  div.textContent = mensaje;
+  div.className = "fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-bob-red text-bob-red font-semibold px-6 py-3 rounded shadow-lg z-50";
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
+
+</script>
+

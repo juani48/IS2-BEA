@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maquinarias - Bob el Alquilador</title>
+  <title>Mi historial - Bob el Alquilador</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -54,46 +54,17 @@
       </ul>
     </nav>
   </header>
+<body class="bg-gray-50 text-gray-800">
+    <div id="mensaje-exito" class="hidden fixed top-6 right-6 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
+  ✅ Reserva cancelada exitosamente
+</div>
 
-  <!-- Contenido -->
-  <div class="flex flex-col lg:flex-row p-6 gap-6">
-    <!-- Filtros -->
-    <aside class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0">
-      <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium">Marca</label>
-          <input type="text" id="filter-mark" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: CAT" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium">Modelo</label>
-          <input type="text" id="filter-model" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: 420F" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium">Precio máximo</label>
-          <input type="number" id="filter-price" class="w-full border border-gray-300 rounded px-2 py-1" min="0" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium">Categoría</label>
-          <select id="filter-categorie" class="w-full border border-gray-300 rounded px-2 py-1">
-            <option value="">-- Todas --</option>
-          </select>
-        </div>
-        <div class="text-center">
-          <button id="filter-apply" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full">Aplicar filtros</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Listado -->
-    <div id="machine-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"></div>
-  </div>
-
-  <!-- Paginación -->
-  <div id="pagination" class="flex justify-center flex-wrap mt-6 mb-12 gap-2"></div>
-
-  <!-- Footer -->
-  <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+  <main class="max-w-4xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-center text-bob-red mb-6">Historial de Reservas</h1>
+    <div id="reservation-container" class="space-y-4"></div>
+    <p id="no-reservations" class="text-center text-red-700 font-bold hidden">No hay reservas registradas.</p>
+  </main>
+ <footer id="contacto" class="bg-bob-dark-red text-white py-10">
     <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
       <div>
         <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
@@ -128,13 +99,82 @@
       © 2025 Bob El Alquilador. Todos los derechos reservados.
     </div>
   </footer>
-
   <script>
-    function irAReserva(event, patent) {
-      event.stopPropagation();
-      event.preventDefault();
-      window.location.href = `/reserve.html?machine_id=${patent}`;
+    document.addEventListener("DOMContentLoaded", () => {
+  fetch("/user/user_history")
+    .then(res => res.json())
+    .then(data => {
+      const reservas = data.value;
+      const container = document.getElementById("reservation-container");
+      const emptyMsg = document.getElementById("no-reservations");
+
+      if (!reservas || reservas.length === 0) {
+        emptyMsg.classList.remove("hidden");
+        return;
+      }
+
+      reservas.forEach(r => {
+        const card = document.createElement("div");
+        card.className = "bg-white border border-bob-red p-4 rounded shadow flex justify-between items-center";
+
+        const hoy = new Date();
+        const inicio = new Date(r.start_day);
+        const puedeCancelar = hoy < inicio;
+
+        card.innerHTML = `
+          <div>
+            <p><strong>Máquina:</strong> ${r.machine_id}</p>
+            <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
+            <p><strong>Fecha fin:</strong> ${r.end_day}</p>
+            <p><strong>Monto:</strong> $${r.total_value}</p>
+          </div>
+          <button
+            ${puedeCancelar ? '' : 'disabled'}
+            class="ml-4 px-4 py-2 rounded font-semibold text-white transition-all
+              ${puedeCancelar ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}"
+            onclick="${puedeCancelar ? `cancelarReserva('${r.preference_id}', this)` : ''}">
+            Cancelar reserva
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error("Error al cargar historial:", err);
+    });
+});
+
+function cancelarReserva(preference_id, boton) {
+  fetch("/reservation/cancel_by_client", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ preference_id })
+  })
+  .then(res => {
+    if (res.ok) {
+      // Elimina la tarjeta
+      boton.closest("div").remove();
+
+      // Mostrar mensaje de éxito
+      const mensaje = document.getElementById("mensaje-exito");
+      mensaje.classList.remove("hidden");
+
+      setTimeout(() => {
+        mensaje.classList.add("hidden");
+      }, 3000); // se oculta luego de 3 segundos
+    } else {
+      return res.json().then(data => { throw new Error(data.error); });
     }
+  })
+  .catch(err => {
+    alert("Error al cancelar la reserva: " + err.message);
+  });
+}
+
+
   </script>
 </body>
 </html>

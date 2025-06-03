@@ -55,6 +55,18 @@
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
                 <li><a href="#">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto">Contáctanos</a></li>
             </ul>
@@ -101,8 +113,6 @@
       id="name"
       name="name"
       required
-      minlength="3"
-      maxlength="30"
       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -117,8 +127,6 @@
       id="lastname"
       name="lastname"
       required
-      minlength="3"
-      maxlength="30"
       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -133,8 +141,6 @@
       id="dni"
       name="dni"
       required
-      maxlength="8"
-      minlength="7"
       pattern="\d+"
       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -157,7 +163,6 @@
       id="phone"
       name="phone"
       required
-      maxlength="15"
       pattern="\d+"
       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
       class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -274,55 +279,13 @@
             submitBtn.classList.add("bg-gray-300", "cursor-not-allowed");
         }
     });
-    document.getElementById("register-form").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const nombre = document.getElementById("name").value.trim();
-        const apellido = document.getElementById("lastname").value.trim();
-        const dni = document.getElementById("dni").value.trim();
-        const telefono = document.getElementById("phone").value.trim();
-        const errorDiv = document.getElementById("form-error");
-        // Ocultar mensaje anterior
-        errorDiv.classList.add("hidden");
 
-        // Validaciones
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,}$/.test(nombre)) {
-            mostrarError("El nombre debe tener al menos 3 letras.");
-            return;
-    }
-
-    if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,}$/.test(apellido)) {
-        mostrarError("El apellido debe tener al menos 3 letras.");
-        return;
-    }
-
-    if (!/^\d{7,8}$/.test(dni)) {
-        mostrarError("El DNI debe contener entre 7 y 8 números.");
-        return;
-    }
-
-    if (!/^\d{6,15}$/.test(telefono)) { // se puede ajustar el mínimo
-        mostrarError("El teléfono debe contener mínimo 6 dígitos.");
-        return;
-    }
-
-    // Si todo está bien, continuar...
-    // acá se puede enviar con fetch o dejar que siga el submit
-    this.submit();
-});
 function mostrarError(mensaje) {
     const errorDiv = document.getElementById("form-error");
     errorDiv.textContent = "⚠️ " + mensaje;
     errorDiv.classList.remove("hidden");
     errorDiv.scrollIntoView({ behavior: "smooth" });
 }
-
-function buscarMaquinaria() {
-    const input = document.getElementById("searchInput")?.value.trim();
-    if (input !== "") {
-      const encoded = encodeURIComponent(input);
-      window.location.href = `/machinery.html?search=${encoded}`;
-    }
-  }
 
 </script>
 

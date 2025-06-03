@@ -91,8 +91,9 @@
   <main class="max-w-7xl mx-auto px-4 py-10">
     <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">📄 Listado de Reservas</h1>
     <div id="mensajeReserva" class="mb-4 text-center font-semibold"> </div>
-    <div id="reservasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
 
+        <div id="reservasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
+   
     <!-- Paginación -->
     <div id="paginacion" class="flex justify-center space-x-2 mt-6"></div>
   </main>
@@ -154,138 +155,140 @@
 
 </body>
 
- <script>
-  const reservasContainer = document.getElementById("reservasContainer");
-  const paginacion = document.getElementById("paginacion");
+  <script>
+    const reservasContainer = document.getElementById("reservasContainer");
+    const paginacion = document.getElementById("paginacion");
 
-  let reservas = [];
-  const porPagina = 10;
-  let paginaActual = 1;
+    let reservas = [];
+    const porPagina = 10;
+    let paginaActual = 1;
 
-  document.addEventListener("DOMContentLoaded", () => {
-    cargarReservas();
-  });
-
-  async function cargarReservas() {
-    try {
-      const res = await fetch("/reservation/get_daily_reservations", {
-        method: "POST"
-      });
-
-      const data = await res.json();
-      console.log(data); // depuración
-      reservas = Array.isArray(data) ? data : Object.values(data)[0] || [];
-
-      mostrarReservas();
-      construirPaginacion();
-    } catch (error) {
-      console.error("Error al cargar reservas:", error);
-      reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No se pudieron cargar las reservas.</p>`;
-    }
-  }
-
-  function mostrarReservas() {
-    reservasContainer.innerHTML = "";
-
-    const inicio = (paginaActual - 1) * porPagina;
-    const reservasPagina = reservas.slice(inicio, inicio + porPagina);
-
-    if (reservasPagina.length === 0) {
-      reservasContainer.innerHTML = `<p class="text-center text-gray-600">No hay reservas para mostrar.</p>`;
-      return;
-    }
-
-    reservasPagina.forEach(r => {
-      const tarjeta = document.createElement("div");
-      tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
-
-      tarjeta.innerHTML = `
-        <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
-        <p><strong>Cliente:</strong> ${r.cliente}</p>
-        <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
-        <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
-        <button class="cancelar-btn mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
-                data-client="${r.cliente}"
-                data-machine="${r.maquina}"
-                data-start="${r.fecha_inicio}">
-          Cancelar Reserva
-        </button>
-      `;
-
-      reservasContainer.appendChild(tarjeta);
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarReservas();
     });
 
-    registrarEventosCancelacion(); // ⬅️ Importante: ¡registrar eventos acá!
-  }
+    async function cargarReservas() {
+      try {
+        const res = await fetch("/reservation/get_all_reservation", {
+          method: "POST"
+        });
 
-  function registrarEventosCancelacion() {
-    document.querySelectorAll(".cancelar-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const client_id = btn.dataset.client;
-        const machine_id = btn.dataset.machine;
-        const start_day = btn.dataset.start;
+        const data = await res.json();
+        console.log(data); //para imprimir la lista de reservas obtenida
+        reservas = Array.isArray(data) ? data : Object.values(data)[0] || [];
 
-        try {
-          const res = await fetch("/reservation/cancel_reservation", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ client_id, machine_id, start_day })
-          });
-
-          if (res.status === 204) {
-            btn.parentElement.remove();
-            mostrarMensaje("✅ Reserva cancelada exitosamente.", "success");
-          } else {
-            const error = await res.json();
-            mostrarMensaje("⚠️ Error al cancelar reserva: " + (error.message || "Desconocido"), "error");
-          }
-        } catch (err) {
-          mostrarMensaje("❌ Error de conexión al cancelar reserva", "error");
-          console.error(err);
-        }
-      });
-    });
-  }
-
-  function construirPaginacion() {
-    paginacion.innerHTML = "";
-    const totalPaginas = Math.ceil(reservas.length / porPagina);
-
-    for (let i = 1; i <= totalPaginas; i++) {
-      const btn = document.createElement("button");
-      btn.className = `px-3 py-1 rounded ${i === paginaActual ? 'bg-red-700 text-white' : 'bg-white text-red-700 border border-red-300'} hover:bg-red-600 hover:text-white transition`;
-      btn.textContent = i;
-
-      btn.addEventListener("click", () => {
-        paginaActual = i;
         mostrarReservas();
         construirPaginacion();
-      });
 
-      paginacion.appendChild(btn);
+      } catch (error) {
+        console.error("Error al cargar reservas:", error);
+        reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No se pudieron cargar las reservas.</p>`;
+      }
     }
+
+ function mostrarReservas() {
+  reservasContainer.innerHTML = "";
+
+  const inicio = (paginaActual - 1) * porPagina;
+  const reservasPagina = reservas.slice(inicio, inicio + porPagina);
+
+  if (reservasPagina.length === 0) {
+    reservasContainer.innerHTML = `<p class="text-center text-gray-600">No hay reservas para mostrar.</p>`;
+    return;
   }
 
- function mostrarMensaje(texto, tipo) {
-  const contenedor = document.getElementById("mensajeReserva");
-  contenedor.textContent = texto;
+  reservasPagina.forEach(r => {
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
-  contenedor.className = `mb-6 text-center font-semibold px-4 py-3 rounded shadow transition-all duration-300 ${
-    tipo === "success"
-      ? "bg-green-500 text-white"
-      : tipo === "error"
-      ? "bg-red-600 text-white"
-      : "bg-yellow-500 text-white"
-  }`;
+    tarjeta.innerHTML = `
+      <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.machine_id}</h2>
+      <p><strong>Cliente:</strong> ${r.client_id}</p>
+      <p><strong>Desde:</strong> ${r.start_day}</p>
+      <p><strong>Hasta:</strong> ${r.end_day}</p>
+      <button 
+        class="cancelar-btn mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
+        data-client="${r.client_id}"
+        data-machine="${r.machine_id}"
+        data-start="${r.start_day}"
+      >
+        Cancelar Reserva
+      </button>
+    `;
 
-  contenedor.classList.remove("hidden");
+    reservasContainer.appendChild(tarjeta);
+  });
 
-  setTimeout(() => {
-    contenedor.classList.add("hidden");
-  }, 3000);
+  // Enganchar botones después de insertarlos
+  document.querySelectorAll(".cancelar-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const client_id = btn.dataset.client;
+      const machine_id = btn.dataset.machine;
+      const start_day = btn.dataset.start;
+
+      try {
+        const res = await fetch("/reservation/cancel_reservation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ client_id, machine_id, start_day })
+        });
+
+        if (res.status === 204) {
+          btn.parentElement.remove(); // quita la tarjeta
+          mostrarMensajeReserva("✅ Reserva cancelada exitosamente.", "success");
+
+        } else {
+          const error = await res.json();
+          mostrarMensajeReserva("⚠️ Error al cancelar reserva: " + (error.message || "Desconocido"), "error");
+
+        }
+      } catch (err) {
+        mostrarMensajeReserva("⚠️ Error de conexión " + (error.message || "Desconocido"), "error");
+
+        console.error(err);
+      }
+    });
+  });
 }
 
-</script>
 
+
+    function construirPaginacion() {
+      paginacion.innerHTML = "";
+      const totalPaginas = Math.ceil(reservas.length / porPagina);
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        const btn = document.createElement("button");
+        btn.className = `px-3 py-1 rounded ${i === paginaActual ? 'bg-red-700 text-white' : 'bg-white text-red-700 border border-red-300'} hover:bg-red-600 hover:text-white transition`;
+        btn.textContent = i;
+
+        btn.addEventListener("click", () => {
+          paginaActual = i;
+          mostrarReservas();
+          construirPaginacion();
+        });
+
+        paginacion.appendChild(btn);
+      }
+    }
+
+    function mostrarMensajeReserva(texto, tipo) {
+  const mensajeDiv = document.getElementById("mensajeReserva");
+  mensajeDiv.textContent = texto;
+
+  // Colores según el tipo de mensaje
+  if (tipo === "success") {
+    mensajeDiv.className = "mb-4 text-green-700 bg-green-100 border border-green-300 rounded px-4 py-2 text-center";
+  } else if (tipo === "error") {
+    mensajeDiv.className = "mb-4 text-red-700 bg-red-100 border border-red-300 rounded px-4 py-2 text-center";
+  } else {
+    mensajeDiv.className = "mb-4 text-gray-700 bg-gray-100 border border-gray-300 rounded px-4 py-2 text-center";
+  }
+
+  // Ocultar luego de 4 segundos
+  setTimeout(() => mensajeDiv.textContent = "", 4000);
+}
+
+  </script>
 
 </html>

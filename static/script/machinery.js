@@ -6,30 +6,9 @@ const categoryFromURL = params.get("category") || "";
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarCategoriasSelect();
-
   document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
-
-  document.getElementById("filter-reset")?.addEventListener("click", () => {
-    const marca = document.getElementById("filter-mark");
-    const modelo = document.getElementById("filter-model");
-    const precio = document.getElementById("filter-price");
-    const categoria = document.getElementById("filter-categorie");
-
-    if (marca) marca.value = "";
-    if (modelo) modelo.value = "";
-    if (precio) precio.value = "";
-    if (categoria) categoria.value = "";
-
-    const params = new URLSearchParams(window.location.search);
-    params.delete("search");
-    window.history.replaceState({}, "", `${location.pathname}?${params}`);
-
-    fetchMachinesWithFilters();
-  });
-
   fetchMachinesWithFilters();
 });
-
 
 function getFilters() {
   return {
@@ -45,42 +24,6 @@ function fetchMachinesWithFilters() {
   const params = new URLSearchParams(window.location.search);
   const search = params.get("search") || "";
 
-  // if admin -> get_all_filter_admin
-  /*
-  const current_user = localStorage.getItem("user")
-  console.log("user", current_user)
-  
-    if( current_user == "Admin"){
-      fetch("/machine/get_all_filter_admin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      categorie: { apply: filters.categorie !== "", categorie: filters.categorie },
-      string: { apply: search !== "", string: search },
-      price: { apply: filters.price > 0, price: filters.price },
-      mark: { apply: filters.mark !== "", mark: filters.mark },
-      model: { apply: filters.model !== "", model: filters.model },
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (!Array.isArray(data)) throw new Error("Respuesta no válida");
-      machines = data;
-      currentPage = 1;
-      renderPage(currentPage);
-      renderPagination();
-    })
-    .catch((err) => {
-      document.getElementById("machine-list").innerHTML = `
-        <p class="text-red-600 text-center font-bold mt-4">
-          ⚠️ Ocurrió un error al cargar las maquinarias.
-        </p>`;
-      console.error(err);
-    });
-    }
-else{
-*/
-  console.log("SSSS", "IIIIIIIIIIIII")
   fetch("/machine/get_all_filter", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -107,8 +50,6 @@ else{
         </p>`;
       console.error(err);
     });
-//}
-  
 }
 
 function renderPage(page) {
@@ -226,22 +167,32 @@ function irAReserva(event, patent) {
 
 function cargarCategoriasSelect() {
   fetch("/categories/enabled")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error("Error al obtener categorías");
+      return res.json();
+    })
     .then((data) => {
+      console.log("📦 Categorías recibidas:", data);
+      const categories = data.categories; // ✅ ahora accedemos al array real
       const select = document.getElementById("filter-categorie");
+      if (!select) {
+        console.error("❌ No se encontró #filter-categorie en el DOM");
+        return;
+      }
       select.innerHTML = `<option value="">-- Todas --</option>`;
-      const categories = data;  // Ahora es un array de strings como ["Construcción", "Transporte"]
-
       if (Array.isArray(categories)) {
-        categories.forEach((cat) => {
+        categories.forEach((name) => {
           const opt = document.createElement("option");
-          opt.value = cat;
-          opt.textContent = cat;
-          if (cat === categoryFromURL) {
+          opt.value = name;
+          opt.textContent = name;
+          if (name === categoryFromURL) {
             opt.selected = true;
           }
           select.appendChild(opt);
         });
       }
+    })
+    .catch((err) => {
+      console.error("Error al cargar categorías:", err);
     });
 }

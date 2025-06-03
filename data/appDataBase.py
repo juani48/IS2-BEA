@@ -59,8 +59,8 @@ def disable_categorie(categorie):
 def disable_machine(patent):
     query_disable_machine.execute(patent=patent)
 
-def disable_employee(nro_employee):
-    query_disable_employee.execute(nro_employee=nro_employee)
+def disable_employee(dni):
+    query_disable_employee.execute(dni=dni)
 
 # ---- delete ----
 def delete_user(dni):
@@ -76,8 +76,8 @@ def enable_machine(patent):
 def enable_user(dni):
     query_enable_user.execute(dni=dni)
 
-def enable_employee(nro_employee):
-    query_enable_employee.execute(nro_employee)
+def enable_employee(nro_employee,dni):
+    query_enable_employee.execute(nro_employee,dni)
 
 # ---- update ----
 def update_machine(patent, machine):

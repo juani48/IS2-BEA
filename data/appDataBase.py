@@ -5,9 +5,9 @@ from data.query.disable import query_disable_categorie, query_disable_machine,qu
 
 from data.query.delete import query_delete_user
 
-from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user
+from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
-from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation, query_get_all_reservations_by_dni
+from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER
 
@@ -37,8 +37,10 @@ def insert_user(dni, user, email):
     #query_TEST_USER.execute(dni, user)
     query_insert_user.execute(dni, user, email)
 
-def insert_machine(patent, categorie, machine, machine_categorie):
+def insert_machine(patent, machine):
     query_insert_machine.execute(patent, machine)
+
+def insert_machine_categorie(patent, categorie, machine_categorie):
     query_insert_mc.execute(patent, categorie, machine_categorie)
     
 def insert_categorie(name, categorie):
@@ -57,8 +59,8 @@ def disable_categorie(categorie):
 def disable_machine(patent):
     query_disable_machine.execute(patent=patent)
 
-def disable_employee(employeeN):
-    query_disable_employee.execute(employeeN=employeeN)
+def disable_employee(nro_employee):
+    query_disable_employee.execute(nro_employee=nro_employee)
 
 # ---- delete ----
 def delete_user(dni):
@@ -73,6 +75,9 @@ def enable_machine(patent):
 
 def enable_user(dni):
     query_enable_user.execute(dni=dni)
+
+def enable_employee(nro_employee):
+    query_enable_employee.execute(nro_employee)
 
 # ---- update ----
 def update_machine(patent, machine):
@@ -113,7 +118,7 @@ def get_employee(employeeN):
 
 # ---- get all ----
 def get_all_users():
-    return query_get_all_employees.execute()
+    return query_get_all_users.execute()
 
 def get_all_requests():
     return query_get_all_requests.execute()
@@ -121,11 +126,20 @@ def get_all_requests():
 def get_all_employees():
     return query_get_all_employees.execute()
 
+def get_all_disable_employees():
+    return query_get_all_disable_employees.execute()
+
 def get_all_machines():
     return query_get_all_machines.execute()
 
+def get_all_machines_admin():
+    return query_get_all_machines_admin.execute()
+
 def get_all_machines_by_categorie(categorie):
     return query_get_all_machines_by_categorie.execute(categorie)
+
+def get_all_machines_by_categorie_admin(categorie):
+    return query_get_all_machines_by_categorie_admin.execute(categorie)
 
 def get_all_categories():
     return query_get_all_categories.execute()
@@ -140,8 +154,8 @@ def get_all_reservations_by_dni(client_id):
     return query_get_all_reservations_by_dni.execute(client_id)
 
 # ---- delete ---- #
-def delete_reservation(client_id, start_day, machine_id):
+def delete_reservation_by_employee(client_id, start_day, machine_id):
     query_delete_reservation.execute(client_id, start_day, machine_id)
 
-def delete_reservation(preference_id):
-    query_delete_reservation.execute(preference_id)
+def delete_reservation_by_client(preference_id):
+    query_delete_reservation.execute_by_client(preference_id)

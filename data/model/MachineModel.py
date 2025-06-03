@@ -29,7 +29,6 @@ class MachineModel(Base):
             "refund": self.refund,
             "disable": self.disable,
             "description": self.description,
-            "image": None
         }
 
     def include(self, string):

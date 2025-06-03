@@ -45,6 +45,42 @@ function fetchMachinesWithFilters() {
   const params = new URLSearchParams(window.location.search);
   const search = params.get("search") || "";
 
+  // if admin -> get_all_filter_admin
+  /*
+  const current_user = localStorage.getItem("user")
+  console.log("user", current_user)
+  
+    if( current_user == "Admin"){
+      fetch("/machine/get_all_filter_admin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      categorie: { apply: filters.categorie !== "", categorie: filters.categorie },
+      string: { apply: search !== "", string: search },
+      price: { apply: filters.price > 0, price: filters.price },
+      mark: { apply: filters.mark !== "", mark: filters.mark },
+      model: { apply: filters.model !== "", model: filters.model },
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data)) throw new Error("Respuesta no válida");
+      machines = data;
+      currentPage = 1;
+      renderPage(currentPage);
+      renderPagination();
+    })
+    .catch((err) => {
+      document.getElementById("machine-list").innerHTML = `
+        <p class="text-red-600 text-center font-bold mt-4">
+          ⚠️ Ocurrió un error al cargar las maquinarias.
+        </p>`;
+      console.error(err);
+    });
+    }
+else{
+*/
+  console.log("SSSS", "IIIIIIIIIIIII")
   fetch("/machine/get_all_filter", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -71,6 +107,8 @@ function fetchMachinesWithFilters() {
         </p>`;
       console.error(err);
     });
+//}
+  
 }
 
 function renderPage(page) {

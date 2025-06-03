@@ -350,7 +350,8 @@
   document.addEventListener("DOMContentLoaded", () => {
   fetch("/machine/top3")
     .then(res => res.json())
-    .then(machines => {
+    .then(data => { return data.machines})
+    .then( machines => {
       const container = document.getElementById("featured-machines");
       container.innerHTML = "";
 

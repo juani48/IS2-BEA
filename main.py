@@ -8,10 +8,10 @@ from data.appDataBase import get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, UserHistory
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
-from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
-from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
+from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
+from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -209,6 +209,29 @@ def list_employee():
 def load_terminos():
     return render_template("terminos.html")
 
+@app.route("/list_all_reservation.html")
+@login_required                     
+def load_all_reservation():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("list_all_reservation.html")
+    else:
+        return render_template("/main.html")
+    
+@app.route("/list_all_users.html")
+@login_required
+def load_list_clients():
+    if current_user.type == "Admin":
+        return render_template("list_all_users.html")
+    return redirect("/main.html")
+
+@app.route("/user_history.html")
+@login_required
+def user_history_page():
+    return render_template("user_history.html")
+
+
+
+
 
 @app.route('/list_categories.html') #Hace falta estar logueado y ser empleado o admin
 @login_required                   #Si no sos admin o empleado, te manda al main
@@ -283,8 +306,10 @@ def signin():
 def session_status():
     if current_user.is_authenticated:
         return jsonify({
+            "dni": current_user.dni,
             "authenticated": True,
             "name": current_user.name,
+            "lastname": current_user.lastname,
             "type": current_user.type
         }), 200
     else:
@@ -360,15 +385,24 @@ def add_employee():
 @login_required
 def disable_employee():
     if (current_user.type == "Admin"):
-        request_value = request.get_json().get("employeeN")
-        DisableEmployee.usecase_disable_employee(employeeN= request_value)
+        request_value = request.get_json().get("dni")
+        DisableEmployee.usecase_disable_employee(dni= request_value)
     else:
         return "Debe ser administrador."
     return "Empleado deshabilitado", 204
 
+@app.route("/admin/enable_employee", methods=["GET", "POST"]) 
+@login_required
+def enable_employee():
+    if (current_user.type == "Admin"):
+        request_value = request.get_json().get("dni")
+        EnableEmployee.usecase_enable_employee(dni= request_value)
+    else:
+        return "Debe ser administrador."
+    return "Empleado habilitado", 204
+
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():
-
     return jsonify( { "value" : GetAllEmployees.usecase_get_all_employees()} ), 200 
 
 @app.route("/employee/requests", methods= ["PUT"])
@@ -429,12 +463,17 @@ def reply_user_request():
     else:
         return render_template ("/main.html")
 
+@app.route("/users/get_all_users")
+@login_required
+def get_all_clients():
+    return jsonify(GetAllUsers.usecase_get_all_users()), 200
+
 
 @app.route("/user/user_history", methods=["GET", "POST"])
 def user_history():
     try:
-        request_value = request.get_json()
-        return jsonify({ UserHistory.usecase_user_history(request_value.get("dni")) })
+        resultado = UserHistory.usecase_user_history(current_user.dni)
+        return jsonify({ "value": [r.json() for r in resultado] })
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -483,7 +522,7 @@ def add_machine():
                 price_day=float(form.get("price_day")),
                 ubication=form.get("ubication"),
                 refund=float(form.get("refund")),
-                categorie=categorie,  
+                categorie=form.get("categorie"), # TIENE QUE SER UN ARREGLO AUNQUE SEA UNA CATEGORIA = { "cagorie": [ "PEPITO" ] }
                 description=description
             )
             return "", 201
@@ -544,6 +583,13 @@ def get_all_machines_main():
         return jsonify({"machines": GetAllMachines.usecase_get_all_machines()})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/machine/get_all_machines_admin", methods=["GET"])
+def get_all_machines_main_admin():
+    try:
+        return jsonify({"machines": GetAllMachinesAdmin.usecase_get_all_machines()})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
     
 @app.route("/machine/get_all_filter", methods=["GET" , "POST"])
@@ -555,6 +601,30 @@ def get_all_machines_filter():
         data = request.get_json()
 
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model"))), 200
+
+    except Exception as e:
+        return jsonify({ "message": str(e) }), 404
+    
+@app.route("/machine/get_all_filter_admin", methods=["GET" , "POST"])
+def get_all_machines_filter_admin():
+     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False },
+     #  "price": { "apply": True, "price": 10.5 }}
+
+    try:
+        data = request.get_json()
+
+        print(GetAllMachinesByFilterAdmin.usecase_get_all_machines_by_admin( 
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model")))
+        return jsonify(GetAllMachinesByFilterAdmin.usecase_get_all_machines_by_admin( 
             categorie_filter=data.get("categorie"),
             string_filer=data.get("string"),
             price_filter=data.get("price"),
@@ -588,15 +658,13 @@ def get_machine_by_id(machine_id):
 @app.route("/machine/top3", methods=["GET"])
 def get_top3_machines():
     all = GetAllMachines.usecase_get_all_machines()
-    return jsonify(all[:3]), 200
-
-
-
+    all = all[:3]
+    return jsonify({ "machines": all }), 200
 
 
 #    ---- CATEGORIAS ---- #
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE{}
 @login_required
 def add_categorie():
     if(current_user.type in ["Admin", "Empleado"]):
@@ -648,12 +716,7 @@ def disable_categorie():
 # este es para hacer la lista de categorias disponibles
 @app.route("/categories/enabled", methods=["GET"])
 def get_enabled_categories():
-    from data.config import session
-    from data.model.CategorieModel import CategorieModel
-
-    # Traer categorías con disabled=False
-    categories = session.query(CategorieModel).filter_by(disabled=False).all()
-    return jsonify([cat.name for cat in categories])
+    return jsonify({ "categories": GetAllCategoriesEnable.usecase_get_all_categories() })
 
 
 # ---- RESERVAS ---- #
@@ -673,14 +736,28 @@ def machine_reservations():
 def cancel_reservation():
     try:
         request_value = request.get_json()
-        CancelReservation.usecase_cancel_reservation(
+        CancelReservation.usecase_cancel_reservation_by_employee(
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
             start_day=request_value.get("start_day")
         )
         return "", 204
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "message": str(e) }), 400
+
+@app.route("/reservation/cancel_by_client", methods=["POST"])
+@login_required
+def cancel_reservation_by_client():
+    try:
+        data = request.get_json()
+        # Opcional: validar que la reserva sea suya con current_user.id
+        CancelReservation.usecase_cancel_reservation_by_client(
+            preference_id=data.get("preference_id")
+        )
+        return "", 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route("/reservation/reserve_machine", methods=["GET", "POST"]) # METODO ACTIVADO POR EL BOTON RESERVAR
 @login_required
@@ -717,6 +794,15 @@ def get_daily_reserve():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
+
+
+
+@app.route("/reservation/get_all_reservation", methods=["POST"])
+def get_all_reservation():
+    try:
+        return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 
 # ---- PAGOS ---- # 

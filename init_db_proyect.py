@@ -37,7 +37,7 @@ def __MAQUINAS__():
         price_day=10_500, 
         ubication="Ubicacion ABC1", 
         refund=10, 
-        categorie="Jardineria", 
+        categorie=["Jardineria"], 
         description="Descripcion de la maquina ABC1")
 
     AddMachine.usecase_add_machine(
@@ -47,7 +47,7 @@ def __MAQUINAS__():
         price_day=30_500, 
         ubication="Ubicacion ABC2", 
         refund=10, 
-        categorie="Construccion", 
+        categorie=["Construccion"], 
         description="Descripcion de la maquina ABC2")
         
     AddMachine.usecase_add_machine(
@@ -57,7 +57,7 @@ def __MAQUINAS__():
         price_day=27_750, 
         ubication="Ubicacion 123A", 
         refund=15, 
-        categorie="Jardineria", 
+        categorie=["Jardineria"], 
         description="Descripcion de la maquina 123A")
     
     AddMachine.usecase_add_machine(
@@ -67,7 +67,7 @@ def __MAQUINAS__():
         price_day=13_500, 
         ubication="Ubicacion C1AB", 
         refund=5, 
-        categorie="Mineria", 
+        categorie=["Mineria"], 
         description="Descripcion de la maquina C1AB")
 
     AddMachine.usecase_add_machine(
@@ -77,7 +77,7 @@ def __MAQUINAS__():
         price_day=40_500, 
         ubication="Ubicacion N2CA", 
         refund=5, 
-        categorie="Construccion", 
+        categorie=["Construccion"], 
         description="Descripcion de la maquina N2CA")
         
     AddMachine.usecase_add_machine(
@@ -87,7 +87,7 @@ def __MAQUINAS__():
         price_day=50_750, 
         ubication="Ubicacion 75TW", 
         refund=18, 
-        categorie="Transporte", 
+        categorie=["Transporte"], 
         description="Descripcion de la maquina 75TW")
     
 def __ADMIN__():

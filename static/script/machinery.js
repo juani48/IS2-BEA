@@ -6,9 +6,30 @@ const categoryFromURL = params.get("category") || "";
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarCategoriasSelect();
+
   document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
+
+  document.getElementById("filter-reset")?.addEventListener("click", () => {
+    const marca = document.getElementById("filter-mark");
+    const modelo = document.getElementById("filter-model");
+    const precio = document.getElementById("filter-price");
+    const categoria = document.getElementById("filter-categorie");
+
+    if (marca) marca.value = "";
+    if (modelo) modelo.value = "";
+    if (precio) precio.value = "";
+    if (categoria) categoria.value = "";
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete("search");
+    window.history.replaceState({}, "", `${location.pathname}?${params}`);
+
+    fetchMachinesWithFilters();
+  });
+
   fetchMachinesWithFilters();
 });
+
 
 function getFilters() {
   return {
@@ -166,17 +187,19 @@ function irAReserva(event, patent) {
 }
 
 function cargarCategoriasSelect() {
-  fetch("/categorie/get_all_categories")
+  fetch("/categories/enabled")
     .then((res) => res.json())
     .then((data) => {
       const select = document.getElementById("filter-categorie");
-      const categories = data.categories;
+      select.innerHTML = `<option value="">-- Todas --</option>`;
+      const categories = data;  // Ahora es un array de strings como ["Construcción", "Transporte"]
+
       if (Array.isArray(categories)) {
         categories.forEach((cat) => {
           const opt = document.createElement("option");
-          opt.value = cat.name;
-          opt.textContent = cat.name;
-          if (cat.name === categoryFromURL) {
+          opt.value = cat;
+          opt.textContent = cat;
+          if (cat === categoryFromURL) {
             opt.selected = true;
           }
           select.appendChild(opt);

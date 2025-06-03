@@ -1,140 +1,244 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maquinarias - Bob el Alquilador</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='script/machinery.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
-  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maquinarias - Bob el Alquilador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="{{ url_for('static', filename='script/scripts.js') }}"
+      defer
+    ></script>
+    <script
+      src="{{ url_for('static', filename='script/machinery.js') }}"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style/style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="svg"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
+  </head>
 
-<body class="bg-gray-100 text-gray-900">
-  <!-- Header -->
-  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <div class="shrink-0">
-        <a href="#" onclick="goHome()" title="Ir al inicio">
-          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16" />
-        </a>
+  <body class="bg-gray-100 text-gray-900">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+      <div
+        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
+      >
+        <div class="shrink-0">
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
+        </div>
+
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              onclick="buscarMaquinaria()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="accountArea"></div>
       </div>
 
-      <div class="flex-grow flex justify-center">
-        <div class="relative w-full max-w-xl">
-          <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
-            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md" />
-          <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-            <i class="fas fa-search"></i>
+      <nav class="main-nav w-full">
+        <ul
+          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
+        >
+          <li><a href="main.html">Menú</a></li>
+          <li><a href="machinery.html">Maquinarias</a></li>
+          <li class="relative" id="dropdown-categorias-container">
+            <span
+              id="dropdown-categorias-toggle"
+              class="cursor-pointer text-white hover:underline inline-block"
+            >
+              Categorías <i class="fas fa-caret-down ml-1"></i>
+            </span>
+            <div
+              id="dropdown-categorias-menu"
+              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+              style="color: #7f1d1d"
+            ></div>
+          </li>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#contacto">Contáctanos</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <div class="flex flex-col lg:flex-row p-6 gap-6">
+      <!-- Filtros -->
+      <aside
+        class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium">Marca</label>
+            <input
+              type="text"
+              id="filter-mark"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              placeholder="Ej: CAT"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Modelo</label>
+            <input
+              type="text"
+              id="filter-model"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              placeholder="Ej: 420F"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium"
+              >Precio máximo por día</label
+            >
+            <input
+              type="number"
+              id="filter-price"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              min="0"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Categoría</label>
+            <select
+              id="filter-categorie"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+            >
+              <option value="">-- Todas --</option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button
+              id="filter-apply"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full"
+            >
+              Aplicar filtros
+            </button>
+          </div>
+        </div>
+        <div class="text-center mt-2">
+          <button
+            id="filter-reset"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full"
+          >
+            Limpiar filtros
           </button>
         </div>
-      </div>
+      </aside>
 
-      <div id="accountArea"></div>
+      <!-- Listado -->
+      <div
+        id="machine-list"
+        class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"
+      ></div>
     </div>
 
-    <nav class="main-nav w-full">
-      <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-        <li><a href="main.html">Menú</a></li>
-        <li><a href="machinery.html">Maquinarias</a></li>
-        <li class="relative" id="dropdown-categorias-container">
-          <span id="dropdown-categorias-toggle" class="cursor-pointer text-white hover:underline inline-block">
-            Categorías <i class="fas fa-caret-down ml-1"></i>
-          </span>
-          <div id="dropdown-categorias-menu"
-              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-              style="color: #7f1d1d">
+    <!-- Paginación -->
+    <div
+      id="pagination"
+      class="flex justify-center flex-wrap mt-6 mb-12 gap-2"
+    ></div>
+
+    <!-- Footer -->
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+          <div class="flex space-x-4 mb-4">
+            <a
+              href="https://instagram.com/bobelalquilador"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+              ><i class="fab fa-instagram text-2xl"></i
+            ></a>
+            <a
+              href="https://wa.me/5492245400777"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+              ><i class="fab fa-whatsapp text-2xl"></i
+            ></a>
           </div>
-        </li>
-        <li><a href="#">Preguntas Frecuentes</a></li>
-        <li><a href="#contacto">Contáctanos</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <!-- Contenido -->
-  <div class="flex flex-col lg:flex-row p-6 gap-6">
-    <!-- Filtros -->
-    <aside class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0">
-      <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium">Marca</label>
-          <input type="text" id="filter-mark" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: CAT" />
+          <ul class="space-y-1">
+            <li>
+              <a href="terminos.html" class="hover:underline"
+                >Términos y Condiciones</a
+              >
+            </li>
+            <li>
+              <a href="privacidad.html" class="hover:underline"
+                >Política de Privacidad</a
+              >
+            </li>
+          </ul>
         </div>
         <div>
-          <label class="block text-sm font-medium">Modelo</label>
-          <input type="text" id="filter-model" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="Ej: 420F" />
+          <h3 class="text-lg font-bold mb-2">Contacto</h3>
+          <ul class="space-y-2">
+            <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+            <li>
+              <i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com
+            </li>
+            <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+          </ul>
         </div>
         <div>
-          <label class="block text-sm font-medium">Precio máximo</label>
-          <input type="number" id="filter-price" class="w-full border border-gray-300 rounded px-2 py-1" min="0" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium">Categoría</label>
-          <select id="filter-categorie" class="w-full border border-gray-300 rounded px-2 py-1">
-            <option value="">-- Todas --</option>
-          </select>
-        </div>
-        <div class="text-center">
-          <button id="filter-apply" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full">Aplicar filtros</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Listado -->
-    <div id="machine-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"></div>
-  </div>
-
-  <!-- Paginación -->
-  <div id="pagination" class="flex justify-center flex-wrap mt-6 mb-12 gap-2"></div>
-
-  <!-- Footer -->
-  <footer id="contacto" class="bg-bob-dark-red text-white py-10">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div>
-        <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
-        <div class="flex space-x-4 mb-4">
-          <a href="https://instagram.com/bobelalquilador" target="_blank" class="hover:text-gray-300 transition"><i class="fab fa-instagram text-2xl"></i></a>
-          <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition"><i class="fab fa-whatsapp text-2xl"></i></a>
-        </div>
-        <ul class="space-y-1">
-          <li><a href="terminos.html" class="hover:underline">Términos y Condiciones</a></li>
-          <li><a href="privacidad.html" class="hover:underline">Política de Privacidad</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-lg font-bold mb-2">Contacto</h3>
-        <ul class="space-y-2">
-          <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
-          <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
-          <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-lg font-bold mb-2">Ubicación</h3>
-        <div class="rounded-lg overflow-hidden shadow-lg">
-          <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
-                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
-      © 2025 Bob El Alquilador. Todos los derechos reservados.
-    </div>
-  </footer>
+      <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+        © 2025 Bob El Alquilador. Todos los derechos reservados.
+      </div>
+    </footer>
 
-  <script>
-    function irAReserva(event, patent) {
-      event.stopPropagation();
-      event.preventDefault();
-      window.location.href = `/reserve.html?machine_id=${patent}`;
-    }
-  </script>
-</body>
+    <script>
+      function irAReserva(event, patent) {
+        event.stopPropagation();
+        event.preventDefault();
+        window.location.href = `/reserve.html?machine_id=${patent}`;
+      }
+    </script>
+  </body>
 </html>

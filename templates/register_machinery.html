@@ -11,8 +11,9 @@
   <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
   <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+ 
+</head>
 
-<body class="bg-gray-50">
 
   <!-- Header -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
@@ -154,18 +155,18 @@
           />
         </div>
 
-            <!-- Categoria -->
-      <div>
-        <label for="categorie" class="block text-sm font-medium text-gray-700">Categoría</label>
-        <select
-          id="categorie"
-          name="categorie"
-          required
-          class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
-        >
-          <option value="">Seleccioná una categoría</option>
-        </select>
-      </div>
+        
+          <!-- Categorías -->
+<div>
+  <label class="block text-sm font-medium text-gray-700 mb-2">Categorías</label>
+  <div id="categorie-container" class="grid grid-cols-2 gap-2">
+    <!-- Las categorías se insertan con JS -->
+  </div>
+</div>
+
+
+
+  
 
 
         <!-- Ubicación -->
@@ -260,6 +261,8 @@
         let categorie = []
         document.addEventListener('DOMContentLoaded', () => {
       loadCategoires();
+   
+
 
       // Activar/desactivar input de reembolso parcial
       document.querySelectorAll("input[name='refund_option']").forEach(radio => {
@@ -271,35 +274,54 @@
     });
 
 
+function loadCategoires() {
+  fetch("/categories/enabled", { method: "GET" })  //CAMBIADO ACÁ
+    .then(res => res.json())
+    .then(data => {
+      const categorias = data || []; // ← porque /categories/enabled devuelve un array plano
+      const container = document.getElementById("categorie-container");
+      container.innerHTML = "";
 
-      function loadCategoires() {
-      fetch("/categorie/get_all_categories", { method: "GET" })
-        .then(res => res.json())
-        .then(data => {
-          const categorias = data.categories || [];
-          const select = document.getElementById("categorie");
-          console.log(categorias)
+      categorias.forEach(cat => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex items-center space-x-2";
 
-          categorias.forEach(cat => {
-            //if (!cat.disable) {
-              const option = document.createElement("option");
-              option.value = cat.name;
-              option.textContent = cat.name;
-              select.appendChild(option);
-           // }
-          });
-        })
-        .catch(err => {
-          console.error("Error al cargar categorías:", err);
-        });
-    }
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "categorie";
+        checkbox.value = cat;
+        checkbox.className = "form-checkbox text-red-600 h-4 w-4";
+
+        const label = document.createElement("label");
+        label.textContent = cat;
+        label.className = "text-sm text-gray-800";
+
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(label);
+        container.appendChild(wrapper);
+      });
+    })
+    .catch(err => {
+      console.error("Error al cargar categorías:", err);
+    });
+}
+
 
 
 document.getElementById("machine-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const form = e.target;
-  const formData = new FormData(form);
+ const formData = new FormData(form);
+
+const selectedCategories = [];
+document.querySelectorAll('input[name="categorie"]:checked').forEach(input => {
+  selectedCategories.push(input.value);
+});
+formData.set("categories", JSON.stringify(selectedCategories));
+
+
+
 
   const errorDiv = document.getElementById("mensajeError");
   const errorText = document.getElementById("mensajeErrorTexto");

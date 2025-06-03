@@ -473,6 +473,8 @@ def add_machine():
             description = form.get("description")
             if description == None:
                 description = ""
+            
+            categorie = form.getlist("categorie")
 
             AddMachine.usecase_add_machine(
                 patent=patent,
@@ -481,7 +483,7 @@ def add_machine():
                 price_day=float(form.get("price_day")),
                 ubication=form.get("ubication"),
                 refund=float(form.get("refund")),
-                categorie=form.get("categorie"),
+                categorie=categorie,  
                 description=description
             )
             return "", 201
@@ -576,7 +578,7 @@ def get_machine_by_id(machine_id):
         .filter(MachineCategorieModel.machine_id == machine_id)
         .all()
     )
-    category_names = [cat.name for cat in categories]  # lista de strings
+    category_names = [cat[0] for cat in categories]  #  correcto, porque se retorna una tupla
 
     machine_dict = machine.json()
     machine_dict["categories"] = category_names  #  sobrescribo "categorie" con lista

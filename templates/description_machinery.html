@@ -41,21 +41,32 @@
       >
         <!-- LOGO -->
         <div class="shrink-0">
-                <a href="#" onclick="goHome()" title="Ir al inicio">
-                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-                </a>
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
         </div>
 
-         <!-- BARRA DE BÚSQUEDA -->
-            <div class="flex-grow flex justify-center">
-                <div class="relative w-full max-w-xl">
-                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
-                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                    <i class="fas fa-search"></i>
-                </button>
-                </div>
-            </div>
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              onclick="buscarMaquinaria()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
 
         <!-- MI CUENTA -->
         <div id="accountArea"></div>
@@ -69,17 +80,21 @@
           <li><a href="main.html">Menú</a></li>
           <li><a href="machinery.html">Maquinarias</a></li>
           <li class="relative" id="dropdown-categorias-container">
-                <span id="dropdown-categorias-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Categorías <i class="fas fa-caret-down ml-1"></i>
-                </span>
+            <span
+              id="dropdown-categorias-toggle"
+              class="cursor-pointer text-white hover:underline inline-block"
+            >
+              Categorías <i class="fas fa-caret-down ml-1"></i>
+            </span>
 
-                <div id="dropdown-categorias-menu"
-                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                    style="color: #7f1d1d;">
-                  <!-- Se rellena dinámicamente -->
-                </div>
-              </li>
+            <div
+              id="dropdown-categorias-menu"
+              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+              style="color: #7f1d1d"
+            >
+              <!-- Se rellena dinámicamente -->
+            </div>
+          </li>
           <li><a href="#">Preguntas Frecuentes</a></li>
           <li><a href="#contacto">Contáctanos</a></li>
         </ul>
@@ -128,28 +143,28 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="max-w-5xl mx-auto p-6 mt-8 bg-white rounded-xl shadow-md">
       <div class="grid md:grid-cols-2 gap-6">
-  <!-- IZQUIERDA: Imagen principal + miniaturas -->
-  <div>
-    <!-- Imagen principal -->
-    <div class="aspect-square overflow-hidden rounded-xl shadow mb-4">
-      <img
-        id="machineImage"
-        src=""
-        alt="Imagen principal"
-        class="w-full h-full object-cover"
-        onerror="this.src='/static/image/machines/default.png'"
-      />
-    </div>
+        <!-- IZQUIERDA: Imagen principal + miniaturas -->
+        <div>
+          <!-- Imagen principal -->
+          <div class="aspect-square overflow-hidden rounded-xl shadow mb-4">
+            <img
+              id="machineImage"
+              src=""
+              alt="Imagen principal"
+              class="w-full h-full object-cover"
+              onerror="this.src='/static/image/machines/default.png'"
+            />
+          </div>
 
-    <!-- Miniaturas -->
-    <div id="imagenes-maquina" class="flex flex-wrap gap-4 justify-center"></div>
-  </div>
-
-
-
+          <!-- Miniaturas -->
+          <div
+            id="imagenes-maquina"
+            class="flex flex-wrap gap-4 justify-center"
+          ></div>
+        </div>
 
         <!-- Detalles -->
-        <div class="md:w-1/2">  
+        <div class="md:w-1/2">
           <h1 id="machineTitle" class="text-3xl font-bold text-bob-red mb-4">
             Cargando...
           </h1>
@@ -166,8 +181,10 @@
               <strong>Ubicación:</strong> <span id="machineUbication"></span>
             </li>
             <li>
-             <li><strong>Categorías:</strong> <span id="machineCategories"></span></li>
-
+              <p>
+                <strong>Categorías:</strong>
+                <span id="machineCategories"></span>
+              </p>
             </li>
             <li><strong>Patente:</strong> <span id="machinePatent"></span></li>
           </ul>
@@ -254,48 +271,41 @@
     </footer>
 
     <script>
+      function cargarImagenes(patente) {
+        const contenedor = document.getElementById("imagenes-maquina");
+        contenedor.innerHTML = "";
 
-   function cargarImagenes(patente) {
-  const contenedor = document.getElementById("imagenes-maquina");
-  contenedor.innerHTML = "";
+        const basePath = `/static/image/machines/`;
+        const jsonPath = `${basePath}${patente}.json`;
 
-  const basePath = `/static/image/machines/`;
-  const jsonPath = `${basePath}${patente}.json`;
+        fetch(jsonPath)
+          .then((res) => {
+            if (!res.ok) throw new Error("No hay JSON");
+            return res.json();
+          })
+          .then((lista) => {
+            if (Array.isArray(lista) && lista.length > 0) {
+              const principal = `${basePath}${lista[0]}`;
+              document.getElementById("machineImage").src = principal;
 
-  fetch(jsonPath)
-    .then((res) => {
-      if (!res.ok) throw new Error("No hay JSON");
-      return res.json();
-    })
-    .then((lista) => {
-      if (Array.isArray(lista) && lista.length > 0) {
-        const principal = `${basePath}${lista[0]}`;
-        document.getElementById("machineImage").src = principal;
-
-        for (let i = 0; i < lista.length; i++) {
-          const img = document.createElement("img");
-          img.src = basePath + lista[i];
-          img.className =
-            "w-24 h-24 object-cover rounded-xl shadow cursor-pointer";
-          img.onclick = () => {
-            document.getElementById("machineImage").src = img.src;
-          };
-          contenedor.appendChild(img);
-        }
+              for (let i = 0; i < lista.length; i++) {
+                const img = document.createElement("img");
+                img.src = basePath + lista[i];
+                img.className =
+                  "w-24 h-24 object-cover rounded-xl shadow cursor-pointer";
+                img.onclick = () => {
+                  document.getElementById("machineImage").src = img.src;
+                };
+                contenedor.appendChild(img);
+              }
+            }
+          })
+          .catch((err) => {
+            console.warn("No se pudieron cargar miniaturas:", err);
+            const fallback = `${basePath}${patente}.jpg`;
+            document.getElementById("machineImage").src = fallback;
+          });
       }
-    })
-    .catch((err) => {
-      console.warn("No se pudieron cargar miniaturas:", err);
-      const fallback = `${basePath}${patente}.jpg`;
-      document.getElementById("machineImage").src = fallback;
-    });
-}
-
-
-
-
-
-
 
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
@@ -322,119 +332,125 @@
             ).innerText = `$${machine.price_day}`;
             document.getElementById("machineUbication").innerText =
               machine.ubication;
-            document.getElementById("machineCategories").innerText = (machine.categories || []).join(", ");
+            document.getElementById("machineCategories").innerText = (
+              machine.categories || []
+            ).join(", ");
             document.getElementById("machinePatent").innerText = machine.patent;
 
-      
-            
-              fetch("/session/status")
-            .then((res) => res.json())
-            .then((sessionData) => {
-              if (sessionData.authenticated && sessionData.type === "Admin") {
-                const estado = machine.disable ? "Deshabilitada" : "Habilitada";
-                const estadoEl = document.createElement("p");
-                estadoEl.innerHTML = `<strong>Estado:</strong> <span id="machineStatus" class="${machine.disable ? 'text-red-600' : 'text-green-600'} font-semibold">${estado}</span>`;
-                document.querySelector(".md\\:w-1\\/2 ul").appendChild(estadoEl);
+            fetch("/session/status")
+              .then((res) => res.json())
+              .then((sessionData) => {
+                if (sessionData.authenticated && sessionData.type === "Admin") {
+                  const estado = machine.disable
+                    ? "Deshabilitada"
+                    : "Habilitada";
+                  const estadoEl = document.createElement("p");
+                  estadoEl.innerHTML = `<strong>Estado:</strong> <span id="machineStatus" class="${
+                    machine.disable ? "text-red-600" : "text-green-600"
+                  } font-semibold">${estado}</span>`;
+                  document
+                    .querySelector(".md\\:w-1\\/2 ul")
+                    .appendChild(estadoEl);
 
-                const botonesDiv = document.createElement("div");
-                botonesDiv.className = "mt-6 flex gap-4";
+                  const botonesDiv = document.createElement("div");
+                  botonesDiv.className = "mt-6 flex gap-4";
 
-                botonEstado = document.createElement("button");
-                botonEstado.innerText = machine.disable ? "Habilitar" : "Deshabilitar";
-                botonEstado.className = machine.disable
-                  ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                  : "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
+                  botonEstado = document.createElement("button");
+                  botonEstado.innerText = machine.disable
+                    ? "Habilitar"
+                    : "Deshabilitar";
+                  botonEstado.className = machine.disable
+                    ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    : "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
 
-                botonEstado.onclick = () =>
-                  cambiarEstado(machine.disable ? "enable" : "disable", machine.patent);
+                  botonEstado.onclick = () =>
+                    cambiarEstado(
+                      machine.disable ? "enable" : "disable",
+                      machine.patent
+                    );
 
-                botonesDiv.appendChild(botonEstado);
+                  botonesDiv.appendChild(botonEstado);
 
-                const botonReservar = document.getElementById("reserveBtn");
-                botonReservar.parentNode.insertBefore(botonesDiv, botonReservar);
+                  const botonReservar = document.getElementById("reserveBtn");
+                  botonReservar.parentNode.insertBefore(
+                    botonesDiv,
+                    botonReservar
+                  );
+                }
+              });
 
-              }
-        });
-
-                cargarImagenes(machine.patent);
+            cargarImagenes(machine.patent);
 
             // Mostrar imagen principal desde JSON o .jpg
             document.getElementById("machineImage").src = "";
 
-
-              document.getElementById(
-                "reserveBtn"
-              ).href = `/reserve.html?machine_id=${machine.patent}`;
-            })
-            .catch((err) => {
-              document.getElementById("machineTitle").innerText =
-                "Error al cargar la maquinaria.";
-              console.error(err);
-            });
-
-          
-
-        });
-
-      
-
-  let botonEstado; // global para mantener referencia
-
-  function cambiarEstado(accion, patent) {
-    const endpoint =
-      accion === "enable"
-        ? "/machine/enable_machine"
-        : "/machine/disable_machine";
-
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ patent }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          const estadoSpan = document.getElementById("machineStatus");
-
-          if (accion === "enable") {
-            estadoSpan.innerText = "Habilitada";
-            estadoSpan.className = "text-green-600 font-semibold";
-            botonEstado.innerText = "Deshabilitar";
-            botonEstado.className = "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded";
-            botonEstado.onclick = () => cambiarEstado("disable", patent);
-          } else {  
-            estadoSpan.innerText = "Deshabilitada";
-            estadoSpan.className = "text-red-600 font-semibold";
-            botonEstado.innerText = "Habilitar";
-            botonEstado.className = "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded";
-            botonEstado.onclick = () => cambiarEstado("enable", patent);
-          }
-
-          // mensaje flotante (opcional)
-          mostrarToast("Estado actualizado correctamente", "green");
-        } else {
-          return res.json().then((data) => {
-            throw new Error(data.message || "Error desconocido");
+            document.getElementById(
+              "reserveBtn"
+            ).href = `/reserve.html?machine_id=${machine.patent}`;
+          })
+          .catch((err) => {
+            document.getElementById("machineTitle").innerText =
+              "Error al cargar la maquinaria.";
+            console.error(err);
           });
-        }
-      })
-      .catch((err) => alert("Error: " + err.message));
-  }
+      });
 
-function mostrarToast(texto, color = "green") {
-  const toast = document.createElement("div");
-  toast.innerText = texto;
-  toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded shadow-lg z-50`;
-  document.body.appendChild(toast);
+      let botonEstado; // global para mantener referencia
 
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-}
+      function cambiarEstado(accion, patent) {
+        const endpoint =
+          accion === "enable"
+            ? "/machine/enable_machine"
+            : "/machine/disable_machine";
 
+        fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ patent }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              const estadoSpan = document.getElementById("machineStatus");
 
+              if (accion === "enable") {
+                estadoSpan.innerText = "Habilitada";
+                estadoSpan.className = "text-green-600 font-semibold";
+                botonEstado.innerText = "Deshabilitar";
+                botonEstado.className =
+                  "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded";
+                botonEstado.onclick = () => cambiarEstado("disable", patent);
+              } else {
+                estadoSpan.innerText = "Deshabilitada";
+                estadoSpan.className = "text-red-600 font-semibold";
+                botonEstado.innerText = "Habilitar";
+                botonEstado.className =
+                  "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded";
+                botonEstado.onclick = () => cambiarEstado("enable", patent);
+              }
 
+              // mensaje flotante (opcional)
+              mostrarToast("Estado actualizado correctamente", "green");
+            } else {
+              return res.json().then((data) => {
+                throw new Error(data.message || "Error desconocido");
+              });
+            }
+          })
+          .catch((err) => alert("Error: " + err.message));
+      }
+
+      function mostrarToast(texto, color = "green") {
+        const toast = document.createElement("div");
+        toast.innerText = texto;
+        toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded shadow-lg z-50`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
     </script>
   </body>
 </html>

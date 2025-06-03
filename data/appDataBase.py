@@ -37,8 +37,10 @@ def insert_user(dni, user, email):
     #query_TEST_USER.execute(dni, user)
     query_insert_user.execute(dni, user, email)
 
-def insert_machine(patent, categorie, machine, machine_categorie):
+def insert_machine(patent, machine):
     query_insert_machine.execute(patent, machine)
+
+def insert_machine_categorie(patent, categorie, machine_categorie):
     query_insert_mc.execute(patent, categorie, machine_categorie)
     
 def insert_categorie(name, categorie):

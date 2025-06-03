@@ -324,25 +324,116 @@
               machine.ubication;
             document.getElementById("machineCategories").innerText = (machine.categories || []).join(", ");
             document.getElementById("machinePatent").innerText = machine.patent;
-  
 
-              cargarImagenes(machine.patent);
+      
+            
+              fetch("/session/status")
+            .then((res) => res.json())
+            .then((sessionData) => {
+              if (sessionData.authenticated && sessionData.type === "Admin") {
+                const estado = machine.disable ? "Deshabilitada" : "Habilitada";
+                const estadoEl = document.createElement("p");
+                estadoEl.innerHTML = `<strong>Estado:</strong> <span id="machineStatus" class="${machine.disable ? 'text-red-600' : 'text-green-600'} font-semibold">${estado}</span>`;
+                document.querySelector(".md\\:w-1\\/2 ul").appendChild(estadoEl);
 
-           // Mostrar imagen principal desde JSON o .jpg
-document.getElementById("machineImage").src = "";
+                const botonesDiv = document.createElement("div");
+                botonesDiv.className = "mt-6 flex gap-4";
+
+                botonEstado = document.createElement("button");
+                botonEstado.innerText = machine.disable ? "Habilitar" : "Deshabilitar";
+                botonEstado.className = machine.disable
+                  ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  : "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
+
+                botonEstado.onclick = () =>
+                  cambiarEstado(machine.disable ? "enable" : "disable", machine.patent);
+
+                botonesDiv.appendChild(botonEstado);
+
+                const botonReservar = document.getElementById("reserveBtn");
+                botonReservar.parentNode.insertBefore(botonesDiv, botonReservar);
+
+              }
+        });
+
+                cargarImagenes(machine.patent);
+
+            // Mostrar imagen principal desde JSON o .jpg
+            document.getElementById("machineImage").src = "";
 
 
-            document.getElementById(
-              "reserveBtn"
-            ).href = `/reserve.html?machine_id=${machine.patent}`;
-          })
-          .catch((err) => {
-            document.getElementById("machineTitle").innerText =
-              "Error al cargar la maquinaria.";
-            console.error(err);
+              document.getElementById(
+                "reserveBtn"
+              ).href = `/reserve.html?machine_id=${machine.patent}`;
+            })
+            .catch((err) => {
+              document.getElementById("machineTitle").innerText =
+                "Error al cargar la maquinaria.";
+              console.error(err);
+            });
+
+          
+
+        });
+
+      
+
+  let botonEstado; // global para mantener referencia
+
+  function cambiarEstado(accion, patent) {
+    const endpoint =
+      accion === "enable"
+        ? "/machine/enable_machine"
+        : "/machine/disable_machine";
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ patent }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          const estadoSpan = document.getElementById("machineStatus");
+
+          if (accion === "enable") {
+            estadoSpan.innerText = "Habilitada";
+            estadoSpan.className = "text-green-600 font-semibold";
+            botonEstado.innerText = "Deshabilitar";
+            botonEstado.className = "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded";
+            botonEstado.onclick = () => cambiarEstado("disable", patent);
+          } else {  
+            estadoSpan.innerText = "Deshabilitada";
+            estadoSpan.className = "text-red-600 font-semibold";
+            botonEstado.innerText = "Habilitar";
+            botonEstado.className = "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded";
+            botonEstado.onclick = () => cambiarEstado("enable", patent);
+          }
+
+          // mensaje flotante (opcional)
+          mostrarToast("Estado actualizado correctamente", "green");
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.message || "Error desconocido");
           });
+        }
+      })
+      .catch((err) => alert("Error: " + err.message));
+  }
 
-      });
+function mostrarToast(texto, color = "green") {
+  const toast = document.createElement("div");
+  toast.innerText = texto;
+  toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded shadow-lg z-50`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+
 
     </script>
   </body>

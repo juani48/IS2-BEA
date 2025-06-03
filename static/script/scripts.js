@@ -118,12 +118,28 @@ function mostrarDropdownGestionar() {
     <span id="dropdown-toggle" class="cursor-pointer text-white hover:underline inline-block">
       Gestionar <i class="fas fa-caret-down ml-1"></i>
     </span>
-    <div id="dropdown-menu" class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50">
-      <a href="register_machinery.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">➕ Dar de alta una maquinaria</a>
-      <a href="register_categorie.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">➕ Dar de alta una categoría</a>
-      <a href="register_employee.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">➕ Dar de alta un empleado</a>
-      <a href="list_employee.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Ver lista de empleados</a>
-      <a href="list_all_users.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Ver lista de usuarios</a>
+    <div id="dropdown-menu" class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50" style="color: #7f1d1d;">
+      <a href="register_machinery.html" class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900" style="color: #7f1d1d !important;">
+        ➕ Dar de alta una maquinaria
+      </a>
+      <a href="register_categorie.html" class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900" style="color: #7f1d1d !important;">
+        ➕ Dar de alta una categoría
+      </a>
+      <a href="register_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      ➕ Dar de alta un empleado
+                    </a>
+                    <a href="list_employee.html"
+                      class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                      style="color: #7f1d1d !important;">
+                      📋 Ver lista de empleados
+                    </a>
+                    <a href="list_categories.html"
+                    class="block px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900"
+                    style="color: #7f1d1d !important;">
+                    📋 Ver lista de categorías
+                  </a>
 
     </div>
   `;

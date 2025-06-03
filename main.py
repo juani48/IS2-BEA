@@ -231,6 +231,16 @@ def user_history_page():
 
 
 
+
+
+@app.route('/list_categories.html') #Hace falta estar logueado y ser empleado o admin
+@login_required                   #Si no sos admin o empleado, te manda al main
+def list_categories():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template('list_categories.html')
+    else:
+        return render_template("/main.html")
+    
 # ---- METODOS USUARIO ---- #
 
 def getType():                                   
@@ -563,12 +573,12 @@ def disable_machine():
     else:
         return render_template("/main.html")
 
-@app.route("/machine/get_all", methods=["GET"])
-def get_all_machines():
+@app.route("/machine/get_all_machines", methods=["GET"])
+def get_all_machines_main():
     try:
-        return jsonify( { "value" : GetAllMachines.usecase_get_all_machines()} ), 200 
+        return jsonify({"machines": GetAllMachines.usecase_get_all_machines()})
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({"error": str(e)}), 400
 
     
 @app.route("/machine/get_all_filter", methods=["GET" , "POST"])
@@ -661,8 +671,12 @@ def enable_categorie():
 def disable_categorie():
     if(current_user.type in ["Empleado", "Admin"]):
         request_value = request.get_json().get("categorie")
-        DisableCategorie.usecase_disable_categorie(categorie=request_value)
-        return "", 204
+        try:
+            DisableCategorie.usecase_disable_categorie(categorie=request_value)
+            return jsonify({"message": "Categoría deshabilitada"}), 200
+        except Exception as e:
+            return jsonify({"message": str(e)}), 400  #  importante: enviar el mensaje de error
+
     else:
         return ("/main.html")
 

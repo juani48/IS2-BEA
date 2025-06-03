@@ -14,17 +14,20 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
         refund=refund,
         description=description,
     )
+
+    # Crear una lista de relaciones máquina-categoría
+    machine_categorie_list = [
+        MachineCategorieModel(machine_id=patent, categorie_id=cat) for cat in categorie
+    ]
     
-    mc = MachineCategorieModel(
-        machine_id=patent,
-        categorie_id=categorie
-    )
+
     insert_machine(
         patent=patent,
         categorie=categorie,
         machine=machine,
-        machine_categorie=mc
+        machine_categorie=machine_categorie_list  # Ahora pasás una lista
     )
+
 
 def validator(patent, mark, model, price_day, ubication, refund, categorie):
     if (patent == ""):
@@ -39,6 +42,5 @@ def validator(patent, mark, model, price_day, ubication, refund, categorie):
         raise Exception("La ubicacion no puede estar vacia")
     if (refund == None):
         raise Exception("El reembolso no puede estar vacio")
-    if (categorie == ""):
-        raise Exception("La categoria no puede estar vacia")
-    
+    if not categorie:
+        raise Exception("La categoría no puede estar vacía")

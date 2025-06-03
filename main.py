@@ -1,7 +1,7 @@
 import init_db_proyect
 from datetime import datetime, timedelta
 import json
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request,abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from core.entity.User import User
 from data.appDataBase import get_user
@@ -395,15 +395,24 @@ def disable_employee():
 
 
 
-@app.route("/admin/enable_employee", methods=["GET", "POST"]) 
+@app.route("/admin/enable_employee", methods=["POST"]) 
 @login_required
 def enable_employee():
-    if (current_user.type == "Admin"):
-        request_value = request.get_json().get("dni")
-        EnableEmployee.usecase_enable_employee(dni= request_value)
-    else:
-        return "Debe ser administrador."
-    return "Empleado habilitado", 204
+    if current_user.type != "Admin":
+        abort(403, description="Debe ser administrador.")
+    request_data = request.get_json()
+
+    if not dni or not employee_number:
+        return jsonify({"error": "Faltan datos requeridos: dni y/o employee_number"}), 400    
+    dni = int(request_data.get("dni"))
+    employee_number = int (request_data.get("employee_number"))
+    
+    try:
+        EnableEmployee.usecase_enable_employee(dni=dni, employee_numer=employee_number)
+        return "", 204  # No Content, sin body
+    except Exception as e:
+        # Loguear el error sería ideal aquí
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():

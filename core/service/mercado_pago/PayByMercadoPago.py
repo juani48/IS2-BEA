@@ -1,10 +1,16 @@
-from core.service.mercado_pago.config import make_preferences, make_preferences_test
+from core.service.mercado_pago.config import make_preferences, make_preferences_test, config_get_payment, config_get_merchant_order
 
-def execute(machine_id, machine_model, unit_price):
-    return make_preferences(machine_id, machine_model, unit_price)
+def execute(client_id, machine_id, start_day, machine_model, unit_price):
+    return make_preferences(client_id, machine_id, start_day, machine_model, unit_price)
 
-def execute():
+#def execute():
     return make_preferences_test()
+
+def get_payment(id):
+    return config_get_payment(id)
+
+def get_merchant_order(id):
+    return config_get_merchant_order(id)
 
 
 

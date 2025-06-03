@@ -4,5 +4,5 @@ __pycache__
 /__pycache__/
 *.pyc/
 *.pyc
-database.db
-*.env
+agregarEmpleado.py
+.env

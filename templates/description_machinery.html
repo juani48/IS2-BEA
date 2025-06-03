@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Descripción maquinaria - Bob el Alquilador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="{{ url_for('static', filename='script/scripts.js') }}"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style/style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="svg"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+      <div
+        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
+      >
+        <!-- LOGO -->
+        <div class="shrink-0">
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
+        </div>
+
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              onclick="buscarMaquinaria()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- MI CUENTA -->
+        <div id="accountArea"></div>
+      </div>
+
+      <!-- Navigation debajo, 100% ancho -->
+      <nav class="main-nav w-full">
+        <ul
+          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
+        >
+          <li><a href="main.html">Menú</a></li>
+          <li><a href="machinery.html">Maquinarias</a></li>
+          <li class="relative" id="dropdown-categorias-container">
+            <span
+              id="dropdown-categorias-toggle"
+              class="cursor-pointer text-white hover:underline inline-block"
+            >
+              Categorías <i class="fas fa-caret-down ml-1"></i>
+            </span>
+
+            <div
+              id="dropdown-categorias-menu"
+              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+              style="color: #7f1d1d"
+            >
+              <!-- Se rellena dinámicamente -->
+            </div>
+          </li>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#contacto">Contáctanos</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+        <ul class="flex flex-col space-y-3">
+          <li>
+            <a
+              href="main.html"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Menú</a
+            >
+          </li>
+          <li>
+            <a
+              href="machinery.html"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Maquinarias</a
+            >
+          </li>
+          <li>
+            <a
+              href="categorie.html"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Categorías</a
+            >
+          </li>
+          <li>
+            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Preguntas Frecuentes</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contacto"
+              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
+              >Contáctanos</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-5xl mx-auto p-6 mt-8 bg-white rounded-xl shadow-md">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- IZQUIERDA: Imagen principal + miniaturas -->
+        <div>
+          <!-- Imagen principal -->
+          <div class="aspect-square overflow-hidden rounded-xl shadow mb-4">
+            <img
+              id="machineImage"
+              src=""
+              alt="Imagen principal"
+              class="w-full h-full object-cover"
+              onerror="this.src='/static/image/machines/default.png'"
+            />
+          </div>
+
+          <!-- Miniaturas -->
+          <div
+            id="imagenes-maquina"
+            class="flex flex-wrap gap-4 justify-center"
+          ></div>
+        </div>
+
+        <!-- Detalles -->
+        <div class="md:w-1/2">
+          <h1 id="machineTitle" class="text-3xl font-bold text-bob-red mb-4">
+            Cargando...
+          </h1>
+          <p class="text-gray-800 font-semibold">Descripción:</p>
+          <p id="machineDescription" class="text-gray-700 mb-4">...</p>
+
+          <ul class="text-gray-800 space-y-2">
+            <li><strong>Marca:</strong> <span id="machineMark"></span></li>
+            <li><strong>Modelo:</strong> <span id="machineModel"></span></li>
+            <li>
+              <strong>Precio por día:</strong> <span id="machinePrice"></span>
+            </li>
+            <li>
+              <strong>Ubicación:</strong> <span id="machineUbication"></span>
+            </li>
+            <li>
+              <p>
+                <strong>Categorías:</strong>
+                <span id="machineCategories"></span>
+              </p>
+            </li>
+            <li><strong>Patente:</strong> <span id="machinePatent"></span></li>
+          </ul>
+
+          <a
+            id="reserveBtn"
+            href="#"
+            class="mt-6 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Reservar
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Columna 1: Redes + legales -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+          <div class="flex space-x-4 mb-4">
+            <a
+              href="https://instagram.com/bobelalquilador"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+            >
+              <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a
+              href="https://wa.me/5492245400777"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+            >
+              <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
+          </div>
+          <ul class="space-y-1">
+            <li>
+              <a href="terminos.html" class="hover:underline"
+                >Términos y Condiciones</a
+              >
+            </li>
+            <li>
+              <a href="privacidad.html" class="hover:underline"
+                >Política de Privacidad</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 2: Contacto -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Contacto</h3>
+          <ul class="space-y-2">
+            <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+            <li>
+              <i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com
+            </li>
+            <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Mapa -->
+        <div>
+          <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Línea inferior -->
+      <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+        © 2025 Bob El Alquilador. Todos los derechos reservados.
+      </div>
+    </footer>
+
+    <script>
+      function cargarImagenes(patente) {
+        const contenedor = document.getElementById("imagenes-maquina");
+        contenedor.innerHTML = "";
+
+        const basePath = `/static/image/machines/`;
+        const jsonPath = `${basePath}${patente}.json`;
+
+        fetch(jsonPath)
+          .then((res) => {
+            if (!res.ok) throw new Error("No hay JSON");
+            return res.json();
+          })
+          .then((lista) => {
+            if (Array.isArray(lista) && lista.length > 0) {
+              const principal = `${basePath}${lista[0]}`;
+              document.getElementById("machineImage").src = principal;
+
+              for (let i = 0; i < lista.length; i++) {
+                const img = document.createElement("img");
+                img.src = basePath + lista[i];
+                img.className =
+                  "w-24 h-24 object-cover rounded-xl shadow cursor-pointer";
+                img.onclick = () => {
+                  document.getElementById("machineImage").src = img.src;
+                };
+                contenedor.appendChild(img);
+              }
+            }
+          })
+          .catch((err) => {
+            console.warn("No se pudieron cargar miniaturas:", err);
+            const fallback = `${basePath}${patente}.jpg`;
+            document.getElementById("machineImage").src = fallback;
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const machineId = params.get("machine_id");
+
+        if (!machineId) {
+          document.getElementById("machineTitle").innerText =
+            "Error: máquina no especificada.";
+          return;
+        }
+
+        fetch(`/machine/get_by_id/${machineId}`)
+          .then((res) => res.json())
+          .then((machine) => {
+            document.getElementById(
+              "machineTitle"
+            ).innerText = `${machine.mark} ${machine.model}`;
+            document.getElementById("machineDescription").innerText =
+              machine.description || "Sin descripción.";
+            document.getElementById("machineMark").innerText = machine.mark;
+            document.getElementById("machineModel").innerText = machine.model;
+            document.getElementById(
+              "machinePrice"
+            ).innerText = `$${machine.price_day}`;
+            document.getElementById("machineUbication").innerText =
+              machine.ubication;
+            document.getElementById("machineCategories").innerText = (
+              machine.categories || []
+            ).join(", ");
+            document.getElementById("machinePatent").innerText = machine.patent;
+
+            fetch("/session/status")
+              .then((res) => res.json())
+              .then((sessionData) => {
+                if (sessionData.authenticated && sessionData.type === "Admin") {
+                  const estado = machine.disable
+                    ? "Deshabilitada"
+                    : "Habilitada";
+                  const estadoEl = document.createElement("p");
+                  estadoEl.innerHTML = `<strong>Estado:</strong> <span id="machineStatus" class="${
+                    machine.disable ? "text-red-600" : "text-green-600"
+                  } font-semibold">${estado}</span>`;
+                  document
+                    .querySelector(".md\\:w-1\\/2 ul")
+                    .appendChild(estadoEl);
+
+                  const botonesDiv = document.createElement("div");
+                  botonesDiv.className = "mt-6 flex gap-4";
+
+                  botonEstado = document.createElement("button");
+                  botonEstado.innerText = machine.disable
+                    ? "Habilitar"
+                    : "Deshabilitar";
+                  botonEstado.className = machine.disable
+                    ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    : "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
+
+                  botonEstado.onclick = () =>
+                    cambiarEstado(
+                      machine.disable ? "enable" : "disable",
+                      machine.patent
+                    );
+
+                  botonesDiv.appendChild(botonEstado);
+
+                  const botonReservar = document.getElementById("reserveBtn");
+                  botonReservar.parentNode.insertBefore(
+                    botonesDiv,
+                    botonReservar
+                  );
+                }
+              });
+
+            cargarImagenes(machine.patent);
+
+            // Mostrar imagen principal desde JSON o .jpg
+            document.getElementById("machineImage").src = "";
+
+            document.getElementById(
+              "reserveBtn"
+            ).href = `/reserve.html?machine_id=${machine.patent}`;
+          })
+          .catch((err) => {
+            document.getElementById("machineTitle").innerText =
+              "Error al cargar la maquinaria.";
+            console.error(err);
+          });
+      });
+
+      let botonEstado; // global para mantener referencia
+
+      function cambiarEstado(accion, patent) {
+        const endpoint =
+          accion === "enable"
+            ? "/machine/enable_machine"
+            : "/machine/disable_machine";
+
+        fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ patent }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              const estadoSpan = document.getElementById("machineStatus");
+
+              if (accion === "enable") {
+                estadoSpan.innerText = "Habilitada";
+                estadoSpan.className = "text-green-600 font-semibold";
+                botonEstado.innerText = "Deshabilitar";
+                botonEstado.className =
+                  "bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded";
+                botonEstado.onclick = () => cambiarEstado("disable", patent);
+              } else {
+                estadoSpan.innerText = "Deshabilitada";
+                estadoSpan.className = "text-red-600 font-semibold";
+                botonEstado.innerText = "Habilitar";
+                botonEstado.className =
+                  "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded";
+                botonEstado.onclick = () => cambiarEstado("enable", patent);
+              }
+
+              // mensaje flotante (opcional)
+              mostrarToast("Estado actualizado correctamente", "green");
+            } else {
+              return res.json().then((data) => {
+                throw new Error(data.message || "Error desconocido");
+              });
+            }
+          })
+          .catch((err) => alert("Error: " + err.message));
+      }
+
+      function mostrarToast(texto, color = "green") {
+        const toast = document.createElement("div");
+        toast.innerText = texto;
+        toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded shadow-lg z-50`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

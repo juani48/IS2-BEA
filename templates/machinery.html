@@ -1,292 +1,244 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maquinarias - Bob el Alquilador</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="{{ url_for('static', filename='script/scripts.js') }}"
+      defer
+    ></script>
+    <script
+      src="{{ url_for('static', filename='script/machinery.js') }}"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style/style.css') }}"
+    />
+    <link
+      rel="icon"
+      type="svg"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
+  </head>
 
-</head>
+  <body class="bg-gray-100 text-gray-900">
+    <!-- Header -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+      <div
+        class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4"
+      >
+        <div class="shrink-0">
+          <a href="#" onclick="goHome()" title="Ir al inicio">
+            <img
+              src="{{ url_for('static', filename='image/Completo.svg') }}"
+              alt="Bob el Alquilador"
+              class="h-16"
+            />
+          </a>
+        </div>
 
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar maquinaria..."
+              class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md"
+            />
+            <button
+              onclick="buscarMaquinaria()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
 
-<body class="bg-gray-100 text-gray-900">
-  <!-- Header -->
-  <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
-    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <!-- LOGO -->
-      <div class="shrink-0">
-        <a href="main.html">
-          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16" />
-        </a>
+        <div id="accountArea"></div>
       </div>
 
-      <!-- BARRA DE BÚSQUEDA -->
-      <div class="flex-grow flex justify-center">
-        <div class="relative w-full max-w-xl">
-          <input type="text" placeholder="Buscar maquinaria..."
-            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md" />
-          <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-            <i class="fas fa-search"></i>
+      <nav class="main-nav w-full">
+        <ul
+          class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base"
+        >
+          <li><a href="main.html">Menú</a></li>
+          <li><a href="machinery.html">Maquinarias</a></li>
+          <li class="relative" id="dropdown-categorias-container">
+            <span
+              id="dropdown-categorias-toggle"
+              class="cursor-pointer text-white hover:underline inline-block"
+            >
+              Categorías <i class="fas fa-caret-down ml-1"></i>
+            </span>
+            <div
+              id="dropdown-categorias-menu"
+              class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+              style="color: #7f1d1d"
+            ></div>
+          </li>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#contacto">Contáctanos</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <div class="flex flex-col lg:flex-row p-6 gap-6">
+      <!-- Filtros -->
+      <aside
+        class="w-full lg:w-64 p-4 bg-white rounded-lg shadow-md mb-6 lg:mb-0"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-bob-red">Filtros</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium">Marca</label>
+            <input
+              type="text"
+              id="filter-mark"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              placeholder="Ej: CAT"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Modelo</label>
+            <input
+              type="text"
+              id="filter-model"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              placeholder="Ej: 420F"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium"
+              >Precio máximo por día</label
+            >
+            <input
+              type="number"
+              id="filter-price"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+              min="0"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Categoría</label>
+            <select
+              id="filter-categorie"
+              class="w-full border border-gray-300 rounded px-2 py-1"
+            >
+              <option value="">-- Todas --</option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button
+              id="filter-apply"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full"
+            >
+              Aplicar filtros
+            </button>
+          </div>
+        </div>
+        <div class="text-center mt-2">
+          <button
+            id="filter-reset"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full"
+          >
+            Limpiar filtros
           </button>
         </div>
-      </div>
+      </aside>
 
-      <!-- MI CUENTA -->
-      <a href="login.html"
-        class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-        <!-- Ícono normal -->
-        <i class="fas fa-user text-lg group-hover:hidden"></i>
-        <!-- Ícono alternativo que aparece en hover -->
-        <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-        <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
-      </a>
-    </div>
+      <!-- Listado -->
+      <div
+        id="machine-list"
+        class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"
+      ></div>
     </div>
 
-    <!-- Navigation debajo, 100% ancho -->
-        <nav class="main-nav w-full">
-            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
-            </ul>
-        </nav>
+    <!-- Paginación -->
+    <div
+      id="pagination"
+      class="flex justify-center flex-wrap mt-6 mb-12 gap-2"
+    ></div>
 
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-            <ul class="flex flex-col space-y-3">
-                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
-                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
-            </ul>
-        </div>
-  </header>
-
-  
-  <!-- CONTENEDOR DE LAS TARJETAS 
-<div id="machine-list" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 px-4 py-8"></div> -->
-<div id="machine-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6"></div>
-
-
-
-<!-- PAGINADO -->
-<div id="pagination" class="flex justify-center flex-wrap mt-6 mb-12 gap-2"></div>
-
-  <!-- Footer -->
-  <footer id="contacto" class="bg-bob-dark-red text-white py-12">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Company Info -->
+    <!-- Footer -->
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <div class="flex items-center mb-4">
-            <svg class="w-10 h-10 mr-2" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="50" height="50" rx="10" fill="white"></rect>
-              <path d="M10 25C10 17.268 16.268 11 24 11H40V39H24C16.268 39 10 32.732 10 25Z" fill="#D10000"></path>
-              <path d="M20 20H35V30H20C17.791 30 16 28.209 16 26V24C16 21.791 17.791 20 20 20Z" fill="white"></path>
-              <path d="M24 25L28 21V29L24 25Z" fill="#D10000"></path>
-            </svg>
-            <span class="font-bold text-xl">Bob El Alquilador</span>
+          <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+          <div class="flex space-x-4 mb-4">
+            <a
+              href="https://instagram.com/bobelalquilador"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+              ><i class="fab fa-instagram text-2xl"></i
+            ></a>
+            <a
+              href="https://wa.me/5492245400777"
+              target="_blank"
+              class="hover:text-gray-300 transition"
+              ><i class="fab fa-whatsapp text-2xl"></i
+            ></a>
           </div>
-          <p class="mb-4">
-            Soluciones de alquiler de maquinaria para construcción desde 2005.
-            Calidad y servicio garantizado.
-          </p>
-          <div class="flex space-x-4">
-            <a href="https://instagram.com/bobelalquilador" class="hover:text-gray-300 transition duration-300">
-              <i class="fab fa-instagram text-2xl"></i>
-            </a>
-            <a href="https://wa.me/5492245400777" target="_blank" rel="noopener noreferrer"
-              class="hover:text-gray-300 transition duration-300">
-              <i class="fab fa-whatsapp text-2xl"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- Contact Info -->
-        <div>
-          <h3 class="text-xl font-bold mb-4">Contacto</h3>
-          <ul class="space-y-3">
-            <li class="flex items-center">
-              <i class="fas fa-map-marker-alt mr-3 text-bob-light-red"></i>
-              <span>poner link al mapa de ubicaciones</span>
+          <ul class="space-y-1">
+            <li>
+              <a href="terminos.html" class="hover:underline"
+                >Términos y Condiciones</a
+              >
             </li>
-            <li class="flex items-center">
-              <i class="fas fa-phone mr-3 text-bob-light-red"></i>
-              <span>+54 11 5555-5555</span>
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-envelope mr-3 text-bob-light-red"></i>
-              <span>info@bobelaquilador.com</span>
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-clock mr-3 text-bob-light-red"></i>
-              <span>Lun-Vie: 9:00 - 17:00</span>
+            <li>
+              <a href="privacidad.html" class="hover:underline"
+                >Política de Privacidad</a
+              >
             </li>
           </ul>
         </div>
-
-        <!-- Quick Links -->
         <div>
-          <h3 class="text-xl font-bold mb-4">Enlaces Rápidos</h3>
+          <h3 class="text-lg font-bold mb-2">Contacto</h3>
           <ul class="space-y-2">
+            <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
             <li>
-              <a href="#" class="hover:text-gray-300 transition duration-300">Inicio</a>
+              <i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com
             </li>
-            <li>
-              <a href="#maquinarias" class="hover:text-gray-300 transition duration-300">Maquinarias</a>
-            </li>
-            <li>
-              <a href="#categorias" class="hover:text-gray-300 transition duration-300">Categorías</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-gray-300 transition duration-300">Preguntas Frecuentes</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-gray-300 transition duration-300">Términos y Condiciones</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-gray-300 transition duration-300">Política de Privacidad</a>
-            </li>
+            <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
           </ul>
         </div>
+        <div>
+          <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
       </div>
-
-      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-        <p>© 2025 Bob El Alquilador. Todos los derechos reservados.</p>
+      <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+        © 2025 Bob El Alquilador. Todos los derechos reservados.
       </div>
-    </div>
-  </footer>
+    </footer>
 
-</body>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const container = document.getElementById("machine-list");
-  const pagination = document.getElementById("pagination");
-  const cardsPerPage = 9;
-  let currentPage = 1;
-  let machines = [];
-
-  fetch("/machine/get_all")
-    .then((response) => response.json())
-    .then((data) => {
-      machines = data.value;
-      renderPage(currentPage);
-      renderPagination();
-    })
-    .catch((error) => {
-      container.innerHTML = '<p class="text-red-600 text-center font-bold mt-4">Error al cargar las máquinas.</p>';
-      console.error("Error al cargar:", error);
-    });
-
-  function renderPage(page) {
-    container.innerHTML = "";
-    const start = (page - 1) * cardsPerPage;
-    const end = start + cardsPerPage;
-    const items = machines.slice(start, end);
-
-    items.forEach((machine) => {
-      const normalizedPatent = machine.patent.replace(/\s+/g, "_");  // reemplaza espacios por guiones bajos
-      const imageSrc = `/static/image/machines/${normalizedPatent}.jpg`;
-
-
-  const card = `
-  <div class="w-full max-w-[320px] aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 flex flex-col">
-
-    <!-- Imagen cuadrada -->
-    <div class="w-full aspect-square overflow-hidden">
-      <img src="${imageSrc}"
-           onerror="this.src='/static/image/machines/default.png'"
-           alt="Imagen de ${machine.model}"
-           class="w-full h-full object-cover" />
-    </div>
-
-    <!-- Texto dentro del cuadrado -->
-    <div class="flex-grow p-2 text-center flex flex-col justify-between">
-      <div>
-        <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
-        <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
-        <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
-      </div>
-      <a href="/reserve.html?machine_id=${machine.patent}"
-         class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
-         Reservar
-      </a>
-    </div>
-
-  </div>
-`;
-
-
-
-
-
-      container.innerHTML += card;
-    });
-  }
-
-  function renderPagination() {
-    const totalPages = Math.ceil(machines.length / cardsPerPage);
-    pagination.innerHTML = "";
-
-    // Anterior
-    const prev = document.createElement("button");
-    prev.textContent = "‹ Anterior";
-    prev.disabled = currentPage === 1;
-    prev.className = "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
-    prev.onclick = () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderPage(currentPage);
-        renderPagination();
+    <script>
+      function irAReserva(event, patent) {
+        event.stopPropagation();
+        event.preventDefault();
+        window.location.href = `/reserve.html?machine_id=${patent}`;
       }
-    };
-    pagination.appendChild(prev);
-
-    // Botones de página
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.className =
-        "px-3 py-1 rounded border " +
-        (i === currentPage ? "bg-red-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200");
-      btn.onclick = () => {
-        currentPage = i;
-        renderPage(currentPage);
-        renderPagination();
-      };
-      pagination.appendChild(btn);
-    }
-
-    // Siguiente
-    const next = document.createElement("button");
-    next.textContent = "Siguiente ›";
-    next.disabled = currentPage === totalPages;
-    next.className = "px-3 py-1 bg-white text-gray-700 border rounded hover:bg-gray-200 disabled:opacity-50";
-    next.onclick = () => {
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderPage(currentPage);
-        renderPagination();
-      }
-    };
-    pagination.appendChild(next);
-  }
-});
-</script>
-
-
-
+    </script>
+  </body>
 </html>

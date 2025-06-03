@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <div aling="center" >
-        <div>
-            <h1>EL PAGO SE REALIZO EXITOSAMENTE</h1>
-        </div>
-        <div>
-            <h1>LA RESERVA SE REALIZO EXITOSAMENTE</h1>
-        </div>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reserva Exitosa - Bob el Alquilador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{{ url_for('static', filename='image/Solo logo.svg') }}"
+    />
+  </head>
 
-        <div>
-            <a href="./main.html" >VOLVER</a>
-        </div>
+  <body
+    class="min-h-screen bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-xl p-10 max-w-lg w-full text-center"
+    >
+      <h1 class="text-2xl md:text-3xl font-bold text-green-600 mb-4">
+        ✅ PAGO REALIZADO
+      </h1>
+      <h2 class="text-xl md:text-2xl text-gray-800 mb-8 font-semibold">
+        Tu reserva se completó con éxito
+      </h2>
+
+      <a
+        href="./panelUsuario.html"
+        class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition duration-300"
+      >
+        VOLVER AL INICIO
+      </a>
     </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', paidReservation())
-        function paidReservation(){}
+      document.addEventListener("DOMContentLoaded", paidReservation());
+      function paidReservation() {}
     </script>
-</body>
+  </body>
+</html>

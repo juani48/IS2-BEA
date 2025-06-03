@@ -2,67 +2,74 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dar de alta una maquinaria - Bob el Alquilador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+ 
 </head>
 
-<body class="bg-gray-50">
-    <!-- Header -->
+
+  <!-- Header -->
     <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
         <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
             <!-- LOGO -->
             <div class="shrink-0">
-                <a href="main.html">
-                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador"
-                        class="h-16">
+                <a href="#" onclick="goHome()" title="Ir al inicio">
+                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
                 </a>
             </div>
 
             <!-- BARRA DE BÚSQUEDA -->
             <div class="flex-grow flex justify-center">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" placeholder="Buscar maquinaria..."
-                        class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
                 </div>
             </div>
 
             <!-- MI CUENTA -->
-            <a href="login.html"
-                class="shrink-0 flex items-center gap-2 cursor-pointer bg-gradient-to-r from-red-600 to-red-400 border border-white/30 shadow-md hover:shadow-lg text-white py-1.5 px-4 rounded-full transition-all duration-300 group">
-                <!-- Ícono normal -->
-                <i class="fas fa-user text-lg group-hover:hidden"></i>
-                <!-- Ícono alternativo que aparece en hover -->
-                <i class="fas fa-user-circle text-lg hidden group-hover:inline"></i>
-                <span class="hidden sm:inline text-sm font-semibold tracking-wide">Mi Perfil</span>
-            </a>
-
-
-        </div>
+            <div id="accountArea"></div>
+                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante
+                 jajajaj te amo -->
+          </div>
         </div>
 
-        <!-- Navigation debajo, 100% ancho -->
-        <nav class="main-nav w-full">
-            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="/categorie.html">Categorías</a></li> <!-- borrar el # para enlazar con una pg--> 
-                <li><a href="register_machinery.html">Dar de alta una maquinaria</a></li>
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
-            </ul>
-        </nav>
+            <!-- Navigation debajo, 100% ancho -->
+            <nav class="main-nav w-full bg-bob-dark-red">
+                <ul class="flex space-x-4 justify-center px-4 text-sm md:text-base relative text-white">
+
+
+                <li><a href="main.html" class="hover:underline" > Menú </a></li>
+                <li><a href="machinery.html" class="hover:underline" >Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                
+                 <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+              </li>
+                 
+
+                <li><a href="#" class="hover:underline" >Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="hover:underline" >Contáctanos</a></li>
+                </ul>
+            </nav>
 
         <!-- Mobile Navigation Menu -->
         <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
@@ -70,7 +77,11 @@
                 <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
                 <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
                 <li><a href="categorie.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Categorías</a></li>
-                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><strong>Gestionar</strong></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de maquinaria</a></li>
+                <li><a href="register_categorie.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de categoría</a></li>
+                <li><a href="register_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">➕ Alta de empleado</a></li>
+                <li><a href="list_employee.html" class="block py-1 hover:bg-bob-dark-red px-4 rounded">📋 Ver lista de empleados</a></li>
                 <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
                 <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
             </ul>
@@ -144,22 +155,19 @@
           />
         </div>
 
-        <!-- Categoria -->
-        <!-- Cambiar a un SELECT -->
-        <div>
-          <label for="categorie" class="block text-sm font-medium text-gray-700"
-            >Categoria</label
-          >
-          <input
-            type="text"
-            id="categorie"
-            name="categorie"
-            required
-            minlength="2"
-            maxlength="20"
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
-          />
-        </div>
+        
+          <!-- Categorías -->
+<div>
+  <label class="block text-sm font-medium text-gray-700 mb-2">Categorías</label>
+  <div id="categorie-container" class="grid grid-cols-2 gap-2">
+    <!-- Las categorías se insertan con JS -->
+  </div>
+</div>
+
+
+
+  
+
 
         <!-- Ubicación -->
         <div>
@@ -189,22 +197,31 @@
           />
         </div>
 
-        <!-- Politica de reembolso -->
-        <!-- LARA ESTO HAY QUE CAMBIARLO PARA QUE EL USUARIO SELECCIONE -->
-        <!-- reembolso total, nulo, o parcial (si elige el parcil debe introducir el % de reembolso) -->
-        <!-- Si es reembolso total mandame 100.0, si es nulo mandame = 0.0, si es parcial mandame lo que se ingrese -->
+        <!-- Política de reembolso -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Política de reembolso</label>
+
+      <div class="space-y-2 mt-2">
         <div>
-          <label for="refund" class="block text-sm font-medium text-gray-700"
-            >Politica de rembolso</label
-          >
-          <input
-            type="float"
-            id="refund"
-            name="refund"
-            required
-            class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
-          />
+          <input type="radio" id="refund_total" name="refund_option" value="total" checked class="mr-2">
+          <label for="refund_total">Reembolso total (100%)</label>
         </div>
+
+        <div>
+          <input type="radio" id="refund_partial" name="refund_option" value="partial" class="mr-2">
+          <label for="refund_partial">Reembolso parcial</label>
+          <input type="number" id="refund_partial_value" placeholder="%"
+                class="ml-2 w-20 border border-gray-300 rounded-md p-1"
+                min="1" max="99" disabled>
+        </div>
+
+        <div>
+          <input type="radio" id="refund_none" name="refund_option" value="none" class="mr-2">
+          <label for="refund_none">Sin reembolso</label>
+        </div>
+      </div>
+    </div>
+
 
         <!-- Descripción -->
         <div>
@@ -224,12 +241,8 @@
           <label for="image" class="block text-sm font-medium text-gray-700"
             >Imagen de la máquina</label
           >
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            />
+          <input type="file" id="images" name="images" accept="image/*" multiple />
+
         </div>
 
         <!-- Botón -->
@@ -245,18 +258,70 @@
     </div>
 
   <script>
-    let categorie = []
-    document.addEventListener('DOMContentLoaded', loadCategoires())
+        let categorie = []
+        document.addEventListener('DOMContentLoaded', () => {
+      loadCategoires();
+   
 
-    function loadCategoires(){
-      // TENES QUE HACER UN FETCH ACA PARA TRAERTE LAS CATEGOIRAS Y AGREGARLAS AL SELECT DE LA CATEGORIA DE LA MAQUINA
-    }
+
+      // Activar/desactivar input de reembolso parcial
+      document.querySelectorAll("input[name='refund_option']").forEach(radio => {
+        radio.addEventListener("change", () => {
+          const partialInput = document.getElementById("refund_partial_value");
+          partialInput.disabled = !document.getElementById("refund_partial").checked;
+        });
+      });
+    });
+
+
+function loadCategoires() {
+  fetch("/categories/enabled", { method: "GET" })  //CAMBIADO ACÁ
+    .then(res => res.json())
+    .then(data => {
+      const categorias = data || []; // ← porque /categories/enabled devuelve un array plano
+      const container = document.getElementById("categorie-container");
+      container.innerHTML = "";
+
+      categorias.forEach(cat => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex items-center space-x-2";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "categorie";
+        checkbox.value = cat;
+        checkbox.className = "form-checkbox text-red-600 h-4 w-4";
+
+        const label = document.createElement("label");
+        label.textContent = cat;
+        label.className = "text-sm text-gray-800";
+
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(label);
+        container.appendChild(wrapper);
+      });
+    })
+    .catch(err => {
+      console.error("Error al cargar categorías:", err);
+    });
+}
+
+
 
 document.getElementById("machine-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const form = e.target;
-  const formData = new FormData(form);
+ const formData = new FormData(form);
+
+const selectedCategories = [];
+document.querySelectorAll('input[name="categorie"]:checked').forEach(input => {
+  selectedCategories.push(input.value);
+});
+formData.set("categories", JSON.stringify(selectedCategories));
+
+
+
 
   const errorDiv = document.getElementById("mensajeError");
   const errorText = document.getElementById("mensajeErrorTexto");
@@ -273,57 +338,141 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
     submitBtn.textContent = "Cargando...";
   }
 
+  // Obtener la opción de reembolso seleccionada
+let refundValue = 0.0;
+const option = form.querySelector('input[name="refund_option"]:checked').value;
+
+if (option === "total") {
+  refundValue = 100.0;
+} else if (option === "none") {
+  refundValue = 0.0;
+} else if (option === "partial") {
+  const partial = parseFloat(document.getElementById("refund_partial_value").value);
+  if (isNaN(partial) || partial <= 0 || partial >= 100) {
+    alert("Ingresá un valor válido entre 1 y 99 para el reembolso parcial.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Cargar Máquina";
+    return;
+  }
+  refundValue = partial;
+}
+
+// Insertamos el valor correcto en el FormData
+formData.set("refund", refundValue);
+
+
   fetch("/machine/add_machine", {
-    method: "POST",
-    body: formData
+  method: "POST",
+  body: formData
+})
+  .then(async res => {
+    if (res.status === 204 || res.status === 201) {
+      form.reset();
+
+      if (successDiv) {
+        successDiv.classList.remove("hidden");
+        successDiv.textContent = "Máquina cargada correctamente.";
+        successDiv.scrollIntoView({ behavior: "smooth" });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        setTimeout(() => {
+          successDiv.classList.add("hidden");
+          window.location.href = "/machinery.html";
+        }, 1500);
+      }
+
+      if (errorDiv) errorDiv.classList.add("hidden");
+
+    } else {
+      const data = await res.json();
+      throw new Error(data?.error || "Error al registrar la máquina");
+    }
   })
-    .then(res => {
-      if (res.status === 201) {
-        form.reset();
+  .catch(err => {
+    if (errorDiv) {
+      errorDiv.classList.remove("hidden");
+      errorText.textContent = `⚠️ ${err.message}`;
+      errorDiv.scrollIntoView({ behavior: "smooth" });
+    }
 
-        if (successDiv) {
-          successDiv.classList.remove("hidden");
-          successDiv.textContent = "✅ Máquina cargada correctamente.";
-          successDiv.scrollIntoView({ behavior: "smooth" });
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Cargar Máquina";
+    }
+  });
 
-          // Ocultar automáticamente a los 3 segundos
-          setTimeout(() => {
-            successDiv.classList.add("hidden");
-          }, 3000);
-        }
+});
 
-        if (errorDiv) errorDiv.classList.add("hidden");
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dropdown-toggle");
+    const menu = document.getElementById("dropdown-menu");
+    const container = document.getElementById("dropdown-container");
 
-        // no se como hacer para que avise antes de ir la main.html que se cargo la maquina
-        // O LO MOSTRAMOS ACA O EN EL HOME
-        window.location.href = "/main.html"
-      } else {
-        return res.json().then(err => {
-          throw new Error(err.error || "Error al registrar la máquina");
-        });
+    if (toggle && menu && container) {
+      toggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // evita que el documento lo cierre enseguida
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
       }
-    })
-    .catch(err => {
-      if (errorDiv) {
-        console.log("error", err)
-        errorText.textContent = "⚠️ " + err.message;
-        errorDiv.classList.remove("hidden");
-        errorDiv.scrollIntoView({ behavior: "smooth" });
-      }
-      if (successDiv) successDiv.classList.add("hidden");
-    })
-    .finally(() => {
-      // Reactivar botón
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Cargar Máquina";
+});
+
+configurarDropdownCategorias();
+
+    }
+  });
+
+  function buscarMaquinaria() {
+    const input = document.getElementById("searchInput")?.value.trim();
+    if (input !== "") {
+      const encoded = encodeURIComponent(input);
+      window.location.href = `/machinery.html?search=${encoded}`;
+    }
+  }
+
+   function configurarDropdownCategorias() {
+  const toggle = document.getElementById("dropdown-categorias-toggle");
+  const menu = document.getElementById("dropdown-categorias-menu");
+  const container = document.getElementById("dropdown-categorias-container");
+
+  if (toggle && menu && container) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
       }
     });
-});
+
+    fetch("/categories/enabled")
+  .then(res => res.json())
+  .then(categories => {
+    const menu = document.getElementById("dropdown-categorias-menu");
+    menu.innerHTML = "";
+    categories.forEach(cat => {
+      const link = document.createElement("a");
+      link.href = `/machinery.html?category=${encodeURIComponent(cat)}`; // ← IMPORTANTE
+      link.textContent = cat;
+      link.className = "block w-full px-4 py-2 font-semibold hover:bg-red-100 hover:text-red-900";
+      link.style.color = "#7f1d1d";
+      menu.appendChild(link);
+    });
+  });
+  }
+}
+
+
 </script>
 
 
-<footer class="bg-bob-dark-red text-white py-10">
+<footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->

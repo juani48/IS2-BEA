@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modificar Datos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+   <link rel="icon" href="{{ url_for('static', filename='image/Solo logo.svg') }}" type="image/svg">
+</head>
+<body class="bg-gray-100 font-sans">
+  <main class="max-w-md mx-auto mt-12 bg-white p-6 rounded-lg shadow-md">
+    <div class="flex justify-end">
+    <button onclick="window.location.href='edit_profile.html'" class="text-red-600 hover:text-red-800 text-xl font-bold" title="Volver al perfil">
+      &times;
+    </button>
+  </div>
+    <h2 class="text-2xl font-bold text-red-700 mb-6 text-center">Modificar Datos</h2>
+    <div id="mensaje" class="hidden p-3 rounded text-center font-semibold"></div>
+
+    <form id="formDatos" class="space-y-4">
+      <input type="text" id="nombre" placeholder="Nombre" class="w-full p-3 border rounded">
+      <input type="text" id="apellido" placeholder="Apellido" class="w-full p-3 border rounded">
+      <button type="submit" class="w-full py-2 px-4 bg-bob-red hover:bg-bob-dark-red text-white font-bold rounded">
+        Guardar Cambios
+      </button>
+    </form>
+  </main>
+  <script>
+  const user = JSON.parse(localStorage.getItem("user"));
+  document.getElementById("nombre").value = user.name;
+  document.getElementById("apellido").value = user.lastname;
+
+  document.getElementById("formDatos").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const mensaje = document.getElementById("mensaje");
+    mensaje.classList.add("hidden");
+
+    const nuevoNombre = document.getElementById("nombre").value.trim();
+    const nuevoApellido = document.getElementById("apellido").value.trim();
+
+    const res = await fetch("/user/update_user", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        dni: user.dni,
+        name: nuevoNombre,
+        lastname: nuevoApellido
+      })
+    });
+
+    console.log(res); // para debug
+
+    if (res.status === 204) {
+      // ✅ Actualizamos localStorage con los nuevos datos
+      const updatedUser = { ...user, name: nuevoNombre, lastname: nuevoApellido };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // ✅ Mostramos mensaje
+      mensaje.className = "bg-green-100 text-green-700 border border-green-300 p-3 rounded text-center font-semibold";
+      mensaje.textContent = "Datos actualizados con éxito.";
+      mensaje.classList.remove("hidden");
+
+      // ✅ Redireccionamos luego de 1 segundo
+      setTimeout(() => {
+        window.location.href = "edit_profile.html";
+      }, 1000);
+    } else {
+      const data = await res.json();
+      mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+      mensaje.textContent = data;
+      mensaje.classList.remove("hidden");
+    }
+  });
+</script>
+
+</body>
+</html>

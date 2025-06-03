@@ -15,13 +15,15 @@ def usecase_get_all_machines_by(categorie_filter, string_filer, price_filter, ma
     return [ x.json() for x in list ]
 
 def __string_filter__(string_filer, list):
-    new_list = []
     if (string_filer.get("apply") and string_filer.get("string") != ""):
+        new_list = []
+
         str = string_filer.get("string")
         for i in range(0, len(list)):
             if list[i].include(str):
                 new_list.append(list[i])
-    return new_list
+        return new_list 
+    return list
 
 def __price_filter__(price_filter, list):
     if (price_filter.get("apply")):

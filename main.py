@@ -381,15 +381,19 @@ def add_employee():
         return jsonify({"error": "Ocurrió un error al procesar alta de empleado", "detalles": str(e)}), 500
 
 
-@app.route("/admin/disable_employee", methods=["PUT"])   
+@app.route("/employee/disable", methods=["POST"])
 @login_required
 def disable_employee():
-    if (current_user.type == "Admin"):
-        request_value = request.get_json().get("dni")
-        DisableEmployee.usecase_disable_employee(dni= request_value)
-    else:
-        return "Debe ser administrador."
-    return "Empleado deshabilitado", 204
+    try:
+        data = request.get_json()
+        dni = data.get("dni")
+        DisableEmployee.usecase_disable_employee(dni)
+        return "", 204
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
 
 @app.route("/admin/enable_employee", methods=["GET", "POST"]) 
 @login_required

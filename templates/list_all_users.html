@@ -111,7 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("/users/get_all_users")
     .then(res => res.json())
     .then(data => {
-      clientes = data;
+      clientes = data.filter(u => u.type === "Cliente")
+
       mostrarPaginaClientes(paginaActual);
       generarPaginacionClientes();
     });

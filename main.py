@@ -9,8 +9,8 @@ from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee
-from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesByFilter, UpdateMachine
-from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories
+from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
+from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from templates import *
 import os
@@ -306,8 +306,10 @@ def signin():
 def session_status():
     if current_user.is_authenticated:
         return jsonify({
+            "dni": current_user.dni,
             "authenticated": True,
             "name": current_user.name,
+            "lastname": current_user.lastname,
             "type": current_user.type
         }), 200
     else:
@@ -470,8 +472,8 @@ def get_all_clients():
 @app.route("/user/user_history", methods=["GET", "POST"])
 def user_history():
     try:
-        request_value = request.get_json()
-        return jsonify({ UserHistory.usecase_user_history(request_value.get("dni")) })
+        resultado = UserHistory.usecase_user_history(current_user.dni)
+        return jsonify({ "value": [r.json() for r in resultado] })
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -579,6 +581,13 @@ def get_all_machines_main():
         return jsonify({"machines": GetAllMachines.usecase_get_all_machines()})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/machine/get_all_machines_admin", methods=["GET"])
+def get_all_machines_main_admin():
+    try:
+        return jsonify({"machines": GetAllMachinesAdmin.usecase_get_all_machines()})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
     
 @app.route("/machine/get_all_filter", methods=["GET" , "POST"])
@@ -590,6 +599,30 @@ def get_all_machines_filter():
         data = request.get_json()
 
         return jsonify(GetAllMachinesByFilter.usecase_get_all_machines_by( 
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model"))), 200
+
+    except Exception as e:
+        return jsonify({ "message": str(e) }), 404
+    
+@app.route("/machine/get_all_filter_admin", methods=["GET" , "POST"])
+def get_all_machines_filter_admin():
+     # json del request = { "categorie": { "apply": True, "categorie": "Jardineria" }, "string": { "apply": False },
+     #  "price": { "apply": True, "price": 10.5 }}
+
+    try:
+        data = request.get_json()
+
+        print(GetAllMachinesByFilterAdmin.usecase_get_all_machines_by_admin( 
+            categorie_filter=data.get("categorie"),
+            string_filer=data.get("string"),
+            price_filter=data.get("price"),
+            mark_filter=data.get("mark"),
+            model_filter=data.get("model")))
+        return jsonify(GetAllMachinesByFilterAdmin.usecase_get_all_machines_by_admin( 
             categorie_filter=data.get("categorie"),
             string_filer=data.get("string"),
             price_filter=data.get("price"),
@@ -623,15 +656,13 @@ def get_machine_by_id(machine_id):
 @app.route("/machine/top3", methods=["GET"])
 def get_top3_machines():
     all = GetAllMachines.usecase_get_all_machines()
-    return jsonify(all[:3]), 200
-
-
-
+    all = all[:3]
+    return jsonify({ "machines": all }), 200
 
 
 #    ---- CATEGORIAS ---- #
 
-@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE
+@app.route("/categorie/add_categorie", methods=["GET", "POST"])  # TESTEADO -> TRUE{}
 @login_required
 def add_categorie():
     if(current_user.type in ["Admin", "Empleado"]):
@@ -683,12 +714,7 @@ def disable_categorie():
 # este es para hacer la lista de categorias disponibles
 @app.route("/categories/enabled", methods=["GET"])
 def get_enabled_categories():
-    from data.config import session
-    from data.model.CategorieModel import CategorieModel
-
-    # Traer categorías con disabled=False
-    categories = session.query(CategorieModel).filter_by(disabled=False).all()
-    return jsonify([cat.name for cat in categories])
+    return jsonify({ "categories": GetAllCategoriesEnable.usecase_get_all_categories() })
 
 
 # ---- RESERVAS ---- #
@@ -775,18 +801,6 @@ def get_all_reservation():
         return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
-@app.route("/user/user_history", methods=["GET"])
-@login_required
-def user_history():
-    try:
-        resultado = UserHistory.usecase_user_history(current_user.dni)
-        return jsonify({ "value": [r.json() for r in resultado] })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
 
 
 # ---- PAGOS ---- # 

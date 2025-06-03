@@ -241,6 +241,7 @@
             return response.json();
         })
         .then(data => {
+            console.log("user", data);
         // Redirigir después de login exitoso
             localStorage.setItem('user', JSON.stringify(data.user));
             //console.log("info guardada");

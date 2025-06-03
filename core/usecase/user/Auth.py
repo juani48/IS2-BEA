@@ -9,7 +9,7 @@ def usecase_login(dni, password):
 
     if user_model is None:
         raise Exception("Inicio de sesión fallido por credenciales incorrectas.")
-    if (user_model.type == "Admin") or (user_model.authorized == 1):         
+    if (user_model.type == "Admin") or (user_model.authorized == True):         
             if (password == user_model.password): 
                 return user_model
     else:

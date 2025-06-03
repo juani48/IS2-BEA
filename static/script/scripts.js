@@ -221,6 +221,7 @@ function configurarDropdownCategorias() {
     // cargar categorías habilitadas
     fetch("/categories/enabled")
       .then(res => res.json())
+      .then(data => { return data.categories })
       .then(categories => {
         menu.innerHTML = "";
         categories.forEach(cat => {

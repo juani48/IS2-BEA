@@ -1,4 +1,5 @@
-  document.addEventListener("DOMContentLoaded", () => {
+/* 
+ document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("dropdown-toggle");
     const menu = document.getElementById("dropdown-menu");
     const container = document.getElementById("dropdown-container");
@@ -37,6 +38,7 @@
       }
     });
 
+    /*
     fetch("/categories/enabled")
   .then(res => res.json())
   .then(categories => {
@@ -51,7 +53,9 @@
       menu.appendChild(link);
     });
   });
+
   }
+  
 }
   function buscarMaquinaria() {
     const input = document.getElementById("searchInput")?.value.trim();
@@ -61,4 +65,4 @@
     }
   }
 
- 
+ */

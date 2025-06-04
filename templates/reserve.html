@@ -183,90 +183,89 @@
     </main>
 </body>
 
-    <script>
-      const machineId = new URLSearchParams(window.location.search).get(
-        "machine_id"
-      );
-      const maquinaNombre = document.getElementById("maquinaNombre");
-      const maquinaImagen = document.getElementById("maquinaImagen");
+<script>
+  const machineId = new URLSearchParams(window.location.search).get("machine_id");
+  const maquinaNombre = document.getElementById("maquinaNombre");
 
-      if (machineId) {
-        // Consultar al backend para obtener nombre e imagen
-        fetch(`/machine/get_by_id/${machineId}`)
-          .then((response) => {
-            if (!response.ok) throw new Error("No se encontró la máquina");
-            return response.json();
-          })
-          .then((data) => {
-            // Mostrar nombre completo
-            maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
-          
-          })
-          .catch((error) => {
-            console.error(error);
-            maquinaNombre.textContent = `${machineId}`;
-          });
-      } else {
-        maquinaNombre.textContent = "No se seleccionó ninguna máquina";
-      }
-
-      // Mostrar/ocultar campo de dirección
-      document.querySelectorAll('input[name="entrega"]').forEach((radio) => {
-        radio.addEventListener("change", function () {
-          document
-            .getElementById("campoDireccion")
-            .classList.toggle("hidden", this.value !== "domicilio");
-        });
+  if (machineId) {
+    fetch(`/machine/get_by_id/${machineId}`)
+      .then(response => {
+        if (!response.ok) throw new Error("No se encontró la máquina");
+        return response.json();
+      })
+      .then(data => {
+        maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
+      })
+      .catch(error => {
+        console.error(error);
+        maquinaNombre.textContent = `${machineId}`;
       });
+  } else {
+    maquinaNombre.textContent = "No se seleccionó ninguna máquina";
+  }
 
-      // Validación de fechas
-      document
-        .getElementById("reservaForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+  // Bloquear fechas anteriores a hoy en fechaInicio
+  const hoy = new Date().toISOString().split("T")[0];
+  const fechaInicioInput = document.getElementById("fechaInicio");
+  const fechaFinInput = document.getElementById("fechaFin");
+  fechaInicioInput.min = hoy;
 
-          const fechaInicio = new Date(
-            document.getElementById("fechaInicio").value
-          );
-          const fechaFin = new Date(document.getElementById("fechaFin").value);
-          const errorDiv = document.getElementById("mensajeError");
+  // Al seleccionar fecha de inicio, actualizar min en fecha de fin (mínimo +7 días)
+  fechaInicioInput.addEventListener("change", () => {
+    const inicio = new Date(fechaInicioInput.value);
+    if (isNaN(inicio)) return;
 
-          errorDiv.classList.add("hidden");
-          errorDiv.textContent = "";
+    const finMin = new Date(inicio);
+    finMin.setDate(finMin.getDate() + 7);
+    fechaFinInput.min = finMin.toISOString().split("T")[0];
 
-          if (fechaFin < fechaInicio) {
-            errorDiv.textContent =
-              "La fecha de fin no puede ser anterior a la fecha de inicio.";
-            errorDiv.classList.remove("hidden");
-            return;
-          }
+    // Opcional: borrar fechaFin seleccionada si ya no cumple
+    if (new Date(fechaFinInput.value) < finMin) {
+      fechaFinInput.value = "";
+    }
+  });
 
-          const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
-          if (dias < 7) {
-            errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
-            errorDiv.classList.remove("hidden");
-            return;
-          }
+  // Mostrar/ocultar campo de dirección
+  document.querySelectorAll('input[name="entrega"]').forEach(radio => {
+    radio.addEventListener("change", function () {
+      document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
+    });
+  });
 
-          // Parámetros del formulario
-          const shipment =
-            document.querySelector('input[name="entrega"]:checked').value ===
-            "domicilio";
-          const direccion = document.getElementById("direccion").value;
-          const user = JSON.parse(localStorage.getItem("user")); // o ajustalo si viene de sesión
+  // Validación y submit
+  document.getElementById("reservaForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-          const reserve = ({ 
-            start_day: document.getElementById("fechaInicio").value,
-            end_day: document.getElementById("fechaFin").value,
-            client_id: user.dni,
-            machine_id: machineId,
-            shipment: shipment,
-          });
-          
-          localStorage.setItem("reserve", JSON.stringify(reserve));
-          window.location.href = "prior_to_paying.html";
-        });
+    const fechaInicio = new Date(fechaInicioInput.value);
+    const fechaFin = new Date(fechaFinInput.value);
+    const errorDiv = document.getElementById("mensajeError");
 
-    </script>
+    errorDiv.classList.add("hidden");
+    errorDiv.textContent = "";
+
+    const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+    if (dias < 7) {
+      errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
+      errorDiv.classList.remove("hidden");
+      return;
+    }
+
+    const shipment = document.querySelector('input[name="entrega"]:checked').value === "domicilio";
+    const direccion = document.getElementById("direccion").value;
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const reserve = {
+      start_day: fechaInicioInput.value,
+      end_day: fechaFinInput.value,
+      client_id: user.dni,
+      machine_id: machineId,
+      shipment: shipment,
+    };
+
+    localStorage.setItem("reserve", JSON.stringify(reserve));
+    window.location.href = "prior_to_paying.html";
+  });
+</script>
+
   
 </html>

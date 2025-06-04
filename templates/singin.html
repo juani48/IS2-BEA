@@ -100,6 +100,7 @@
             {% endif %}
         {% endwith %}
         <!-- Mensaje de error (afuera del form) -->
+<!-- Mensaje de error (afuera del form) -->
 <div id="form-error" class="hidden bg-red-100 border border-red-500 text-red-800 text-md font-bold rounded px-4 py-3 mb-4 text-center">
 </div>
 
@@ -112,6 +113,7 @@
       type="text"
       id="name"
       name="name"
+      value="{{ request.form.get('name', '') }}"
       required
       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
@@ -126,6 +128,7 @@
       type="text"
       id="lastname"
       name="lastname"
+      value="{{ request.form.get('lastname', '') }}"
       required
       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
@@ -140,6 +143,7 @@
       type="text"
       id="dni"
       name="dni"
+      value="{{ request.form.get('dni', '') }}"
       required
       pattern="\d+"
       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
@@ -151,8 +155,14 @@
   <!-- Email -->
   <div>
     <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-    <input type="email" id="email" name="email" required
-      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    <input
+      type="email"
+      id="email"
+      name="email"
+      value="{{ request.form.get('email', '') }}"
+      required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
   </div>
 
   <!-- Teléfono -->
@@ -162,6 +172,7 @@
       type="text"
       id="phone"
       name="phone"
+      value="{{ request.form.get('phone', '') }}"
       required
       pattern="\d+"
       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
@@ -172,15 +183,27 @@
   <!-- Fecha nacimiento -->
   <div>
     <label for="birthdate" class="block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
-    <input type="date" id="birthdate" name="birthdate" required
-      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    <input
+      type="date"
+      id="birthdate"
+      name="birthdate"
+      value="{{ request.form.get('birthdate', '') }}"
+      required
+      class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+    />
   </div>
 
   <!-- Foto DNI -->
   <div>
     <label for="dni_photo" class="block text-sm font-medium text-gray-700">Foto del DNI</label>
-    <input type="file" id="dni_photo" name="dni_photo" accept="image/*" required
-      class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" />
+    <input
+      type="file"
+      id="dni_photo"
+      name="dni_photo"
+      accept="image/*"
+      required
+      class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+    />
   </div>
 
   <!-- Términos -->
@@ -198,6 +221,13 @@
     Confirmar
   </button>
 </form>
+<!-- Script que limpia el form si el backend devuelve que fue exitoso -->
+{% if registro_exitoso %}
+<script>
+  document.getElementById("register-form").reset();
+</script>
+{% endif %}
+
 
 
 <!-- Link alternativo -->

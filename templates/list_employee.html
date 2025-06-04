@@ -237,6 +237,9 @@ function modificarDni(dniActual) {
     if (res.status === 204) {
       mostrarMensaje("✅ DNI modificado exitosamente");
       document.getElementById(`card-${dniActual}`).remove(); // o actualizar el contenido si querés
+      setTimeout(() => {
+      window.location.href = "/list_employee.html";  
+      }, 1000);
     } else {
       return res.json().then(data => {
         mostrarMensaje(`❌ ${data.error}`);
@@ -270,6 +273,10 @@ function deshabilitarEmpleado(dni) {
     if (res.status === 204) {
       mostrarMensaje("✅ Empleado deshabilitado correctamente");
       document.getElementById(`card-${dni}`).remove(); // elimina la tarjeta
+       setTimeout(() => {
+      window.location.href = "/list_employee.html";  
+      }, 1000);
+
     } else {
       return res.json().then(data => {
         mostrarMensaje(`❌ ${data.error}`);

@@ -1,5 +1,4 @@
-from data.appDataBase import enable_employee, get_user
+from data.appDataBase import enable_employee
 
-def usecase_enable_employee(dni):
-    local_employee= get_user(dni)
-    enable_employee(nro_employee= local_employee.employee_number)
+def usecase_enable_employee(dni,employee_number):
+    enable_employee(nro_employee= employee_number,dni= dni)

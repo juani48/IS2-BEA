@@ -13,11 +13,12 @@ class MachineModel(Base):
     disable = Column(Boolean, nullable=False, default=False)
 
     description = Column(String, nullable=True)
+    creation_date = Column(String, nullable=False)
     
     # stock?
 
     def __repr__(self):
-        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}""" + "}"
+        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}, creation_date: {self.creation_date}""" + "}"
 
     def json(self):
         return {
@@ -29,6 +30,7 @@ class MachineModel(Base):
             "refund": self.refund,
             "disable": self.disable,
             "description": self.description,
+            "creation_date": self.creation_date
         }
 
     def include(self, string):
@@ -41,7 +43,7 @@ class MachineModel(Base):
         # if self.description:
         #     return str in self.description.lower()
 
-    def __init__(self, patent, mark, model, price_day, ubication, refund, description):
+    def __init__(self, patent, mark, model, price_day, ubication, refund, description, creation_date):
         self.patent = patent
         self.mark = mark
         self.model = model
@@ -50,4 +52,4 @@ class MachineModel(Base):
         self.refund = refund
         self.disable = False
         self.description = description
-        #self.image = image
+        self.creation_date = creation_date

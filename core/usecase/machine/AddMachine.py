@@ -2,8 +2,8 @@ from data.model.MachineModel import MachineModel
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.appDataBase import insert_machine, insert_machine_categorie
 
-def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description):
-    validator(patent, mark, model, price_day, ubication, refund, categorie)
+def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categorie, description, creation_date):
+    __validator__(patent, mark, model, price_day, ubication, refund, categorie, creation_date)
 
     machine = MachineModel(
         patent=patent,
@@ -13,6 +13,7 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
         ubication=ubication,
         refund=refund,
         description=description,
+        creation_date=creation_date
     )
     insert_machine(patent, machine)
 
@@ -24,7 +25,7 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
         insert_machine_categorie(patent, c, mc)
         
 
-def validator(patent, mark, model, price_day, ubication, refund, categorie):
+def __validator__(patent, mark, model, price_day, ubication, refund, categorie, creation_date):
     if (patent == ""):
         raise Exception("La patente no puede estar vacia.")
     if (mark == ""):
@@ -39,4 +40,6 @@ def validator(patent, mark, model, price_day, ubication, refund, categorie):
         raise Exception("El reembolso no puede estar vacio.")
     if (len(categorie) == 0):
         raise Exception("La categoria no puede estar vacia.")
+    if (creation_date == None):
+        raise Exception("La fecha de creacion no puede estar vacia.")
     

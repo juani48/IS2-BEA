@@ -3,7 +3,7 @@ from data.config import Base, engine
 
 from data.query.disable import query_disable_categorie, query_disable_machine,query_disable_employee
 
-from data.query.delete import query_delete_user
+from data.query.delete import query_delete_mc, query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
@@ -159,3 +159,6 @@ def delete_reservation_by_employee(client_id, start_day, machine_id):
 
 def delete_reservation_by_client(preference_id):
     query_delete_reservation.execute_by_client(preference_id)
+
+def delete_machine_categorie(patent):
+    query_delete_mc.execute(patent)

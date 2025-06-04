@@ -38,7 +38,8 @@ def __MAQUINAS__():
         ubication="Ubicacion ABC1", 
         refund=10, 
         categorie=["Jardineria"], 
-        description="Descripcion de la maquina ABC1")
+        description="Descripcion de la maquina ABC1",
+        creation_date="0001-1-1")
 
     AddMachine.usecase_add_machine(
         patent="ABC2", 
@@ -48,7 +49,8 @@ def __MAQUINAS__():
         ubication="Ubicacion ABC2", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Descripcion de la maquina ABC2")
+        description="Descripcion de la maquina ABC2",
+        creation_date="0001-1-1")
         
     AddMachine.usecase_add_machine(
         patent="123A", 
@@ -58,7 +60,8 @@ def __MAQUINAS__():
         ubication="Ubicacion 123A", 
         refund=15, 
         categorie=["Jardineria"], 
-        description="Descripcion de la maquina 123A")
+        description="Descripcion de la maquina 123A",
+        creation_date="0001-1-1")
     
     AddMachine.usecase_add_machine(
         patent="C1AB", 
@@ -68,7 +71,8 @@ def __MAQUINAS__():
         ubication="Ubicacion C1AB", 
         refund=5, 
         categorie=["Mineria"], 
-        description="Descripcion de la maquina C1AB")
+        description="Descripcion de la maquina C1AB",
+        creation_date="0001-1-1")
 
     AddMachine.usecase_add_machine(
         patent="N2CA", 
@@ -78,7 +82,8 @@ def __MAQUINAS__():
         ubication="Ubicacion N2CA", 
         refund=5, 
         categorie=["Construccion"], 
-        description="Descripcion de la maquina N2CA")
+        description="Descripcion de la maquina N2CA",
+        creation_date="0001-1-1")
         
     AddMachine.usecase_add_machine(
         patent="75TW", 
@@ -88,7 +93,8 @@ def __MAQUINAS__():
         ubication="Ubicacion 75TW", 
         refund=18, 
         categorie=["Transporte"], 
-        description="Descripcion de la maquina 75TW")
+        description="Descripcion de la maquina 75TW",
+        creation_date="0001-1-1")
     
 def __ADMIN__():
     admin = UserModel(

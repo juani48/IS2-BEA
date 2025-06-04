@@ -80,9 +80,12 @@ def __add_points__():
 def load_home():
     return render_template('/main.html')
 
-@app.route('/machinery.html') #No hace falta estar logueado para entrar acá
+@app.route('/machinery.html')
 def load_machinery():
-    machines = GetAllMachines.usecase_get_all_machines()  # obtiene todas las máquinas activas
+    if current_user.is_authenticated and current_user.type == "Admin":
+        machines = GetAllMachinesAdmin.usecase_get_all_machines()  # incluye habilitadas y deshabilitadas
+    else:
+        machines = GetAllMachines.usecase_get_all_machines()  # solo habilitadas
     return render_template('machinery.html', machines=machines)
 
 
@@ -238,6 +241,15 @@ def user_history_page():
 def list_categories():
     if current_user.type in ["Admin", "Empleado"]:
         return render_template('list_categories.html')
+    else:
+        return render_template("/main.html")
+    
+
+@app.route('/edit_machine_data.html') 
+@login_required                   
+def edit_machine_data():
+    if current_user.type in ["Admin"]:
+        return render_template('edit_machine_data.html')
     else:
         return render_template("/main.html")
     
@@ -549,14 +561,17 @@ def update_machine():
             UpdateMachine.usecase_update_machine(
                 patent=request_value.get("patent"),
                 mark=request_value.get("mark"),
+                model=request_value.get("model"),
                 price_day=request_value.get("price_day"),
                 ubication=request_value.get("ubication"),
                 refund=request_value.get("refund"),
                 description=request_value.get("description"),
+                creation_date=request_value.get("creation_date"),
+                categorie=request_value.get("categorie")  # ✅ esto es lo nuevo
             )
             return "", 204
         except Exception as e:
-            return jsonify({ "message": e }), 404
+            return jsonify({ "message": str(e) }), 404
     else:
         return render_template("/main.html")
 

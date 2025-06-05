@@ -216,6 +216,10 @@
                 success.classList.remove("hidden");
                 error.classList.add("hidden");
                 e.target.reset();
+                 // Espera 3 segundos y redirige a la lista
+                setTimeout(() => {
+                  window.location.href = "list_categories.html";
+                }, 2000);
               } else {
                 // Mostramos mensaje personalizado si lo envió el backend
                 throw new Error(data.error || "Error desconocido al registrar");

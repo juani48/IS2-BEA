@@ -128,7 +128,7 @@ def __USUARIOS__():
     usuario_con_puntos = UserModel(
         dni=43907096,
         email="usuario_con_puntos@gmail.com",
-        name="Usuario",     
+        name="Usuario",
         lastname="Con Puntos",
         phone=0000,
         birth_date="0001-3-1",
@@ -290,13 +290,6 @@ def __RESERVAS__():
         type="Cliente",
         apply_discount=False
     )
-
-
-
-
-
-
-
 
 
 

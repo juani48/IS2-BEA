@@ -4,7 +4,7 @@ import json
 from flask import Flask, jsonify, render_template, request,abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from core.entity.User import User
-from data.appDataBase import get_user
+from data.appDataBase import get_machine, get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
 from data import appDataBase
@@ -26,6 +26,13 @@ from data.model.ReservationModel import ReservationModel
 from data.config import session
 from data.model.ReservationModel import ReservationModel
 from datetime import datetime
+from core.usecase.machine import UpdateMachineUbication
+from core.usecase.user.GetUserPoints import usecase_get_user_points
+from data.query.get.query_get_discount import query_get_discount
+
+from data.config import session
+
+
 
 
 
@@ -498,6 +505,53 @@ def user_history():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+@app.route("/user/get_discount", methods=["GET"])
+@login_required
+def get_discount():
+    try:
+        dni = request.args.get("dni")
+        if not dni:
+            return jsonify({"error": "DNI no proporcionado"}), 400
+
+        print(f"🔎 Recibido dni: {dni}")
+        current_points = usecase_get_user_points(dni)  # ✅ esto está bien
+
+        print(f"🎯 Puntos actuales: {current_points}")
+        print(f"🧪 Tipo de query_get_discount: {type(query_get_discount)}")
+        discount = query_get_discount()
+
+        discount = query_get_discount()
+        print(f"🎯 Descuento encontrado: {discount}")
+
+        if not discount:
+            return jsonify({"error": "No hay política de descuento activa"}), 404
+
+        if discount.need is None:
+            return jsonify({"error": "El descuento de puntos no está bien configurado"}), 500
+
+        if current_points >= discount.need:
+            return jsonify({
+                "can_use_discount": True,
+                "percentage": discount.discount
+            }), 200
+        else:
+            return jsonify({
+                "can_use_discount": False,
+                "percentage": discount.discount
+            }), 200
+
+    except Exception as e:
+        print(f"💥 ERROR en /user/get_discount: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/user/user_points", methods=["GET","POST"])
+def user_points():
+    try: 
+        request_value = request.get_json() # { "id": 12345 }
+        return jsonify({ "points": GetUserPoints.usecase_get_user_points(request_value.get("id")) }), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 # ---- MAQUINAS ----
 
@@ -543,8 +597,9 @@ def add_machine():
                 price_day=float(form.get("price_day")),
                 ubication=form.get("ubication"),
                 refund=float(form.get("refund")),
-                categorie=form.get("categorie"), # TIENE QUE SER UN ARREGLO AUNQUE SEA UNA CATEGORIA = { "cagorie": [ "PEPITO" ] }
-                description=description
+                categorie=categorie, # TIENE QUE SER UN ARREGLO AUNQUE SEA UNA CATEGORIA = { "cagorie": [ "PEPITO" ] }
+                description=description,
+                creation_date=form.get("creation_date")
             )
             return "", 201
         except Exception as e:
@@ -563,17 +618,36 @@ def update_machine():
                 mark=request_value.get("mark"),
                 model=request_value.get("model"),
                 price_day=request_value.get("price_day"),
-                ubication=request_value.get("ubication"),
+                ubication=request_value.get("ubication") if "ubication" in request_value else None,
                 refund=request_value.get("refund"),
                 description=request_value.get("description"),
                 creation_date=request_value.get("creation_date"),
-                categorie=request_value.get("categorie")  # ✅ esto es lo nuevo
+                categorie=request_value.get("categorie")  #  esto es lo nuevo
             )
             return "", 204
         except Exception as e:
             return jsonify({ "message": str(e) }), 404
     else:
         return render_template("/main.html")
+
+@app.route("/machine/update_ubication", methods=["POST"])
+@login_required
+def update_machine_ubication():
+    if current_user.type == "Admin":
+        try:
+            data = request.get_json()
+            patent = data.get("patent")
+            new_ubication = data.get("ubication")
+
+            UpdateMachineUbication.usecase_update_machine_ubication(patent, new_ubication)
+
+            return "", 204
+        except Exception as e:
+            return jsonify({"message": str(e)}), 500
+    else:
+        return jsonify({"message": "No autorizado"}), 403
+
+
 
 @app.route("/machine/enable_machine", methods=["GET", "POST"]) 
 @login_required
@@ -740,7 +814,7 @@ def disable_categorie():
 # este es para hacer la lista de categorias disponibles
 @app.route("/categories/enabled", methods=["GET"])
 def get_enabled_categories():
-    return jsonify({ "categories": GetAllCategoriesEnable.usecase_get_all_categories() })
+    return jsonify(GetAllCategoriesEnable.usecase_get_all_categories())
 
 
 # ---- RESERVAS ---- #
@@ -803,13 +877,7 @@ def reserve_machine():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/user/user_points", methods=["GET","POST"])
-def user_points():
-    try: 
-        request_value = request.get_json() # { "id": 12345 }
-        return jsonify({ "points": GetUserPoints.usecase_get_user_points(request_value.get("id")) }), 200 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+
     
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():

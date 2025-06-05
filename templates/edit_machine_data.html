@@ -94,51 +94,92 @@
     </header>
 
     <main class="max-w-4xl mx-auto bg-white mt-10 p-6 rounded-xl shadow">
-      <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">Editar Maquinaria</h1>
+      <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">
+        Editar Maquinaria
+      </h1>
 
       <form id="editMachineForm" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="font-semibold">Marca</label>
-            <input type="text" id="mark" class="w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label class="font-semibold">Modelo</label>
-            <input type="text" id="model" class="w-full border rounded px-3 py-2" />
-          </div>
-          <div>
             <label class="font-semibold">Precio por día</label>
-            <input type="number" id="price_day" class="w-full border rounded px-3 py-2" />
+            <input
+              type="number"
+              id="price_day"
+              class="w-full border rounded px-3 py-2"
+            />
           </div>
-          <div>
-            <label class="font-semibold">Reembolso</label>
-            <input type="number" id="refund" class="w-full border rounded px-3 py-2" />
+          <div class="md:col-span-2">
+            <label class="font-semibold block mb-1"
+              >Política de reembolso</label
+            >
+            <div class="space-y-2">
+              <label class="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="refundOption"
+                  value="100"
+                  class="refund-radio"
+                />
+                Reembolso total (100%)
+              </label>
+              <label class="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="refundOption"
+                  value="partial"
+                  class="refund-radio"
+                />
+                Reembolso parcial
+                <input
+                  type="number"
+                  id="refundPercentage"
+                  class="border rounded px-2 py-1 w-20"
+                  placeholder="%"
+                  disabled
+                />
+              </label>
+              <label class="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="refundOption"
+                  value="0"
+                  class="refund-radio"
+                />
+                Sin reembolso
+              </label>
+            </div>
           </div>
-          <div>
-            <label class="font-semibold">Ubicación</label>
-            <input type="text" id="ubication" class="w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label class="font-semibold">Fecha de creación</label>
-            <input type="date" id="creation_date" class="w-full border rounded px-3 py-2" />
-          </div>
+
           <div class="md:col-span-2">
             <label class="font-semibold">Categorías</label>
-             <div id="category-container" class="space-y-2"></div>
- 
-        </div>
+            <div id="category-container" class="space-y-2"></div>
+          </div>
           <div class="md:col-span-2">
             <label class="font-semibold">Descripción</label>
-            <textarea id="description" class="w-full border rounded px-3 py-2" rows="4"></textarea>
+            <textarea
+              id="description"
+              class="w-full border rounded px-3 py-2"
+              rows="4"
+            ></textarea>
           </div>
         </div>
 
         <div class="text-center mt-6">
-          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded">
+          <button
+            type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded"
+          >
             Guardar Cambios
           </button>
         </div>
       </form>
+
+      <div
+        id="mensajeExito"
+        class="hidden text-green-700 bg-green-100 border border-green-400 rounded p-3 text-center font-semibold mb-4"
+      >
+        Máquina actualizada correctamente.
+      </div>
     </main>
 
     <!-- Footer -->
@@ -211,73 +252,132 @@
         if (!machineId) return alert("Error: no se indicó máquina.");
 
         fetch(`/machine/get_by_id/${machineId}`)
-          .then(res => res.json())
-          .then(machine => {
-            document.getElementById("mark").value = machine.mark || "";
-            document.getElementById("model").value = machine.model || "";
-            document.getElementById("price_day").value = machine.price_day || "";
-            document.getElementById("refund").value = machine.refund || "";
-            document.getElementById("ubication").value = machine.ubication || "";
-            document.getElementById("description").value = machine.description || "";
-            document.getElementById("creation_date").value = machine.creation_date?.split("T")[0] || "";
+          .then((res) => res.json())
+          .then((machine) => {
+            document.getElementById("price_day").value =
+              machine.price_day || "";
+
+            const refundValue = machine.refund;
+            const radios = document.querySelectorAll(
+              'input[name="refundOption"]'
+            );
+            const refundInput = document.getElementById("refundPercentage");
+
+            if (refundValue === 100) {
+              radios[0].checked = true;
+            } else if (refundValue === 0) {
+              radios[2].checked = true;
+            } else {
+              radios[1].checked = true;
+              refundInput.disabled = false;
+              refundInput.value = refundValue;
+            }
+
+            document.getElementById("description").value =
+              machine.description || "";
 
             // Cargar categorías existentes
             fetch("/categories/enabled")
-            .then(res => res.json())
-            .then(data => {
+              .then((res) => res.json())
+              .then((categories) => {
                 const container = document.getElementById("category-container");
                 container.innerHTML = "";
 
-                data.categories.forEach(cat => {
-                const label = document.createElement("label");
-                label.className = "block";
+                categories.forEach((cat) => {
+                  const label = document.createElement("label");
+                  label.className = "block";
 
-                const input = document.createElement("input");
-                input.type = "checkbox";
-                input.name = "categorie";
-                input.value = cat;
-                if (machine.categories?.includes(cat)) input.checked = true;
+                  const input = document.createElement("input");
+                  input.type = "checkbox";
+                  input.name = "categorie";
+                  input.value = cat;
+                  if (machine.categories?.includes(cat)) input.checked = true;
 
-                label.appendChild(input);
-                label.append(` ${cat}`);
-                container.appendChild(label);
+                  label.appendChild(input);
+                  label.append(` ${cat}`);
+                  container.appendChild(label);
                 });
-            });
-
+              });
           });
       });
 
-      document.getElementById("editMachineForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const selectedCats = Array.from(
-        document.querySelectorAll("input[name='categorie']:checked")
-        ).map(input => input.value);
+      document
+        .querySelectorAll('input[name="refundOption"]')
+        .forEach((radio) => {
+          radio.addEventListener("change", () => {
+            const refundInput = document.getElementById("refundPercentage");
+            if (radio.value === "partial") {
+              refundInput.disabled = false;
+            } else {
+              refundInput.disabled = true;
+              refundInput.value = "";
+            }
+          });
+        });
 
-        const updated = {
-          patent: machineId,
-          mark: document.getElementById("mark").value,
-          model: document.getElementById("model").value,
-          price_day: parseFloat(document.getElementById("price_day").value),
-          refund: parseFloat(document.getElementById("refund").value),
-          ubication: document.getElementById("ubication").value,
-          description: document.getElementById("description").value,
-          creation_date: document.getElementById("creation_date").value,
-          categorie: selectedCats
-        };
+      document
+        .getElementById("editMachineForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const selectedCats = Array.from(
+            document.querySelectorAll("input[name='categorie']:checked")
+          ).map((input) => input.value);
 
-       fetch("/machine/update_machine", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated)
-        })
-          .then(res => {
-            if (!res.ok) throw new Error("No se pudo guardar");
-            alert("✅ Máquina actualizada correctamente");
-            window.location.href = `/description_machinery.html?machine_id=${machineId}`;
+          let refund = 0;
+          const selectedRefund = document.querySelector(
+            'input[name="refundOption"]:checked'
+          );
+
+          if (selectedRefund) {
+            if (selectedRefund.value === "total") {
+              refund = 100;
+            } else if (selectedRefund.value === "partial") {
+              const partial = parseFloat(
+                document.getElementById("refundPercentage").value
+              );
+              if (!isNaN(partial) && partial >= 0 && partial <= 100) {
+                refund = partial;
+              } else {
+                alert(
+                  "Por favor ingresá un porcentaje de reembolso válido (0-100)"
+                );
+                return;
+              }
+            } else if (selectedRefund.value === "none") {
+              refund = 0;
+            }
+          }
+
+          const updated = {
+            patent: machineId,
+            price_day: parseFloat(document.getElementById("price_day").value),
+            refund: refund,
+            description: document.getElementById("description").value,
+            categorie: selectedCats,
+          };
+
+          fetch("/machine/update_machine", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updated),
           })
-          .catch(err => alert("❌ Error: " + err.message));
-      });
+            .then((res) => {
+              if (!res.ok) throw new Error("No se pudo guardar");
+
+              const mensaje = document.getElementById("mensajeExito");
+              if (mensaje) {
+                mensaje.classList.remove("hidden");
+                mensaje.scrollIntoView({ behavior: "smooth" });
+
+                setTimeout(() => {
+                  mensaje.classList.add("hidden");
+                  window.location.href = `/description_machinery.html?machine_id=${machineId}`;
+                }, 3000);
+              }
+            })
+
+            .catch((err) => alert("❌ Error: " + err.message));
+        });
     </script>
   </body>
-  <!-- empleado puede cambiar ubicacion-->
 </html>

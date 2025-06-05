@@ -177,9 +177,11 @@
             <li>
               <strong>Precio por día:</strong> <span id="machinePrice"></span>
             </li>
-            <li>
-              <strong>Ubicación:</strong> <span id="machineUbication"></span>
+            <li class="flex items-center gap-2 flex-wrap">
+              <strong>Ubicación:</strong>
+              <span id="machineUbication" class="text-gray-700"></span>
             </li>
+
             <li>
               <p>
                 <strong>Categorías:</strong>
@@ -187,6 +189,10 @@
               </p>
             </li>
             <li><strong>Patente:</strong> <span id="machinePatent"></span></li>
+            <li>
+              <strong>Fecha de creación:</strong>
+              <span id="machineCreationDate"></span>
+            </li>
           </ul>
 
           <a
@@ -336,6 +342,10 @@
               machine.categories || []
             ).join(", ");
             document.getElementById("machinePatent").innerText = machine.patent;
+            document.getElementById("machineCreationDate").innerText =
+              machine.creation_date
+                ? new Date(machine.creation_date).toLocaleDateString("es-AR")
+                : "No registrada";
 
             fetch("/session/status")
               .then((res) => res.json())
@@ -344,6 +354,7 @@
                   const estado = machine.disable
                     ? "Deshabilitada"
                     : "Habilitada";
+
                   const estadoEl = document.createElement("p");
                   estadoEl.innerHTML = `<strong>Estado:</strong> <span id="machineStatus" class="${
                     machine.disable ? "text-red-600" : "text-green-600"
@@ -353,7 +364,7 @@
                     .appendChild(estadoEl);
 
                   const botonesDiv = document.createElement("div");
-                  botonesDiv.className = "mt-6 flex gap-4";
+                  botonesDiv.className = "mt-6 flex flex-wrap gap-4";
 
                   botonEstado = document.createElement("button");
                   botonEstado.innerText = machine.disable
@@ -362,13 +373,11 @@
                   botonEstado.className = machine.disable
                     ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                     : "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
-
                   botonEstado.onclick = () =>
                     cambiarEstado(
                       machine.disable ? "enable" : "disable",
                       machine.patent
                     );
-
                   botonesDiv.appendChild(botonEstado);
 
                   const botonEditar = document.createElement("a");
@@ -377,6 +386,46 @@
                   botonEditar.className =
                     "bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded";
                   botonesDiv.appendChild(botonEditar);
+
+                  // NUEVO: Input + botón rojo para actualizar ubicación
+                  const inputUbicacion = document.createElement("input");
+                  inputUbicacion.type = "text";
+                  inputUbicacion.placeholder = "Nueva ubicación";
+                  inputUbicacion.className =
+                    "border rounded px-3 py-2 w-full max-w-xs mt-2";
+
+                  const botonUbicacion = document.createElement("button");
+                  botonUbicacion.innerText = "Actualizar ubicación";
+                  botonUbicacion.className =
+                    "bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2";
+
+                  botonUbicacion.onclick = () => {
+                    const nuevaUbicacion = inputUbicacion.value.trim();
+                    if (!nuevaUbicacion) {
+                      alert("Por favor ingresá una nueva ubicación válida.");
+                      return;
+                    }
+
+                    fetch("/machine/update_ubication", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        patent: machine.patent,
+                        ubication: nuevaUbicacion,
+                      }),
+                    })
+                      .then((res) => {
+                        if (!res.ok) throw new Error("No se pudo actualizar");
+                        document.getElementById("machineUbication").innerText =
+                          nuevaUbicacion;
+                        mostrarToast("Ubicación actualizada con éxito");
+                        inputUbicacion.value = "";
+                      })
+                      .catch((err) => alert("Error: " + err.message));
+                  };
+
+                  botonesDiv.appendChild(inputUbicacion);
+                  botonesDiv.appendChild(botonUbicacion);
 
                   const botonReservar = document.getElementById("reserveBtn");
                   botonReservar.parentNode.insertBefore(

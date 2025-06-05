@@ -18,6 +18,7 @@ def usecase_add_machine(patent, mark, model, price_day, ubication, refund, categ
     insert_machine(patent, machine)
 
     for c in categorie:
+        
         mc = MachineCategorieModel(
             machine_id=patent,
             categorie_id=c

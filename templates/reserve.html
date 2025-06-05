@@ -148,7 +148,7 @@
           ><br />
           <label class="inline-flex items-center space-x-2">
             <input type="radio" name="entrega" value="domicilio" />
-            <span>Envío a domicilio</span>
+            <span>Envío</span>
           </label>
         </div>
       </div>
@@ -167,7 +167,24 @@
         />
       </div>
 
-      <!-- Mensaje de error -->
+      <div class="mt-4 text-lg font-semibold">
+        Precio total: <span id="precioTotal">$0</span>
+      </div>
+
+      <div class="mt-2">
+       <input type="checkbox" id="aplicarPuntos" />
+        <label for="aplicarPuntos">Aplicar descuento con puntos</label>
+      </div>
+
+      <div id="precioConDescuentoWrapper" class="mt-2 hidden text-green-700 font-bold">
+        Precio con descuento aplicado: <span id="nuevoPrecio">$0</span>
+
+      </div>
+
+      <p id="errorDescuento" class="hidden text-red-600 font-semibold mt-2">⚠️ No tenés puntos suficientes para aplicar el descuento.</p>
+
+
+            <!-- Mensaje de error -->
       <div
         id="mensajeError"
         class="hidden bg-red-200 text-red-800 font-semibold p-2 rounded"
@@ -184,89 +201,132 @@
 </body>
 
     <script>
-      const machineId = new URLSearchParams(window.location.search).get(
-        "machine_id"
-      );
-      const maquinaNombre = document.getElementById("maquinaNombre");
-      const maquinaImagen = document.getElementById("maquinaImagen");
+  const machineId = new URLSearchParams(window.location.search).get("machine_id");
+  const maquinaNombre = document.getElementById("maquinaNombre");
 
-      if (machineId) {
-        // Consultar al backend para obtener nombre e imagen
-        fetch(`/machine/get_by_id/${machineId}`)
-          .then((response) => {
-            if (!response.ok) throw new Error("No se encontró la máquina");
-            return response.json();
-          })
-          .then((data) => {
-            // Mostrar nombre completo
-            maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
-          
-          })
-          .catch((error) => {
-            console.error(error);
-            maquinaNombre.textContent = `${machineId}`;
-          });
-      } else {
-        maquinaNombre.textContent = "No se seleccionó ninguna máquina";
-      }
+  if (machineId) {
+    fetch(`/machine/get_by_id/${machineId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("No se encontró la máquina");
+        return response.json();
+      })
+      .then((data) => {
+        maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
+        
+        // ✅ Guardar precio por día en localStorage
+        localStorage.setItem("selectedMachinePrice", data.price_day);
 
-      // Mostrar/ocultar campo de dirección
-      document.querySelectorAll('input[name="entrega"]').forEach((radio) => {
-        radio.addEventListener("change", function () {
-          document
-            .getElementById("campoDireccion")
-            .classList.toggle("hidden", this.value !== "domicilio");
-        });
+        // ✅ Calcular precio inicial si ya hay fechas cargadas
+        calcularPrecioTotal();
+      })
+      .catch((error) => {
+        console.error(error);
+        maquinaNombre.textContent = `${machineId}`;
       });
+  } else {
+    maquinaNombre.textContent = "No se seleccionó ninguna máquina";
+  }
 
-      // Validación de fechas
-      document
-        .getElementById("reservaForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+  // Mostrar/ocultar dirección
+  document.querySelectorAll('input[name="entrega"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
+    });
+  });
 
-          const fechaInicio = new Date(
-            document.getElementById("fechaInicio").value
-          );
-          const fechaFin = new Date(document.getElementById("fechaFin").value);
-          const errorDiv = document.getElementById("mensajeError");
+  // Volver a calcular el precio cuando cambian las fechas
+  document.getElementById("fechaInicio").addEventListener("change", calcularPrecioTotal);
+  document.getElementById("fechaFin").addEventListener("change", calcularPrecioTotal);
 
-          errorDiv.classList.add("hidden");
-          errorDiv.textContent = "";
+  function calcularPrecioTotal() {
+    const fechaInicio = new Date(document.getElementById("fechaInicio").value);
+    const fechaFin = new Date(document.getElementById("fechaFin").value);
+    const precioPorDia = parseFloat(localStorage.getItem("selectedMachinePrice"));
 
-          if (fechaFin < fechaInicio) {
-            errorDiv.textContent =
-              "La fecha de fin no puede ser anterior a la fecha de inicio.";
-            errorDiv.classList.remove("hidden");
-            return;
-          }
+    if (isNaN(fechaInicio) || isNaN(fechaFin) || fechaFin <= fechaInicio || isNaN(precioPorDia)) {
+      document.getElementById("precioTotal").textContent = "-";
+      return NaN;
+    }
 
-          const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
-          if (dias < 7) {
-            errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
-            errorDiv.classList.remove("hidden");
-            return;
-          }
+    const dias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
+    const total = dias * precioPorDia;
+    document.getElementById("precioTotal").textContent = `$${total.toFixed(2)}`;
+    return total;
+  }
 
-          // Parámetros del formulario
-          const shipment =
-            document.querySelector('input[name="entrega"]:checked').value ===
-            "domicilio";
-          const direccion = document.getElementById("direccion").value;
-          const user = JSON.parse(localStorage.getItem("user")); // o ajustalo si viene de sesión
+  // Aplicar descuento por puntos
+  document.getElementById("aplicarPuntos").addEventListener("change", async function () {
+    const aplicar = this.checked;
+    const total = calcularPrecioTotal();
+    const dni = JSON.parse(localStorage.getItem("user"))?.dni;
 
-          const reserve = ({ 
-            start_day: document.getElementById("fechaInicio").value,
-            end_day: document.getElementById("fechaFin").value,
-            client_id: user.dni,
-            machine_id: machineId,
-            shipment: shipment,
-          });
-          
-          localStorage.setItem("reserve", JSON.stringify(reserve));
-          window.location.href = "prior_to_paying.html";
-        });
+    if (!aplicar || !dni || isNaN(total)) {
+      document.getElementById("precioConDescuentoWrapper").classList.add("hidden");
+      return;
+    }
 
-    </script>
+    try {
+      const res = await fetch(`/user/get_discount?dni=${dni}`);
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Error al verificar puntos");
+
+      if (data.can_use_discount) {
+        const nuevo = total * (1 - data.percentage / 100);
+        document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
+        document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
+      } else {
+        alert("❌ No tenés suficientes puntos para aplicar el descuento.");
+        this.checked = false;
+      }
+    } catch (err) {
+      alert("Error al verificar puntos: " + err.message);
+      this.checked = false;
+    }
+  });
+
+  // Validación y envío
+  document.getElementById("reservaForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const fechaInicio = new Date(document.getElementById("fechaInicio").value);
+    const fechaFin = new Date(document.getElementById("fechaFin").value);
+    const errorDiv = document.getElementById("mensajeError");
+
+    errorDiv.classList.add("hidden");
+    errorDiv.textContent = "";
+
+    if (fechaFin < fechaInicio) {
+      errorDiv.textContent = "La fecha de fin no puede ser anterior a la fecha de inicio.";
+      errorDiv.classList.remove("hidden");
+      return;
+    }
+
+    const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+    if (dias < 7) {
+      errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
+      errorDiv.classList.remove("hidden");
+      return;
+    }
+
+    calcularPrecioTotal();
+
+    const shipment = document.querySelector('input[name="entrega"]:checked').value === "domicilio";
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const reserve = {
+      start_day: document.getElementById("fechaInicio").value,
+      end_day: document.getElementById("fechaFin").value,
+      client_id: user.dni,
+      machine_id: machineId,
+      shipment: shipment,
+      apply_discount: document.getElementById("aplicarPuntos").checked
+    };
+
+    localStorage.setItem("reserve", JSON.stringify(reserve));
+    window.location.href = "prior_to_paying.html";
+  });
+</script>
+
   
 </html>

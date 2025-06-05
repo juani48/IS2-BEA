@@ -236,6 +236,20 @@
           />
         </div> 
 
+              <!-- Fecha de creación -->
+      <div>
+        <label for="creation_date" class="block text-sm font-medium text-gray-700">
+          Fecha de creación
+        </label>
+        <input
+          type="date"
+          id="creation_date"
+          name="creation_date"
+          required
+          class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring focus:ring-red-200"
+        />
+      </div>
+
         <!-- Imagen -->
         <div>
           <label for="image" class="block text-sm font-medium text-gray-700"
@@ -275,7 +289,7 @@
 
 
 function loadCategoires() {
-  fetch("/categories/enabled", { method: "GET" })  //CAMBIADO ACÁ
+  fetch("/categories/enabled", { method: "GET" })  
     .then(res => res.json())
     .then(data => {
       const categorias = data || []; // ← porque /categories/enabled devuelve un array plano
@@ -313,6 +327,9 @@ document.getElementById("machine-form").addEventListener("submit", function (e) 
 
   const form = e.target;
  const formData = new FormData(form);
+ const creationDate = document.getElementById("creation_date").value;
+ formData.set("creation_date", creationDate);
+
 
 const selectedCategories = [];
 document.querySelectorAll('input[name="categorie"]:checked').forEach(input => {

@@ -200,7 +200,6 @@ function mostrarBotonEmpleado() {
     .catch(err => console.error("Error al verificar tipo de usuario:", err));
 }
 
-// ✅ Configura desplegable de Categorías + fetch a backend
 function configurarDropdownCategorias() {
   const toggle = document.getElementById("dropdown-categorias-toggle");
   const menu = document.getElementById("dropdown-categorias-menu");
@@ -221,8 +220,8 @@ function configurarDropdownCategorias() {
     // cargar categorías habilitadas
     fetch("/categories/enabled")
       .then(res => res.json())
-      .then(data => { return data.categories })
-      .then(categories => {
+      .then(data => {
+        const categories = Array.isArray(data.categories) ? data.categories : data;
         menu.innerHTML = "";
         categories.forEach(cat => {
           const link = document.createElement("a");
@@ -238,7 +237,7 @@ function configurarDropdownCategorias() {
       });
   }
 }
-
+    
 function buscarMaquinaria() {
   const input = document.getElementById("searchInput").value.trim();
   if (input !== "") {

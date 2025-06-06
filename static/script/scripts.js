@@ -14,7 +14,7 @@
         }
 // static/script/scripts.js
 
-// ✅ Al cargar la página, arma todo el header dinámico
+//  Al cargar la página, arma todo el header dinámico
 document.addEventListener("DOMContentLoaded", () => {
   cargarHeaderUsuario();         // Muestra nombre o botón login
   configurarDropdownGestionar(); // Desplegable Gestionar si existe
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarBotonEmpleado();       // Agrega "Panel Empleado" si corresponde
 });
 
-// ✅ Carga la cuenta de usuario o login
+//  Carga la cuenta de usuario o login
 function cargarHeaderUsuario() {
   const accountArea = document.getElementById("accountArea");
   if (!accountArea) return;

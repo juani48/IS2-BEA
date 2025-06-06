@@ -512,17 +512,9 @@ def get_discount():
         dni = request.args.get("dni")
         if not dni:
             return jsonify({"error": "DNI no proporcionado"}), 400
-
-        print(f"🔎 Recibido dni: {dni}")
-        current_points = usecase_get_user_points(dni)  # ✅ esto está bien
-
-        print(f"🎯 Puntos actuales: {current_points}")
-        print(f"🧪 Tipo de query_get_discount: {type(query_get_discount)}")
+        current_points = usecase_get_user_points(dni)  #  esto está bien
         discount = query_get_discount()
-
         discount = query_get_discount()
-        print(f"🎯 Descuento encontrado: {discount}")
-
         if not discount:
             return jsonify({"error": "No hay política de descuento activa"}), 404
 
@@ -541,8 +533,7 @@ def get_discount():
             }), 200
 
     except Exception as e:
-        print(f"💥 ERROR en /user/get_discount: {e}")
-        return jsonify({"error": str(e)}), 500
+       return jsonify({"error": str(e)}), 500
     
 @app.route("/user/user_points", methods=["GET","POST"])
 def user_points():

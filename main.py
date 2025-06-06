@@ -630,7 +630,8 @@ def update_machine():
 @app.route("/machine/update_ubication", methods=["POST"])
 @login_required
 def update_machine_ubication():
-    if current_user.type == "Admin":
+    if current_user.type == "Admin" or current_user.type == "Empleado":
+
         try:
             data = request.get_json()
             patent = data.get("patent")

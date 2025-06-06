@@ -235,6 +235,64 @@
       document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
     });
   });
+  document.getElementById("fechaInicio").addEventListener("change", function () {
+  const inicio = new Date(this.value);
+
+  if (isNaN(inicio)) return;
+
+  // Sumar 7 días
+  const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const yyyy = minimoFin.getFullYear();
+  const mm = String(minimoFin.getMonth() + 1).padStart(2, '0');
+  const dd = String(minimoFin.getDate()).padStart(2, '0');
+  const fechaMinimaFin = `${yyyy}-${mm}-${dd}`;
+
+  const fechaFinInput = document.getElementById("fechaFin");
+  fechaFinInput.setAttribute("min", fechaMinimaFin);
+
+  // Si ya tenía una fecha seleccionada menor, borrarla
+  if (new Date(fechaFinInput.value) < minimoFin) {
+    fechaFinInput.value = "";
+  }
+  document.getElementById("fechaInicio").setAttribute("min", fechaMinima);
+});
+document.addEventListener("DOMContentLoaded", function () {
+  const fechaInicioInput = document.getElementById("fechaInicio");
+  const fechaFinInput = document.getElementById("fechaFin");
+
+  // Configurar fecha mínima de inicio como hoy
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const fechaMinima = `${yyyy}-${mm}-${dd}`;
+  fechaInicioInput.setAttribute("min", fechaMinima);
+
+  // Cuando cambia la fecha de inicio, configurar fecha mínima de fin (+7 días)
+  fechaInicioInput.addEventListener("change", function () {
+    const inicio = new Date(this.value);
+    if (isNaN(inicio)) return;
+
+    // Sumar 7 días a la fecha seleccionada
+    const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const yyyyFin = minimoFin.getFullYear();
+    const mmFin = String(minimoFin.getMonth() + 1).padStart(2, '0');
+    const ddFin = String(minimoFin.getDate()).padStart(2, '0');
+    const fechaMinimaFin = `${yyyyFin}-${mmFin}-${ddFin}`;
+
+    fechaFinInput.setAttribute("min", fechaMinimaFin);
+
+    // Si la fecha actual en el campo es menor a la mínima, la limpiamos
+    const actualFin = new Date(fechaFinInput.value);
+    if (actualFin < minimoFin) {
+      fechaFinInput.value = "";
+    }
+
+    // Recalcular precio si ya había precio cargado
+    calcularPrecioTotal();
+  });
+});
+
 
   // Volver a calcular el precio cuando cambian las fechas
   document.getElementById("fechaInicio").addEventListener("change", calcularPrecioTotal);

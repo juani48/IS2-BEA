@@ -240,7 +240,7 @@ if (categorias.length === 0) {
       .then((res) => {
         if (res.ok) {
           mostrarToast("Estado actualizado correctamente", "green");
-          setTimeout(() => cargarCategorias(), 300);
+          setTimeout(() => location.reload(), 300); // recarga total
         } else {
           // si no es OK, intento parsear mensaje de error
           return res.json().then((data) => {

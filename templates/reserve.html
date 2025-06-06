@@ -304,12 +304,6 @@
       errorDiv.classList.remove("hidden");
       return;
     }
-    const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
-    if (dias < 7) {
-      errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
-      errorDiv.classList.remove("hidden");
-      return;
-    }
 
     calcularPrecioTotal();
 

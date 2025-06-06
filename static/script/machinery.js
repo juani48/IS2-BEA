@@ -4,11 +4,28 @@ const cardsPerPage = 9;
 const params = new URLSearchParams(window.location.search);
 const categoryFromURL = params.get("category") || "";
 
+let userType = "Cliente"; // por defecto
+
+
 document.addEventListener("DOMContentLoaded", () => {
   cargarCategoriasSelect();
-  document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
-  fetchMachinesWithFilters();
+
+  fetch("/session/status")
+    .then(res => res.json())
+    .then(data => {
+      if (data.authenticated && data.type) {
+        userType = data.type;
+      }
+      document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
+      fetchMachinesWithFilters();
+    })
+    .catch(err => {
+      console.error("Error al obtener tipo de usuario:", err);
+      document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
+      fetchMachinesWithFilters();
+    });
 });
+
 
 function getFilters() {
   return {
@@ -24,7 +41,11 @@ function fetchMachinesWithFilters() {
   const params = new URLSearchParams(window.location.search);
   const search = params.get("search") || "";
 
-  fetch("/machine/get_all_filter", {
+  const endpoint = userType === "Admin"
+    ? "/machine/get_all_filter_admin"
+    : "/machine/get_all_filter";
+
+  fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -32,28 +53,31 @@ function fetchMachinesWithFilters() {
       string: { apply: search !== "", string: search },
       price: { apply: filters.price > 0, price: filters.price },
       mark: { apply: filters.mark !== "", mark: filters.mark },
-      model: { apply: filters.model !== "", model: filters.model },
+      model: { apply: filters.model !== "", model: filters.model }
     }),
   })
     .then((res) => res.json())
     .then((data) => {
-  if (!Array.isArray(data)) throw new Error("Respuesta no válida");
-  machines = data;
-  currentPage = 1;
+      if (!Array.isArray(data)) throw new Error("Respuesta no válida");
+      machines = data;
+      currentPage = 1;
 
-  const noMachinesText = document.getElementById("no-machines");
-  if (machines.length === 0) {
-    document.getElementById("machine-list").innerHTML = "";
-    noMachinesText.classList.remove("hidden");
-    document.getElementById("pagination").innerHTML = "";
-  } else {
-    noMachinesText.classList.add("hidden");
-    renderPage(currentPage);
-    renderPagination();
-  }
-})
-
+      const noMachinesText = document.getElementById("no-machines");
+      if (machines.length === 0) {
+        document.getElementById("machine-list").innerHTML = "";
+        noMachinesText.classList.remove("hidden");
+        document.getElementById("pagination").innerHTML = "";
+      } else {
+        noMachinesText.classList.add("hidden");
+        renderPage(currentPage);
+        renderPagination();
+      }
+    })
+    .catch((err) => {
+      console.error("Error al cargar máquinas:", err);
+    });
 }
+
 
 function renderPage(page) {
   const container = document.getElementById("machine-list");
@@ -107,6 +131,8 @@ function renderMachine(machine, imageSrc) {
                 onclick="irAReserva(event, '${machine.patent}')">
           Reservar
         </button>
+        ${userType === "Admin" && machine.disable ? `<p class="mt-2 text-sm text-red-600 font-semibold">Maquinaria deshabilitada</p>` : ""}
+
       </div>
     </a>`;
   container.appendChild(card.firstElementChild);

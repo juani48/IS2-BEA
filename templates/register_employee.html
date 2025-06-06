@@ -112,6 +112,8 @@
             name="name"
             required
             class="mt-1 w-full border border-gray-300 rounded-md p-2"
+            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+            oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
           />
         </div>
         <div>
@@ -124,6 +126,8 @@
             name="lastname"
             required
             class="mt-1 w-full border border-gray-300 rounded-md p-2"
+            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+            oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
           />
         </div>
         <div>
@@ -332,24 +336,27 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
-        .then((res) => {
-          if (res.status === 204) {
-            successDiv.classList.remove("hidden");
-            setTimeout(() => {
-              window.location.href = "panelAdmin.html";
-            }, 1500);
-          } else {
-            return res.text().then((msg) => {
-              throw new Error(msg);
-            });
-          }
-        })
-        .catch((err) => {
-          errorDiv.textContent = err.message || "Error al registrar empleado.";
-          errorDiv.classList.remove("hidden");
-        });
+        .then(async (res) => {
+  if (res.status === 204) {
+    successDiv.classList.remove("hidden");
+    setTimeout(() => {
+      window.location.href = "panelAdmin.html";
+    }, 1500);
+  } else {
+    const data = await res.json();
+    const errorMsg = data?.error || "Error al registrar empleado.";
+    const detalles = data?.detalles ? `\n${data.detalles}` : "";
+    throw new Error(errorMsg + detalles);
+  }
+})
+.catch((err) => {
+  errorDiv.textContent = err.message;
+  errorDiv.classList.remove("hidden");
+});
+
     });
   });
+  
 </script>
 
   </body>

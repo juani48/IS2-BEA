@@ -111,10 +111,19 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("/users/get_all_users")
     .then(res => res.json())
     .then(data => {
-      clientes = data;
-      mostrarPaginaClientes(paginaActual);
-      generarPaginacionClientes();
-    });
+  clientes = data.filter(u => u.type === "Cliente");
+
+  if (clientes.length === 0) {
+    document.getElementById("clientes-container").innerHTML = `
+      <p class="text-center text-gray-600 italic text-lg mt-4">
+        No hay clientes registrados.
+      </p>`;
+    return; // evitamos seguir con paginación si no hay clientes
+  }
+
+  mostrarPaginaClientes(paginaActual);
+  generarPaginacionClientes();
+});
 });
 
 function mostrarPaginaClientes(pagina) {
@@ -125,29 +134,48 @@ function mostrarPaginaClientes(pagina) {
   const clientesPagina = clientes.slice(inicio, fin);
 
   clientesPagina.forEach(cliente => {
+    const tieneEmpleado = cliente.employee_number !== 0;
+    const mostrarCampoEmpleado = !tieneEmpleado;
+
     const card = document.createElement("div");
     card.className = "bg-white border rounded-lg shadow-md p-6 text-left";
-    card.innerHTML = `
-      <div id="card-${cliente.dni}" class="bg-white p-4 rounded shadow">
-  <p class="font-bold text-lg">👤 ${cliente.name} ${cliente.lastname}</p>
-  <p>DNI actual: ${cliente.dni}</p>
-  <p>Email: ${cliente.email}</p>
-  <p>Teléfono: ${cliente.phone}</p>
-  <p>Fecha nacimiento: ${cliente.birth_date}</p>
+const necesitaNumeroEmpleado = cliente.employee_number === 0;
 
-  <div class="mt-4 flex items-center gap-2">
-    <input id="new-dni-${cliente.dni}" type="number" placeholder="Nuevo DNI"
-           class="border px-3 py-1 rounded w-48">
-    <button onclick="modificarDni(${cliente.dni})"
-            class="bg-bob-red hover:bg-red-700 text-white px-4 py-1 rounded">
-      Modificar DNI
-    </button>
+card.innerHTML = `
+  <div id="card-${cliente.dni}" class="bg-white p-4 rounded shadow">
+    <p class="font-bold text-lg">👤 ${cliente.name} ${cliente.lastname}</p>
+    <p>DNI actual: ${cliente.dni}</p>
+    <p>Email: ${cliente.email}</p>
+    <p>Teléfono: ${cliente.phone}</p>
+    <p>Fecha nacimiento: ${cliente.birth_date}</p>
+   
+    <div class="mt-4 flex items-center gap-2">
+      <input id="new-dni-${cliente.dni}" type="number" placeholder="Nuevo DNI"
+             class="border px-3 py-1 rounded w-48">
+      <button onclick="modificarDni(${cliente.dni})"
+              class="bg-bob-red hover:bg-red-700 text-white px-4 py-1 rounded">
+        Modificar DNI
+      </button>
+    </div>
+
+    <div class="mt-4 flex items-center gap-2">
+      ${necesitaNumeroEmpleado ? `
+        <input id="nro-empleado-${cliente.dni}" type="number" placeholder="Nro empleado personalizado"
+               class="border px-3 py-1 rounded w-60">` : ''
+      }
+      <button onclick="habilitarComoEmpleado(${cliente.dni}, ${necesitaNumeroEmpleado})"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded">
+        Habilitar como empleado
+      </button>
+    </div>
   </div>
-</div>`
+`;
+
 
     container.appendChild(card);
   });
 }
+
 
 function generarPaginacionClientes() {
   const contenedor = document.getElementById("paginacion-clientes");
@@ -188,6 +216,9 @@ function modificarDni(dniActual) {
     if (res.status === 204) {
       mostrarMensaje("✅ DNI modificado exitosamente");
       document.getElementById(`card-${dniActual}`).remove(); // o actualizar el contenido si querés
+       setTimeout(() => {
+      window.location.href = "/list_all_users.html";  
+      }, 1000);
     } else {
       return res.json().then(data => {
         mostrarMensaje(`❌ ${data.error}`);
@@ -199,6 +230,42 @@ function modificarDni(dniActual) {
     mostrarMensaje("❌ Error al intentar modificar el DNI");
   });
 }
+function habilitarComoEmpleado(dni, necesitaNro) {
+  let nro = 0;
+
+  if (necesitaNro) {
+    const input = document.getElementById(`nro-empleado-${dni}`);
+    if (!input || !input.value || isNaN(input.value)) {
+      mostrarMensaje("❌ Ingresá un número de empleado válido");
+      return;
+    }
+    nro = parseInt(input.value);
+  }
+
+  fetch("/user/enable_employee", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dni: dni, employee_number: nro })
+  })
+  .then(res => {
+    if (res.status === 204) {
+      mostrarMensaje("✅ Usuario habilitado como empleado");
+      document.getElementById(`card-${dni}`).remove();
+      setTimeout(() => {
+      window.location.href = "/list_all_users.html";  
+      }, 1000);
+    } else {
+      return res.json().then(data => mostrarMensaje("❌ " + data.error));
+    }
+  })
+  .catch(err => {
+    console.error("Error al habilitar empleado:", err);
+    mostrarMensaje("❌ Error en la operación");
+  });
+}
+
+
+
 function mostrarMensaje(mensaje) {
   const div = document.createElement("div");
   div.textContent = mensaje;

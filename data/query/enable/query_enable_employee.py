@@ -1,16 +1,20 @@
 from data.config import session
-from data.query.get import query_get_user
+from data.query.get import query_get_user, query_get_employee_by_number
 
-def execute(employeeN,dni):
-    local_employee = query_get_user.execute(dni)
-    if not local_employee:
+def execute(employeeN, dni):
+    local_user = query_get_user.execute(dni)
+    if not local_user:
         raise ValueError(f"No se encontró un usuario con DNI {dni}")
-    
-    local_employee.type = "Empleado"
 
-    if (employeeN == 0):
-        local_employee.employee_number = local_employee.employee_number  * -1
+    if employeeN == 0:
+        # Usa el número actual en negativo, se invierte
+        local_user.employee_number *= -1
     else:
-        local_employee.employee_number = employeeN
+        # Verifica que no esté repetido
+        empleado_existente = query_get_employee_by_number.execute(employeeN)
+        if empleado_existente:
+            raise ValueError(f"El número de empleado {employeeN} ya está en uso")
+        local_user.employee_number = employeeN
 
+    local_user.type = "Empleado"
     session.commit()

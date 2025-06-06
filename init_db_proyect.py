@@ -11,12 +11,12 @@ from datetime import datetime
 def __init_db__():
     try:
         create_database()
-        __CATEGORIAS__()
-        __MAQUINAS__()
+        #__CATEGORIAS__()
+        #__MAQUINAS__()
         __ADMIN__()
-        __USUARIOS__()
-        __EMPLEADOS__()
-        __RESERVAS__()
+        #__USUARIOS__()
+        #__EMPLEADOS__()
+        #__RESERVAS__()
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 
@@ -45,7 +45,7 @@ def __MAQUINAS__():
         patent="ABC2", 
         mark="CAT", 
         model="Excavadora", 
-        price_day=10_000, 
+        price_day=1_000, 
         ubication="Ubicacion ABC2", 
         refund=10, 
         categorie=["Construccion"], 
@@ -87,7 +87,7 @@ def __USUARIOS__():
 
 
     jose = UserModel(
-        dni=48654123,
+        dni=47654123,
         email="josepereyra@gmail.com",
         name="Josefina",
         lastname="Pereyra",
@@ -98,13 +98,13 @@ def __USUARIOS__():
         type="Cliente",
         authorized=True)
     query_TEST_USER.execute(user=jose)
-    query_update_user_points.execute(dni=48654123, number=4)
+    query_update_user_points.execute(dni=47654123, number=4)
 
 def __EMPLEADOS__():
-    empleadoFacu = UserModel(
+    empleadoGonzalo = UserModel(
         dni=88433627,
         email="empleado88433627@gmail.com",
-        name="Facu",
+        name="Gonzalo",
         lastname="lopez",
         phone=11111111,
         birth_date="2002-5-15",
@@ -112,7 +112,7 @@ def __EMPLEADOS__():
         employee_number=1234,
         type="Empleado",
         authorized=True)
-    query_TEST_USER.execute(user=empleadoFacu)
+    query_TEST_USER.execute(user=empleadoGonzalo)
 
     empleadoNahu = UserModel(
         dni=44555666,
@@ -131,7 +131,7 @@ def __EMPLEADOS__():
         dni=74156741,
         email="laradevincenti@hotmail.com",
         name="Lara",
-        lastname="Devin",
+        lastname="Devincenti",
         phone=25836914,
         birth_date="2002-5-1",
         password="larita",
@@ -154,7 +154,7 @@ def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
         start_day="2025-6-6",
         end_day="2025-6-15",
-        client_id=48654123, # ----> RESERVA DE Jose
+        client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC1",
         shipment=False,
         type="Cliente",
@@ -164,7 +164,7 @@ def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
         start_day="2025-9-20",
         end_day="2025-10-3",
-        client_id=48654123, # ----> RESERVA DE Jose
+        client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC2",
         shipment=False,
         type="Cliente",
@@ -184,7 +184,7 @@ def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
         start_day="2025-8-10",
         end_day="2025-8-25",
-        client_id=48654123, # ----> RESERVA DE Jose
+        client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC2",
         shipment=True,
         type="Cliente",

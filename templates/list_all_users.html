@@ -271,7 +271,7 @@ function modificarDni(dniActual) {
       document.getElementById(`card-${dniActual}`).remove(); // o actualizar el contenido si querés
        setTimeout(() => {
       window.location.href = "/list_all_users.html";  
-      }, 1000);
+      }, 3000);
     } else {
       return res.json().then(data => {
         mostrarMensaje(`❌ ${data.error}`);

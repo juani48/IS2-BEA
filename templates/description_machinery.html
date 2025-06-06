@@ -347,7 +347,10 @@
             fetch("/session/status")
               .then((res) => res.json())
               .then((sessionData) => {
-                if (sessionData.authenticated && sessionData.type === "Admin") {
+                if (!sessionData.authenticated) return;
+
+                // 🔴 Solo para Admin
+                if (sessionData.type === "Admin") {
                   const estado = machine.disable
                     ? "Deshabilitada"
                     : "Habilitada";
@@ -363,6 +366,7 @@
                   const botonesDiv = document.createElement("div");
                   botonesDiv.className = "mt-6 flex flex-wrap gap-4";
 
+                  // Botón Habilitar / Deshabilitar
                   botonEstado = document.createElement("button");
                   botonEstado.innerText = machine.disable
                     ? "Habilitar"
@@ -377,6 +381,7 @@
                     );
                   botonesDiv.appendChild(botonEstado);
 
+                  // Botón Editar
                   const botonEditar = document.createElement("a");
                   botonEditar.href = `/edit_machine_data.html?machine_id=${machine.patent}`;
                   botonEditar.innerText = "Editar";
@@ -384,7 +389,19 @@
                     "bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded";
                   botonesDiv.appendChild(botonEditar);
 
-                  // NUEVO: Input + botón rojo para actualizar ubicación
+                  // Insertar en el DOM antes del botón Reservar
+                  const botonReservar = document.getElementById("reserveBtn");
+                  botonReservar.parentNode.insertBefore(
+                    botonesDiv,
+                    botonReservar
+                  );
+                }
+
+                // 🟡 Admin o Empleado → Actualizar ubicación
+                if (
+                  sessionData.type === "Admin" ||
+                  sessionData.type === "Empleado"
+                ) {
                   const inputUbicacion = document.createElement("input");
                   inputUbicacion.type = "text";
                   inputUbicacion.placeholder = "Nueva ubicación";
@@ -421,12 +438,15 @@
                       .catch((err) => alert("Error: " + err.message));
                   };
 
-                  botonesDiv.appendChild(inputUbicacion);
-                  botonesDiv.appendChild(botonUbicacion);
+                  // Insertar input + botón debajo del botón reservar
+                  const divUbicacion = document.createElement("div");
+                  divUbicacion.className = "mt-6 flex flex-col gap-2 max-w-xs";
+                  divUbicacion.appendChild(inputUbicacion);
+                  divUbicacion.appendChild(botonUbicacion);
 
                   const botonReservar = document.getElementById("reserveBtn");
                   botonReservar.parentNode.insertBefore(
-                    botonesDiv,
+                    divUbicacion,
                     botonReservar
                   );
                 }

@@ -211,8 +211,12 @@
   tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
   const hoy = new Date();
-  const fechaInicio = new Date(r.fecha_inicio);
-  const esCancelable = fechaInicio >= hoy;
+hoy.setHours(0, 0, 0, 0); // reset hora
+
+const fechaInicio = new Date(r.fecha_inicio);
+fechaInicio.setHours(0, 0, 0, 0); // reset hora
+
+const esCancelable = fechaInicio >= hoy;
 
   let botonCancelar = "";
 

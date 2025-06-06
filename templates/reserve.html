@@ -235,64 +235,6 @@
       document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
     });
   });
-  document.getElementById("fechaInicio").addEventListener("change", function () {
-  const inicio = new Date(this.value);
-
-  if (isNaN(inicio)) return;
-
-  // Sumar 7 días
-  const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const yyyy = minimoFin.getFullYear();
-  const mm = String(minimoFin.getMonth() + 1).padStart(2, '0');
-  const dd = String(minimoFin.getDate()).padStart(2, '0');
-  const fechaMinimaFin = `${yyyy}-${mm}-${dd}`;
-
-  const fechaFinInput = document.getElementById("fechaFin");
-  fechaFinInput.setAttribute("min", fechaMinimaFin);
-
-  // Si ya tenía una fecha seleccionada menor, borrarla
-  if (new Date(fechaFinInput.value) < minimoFin) {
-    fechaFinInput.value = "";
-  }
-  document.getElementById("fechaInicio").setAttribute("min", fechaMinima);
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const fechaInicioInput = document.getElementById("fechaInicio");
-  const fechaFinInput = document.getElementById("fechaFin");
-
-  // Configurar fecha mínima de inicio como hoy
-  const hoy = new Date();
-  const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-  const dd = String(hoy.getDate()).padStart(2, '0');
-  const fechaMinima = `${yyyy}-${mm}-${dd}`;
-  fechaInicioInput.setAttribute("min", fechaMinima);
-
-  // Cuando cambia la fecha de inicio, configurar fecha mínima de fin (+7 días)
-  fechaInicioInput.addEventListener("change", function () {
-    const inicio = new Date(this.value);
-    if (isNaN(inicio)) return;
-
-    // Sumar 7 días a la fecha seleccionada
-    const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const yyyyFin = minimoFin.getFullYear();
-    const mmFin = String(minimoFin.getMonth() + 1).padStart(2, '0');
-    const ddFin = String(minimoFin.getDate()).padStart(2, '0');
-    const fechaMinimaFin = `${yyyyFin}-${mmFin}-${ddFin}`;
-
-    fechaFinInput.setAttribute("min", fechaMinimaFin);
-
-    // Si la fecha actual en el campo es menor a la mínima, la limpiamos
-    const actualFin = new Date(fechaFinInput.value);
-    if (actualFin < minimoFin) {
-      fechaFinInput.value = "";
-    }
-
-    // Recalcular precio si ya había precio cargado
-    calcularPrecioTotal();
-  });
-});
-
 
   // Volver a calcular el precio cuando cambian las fechas
   document.getElementById("fechaInicio").addEventListener("change", calcularPrecioTotal);
@@ -347,39 +289,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Validación y envío
   document.getElementById("reservaForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const fechaInicio = new Date(fechaInicioInput.value);
-    const fechaFin = new Date(fechaFinInput.value);
-    const errorDiv = document.getElementById("mensajeError");
+  // 💡 Definir los elementos primero
+  const fechaInicioInput = document.getElementById("fechaInicio");
+  const fechaFinInput = document.getElementById("fechaFin");
 
-    errorDiv.classList.add("hidden");
-    errorDiv.textContent = "";
+  const fechaInicio = new Date(fechaInicioInput.value);
+  const fechaFin = new Date(fechaFinInput.value);
+  const errorDiv = document.getElementById("mensajeError");
 
-    const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
-    if (dias < 7) {
-      errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
-      errorDiv.classList.remove("hidden");
-      return;
-    }
+  errorDiv.classList.add("hidden");
+  errorDiv.textContent = "";
 
-    calcularPrecioTotal();
+  const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+  if (dias < 7) {
+    errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
+    errorDiv.classList.remove("hidden");
+    return;
+  }
 
-    const shipment = document.querySelector('input[name="entrega"]:checked').value === "domicilio";
-    const user = JSON.parse(localStorage.getItem("user"));
+  calcularPrecioTotal();
 
-    const reserve = {
-      start_day: document.getElementById("fechaInicio").value,
-      end_day: document.getElementById("fechaFin").value,
-      client_id: user.dni,
-      machine_id: machineId,
-      shipment: shipment,
-      apply_discount: document.getElementById("aplicarPuntos").checked
-    };
+  const shipment = document.querySelector('input[name="entrega"]:checked').value === "domicilio";
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    localStorage.setItem("reserve", JSON.stringify(reserve));
-    window.location.href = "prior_to_paying.html";
-  });
+  const reserve = {
+    start_day: fechaInicioInput.value,
+    end_day: fechaFinInput.value,
+    client_id: user.dni,
+    machine_id: machineId,
+    shipment: shipment,
+    apply_discount: document.getElementById("aplicarPuntos").checked,
+    type: tipoReal
+  };
+
+  localStorage.setItem("reserve", JSON.stringify(reserve));
+  window.location.href = "prior_to_paying.html";
+});
+
 </script>
 
   

@@ -859,7 +859,7 @@ def cancel_reservation_by_client():
 def reserve_machine():
     try:
         request_value = request.get_json()
-
+        print("🔎 Datos recibidos:", request_value)  # ✅ AGREGADO
         preference = AddReservation.usecase_add_reserve(
             start_day=request_value.get("start_day"),
             end_day=request_value.get("end_day"),

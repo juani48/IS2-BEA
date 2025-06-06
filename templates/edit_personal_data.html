@@ -157,7 +157,18 @@
     mensaje.classList.add("hidden");
 
     const nuevoNombre = document.getElementById("nombre").value.trim();
-    const nuevoApellido = document.getElementById("apellido").value.trim();
+const nuevoApellido = document.getElementById("apellido").value.trim();
+
+// Validación: al menos una letra en cada campo
+const letraRegex = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/;
+
+if (!letraRegex.test(nuevoNombre) || !letraRegex.test(nuevoApellido)) {
+  mensaje.className = "bg-yellow-100 text-yellow-700 border border-yellow-300 p-3 rounded text-center font-semibold";
+  mensaje.textContent = "Los campos no pueden estar vacíos.";
+  mensaje.classList.remove("hidden");
+  return;
+}
+
 
     const res = await fetch("/user/update_user", {
       method: "PUT",

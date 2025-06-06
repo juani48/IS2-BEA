@@ -111,11 +111,19 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("/users/get_all_users")
     .then(res => res.json())
     .then(data => {
-      clientes = data.filter(u => u.type === "Cliente")
+  clientes = data.filter(u => u.type === "Cliente");
 
-      mostrarPaginaClientes(paginaActual);
-      generarPaginacionClientes();
-    });
+  if (clientes.length === 0) {
+    document.getElementById("clientes-container").innerHTML = `
+      <p class="text-center text-gray-600 italic text-lg mt-4">
+        No hay clientes registrados.
+      </p>`;
+    return; // evitamos seguir con paginación si no hay clientes
+  }
+
+  mostrarPaginaClientes(paginaActual);
+  generarPaginacionClientes();
+});
 });
 
 function mostrarPaginaClientes(pagina) {

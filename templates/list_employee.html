@@ -260,8 +260,6 @@ function mostrarMensaje(mensaje) {
 }
 
 function deshabilitarEmpleado(dni) {
-  if (!confirm("¿Estás seguro de que querés deshabilitar este empleado?")) return;
-
   fetch("/employee/disable", {
     method: "POST",
     headers: {
@@ -273,10 +271,9 @@ function deshabilitarEmpleado(dni) {
     if (res.status === 204) {
       mostrarMensaje("✅ Empleado deshabilitado correctamente");
       document.getElementById(`card-${dni}`).remove(); // elimina la tarjeta
-       setTimeout(() => {
-      window.location.href = "/list_employee.html";  
+      setTimeout(() => {
+        window.location.href = "/list_employee.html";  
       }, 1000);
-
     } else {
       return res.json().then(data => {
         mostrarMensaje(`❌ ${data.error}`);
@@ -288,6 +285,7 @@ function deshabilitarEmpleado(dni) {
     mostrarMensaje("❌ Error al intentar deshabilitar el empleado");
   });
 }
+
 
     </script>
   </body>

@@ -198,14 +198,17 @@
   }
 
   reservasPagina.forEach(r => {
-    const tarjeta = document.createElement("div");
-    tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
-    tarjeta.innerHTML = `
-      <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.machine_id}</h2>
-      <p><strong>Cliente:</strong> ${r.client_id}</p>
-      <p><strong>Desde:</strong> ${r.start_day}</p>
-      <p><strong>Hasta:</strong> ${r.end_day}</p>
+  const hoy = new Date();
+  const fechaInicio = new Date(r.start_day);
+  const esCancelable = fechaInicio >= hoy;
+
+  let botonCancelar = "";
+
+  if (esCancelable) {
+    botonCancelar = `
       <button 
         class="cancelar-btn mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
         data-client="${r.client_id}"
@@ -215,9 +218,28 @@
         Cancelar Reserva
       </button>
     `;
+  } else {
+    botonCancelar = `
+      <button 
+        class="mt-2 bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" 
+        disabled
+      >
+        No se puede cancelar
+      </button>
+    `;
+  }
 
-    reservasContainer.appendChild(tarjeta);
-  });
+  tarjeta.innerHTML = `
+    <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.machine_id}</h2>
+    <p><strong>Cliente:</strong> ${r.client_id}</p>
+    <p><strong>Desde:</strong> ${r.start_day}</p>
+    <p><strong>Hasta:</strong> ${r.end_day}</p>
+    ${botonCancelar}
+  `;
+
+  reservasContainer.appendChild(tarjeta);
+});
+
 
   // Enganchar botones después de insertarlos
   document.querySelectorAll(".cancelar-btn").forEach(btn => {

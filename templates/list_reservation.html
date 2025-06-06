@@ -89,7 +89,7 @@
 
   <!-- Contenido principal -->
   <main class="max-w-7xl mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">📄 Listado de Reservas</h1>
+    <h1 class="text-3xl font-bold text-bob-red mb-6 text-center">📄 Listado de reservas hasta el día actual</h1>
     <div id="mensajeReserva" class="mb-4 text-center font-semibold"> </div>
     <div id="reservasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
 
@@ -180,7 +180,7 @@
       construirPaginacion();
     } catch (error) {
       console.error("Error al cargar reservas:", error);
-      reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No se pudieron cargar las reservas.</p>`;
+      reservasContainer.innerHTML = `<p class="text-center text-red-700 font-semibold">No hay reservas que empiecen hoy o antes.</p>`;
     }
   }
 
@@ -191,31 +191,55 @@
     const reservasPagina = reservas.slice(inicio, inicio + porPagina);
 
     if (reservasPagina.length === 0) {
-      reservasContainer.innerHTML = `<p class="text-center text-gray-600">No hay reservas para mostrar.</p>`;
-      return;
-    }
+  reservasContainer.innerHTML = `
+    <p class="text-center text-gray-500 italic text-lg mt-4">
+      No hay reservas que inicien hoy o antes.
+    </p>`;
+  return;
+}
 
-    reservasPagina.forEach(r => {
-      const tarjeta = document.createElement("div");
-      tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
-      tarjeta.innerHTML = `
-        <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
-        <p><strong>Cliente:</strong> ${r.cliente}</p>
-        <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
-        <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
-        <button class="cancelar-btn mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
-                data-client="${r.cliente}"
-                data-machine="${r.maquina}"
-                data-start="${r.fecha_inicio}">
-          Cancelar Reserva
-        </button>
-      `;
+   reservasPagina.forEach(r => {
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
-      reservasContainer.appendChild(tarjeta);
-    });
+  const hoy = new Date();
+  const fechaInicio = new Date(r.fecha_inicio);
+  const esCancelable = fechaInicio >= hoy;
 
-    registrarEventosCancelacion(); // ⬅️ Importante: ¡registrar eventos acá!
+  let botonCancelar = "";
+
+  if (esCancelable) {
+    botonCancelar = `
+      <button class="cancelar-btn mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
+              data-client="${r.cliente}"
+              data-machine="${r.maquina}"
+              data-start="${r.fecha_inicio}">
+        Cancelar Reserva
+      </button>
+    `;
+  } else {
+    botonCancelar = `
+      <button class="mt-2 bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled title="No se puede cancelar reservas ya iniciadas">
+        No se puede cancelar
+      </button>
+    `;
+  }
+
+  tarjeta.innerHTML = `
+    <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
+    <p><strong>Cliente:</strong> ${r.cliente}</p>
+    <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
+    <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
+    ${botonCancelar}
+  `;
+
+  reservasContainer.appendChild(tarjeta);
+});
+
+// Registrar eventos solo para los botones que están habilitados
+registrarEventosCancelacion();
+
   }
 
   function registrarEventosCancelacion() {

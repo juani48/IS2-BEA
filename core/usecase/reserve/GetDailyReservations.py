@@ -22,6 +22,6 @@ def usecase_get_daily_reservations():
             )
 
     if len(new_list) == 0:
-        raise Exception("No hay reservas que inician hoy o antes.")
+        raise Exception("No hay reservas que inicien hoy o antes.")
 
     return new_list

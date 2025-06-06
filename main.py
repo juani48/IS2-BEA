@@ -382,7 +382,7 @@ def add_employee():
         )
         return "Empleado agregado", 204
     except Exception as e:
-        return jsonify({"error": "Ocurrió un error al procesar alta de empleado", "detalles": str(e)}), 500
+        return jsonify({"detalles": str(e)}), 500
 
 
 @app.route("/employee/disable", methods=["POST"])
@@ -705,7 +705,7 @@ def get_all_categories():
 @app.route("/categorie/enable_categorie", methods=["POST"])
 @login_required
 def enable_categorie():
-    if(current_user.type in ["Empleado", "Admin"]):
+    if(current_user.type =="Admin"):
         request_value = request.get_json().get("categorie")
         EnableCategorie.usecase_enable_categorie(categorie=request_value)
         return "", 204

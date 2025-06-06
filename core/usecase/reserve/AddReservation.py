@@ -44,9 +44,9 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, typ
 
     return preference
 
-#from data.query.insert import query_insert_reserve
+from data.query.insert import query_insert_reserve
 
-#def init_usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, type, apply_discount):
+def init_usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, type, apply_discount):
     
     machine = get_machine(machine_id)
 

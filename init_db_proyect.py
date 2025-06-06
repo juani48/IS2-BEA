@@ -208,9 +208,9 @@ def __EMPLEADOS__():
 
 def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-5-2",
+        start_day="2025-6-2",
         #start_day=datetime.datetime(2025, 5, 2, 0, 0, 0),
-        end_day="2025-5-9",
+        end_day="2025-6-9",
         #end_day=datetime.datetime(2025, 5, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC1",
@@ -220,9 +220,9 @@ def __RESERVAS__():
     )
 
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-6-2",
+        start_day="2025-8-2",
         #start_day=datetime.datetime(2025, 6, 2, 0, 0, 0),
-        end_day="2025-6-9",
+        end_day="2025-8-9",
         #end_day=datetime.datetime(2025, 6, 9, 0, 0, 0),
         client_id=44555666, # ----> RESERVA DE CARLOS
         machine_id="ABC1",

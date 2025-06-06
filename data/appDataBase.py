@@ -111,7 +111,7 @@ def get_machine(machine_id):
     return query_get_machine.execute(machine_id)
 
 def get_discount(name):
-    return query_get_discount(name)
+    return query_get_discount.query_get_discount(name)
 
 def get_employee(employeeN):
     return query_get_employee(employeeN)

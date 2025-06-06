@@ -7,8 +7,9 @@ def execute(machine_id):
     return session.query(
         ReservationModel
     ).filter(
-        and_(
-            ReservationModel.machine_id == machine_id,
-            ReservationModel.paid == True,
-        )
+        ReservationModel.machine_id == machine_id
+        #and_(
+        #    
+            #ReservationModel.paid == True,
+        #)
     ).all()

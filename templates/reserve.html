@@ -1,89 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva - Bob el Alquilador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserva - Bob el Alquilador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+  <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+
+  <!-- CALENDARIO -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script> <!-- Para español -->
 
 </head>
 
-  
+
 <body class="bg-gray-50">
- <!-- Header -->
-    <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
-        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+  <!-- Header -->
+  <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-            <!-- LOGO -->
-            <div class="shrink-0">
-                <a href="#" onclick="goHome()" title="Ir al inicio">
-                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-                </a>
-            </div>
+      <!-- LOGO -->
+      <div class="shrink-0">
+        <a href="#" onclick="goHome()" title="Ir al inicio">
+          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+        </a>
+      </div>
 
-            <!-- BARRA DE BÚSQUEDA -->
-            <div class="flex-grow flex justify-center">
-                <div class="relative w-full max-w-xl">
-                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
-                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                    <i class="fas fa-search"></i>
-                </button>
-                </div>
-            </div>
+      <!-- BARRA DE BÚSQUEDA -->
+      <div class="flex-grow flex justify-center">
+        <div class="relative w-full max-w-xl">
+          <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+            class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+          <button onclick="buscarMaquinaria()"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
 
-            <!-- MI CUENTA -->
-            <div id="accountArea"></div>
-                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+      <!-- MI CUENTA -->
+      <div id="accountArea"></div>
+      <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
+    </div>
+
+
+    </div>
+    </div>
+
+    <!-- Navigation debajo, 100% ancho -->
+    <nav class="main-nav w-full">
+      <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+        <li><a href="main.html">Menú</a></li>
+        <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+
+        <li class="relative" id="dropdown-categorias-container">
+          <span id="dropdown-categorias-toggle" class="cursor-pointer text-white hover:underline inline-block">
+            Categorías <i class="fas fa-caret-down ml-1"></i>
+          </span>
+
+          <div id="dropdown-categorias-menu" class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+            style="color: #7f1d1d;">
+            <!-- Se rellena dinámicamente -->
           </div>
+        </li>
+        <li><a href="#">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto">Contáctanos</a></li>
+      </ul>
+    </nav>
 
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+      <ul class="flex flex-col space-y-3">
+        <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+        <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
+        <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+      </ul>
+    </div>
 
-        </div>
-        </div>
+  </header>
 
-        <!-- Navigation debajo, 100% ancho -->
-        <nav class="main-nav w-full">
-            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                
-                <li class="relative" id="dropdown-categorias-container">
-                <span id="dropdown-categorias-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Categorías <i class="fas fa-caret-down ml-1"></i>
-                </span>
-
-                <div id="dropdown-categorias-menu"
-                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                    style="color: #7f1d1d;">
-                  <!-- Se rellena dinámicamente -->
-                </div>
-              </li>
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
-            </ul>
-        </nav>
-
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-            <ul class="flex flex-col space-y-3">
-                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
-            </ul>
-        </div>  
-
-    </header>
-
-    <main class="flex justify-center items-center min-h-[80vh] px-4">
-    <form id="reservaForm"
-    class="bg-red-100 p-6 rounded-2xl shadow-lg space-y-4 w-full max-w-md">
+  <main class="flex justify-center items-center min-h-[80vh] px-4">
+    <form id="reservaForm" class="bg-red-100 p-6 rounded-2xl shadow-lg space-y-4 w-full max-w-md">
 
       <h1 class="text-2xl font-bold text-red-700 text-center">
         Reservar Máquina
@@ -91,61 +95,32 @@
 
       <!-- Máquina seleccionada -->
       <div>
-        <label class="block text-sm font-medium text-red-700"
-          >Máquina seleccionada</label
-        >
-        <div
-          id="maquinaSeleccionada"
-          class="flex items-center space-x-3 text-red-800 font-semibold"
-        >
+        <label class="block text-sm font-medium text-red-700">Máquina seleccionada</label>
+        <div id="maquinaSeleccionada" class="flex items-center space-x-3 text-red-800 font-semibold">
           <span id="maquinaNombre">Cargando...</span>
-         
+
         </div>
       </div>
 
       <!-- Fechas -->
       <div>
-        <label for="fechaInicio" class="block text-sm font-medium text-red-700"
-          >Fecha de inicio</label
-        >
-        <input
-          type="date"
-          id="fechaInicio"
-          name="fechaInicio"
-          required
-          class="border border-red-300 p-2 rounded w-full"
-        />
+        <label for="fechaInicio" class="block text-sm font-medium text-red-700">Fecha de inicio</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required
+          class="border border-red-300 p-2 rounded w-full" />
       </div>
 
       <div>
-        <label for="fechaFin" class="block text-sm font-medium text-red-700"
-          >Fecha de fin</label
-        >
-        <input
-          type="date"
-          id="fechaFin"
-          name="fechaFin"
-          required
-          class="border border-red-300 p-2 rounded w-full"
-        />
+        <label for="fechaFin" class="block text-sm font-medium text-red-700">Fecha de fin</label>
+        <input type="date" id="fechaFin" name="fechaFin" required class="border border-red-300 p-2 rounded w-full" />
       </div>
 
       <!-- Entrega -->
       <div>
-        <label class="block text-sm font-medium text-red-700 mb-1"
-          >Método de entrega</label
-        >
+        <label class="block text-sm font-medium text-red-700 mb-1">Método de entrega</label>
         <div class="space-y-2">
           <label class="inline-flex items-center space-x-2">
-            <input
-              type="radio"
-              name="entrega"
-              value="local"
-              checked
-              class="text-red-600"
-            />
-            <span>Retirar en el local</span> </label
-          ><br />
+            <input type="radio" name="entrega" value="local" checked class="text-red-600" />
+            <span>Retirar en el local</span> </label><br />
           <label class="inline-flex items-center space-x-2">
             <input type="radio" name="entrega" value="domicilio" />
             <span>Envío</span>
@@ -155,16 +130,9 @@
 
       <!-- Dirección -->
       <div id="campoDireccion" class="hidden">
-        <label for="direccion" class="block text-sm font-medium text-red-700"
-          >Dirección de envío</label
-        >
-        <input
-          type="text"
-          id="direccion"
-          name="direccion"
-          placeholder="Ej: Calle Falsa 123"
-          class="border border-red-300 p-2 rounded w-full"
-        />
+        <label for="direccion" class="block text-sm font-medium text-red-700">Dirección de envío</label>
+        <input type="text" id="direccion" name="direccion" placeholder="Ej: Calle Falsa 123"
+          class="border border-red-300 p-2 rounded w-full" />
       </div>
 
       <div class="mt-4 text-lg font-semibold">
@@ -172,7 +140,7 @@
       </div>
 
       <div class="mt-2">
-       <input type="checkbox" id="aplicarPuntos" />
+        <input type="checkbox" id="aplicarPuntos" />
         <label for="aplicarPuntos">Aplicar descuento con puntos</label>
       </div>
 
@@ -181,175 +149,312 @@
 
       </div>
 
-      <p id="errorDescuento" class="hidden text-red-600 font-semibold mt-2">⚠️ No tenés puntos suficientes para aplicar el descuento.</p>
+      <p id="errorDescuento" class="hidden text-red-600 font-semibold mt-2">⚠️ No tenés puntos suficientes para aplicar
+        el descuento.</p>
 
 
-            <!-- Mensaje de error -->
-      <div
-        id="mensajeError"
-        class="hidden bg-red-200 text-red-800 font-semibold p-2 rounded"
-      ></div>
+      <!-- Mensaje de error -->
+      <div id="mensajeError" class="hidden bg-red-200 text-red-800 font-semibold p-2 rounded"></div>
 
-      <button
-        type="submit"
-        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-      >
+      <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
         Confirmar Reserva
       </button>
     </form>
-    </main>
+  </main>
 </body>
 
 <!-- FOOTER -->
-  
-    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <!-- Columna 1: Redes + legales -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
-                <div class="flex space-x-4 mb-4">
-                    <a href="https://instagram.com/bobelalquilador" target="_blank"
-                        class="hover:text-gray-300 transition">
-                        <i class="fab fa-instagram text-2xl"></i>
-                    </a>
-                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
-                        <i class="fab fa-whatsapp text-2xl"></i>
-                    </a>
-                </div>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
-                    </li>
-                </ul>
-            </div>
+<footer id="contacto" class="bg-bob-dark-red text-white py-10">
+  <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <!-- Columna 2: Contacto -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Contacto</h3>
-                <ul class="space-y-2">
-                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
-                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
-                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
-                </ul>
-            </div>
+    <!-- Columna 1: Redes + legales -->
+    <div>
+      <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+      <div class="flex space-x-4 mb-4">
+        <a href="https://instagram.com/bobelalquilador" target="_blank" class="hover:text-gray-300 transition">
+          <i class="fab fa-instagram text-2xl"></i>
+        </a>
+        <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
+          <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+      </div>
+      <ul class="space-y-1">
+        <li>
+          <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+        </li>
+      </ul>
+    </div>
 
-            <!-- Columna 3: Mapa -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
-                <div class="rounded-lg overflow-hidden shadow-lg">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
-                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div>
+    <!-- Columna 2: Contacto -->
+    <div>
+      <h3 class="text-lg font-bold mb-2">Contacto</h3>
+      <ul class="space-y-2">
+        <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+        <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+        <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+      </ul>
+    </div>
 
-        </div>
+    <!-- Columna 3: Mapa -->
+    <div>
+      <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+      <div class="rounded-lg overflow-hidden shadow-lg">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+          width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
 
-        <!-- Línea inferior -->
-        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
-            © 2025 Bob El Alquilador. Todos los derechos reservados.
-        </div>
-    </footer>
+  </div>
+
+  <!-- Línea inferior -->
+  <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+    © 2025 Bob El Alquilador. Todos los derechos reservados.
+  </div>
+</footer>
 
 <script>
   const machineId = new URLSearchParams(window.location.search).get("machine_id");
   const maquinaNombre = document.getElementById("maquinaNombre");
 
-      if (machineId) {
-        // Consultar al backend para obtener nombre e imagen
-        fetch(`/machine/get_by_id/${machineId}`)
-          .then((response) => {
-            if (!response.ok) throw new Error("No se encontró la máquina");
-            return response.json();
-          })
-          .then((data) => {
-            // Mostrar nombre completo
-            maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
-          
-            // ✅ Guardar precio por día en localStorage
+  if (machineId) {
+    // Consultar al backend para obtener nombre e imagen
+    fetch(`/machine/get_by_id/${machineId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("No se encontró la máquina");
+        return response.json();
+      })
+      .then((data) => {
+        // Mostrar nombre completo
+        maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
+
+        // ✅ Guardar precio por día en localStorage
         localStorage.setItem("selectedMachinePrice", data.price_day);
 
         // ✅ Calcular precio inicial si ya hay fechas cargadas
         calcularPrecioTotal();
-          })
-          .catch((error) => {
-            console.error(error);
-            maquinaNombre.textContent = `${machineId}`;
-          });
-      } else {
-        maquinaNombre.textContent = "No se seleccionó ninguna máquina";
-      }
+      })
+      .catch((error) => {
+        console.error(error);
+        maquinaNombre.textContent = `${machineId}`;
+      });
+  } else {
+    maquinaNombre.textContent = "No se seleccionó ninguna máquina";
+  }
 
+
+  /*
+  let reservas = []
+  fetch(
+    "/reservation/machine_reservations",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "machine_id": machineId })
+    }
+  ).then(
+    response => {
+      if(!response.ok){
+        throw new Error(response.message);
+      }
+      return response.json();
+    }
+  )
+  .then(
+    data => {
+      let hoy = new Date().toISOString().split('T')[0];
+      document.getElementById("fechaInicio").min = hoy
+      console.log("reservas", data.value)
+      reservas = data.value.map(reserva => ({
+        start: new Date(reserva.start_day).getDate() + 1,
+        end: new Date(reserva.end_day).getDate() + 1
+      }));
+      console.log("reservas 2", reservas)
+    }
+  ).catch(
+  error => {
+    alert("Error");
+    this.checked = false;
+  }
+);
+*/
   // Mostrar/ocultar campo de dirección
   document.querySelectorAll('input[name="entrega"]').forEach(radio => {
     radio.addEventListener("change", function () {
       document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
     });
   });
-  document.getElementById("fechaInicio").addEventListener("change", function () {
-  const inicio = new Date(this.value);
 
-  if (isNaN(inicio)) return;
-
-  // Sumar 7 días
-  const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const yyyy = minimoFin.getFullYear();
-  const mm = String(minimoFin.getMonth() + 1).padStart(2, '0');
-  const dd = String(minimoFin.getDate()).padStart(2, '0');
-  const fechaMinimaFin = `${yyyy}-${mm}-${dd}`;
-
-  const fechaFinInput = document.getElementById("fechaFin");
-  fechaFinInput.setAttribute("min", fechaMinimaFin);
-
-  // Si ya tenía una fecha seleccionada menor, borrarla
-  if (new Date(fechaFinInput.value) < minimoFin) {
-    fechaFinInput.value = "";
-  }
-  document.getElementById("fechaInicio").setAttribute("min", fechaMinima);
-});
-document.addEventListener("DOMContentLoaded", function () {
-  const fechaInicioInput = document.getElementById("fechaInicio");
-  const fechaFinInput = document.getElementById("fechaFin");
-
-  // Configurar fecha mínima de inicio como hoy
-  const hoy = new Date();
-  const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-  const dd = String(hoy.getDate()).padStart(2, '0');
-  const fechaMinima = `${yyyy}-${mm}-${dd}`;
-  fechaInicioInput.setAttribute("min", fechaMinima);
-
-  // Cuando cambia la fecha de inicio, configurar fecha mínima de fin (+7 días)
-  fechaInicioInput.addEventListener("change", function () {
-    const inicio = new Date(this.value);
-    if (isNaN(inicio)) return;
-
-    // Sumar 7 días a la fecha seleccionada
-    const minimoFin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const yyyyFin = minimoFin.getFullYear();
-    const mmFin = String(minimoFin.getMonth() + 1).padStart(2, '0');
-    const ddFin = String(minimoFin.getDate()).padStart(2, '0');
-    const fechaMinimaFin = `${yyyyFin}-${mmFin}-${ddFin}`;
-
-    fechaFinInput.setAttribute("min", fechaMinimaFin);
-
-    // Si la fecha actual en el campo es menor a la mínima, la limpiamos
-    const actualFin = new Date(fechaFinInput.value);
-    if (actualFin < minimoFin) {
-      fechaFinInput.value = "";
+  /* COMENTADO
+    function esFechaReservada(fecha) {
+      const fechaObj = new Date(fecha).getDate() + 1;
+      //fechaObj.setHours(0, 0, 0, 0); // Ignorar horas/minutos
+      var bool = false;
+  
+      reservas.forEach(r => {
+        console.log("mi fehca", fechaObj)
+        console.log("init", r.start)
+        console.log("end", r.end)
+  
+  
+        if (fechaObj >= r.start && r.end >= fechaObj){ //|| (fechaObj - r.start < 14 )){
+          console.log("ocupado")
+          bool = true;
+        }
+        if(fechaObj - r.end < 14 || r.start - fechaObj > 14 ){
+          console.log("amtes")
+          bool = true;
+        }
+      })
+      return bool
+    
     }
+      */
 
-    // Recalcular precio si ya había precio cargado
-    calcularPrecioTotal();
+  // 1. Obtener reservas y configurar calendario
+  let reservas = [];
+
+  fetch("/reservation/machine_reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ machine_id: machineId })
+  })
+    .then(response => {
+      if (!response.ok) throw new Error(response.message);
+      return response.json();
+    })
+    .then(data => {
+      const hoy = new Date().toISOString().split('T')[0];
+      document.getElementById("fechaInicio").min = hoy;
+      reservas = data.value
+
+      // Inicializar Flatpickr con días bloqueados
+      inicializarCalendarios();
+    })
+    .catch(error => {
+      alert("Error al cargar reservas");
+      console.error(error);
+    });
+
+  // 2. Configurar Flatpickr para mostrar días bloqueados
+  function inicializarCalendarios() {
+    // Preparar rangos bloqueados
+    /*
+    const diasBloqueados = reservas.map(reserva => ({
+      from: reserva.start_day,
+      to: reserva.end_day
+    }));
+    */
+    const diasBloqueados = reservas.map(reserva => {
+      const fechaInicio = new Date(reserva.start_day);
+      const fechaFin = new Date(reserva.end_day);
+
+      // Restar 14 días al inicio
+      fechaInicio.setDate(fechaInicio.getDate() - 14);
+
+      // Sumar 14 días al final
+      fechaFin.setDate(fechaFin.getDate() + 14);
+
+      return {
+        from: fechaInicio.toISOString().split('T')[0],
+        to: fechaFin.toISOString().split('T')[0]
+      };
+    });
+
+    // Configurar calendario de inicio
+    flatpickr("#fechaInicio", {
+      minDate: "today",
+      disable: diasBloqueados,
+      locale: { firstDayOfWeek: 1 },
+      onChange: function (selectedDates) {
+        // Actualizar mínimo en fecha fin
+        document.querySelector("#fechaFin")._flatpickr.set("minDate", selectedDates[0]);
+        calcularPrecioTotal();
+      }
+    });
+
+    // Configurar calendario de fin
+    flatpickr("#fechaFin", {
+      minDate: "today",
+      disable: diasBloqueados,
+      locale: { firstDayOfWeek: 1 },
+      onChange: function () {
+        calcularPrecioTotal();
+      }
+    });
+  }
+  // 3. Función para verificar disponibilidad (opcional)
+  /*function verificarDisponibilidad(fecha) {
+    return !reservas.some(reserva => {
+      const inicio = new Date(reserva.start_day);
+      const fin = new Date(reserva.end_day);
+      return fecha >= inicio && fecha <= fin;
+    });
+  }
+
+  // 4. Event listeners para campos adicionales
+  document.querySelectorAll('input[name="entrega"]').forEach(radio => {
+    radio.addEventListener("change", function () {
+      document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
+    });
   });
-});
+  */
+
+  // 3. Función para verificar disponibilidad con los 14 días adicionales
+  function verificarDisponibilidad(fecha) {
+    const fechaObj = new Date(fecha);
+
+    return !reservas.some(reserva => {
+      const inicio = new Date(reserva.start_day);
+      inicio.setDate(inicio.getDate() - 14);
+
+      const fin = new Date(reserva.end_day);
+      fin.setDate(fin.getDate() + 14);
+
+      return fechaObj >= inicio && fechaObj <= fin;
+    });
+  }
 
 
   // Volver a calcular el precio cuando cambian las fechas
-  document.getElementById("fechaInicio").addEventListener("change", calcularPrecioTotal);
-  document.getElementById("fechaFin").addEventListener("change", calcularPrecioTotal);
+  document.getElementById("fechaInicio").addEventListener("change",
+    function () {
+        
+       // new Date(this.value).toISOString().split('T')[0]
+/*
+      if (verificarDisponibilidad(fechaElegida)) {
+        alert("Esta fecha está dentro de un rango reservado. Elige otra.");
+        this.value = "";
+        return;
+      }
+    */
+      calcularPrecioTotal
+    }
+  );
+  document.getElementById("fechaFin").addEventListener("change",
+    function () {
+      /*
+      if (esFechaReservada(fechaElegida)) {
+        alert("Esta fecha está dentro de un rango reservado. Elige otra.");
+        this.value = "";
+        return;
+      }
+  
+      // Validar que fechaFin >= fechaInicio
+      const fechaInicio = new Date(document.getElementById("fechaInicio").value);
+      if (fechaElegida < fechaInicio) {
+        alert("La fecha final debe ser posterior a la inicial.");
+        this.value = "";
+        return;
+      }
+      */
+
+      calcularPrecioTotal
+    });
+
+
 
   function calcularPrecioTotal() {
     const fechaInicio = new Date(document.getElementById("fechaInicio").value);
@@ -368,6 +473,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Aplicar descuento por puntos
+
   document.getElementById("aplicarPuntos").addEventListener("change", async function () {
     const aplicar = this.checked;
     const total = calcularPrecioTotal();
@@ -378,29 +484,45 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    try {
-      const res = await fetch(`/user/get_discount?dni=${dni}`);
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Error al verificar puntos");
-
-      if (data.can_use_discount) {
-        const nuevo = total * (1 - data.percentage / 100);
-        document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
-        document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
-      } else {
-        alert("❌ No tenés suficientes puntos para aplicar el descuento.");
-        this.checked = false;
+    fetch("/user/user_points",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "dni": dni })
       }
-    } catch (err) {
-      alert("Error al verificar puntos: " + err.message);
-      this.checked = false;
-    }
+    ).then(response => {
+      if (!response.ok) { throw new Error(data.message || "❌ No tenés suficientes puntos para aplicar el descuento."); }
+      return response.json()
+    })
+      .then(data => {
+        let point = data.point;
+        let need = data.need;
+        let discount = data.discount;
+
+        if (point == need) {
+          const nuevo = total * (1 - discount / 100);
+          document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
+          document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
+        }
+      })
+      .catch(
+        error => {
+          alert("Error al verificar puntos: " + err.message);
+          this.checked = false;
+        }
+      );
+
+
+
   });
 
   // Validación y envío
   document.getElementById("reservaForm").addEventListener("submit", function (e) {
     e.preventDefault();
+
+    // 💡 Definir los elementos primero
+    const fechaInicioInput = document.getElementById("fechaInicio");
+    const fechaFinInput = document.getElementById("fechaFin");
 
     const fechaInicio = new Date(fechaInicioInput.value);
     const fechaFin = new Date(fechaFinInput.value);
@@ -422,18 +544,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const reserve = {
-      start_day: document.getElementById("fechaInicio").value,
-      end_day: document.getElementById("fechaFin").value,
+      start_day: fechaInicioInput.value,
+      end_day: fechaFinInput.value,
       client_id: user.dni,
       machine_id: machineId,
       shipment: shipment,
-      apply_discount: document.getElementById("aplicarPuntos").checked
+      apply_discount: document.getElementById("aplicarPuntos").checked,
+      type: user.type
     };
 
     localStorage.setItem("reserve", JSON.stringify(reserve));
     window.location.href = "prior_to_paying.html";
   });
+
 </script>
 
-  
+
 </html>

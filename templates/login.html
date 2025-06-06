@@ -107,8 +107,6 @@
                     id="dni"
                     name="dni"
                     required
-                    maxlength="8"
-                    minlength="7"
                     pattern="\d+"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -209,18 +207,6 @@
         const existingError = document.getElementById("login-error-message");
         if (existingError) existingError.remove();
 
-        //Validar DNI: 7 u 8 dígitos numéricos
-        if (!/^\d{7,8}$/.test(dni)) {
-            const errorDiv = document.createElement("div");
-            errorDiv.id = "login-error-message";
-            errorDiv.className = "mt-4 bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded-lg text-center";
-            errorDiv.textContent = "⚠️ Ingresá un DNI válido (7 u 8 dígitos numéricos).";
-            event.target.appendChild(errorDiv);
-            dniInput.classList.add("border-red-500", "focus:ring-red-500");
-        return; // no continúa con el envío
-        } else {
-            dniInput.classList.remove("border-red-500", "focus:ring-red-500");
-        }
 
         // Mostrar loader (opcional)
         const button = event.target.querySelector('button[type="submit"]');

@@ -310,6 +310,7 @@
   }
 
   // Aplicar descuento por puntos
+  
   document.getElementById("aplicarPuntos").addEventListener("change", async function () {
     const aplicar = this.checked;
     const total = calcularPrecioTotal();
@@ -320,24 +321,35 @@
       return;
     }
 
-    try {
-      const res = await fetch(`/user/get_discount?dni=${dni}`);
-      const data = await res.json();
+    fetch("/user/user_points",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "dni": dni })
+      }
+    ).then(response => { 
+      if(!response.ok){ throw new Error(data.message || "❌ No tenés suficientes puntos para aplicar el descuento."); }
+      return response.json()})
+    .then(data => {
+      let point = data.point;
+      let need = data.need;
+      let discount = data.discount;
 
-      if (!res.ok) throw new Error(data.message || "Error al verificar puntos");
-
-      if (data.can_use_discount) {
-        const nuevo = total * (1 - data.percentage / 100);
-        document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
-        document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
-      } else {
-        alert("❌ No tenés suficientes puntos para aplicar el descuento.");
+      if(point == need){ 
+      const nuevo = total * (1 - discount / 100); 
+      document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
+      document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
+    }
+    })
+    .catch(
+      error => {
+        alert("Error al verificar puntos: " + err.message);
         this.checked = false;
       }
-    } catch (err) {
-      alert("Error al verificar puntos: " + err.message);
-      this.checked = false;
-    }
+    );
+
+    
+    
   });
 
   // Validación y envío
@@ -374,7 +386,7 @@
     machine_id: machineId,
     shipment: shipment,
     apply_discount: document.getElementById("aplicarPuntos").checked,
-    type: tipoReal
+    type: user.type
   };
 
   localStorage.setItem("reserve", JSON.stringify(reserve));

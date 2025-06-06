@@ -134,7 +134,7 @@ def __USUARIOS__():
         birth_date="0001-3-1",
         password="UsuarioConPuntos",
         employee_number=0,
-        type="User",
+        type="Cliente",
         authorized=True)
     query_TEST_USER.execute(user=usuario_con_puntos)
     query_update_user_points.execute(dni=43907096, number=10)
@@ -148,7 +148,7 @@ def __USUARIOS__():
         birth_date="0001-4-1",
         password="usuarioSinPuntos",
         employee_number=0,
-        type="User",
+        type="Cliente",
         authorized=True)
     query_TEST_USER.execute(user=usuario_sin_puntos)
     query_update_user_points.execute(dni=45872513, number=4)
@@ -162,7 +162,7 @@ def __USUARIOS__():
         birth_date="0001-5-1",
         password="JoseFina",
         employee_number=0,
-        type="User",
+        type="Cliente",
         authorized=True)
     query_TEST_USER.execute(user=jose)
 
@@ -175,7 +175,7 @@ def __USUARIOS__():
         birth_date="0001-6-1",
         password="JuAn",
         employee_number=0,
-        type="User",
+        type="Cliente",
         authorized=True)
     query_TEST_USER.execute(user=juan)
 

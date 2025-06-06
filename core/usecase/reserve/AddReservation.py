@@ -13,15 +13,20 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, typ
     days = (end - start).days
     total_value = machine.price_day * days
 
-    point = int(days/7)
-    update_user_points(client_id, point)
+    # TO OK
 
+
+    point = int(days/7) # LOS PUNTOS SALEN OK
+    update_user_points(client_id, point) # ESTO ANDA OK
+    
     if (type == "Empleado"):
         total_value -= total_value * (0.01 *(get_discount("Employee").discount))
-    elif(type == "Client" and apply_discount):
-        point = -5
+    elif(type == "Cliente" and apply_discount):
+        point = get_discount("Points").need * -1
+
         update_user_points(client_id, point)
         total_value -= total_value * (0.01 * (get_discount("Points").discount))
+
 
     preference = PayByMercadoPago.execute(client_id, machine_id, start_day, machine.model, total_value)
 
@@ -39,9 +44,9 @@ def usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, typ
 
     return preference
 
-from data.query.insert import query_insert_reserve
+#from data.query.insert import query_insert_reserve
 
-def init_usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, type, apply_discount):
+#def init_usecase_add_reserve(start_day, end_day, client_id, machine_id, shipment, type, apply_discount):
     
     machine = get_machine(machine_id)
 

@@ -545,7 +545,7 @@ def get_discount():
 def user_points():
     try: 
         request_value = request.get_json() # { "id": 12345 }
-        return jsonify({ "points": GetUserPoints.usecase_get_user_points(request_value.get("id")) }), 200 
+        return jsonify( GetUserPoints.usecase_get_user_points(request_value.get("dni")) ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -859,7 +859,7 @@ def cancel_reservation_by_client():
 def reserve_machine():
     try:
         request_value = request.get_json()
-        print("🔎 Datos recibidos:", request_value)  # ✅ AGREGADO
+        #print("🔎 Datos recibidos:", request_value)  # ✅ AGREGADO
         preference = AddReservation.usecase_add_reserve(
             start_day=request_value.get("start_day"),
             end_day=request_value.get("end_day"),
@@ -899,8 +899,7 @@ def get_all_reservation():
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
 def failure_reservation():
     preference_id = request.args.get('preference_id')
-    print(preference_id)
-    CancelReservation.usecase_cancel_reservation(preferences_id=preference_id)
+    CancelReservation.usecase_cancel_reservation_by_client(preference_id=preference_id)
     return render_template("failure_reservation.html")
 
 @app.route("/pay/pay_notification", methods=["POST"]) # Verificar que se realizo el pago y enviar un correo

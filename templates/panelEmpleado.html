@@ -106,235 +106,40 @@
     </section>
     </section>
 
-    <!-- Featured Machines -->
-    <section id="maquinarias" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Nuestras Maquinarias Destacadas</h2>
+      <!-- Featured Machines -->
+<section id="maquinarias" class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Nuestras Maquinarias</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Machine 1 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <path d="M50,150 L100,150 L100,120 L300,120 L300,150 L350,150 L350,180 L50,180 Z"
-                                fill="#FFD700"></path>
-                            <rect x="250" y="130" width="40" height="20" fill="#333"></rect>
-                            <rect x="70" y="150" width="20" height="30" fill="#333"></rect>
-                            <rect x="310" y="150" width="20" height="30" fill="#333"></rect>
-                            <rect x="120" y="90" width="60" height="30" fill="#555"></rect>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$25.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <div id="featured-machines" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      <!-- Se completa dinámicamente -->
+    </div>
 
-                <!-- Machine 2 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <rect x="50" y="140" width="300" height="40" fill="#FFD700"></rect>
-                            <circle cx="100" cy="180" r="20" fill="#333"></circle>
-                            <circle cx="300" cy="180" r="20" fill="#333"></circle>
-                            <rect x="80" y="100" width="240" height="40" fill="#FFD700"></rect>
-                            <rect x="150" y="60" width="100" height="40" fill="#555"></rect>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$35.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <div class="text-center">
+      <a href="machinery.html"
+        class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
+        Ver todas las maquinarias
+      </a>
+    </div>
+  </div>
+</section>
 
-                <!-- Machine 3 -->
-                <div class="machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
-                    <div class="h-48 overflow-hidden">
-                        <svg class="w-full h-full object-cover" viewBox="0 0 400 200"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect width="400" height="200" fill="#f0f0f0"></rect>
-                            <rect x="100" y="120" width="200" height="60" rx="10" fill="#FFD700"></rect>
-                            <rect x="120" y="80" width="160" height="40" fill="#FFD700"></rect>
-                            <rect x="150" y="40" width="100" height="40" fill="#555"></rect>
-                            <circle cx="140" cy="180" r="20" fill="#333"></circle>
-                            <circle cx="260" cy="180" r="20" fill="#333"></circle>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2 text-gray-800">Nombre maquinaria</h3>
-                        <p class="text-gray-600 mb-4">Descripción corta</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-bob-red font-bold">$18.000/día</span>
-                            <a href="reserve.html"
-                                class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300"
-                                data-id="1">
-                                Reservar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="max-w-6xl mx-auto px-4 py-8">
+  <div id="titulo-categorias" class="hidden pt-10 text-center">
+    <h2 class="text-2xl font-bold text-gray-800">Nuestras categorías</h2>
+    <div class="w-24 h-1 bg-red-600 mx-auto mt-2 rounded"></div>
+  </div>
 
-            <div class="text-center mt-12">
-                <a href="#"
-                    class="inline-block bg-bob-red hover:bg-bob-dark-red text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                    Ver todas las maquinarias
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories -->
-    <section id="categorias" class="py-16 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Categorías de Maquinarias</h2>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Category 1 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Excavadoras</h3>
-                    <p class="text-gray-600 mt-2"></p> <!-- este texto iria abajo del nombre de la categoria-->
-                </a>
-
-                <!-- Category 2 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 3 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 4 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 5 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 6 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H9.771l-.592-2.37A1 1 0 008.234 9h3.532a1 1 0 00-.945.63l-.592 2.37z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 7 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-
-                <!-- Category 8 -->
-                <a href="#"
-                    class="category-item bg-white rounded-lg p-6 text-center shadow-md hover:shadow-xl transition duration-300">
-                    <div class="bg-bob-light-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800">Categoría</h3>
-                    <p class="text-gray-600 mt-2"></p>
-                </a>
-            </div>
-        </div>
-    </section>
+  <div id="categorias-container" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Aquí se insertan las categorías dinámicamente -->
+  </div>
+</div>
 
 
-    <footer id="contacto"  class="bg-bob-dark-red text-white py-10">
+
+   <!-- FOOTER -->
+  
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- Columna 1: Redes + legales -->
@@ -352,9 +157,6 @@
                 <ul class="space-y-1">
                     <li>
                         <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
-                    </li>
-                    <li>
-                        <a href="privacidad.html" class="hover:underline">Política de Privacidad</a>
                     </li>
                 </ul>
             </div>
@@ -388,4 +190,73 @@
         </div>
     </footer>
 </body>
+<script>
+     document.addEventListener("DOMContentLoaded", () => {
+  fetch("/machine/top3")
+    .then(res => res.json())
+    .then(data => { return data.machines})
+    .then( machines => {
+      const container = document.getElementById("featured-machines");
+      container.innerHTML = "";
+
+      if (!Array.isArray(machines) || machines.length === 0) return;
+
+      machines.forEach(machine => {
+  const card = `
+    <div onclick="window.location.href='/description_machinery.html?machine_id=${machine.patent}'"
+         class="cursor-pointer machine-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 hover:shadow-2xl">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="/static/image/machines/${machine.patent}.jpg" 
+             alt="${machine.model}" 
+             class="w-full h-full object-cover" 
+             onerror="this.src='/static/image/machines/default.png'">
+      </div>
+      <div class="p-6">
+        <h3 class="text-xl font-bold mb-2 text-gray-800">${machine.mark} ${machine.model}</h3>
+        <p class="text-gray-600 mb-4">${machine.description}</p>
+        <div class="flex justify-between items-center">
+          <span class="text-bob-red font-bold">$${machine.price_day}/día</span>
+          <button 
+              onclick='event.stopPropagation(); iniciarReserva(${JSON.stringify(machine)})' 
+              class="reserve-btn bg-bob-red hover:bg-bob-dark-red text-white py-2 px-4 rounded-lg transition duration-300">
+              Reservar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  container.insertAdjacentHTML("beforeend", card);
+});
+
+    })
+    .catch(err => {
+      console.error("Error al cargar las máquinas destacadas:", err);
+    });
+});
+
+
+    function iniciarReserva(machine) {
+         console.log("MACHINE:", machine);
+    if (!machine || !machine.patent) {
+      alert("Error al seleccionar la máquina.");
+      return;
+    }
+
+    const datos = {
+      machine_id: machine.patent,
+      model: machine.model,
+      mark: machine.mark,
+      description: machine.description,
+      price_day: machine.price_day,
+      image: `/static/image/machines/${machine.patent}.jpg`
+    };
+
+    localStorage.setItem("reserve", JSON.stringify(datos));
+    window.location.href = "reserve.html?machine_id=" + encodeURIComponent(machine.patent);
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+  cargarCategoriasInicio();
+});
+
+</script>
 </html>

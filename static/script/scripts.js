@@ -250,3 +250,38 @@ function buscarMaquinaria() {
     window.location.href = `/machinery.html?search=${encoded}`;
   }
 }
+function cargarCategoriasInicio() {
+  const container = document.getElementById("categorias-container");
+  const titulo = document.getElementById("titulo-categorias");
+  if (!container) return;
+
+  fetch("/categories/enabled")
+    .then(res => res.json())
+    .then(data => {
+      const categories = Array.isArray(data.categories) ? data.categories : data;
+
+      container.innerHTML = ""; // Limpiar contenido actual
+
+      if (categories.length > 0 && titulo) {
+        titulo.classList.remove("hidden");
+      }
+
+      categories.forEach(cat => {
+        const card = document.createElement("a");
+        card.href = `/machinery.html?category=${encodeURIComponent(cat)}`;
+        card.className =
+          "bg-white border border-red-200 hover:border-red-400 hover:shadow-lg transition rounded-xl p-6 flex flex-col items-center justify-center text-center";
+        card.innerHTML = `
+          <i class="fas fa-cogs text-4xl text-red-600 mb-4"></i>
+          <span class="text-lg font-semibold text-gray-800">${cat}</span>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(err => console.error("Error al cargar categorías de inicio:", err));
+}
+
+
+if (window.location.pathname.endsWith("/main.html")) {
+  cargarCategoriasInicio();
+}

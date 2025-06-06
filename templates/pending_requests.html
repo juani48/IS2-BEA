@@ -222,6 +222,13 @@
       const res = await fetch("/requests/get_all");
       const data = await res.json();
       solicitudes = data.value || [];
+      if (solicitudes.length === 0) {
+  document.getElementById("solicitudesContainer").innerHTML = `
+    <p class="text-gray-500 italic text-lg text-center mt-4">
+      No hay solicitudes de registro pendientes.
+    </p>`;
+  return;
+}
 
       mostrarSolicitudes();
     } catch (error) {
@@ -254,10 +261,10 @@
         <p class="text-sm text-gray-500 mb-4">Fecha de nacimiento: ${birth_date}</p>
 
        <div class="flex gap-4">
-  <button onclick="responderSolicitud(true, '${dni}', this)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+  <button onclick="responderSolicitud(true, '${dni}', this)" title="Aceptar" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
     <i class="fas fa-check"></i>
   </button>
-  <button onclick="responderSolicitud(false, '${dni}', this)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+  <button onclick="responderSolicitud(false, '${dni}', this)"  title="Rechazar"  class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
     <i class="fas fa-times"></i>
   </button>
   </div>

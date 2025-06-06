@@ -37,19 +37,22 @@ function fetchMachinesWithFilters() {
   })
     .then((res) => res.json())
     .then((data) => {
-      if (!Array.isArray(data)) throw new Error("Respuesta no válida");
-      machines = data;
-      currentPage = 1;
-      renderPage(currentPage);
-      renderPagination();
-    })
-    .catch((err) => {
-      document.getElementById("machine-list").innerHTML = `
-        <p class="text-red-600 text-center font-bold mt-4">
-          ⚠️ Ocurrió un error al cargar las maquinarias.
-        </p>`;
-      console.error(err);
-    });
+  if (!Array.isArray(data)) throw new Error("Respuesta no válida");
+  machines = data;
+  currentPage = 1;
+
+  const noMachinesText = document.getElementById("no-machines");
+  if (machines.length === 0) {
+    document.getElementById("machine-list").innerHTML = "";
+    noMachinesText.classList.remove("hidden");
+    document.getElementById("pagination").innerHTML = "";
+  } else {
+    noMachinesText.classList.add("hidden");
+    renderPage(currentPage);
+    renderPagination();
+  }
+})
+
 }
 
 function renderPage(page) {

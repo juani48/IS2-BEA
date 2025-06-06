@@ -171,13 +171,22 @@
           .then((data) => {
         const categorias = data.categories;
 
-        if (!Array.isArray(categorias)) {
-            console.error("La respuesta no contiene un array válido de categorías:", data);
-            return;
-        }
+if (!Array.isArray(categorias)) {
+  console.error("La respuesta no contiene un array válido de categorías:", data);
+  return;
+}
 
-        const container = document.getElementById("categoriesContainer");
-        container.innerHTML = "";  //  Limpia antes de volver a listar
+const container = document.getElementById("categoriesContainer");
+container.innerHTML = ""; // Limpia antes
+
+if (categorias.length === 0) {
+  container.innerHTML = `
+    <p class="text-center text-gray-600 italic text-lg mt-4">
+      No hay categorías.
+    </p>`;
+  return;
+}
+
 
 
         categorias.forEach((cat) => {

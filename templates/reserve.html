@@ -200,35 +200,37 @@
     </main>
 </body>
 
-    <script>
+<script>
   const machineId = new URLSearchParams(window.location.search).get("machine_id");
   const maquinaNombre = document.getElementById("maquinaNombre");
 
-  if (machineId) {
-    fetch(`/machine/get_by_id/${machineId}`)
-      .then((response) => {
-        if (!response.ok) throw new Error("No se encontró la máquina");
-        return response.json();
-      })
-      .then((data) => {
-        maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
-        
-        // ✅ Guardar precio por día en localStorage
+      if (machineId) {
+        // Consultar al backend para obtener nombre e imagen
+        fetch(`/machine/get_by_id/${machineId}`)
+          .then((response) => {
+            if (!response.ok) throw new Error("No se encontró la máquina");
+            return response.json();
+          })
+          .then((data) => {
+            // Mostrar nombre completo
+            maquinaNombre.textContent = `${data.mark} ${data.model} ${machineId}`;
+          
+            // ✅ Guardar precio por día en localStorage
         localStorage.setItem("selectedMachinePrice", data.price_day);
 
         // ✅ Calcular precio inicial si ya hay fechas cargadas
         calcularPrecioTotal();
-      })
-      .catch((error) => {
-        console.error(error);
-        maquinaNombre.textContent = `${machineId}`;
-      });
-  } else {
-    maquinaNombre.textContent = "No se seleccionó ninguna máquina";
-  }
+          })
+          .catch((error) => {
+            console.error(error);
+            maquinaNombre.textContent = `${machineId}`;
+          });
+      } else {
+        maquinaNombre.textContent = "No se seleccionó ninguna máquina";
+      }
 
-  // Mostrar/ocultar dirección
-  document.querySelectorAll('input[name="entrega"]').forEach((radio) => {
+  // Mostrar/ocultar campo de dirección
+  document.querySelectorAll('input[name="entrega"]').forEach(radio => {
     radio.addEventListener("change", function () {
       document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
     });
@@ -289,19 +291,19 @@
   document.getElementById("reservaForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const fechaInicio = new Date(document.getElementById("fechaInicio").value);
-    const fechaFin = new Date(document.getElementById("fechaFin").value);
+    const fechaInicio = new Date(fechaInicioInput.value);
+    const fechaFin = new Date(fechaFinInput.value);
     const errorDiv = document.getElementById("mensajeError");
 
     errorDiv.classList.add("hidden");
     errorDiv.textContent = "";
 
-    if (fechaFin < fechaInicio) {
-      errorDiv.textContent = "La fecha de fin no puede ser anterior a la fecha de inicio.";
+    const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+    if (dias < 7) {
+      errorDiv.textContent = "La reserva debe ser de al menos 7 días.";
       errorDiv.classList.remove("hidden");
       return;
     }
-
     const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
     if (dias < 7) {
       errorDiv.textContent = "La reserva debe ser de al menos 7 días.";

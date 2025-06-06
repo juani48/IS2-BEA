@@ -300,12 +300,13 @@ def logout():
 def signin():
     try:
         dni = request.form["dni"]
-        email= request.form["email"]
+        email = request.form["email"]
         name = request.form["name"]
         lastname = request.form["lastname"]
         phone = request.form["phone"]
         birthdate = request.form["birthdate"]
         dni_photo = request.files["dni_photo"]
+
         RequestUser.usecase_request_user(dni, email, name, lastname, phone, birthdate)
 
         if dni_photo:
@@ -315,11 +316,14 @@ def signin():
             relative_path = f"{app.config['UPLOAD_FOLDER_USER']}/{filename}"
         else:
             relative_path = None
-        flash("Solicitud pendiente de confirmación")
-        return redirect (url_for("load_login"))
+
+        flash("Solicitud pendiente de confirmación", "success")
+        return render_template("/login.html", registro_exitoso=True)
+
     except Exception as e:
-        flash(str(e))
-        return redirect(url_for("load_singin"))
+        flash(str(e), "error")
+        return render_template("/singin.html")
+
     
 @app.route("/session/status", methods=["GET"])
 def session_status():
@@ -397,37 +401,39 @@ def add_employee():
         )
         return "Empleado agregado", 204
     except Exception as e:
-        return jsonify({"error": "Ocurrió un error al procesar alta de empleado", "detalles": str(e)}), 500
+        return jsonify({"detalles": str(e)}), 500
 
 
-@app.route("/admin/disable_employee", methods=["PUT"])   
+@app.route("/employee/disable", methods=["POST"])
 @login_required
 def disable_employee():
-    if (current_user.type == "Admin"):
-        request_value = request.get_json().get("dni")
-        DisableEmployee.usecase_disable_employee(dni= request_value)
-    else:
-        return "Debe ser administrador."
-    return "Empleado deshabilitado", 204
+    if(current_user.type == "Admin"):
+        try:
+            data = request.get_json()
+            dni = data.get("dni")
+            DisableEmployee.usecase_disable_employee(dni)
+            return "", 204
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
+    else: 
+        return render_template("/main.html")
 
-@app.route("/admin/enable_employee", methods=["POST"]) 
+
+
+
+@app.route("/user/enable_employee", methods=["POST"])
 @login_required
 def enable_employee():
-    if current_user.type != "Admin":
-        abort(403, description="Debe ser administrador.")
-    request_data = request.get_json()
-
-    if not dni or not employee_number:
-        return jsonify({"error": "Faltan datos requeridos: dni y/o employee_number"}), 400    
-    dni = int(request_data.get("dni"))
-    employee_number = int (request_data.get("employee_number"))
-    
     try:
-        EnableEmployee.usecase_enable_employee(dni=dni, employee_numer=employee_number)
-        return "", 204  # No Content, sin body
+        data = request.get_json()
+        dni = data.get("dni")
+        nro = data.get("employee_number", 0)
+        EnableEmployee.usecase_enable_employee(dni, nro)
+        return "", 204
     except Exception as e:
-        # Loguear el error sería ideal aquí
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 400
+
+
 
 @app.route("/employee/get_all", methods=["GET"])  
 def get_all_employees():
@@ -781,7 +787,7 @@ def get_all_categories():
 @app.route("/categorie/enable_categorie", methods=["POST"])
 @login_required
 def enable_categorie():
-    if(current_user.type in ["Empleado", "Admin"]):
+    if(current_user.type =="Admin"):
         request_value = request.get_json().get("categorie")
         EnableCategorie.usecase_enable_categorie(categorie=request_value)
         return "", 204

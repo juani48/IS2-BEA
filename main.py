@@ -821,7 +821,7 @@ def get_enabled_categories():
 def machine_reservations():
     
     try:
-        request_value = request.get_json().get("machine_id")
+        request_value = request.get_json().get("machine_id") # [ star:.... , endfa....  ]
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400

@@ -175,8 +175,7 @@ function cargarCategoriasSelect() {
       return res.json();
     })
     .then((data) => {
-      console.log("📦 Categorías recibidas:", data);
-      const categories = data.categories; //  ahora accedemos al array real
+      const categories = Array.isArray(data.categories) ? data.categories : data; // ✅ corrección
       const select = document.getElementById("filter-categorie");
       if (!select) {
         console.error(" No se encontró #filter-categorie en el DOM");

@@ -199,9 +199,15 @@
   const tarjeta = document.createElement("div");
   tarjeta.className = "bg-white rounded-lg shadow-md p-5 space-y-3 border border-red-200";
 
-  const hoy = new Date();
-  const fechaInicio = new Date(r.start_day);
-  const esCancelable = fechaInicio >= hoy;
+ 
+ const hoy = new Date();
+hoy.setHours(0, 0, 0, 0); // Elimina hora, minutos, segundos, milisegundos
+
+const fechaInicio = new Date(r.start_day);
+fechaInicio.setHours(0, 0, 0, 0); // Igual que arriba
+
+const esCancelable = fechaInicio >= hoy;
+
 
   let botonCancelar = "";
 

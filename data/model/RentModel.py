@@ -12,8 +12,12 @@ class RentModel(Base):
     total_value = Column(Double, nullable=False)
     employee_id = Column(String, nullable=True) # Guarda el id empleado que activo
 
+    extended = Column(Boolean, nullable=True, default=False)
+    days_extended = Column(Integer, nullable=True)
+    extended_value = Column(Double, nullable=True)
+
     def __repr__(self):
-        return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, total_value:{self.total_value}, employee_id:{self.employee_id}""" + "}"
+        return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, total_value:{self.total_value}, employee_id:{self.employee_id}, extended: {self.extended}, days_extended: {self.days_extended}, extended_value: {self.extended_value}""" + "}"
 
     def json(self):
       return {
@@ -23,6 +27,9 @@ class RentModel(Base):
             "end_day": self.end_day,
             "total_value": self.total_value,
             "employee_id": self.employee_id,
+            "extended": self.extended,
+            "days_extended": self.days_extended,
+            "extended_value": self.extended_value
         }
    
     def json_days(self):
@@ -38,3 +45,6 @@ class RentModel(Base):
         self.end_day = end_day
         self.total_value = total_value
         self.employee_id = employee_id
+        self.extended = False
+        self.days_extended = 0
+        self.extended_value = 0.0

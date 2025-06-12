@@ -11,7 +11,7 @@ from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmp
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
-from core.usecase.rent import AddRent
+from core.usecase.rent import AddRent, ActivateReservation
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -918,9 +918,22 @@ def pay_notification():
 # ---- ALQUILERES ---- #
 
 # ACTIVAR RESERVA PASANDOLA A ALQUILER
+@app.route("/reservation/activate_reservation", methods=["POST"])
+def activate_reservation():
+    try:
+        request_value = request.json()
+        ActivateReservation.usercase_activate_reservation(
+            start_day=request_value("start_day"),
+            client_id=request_value("client_id"),
+            machine_id=request_value("machine_id"),
+            employee_id=request_value("employee_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "message": e }), 404
+
 
 # CARGAR ALQUILER (SE REALIZA EL MISMO DIA)
-
 @app.route("/rent/rent_machine", methods=["POST"])
 def rent_machine():
     try:

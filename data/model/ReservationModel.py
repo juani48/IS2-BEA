@@ -11,7 +11,7 @@ class ReservationModel(Base):
    end_day = Column(String, nullable=False)
    total_value = Column(Double, nullable=False)
    shipment = Column(Boolean, nullable=False) # Envio
-   activate = Column(Boolean, nullable=False) # Activa
+   activate = Column(Boolean, nullable=False) # Activa, cuando inicia el alquiler, se activa
    employee_id = Column(String, nullable=True) # Cuando se activa, se guarda el id empleado que activo
    paid = Column(Boolean, default=False) # Cuando es pagada, es puesto en true
    preference_id = Column(String,  nullable=True, unique=True)

@@ -7,11 +7,11 @@ from core.entity.User import User
 from data.appDataBase import get_machine, get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
-from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
+from core.usecase.rent import AddRent
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -915,6 +915,26 @@ def pay_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# ---- ALQUILERES ---- #
+
+# ACTIVAR RESERVA PASANDOLA A ALQUILER
+
+# CARGAR ALQUILER (SE REALIZA EL MISMO DIA)
+
+@app.route("/rent/rent_machine", methods=["POST"])
+def rent_machine():
+    try:
+        request_value = request.json()
+        AddRent.usercase_add_rent(
+            start_day=request_value("start_day"),
+            client_id=request_value("client_id"),
+            machine_id=request_value("machine_id"),
+            end_day=request_value("end_day"),
+            employee_id=request_value("employee_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 # ---- MAIN ----
 

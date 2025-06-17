@@ -22,7 +22,8 @@ def usercase_add_rent(start_day, client_id, machine_id, end_day, employee_id):
         client_id=client_id,
         machine_id=machine_id,
         total_value=total_value,
-        employee_id=employee_id
+        employee_id=employee_id,
+        end_day=end_day
     )
 
     insert_rent(start_day, client_id, machine_id, rent)

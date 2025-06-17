@@ -8,8 +8,10 @@ def execute(start_day, client_id, machine_id, employee_id):
         ReservationModel
     ).filter(
         and_(
-            ReservationModel.client_id == client_id,
-            ReservationModel.machine_id == machine_id,
+            and_(
+                ReservationModel.client_id == client_id,
+                ReservationModel.machine_id == machine_id
+            ),
             ReservationModel.start_day == start_day
         )
     ).first()

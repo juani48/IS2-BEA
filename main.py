@@ -921,33 +921,33 @@ def pay_notification():
 @app.route("/reservation/activate_reservation", methods=["POST"])
 def activate_reservation():
     try:
-        request_value = request.json()
+        request_value = request.get_json()
         ActivateReservation.usercase_activate_reservation(
-            start_day=request_value("start_day"),
-            client_id=request_value("client_id"),
-            machine_id=request_value("machine_id"),
-            employee_id=request_value("employee_id")
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            employee_id=request_value.get("employee_id")
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "error": str(e) }), 404
 
 
 # CARGAR ALQUILER (SE REALIZA EL MISMO DIA)
 @app.route("/rent/rent_machine", methods=["POST"])
 def rent_machine():
     try:
-        request_value = request.json()
+        request_value = request.get_json()
         AddRent.usercase_add_rent(
-            start_day=request_value("start_day"),
-            client_id=request_value("client_id"),
-            machine_id=request_value("machine_id"),
-            end_day=request_value("end_day"),
-            employee_id=request_value("employee_id")
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            end_day=request_value.get("end_day"),
+            employee_id=request_value.get("employee_id")
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "error": str(e) }), 404
 
 # ---- MAIN ----
 

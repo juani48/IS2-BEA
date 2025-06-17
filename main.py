@@ -11,7 +11,7 @@ from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmp
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
-from core.usecase.rent import AddRent, ActivateReservation
+from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -948,6 +948,20 @@ def rent_machine():
         return "", 201
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
+
+@app.route("/rent/extend_rent", methods=["POST"])
+def extend_rent():
+    try:
+        request_value = request.json()
+        ExtendRent.usecase_extend_rent(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            days_extended=request_value.get("days_extended")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 # ---- MAIN ----
 

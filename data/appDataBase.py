@@ -11,11 +11,11 @@ from data.query.get_all import query_get_all_machines, query_get_all_machines_by
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent
 
-from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent
+from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email, query_get_rent
 
 from data.query.delete import query_delete_reservation
 
@@ -101,6 +101,9 @@ def update_user_dni(dni, new_dni):
 def update_reservation_to_rent(start_day, client_id, machine_id, employee_id):
     query_update_reservation_to_rent.execute(start_day, client_id, machine_id, employee_id)
 
+def update_rent_extend(start_day, client_id, machine_id, days_extended, extended_value):
+    query_update_rent_extend.exeute(start_day, client_id, machine_id, days_extended, extended_value)
+
 # ---- change  ----
 def change_password(dni,password):
     query_change_password_user.execute(dni,password)
@@ -121,6 +124,9 @@ def get_discount(name):
 
 def get_employee(employeeN):
     return query_get_employee(employeeN)
+
+def get_rent(start_day, machine_id, clien_id):
+    return query_get_rent.execute(start_day, machine_id, clien_id)
 
 # ---- get all ----
 def get_all_users():

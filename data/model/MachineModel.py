@@ -16,6 +16,7 @@ class MachineModel(Base):
     creation_date = Column(String, nullable=False)
     
     # stock?
+    # variable string para mostrar el estado (disponible, o en mantenimiento)
 
     def __repr__(self):
         return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}, creation_date: {self.creation_date}""" + "}"

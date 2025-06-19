@@ -86,8 +86,8 @@ def update_machine(patent, machine):
 def update_user_points(dni, number):
     query_update_user_points.execute(dni, number)
 
-def update_user(dni, name, lastname):
-    query_update_user.execute(dni=dni, new_name= name,new_lastname= lastname)    
+def update_user(dni, name, lastname, phone):
+    query_update_user.execute(dni=dni, new_name= name,new_lastname= lastname, new_phone = phone)    
 
 def update_confirm_reservation(client_id, start_day, machine_id):
     query_update_confirm_reservation.execute(client_id, start_day, machine_id)

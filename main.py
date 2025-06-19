@@ -339,20 +339,31 @@ def session_status():
         return jsonify({ "authenticated": False }), 200
 
 
-@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
+@app.route("/user/personal_data", methods=["GET", "PUT"])
 @login_required
-def update_user():         
-    request_value = request.get_json()
-    if current_user.dni == int(request_value.get("dni")):
-        UpdateUser.usecase_update_user(
-            #email=request_value.get("email"),
-            dni = request_value.get("dni"),
-            name =request_value.get("name"),
-            lastname =request_value.get("lastname"),
-        )
-        return "", 204
-    else:   
-        return jsonify("DNI incoincidente"), 401
+def personal_data():
+    user = current_user
+
+    if request.method == "GET":
+        return jsonify({
+            "name": user.name,
+            "lastname": user.lastname,
+            "dni": user.dni,
+            "email": user.email,
+            "phone": user.phone,
+            "birthdate": user.birth_date,
+            "points": user.points
+        })
+
+    # PUT
+    data = request.get_json()
+    UpdateUser.usecase_update_user(
+        dni=user.dni,
+        name=data["name"],
+        lastname=data["lastname"],
+        phone=data["phone"]
+    )
+    return "", 204
 
 
 @app.route("/user/change_password", methods=["PUT"])

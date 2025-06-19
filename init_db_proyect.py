@@ -11,12 +11,12 @@ from datetime import datetime
 def __init_db__():
     try:
         create_database()
-        #__CATEGORIAS__()
-        #__MAQUINAS__()
+        __CATEGORIAS__()
+        __MAQUINAS__()
         __ADMIN__()
-        #__USUARIOS__()
-        #__EMPLEADOS__()
-        #__RESERVAS__()
+        __USUARIOS__()
+        __EMPLEADOS__()
+        __RESERVAS__()
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 

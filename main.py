@@ -7,11 +7,11 @@ from core.entity.User import User
 from data.appDataBase import get_machine, get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
-from data import appDataBase
 from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
+from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -926,6 +926,53 @@ def pay_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# ---- ALQUILERES ---- #
+
+# ACTIVAR RESERVA PASANDOLA A ALQUILER
+@app.route("/reservation/activate_reservation", methods=["POST"])
+def activate_reservation():
+    try:
+        request_value = request.get_json()
+        ActivateReservation.usercase_activate_reservation(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            employee_id=request_value.get("employee_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+
+# CARGAR ALQUILER (SE REALIZA EL MISMO DIA)
+@app.route("/rent/rent_machine", methods=["POST"])
+def rent_machine():
+    try:
+        request_value = request.get_json()
+        AddRent.usercase_add_rent(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            end_day=request_value.get("end_day"),
+            employee_id=request_value.get("employee_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/rent/extend_rent", methods=["POST"])
+def extend_rent():
+    try:
+        request_value = request.json()
+        ExtendRent.usecase_extend_rent(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            machine_id=request_value.get("machine_id"),
+            days_extended=request_value.get("days_extended")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "message": e }), 404
 
 # ---- MAIN ----
 

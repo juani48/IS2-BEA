@@ -201,7 +201,8 @@ card.innerHTML = `
     <p>Email: ${cliente.email}</p>
     <p>Teléfono: ${cliente.phone}</p>
     <p>Fecha nacimiento: ${cliente.birth_date}</p>
-   
+    ${tieneEmpleado ? `<p class="text-sm italic text-gray-600">🧾 Fue empleado anteriormente (Nro: ${Math.abs(cliente.employee_number)})</p>` : ''}
+
     <div class="mt-4 flex items-center gap-2">
       <input id="new-dni-${cliente.dni}" type="number" placeholder="Nuevo DNI"
              class="border px-3 py-1 rounded w-48">
@@ -223,6 +224,7 @@ card.innerHTML = `
     </div>
   </div>
 `;
+
 
 
     container.appendChild(card);

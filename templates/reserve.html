@@ -365,15 +365,20 @@
 
     // Configurar calendario de inicio
     flatpickr("#fechaInicio", {
-      minDate: "today",
-      disable: diasBloqueados,
-      locale: { firstDayOfWeek: 1 },
-      onChange: function (selectedDates) {
-        // Actualizar mínimo en fecha fin
-        document.querySelector("#fechaFin")._flatpickr.set("minDate", selectedDates[0]);
-        calcularPrecioTotal();
-      }
-    });
+  minDate: "today",
+  disable: diasBloqueados,
+  locale: { firstDayOfWeek: 1 },
+  onChange: function (selectedDates) {
+    const fechaInicio = new Date(selectedDates[0]);
+    const fechaMinFin = new Date(fechaInicio);
+    fechaMinFin.setDate(fechaInicio.getDate() + 7); // 7 días mínimo
+
+    document.querySelector("#fechaFin")._flatpickr.set("minDate", fechaMinFin);
+
+    calcularPrecioTotal();
+  }
+});
+
 
     // Configurar calendario de fin
     flatpickr("#fechaFin", {

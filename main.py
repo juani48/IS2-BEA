@@ -339,6 +339,13 @@ def session_status():
         return jsonify({ "authenticated": False }), 200
 
 
+@app.route("/session/employee", methods=["GET"])
+@login_required
+def get_employee_number():
+    if current_user.type == "Empleado" and current_user.employee_number > 0:
+        return jsonify({ "employee_id": current_user.employee_number }), 200
+    return jsonify({ "error": "No autorizado" }), 403
+
 @app.route("/user/personal_data", methods=["GET", "PUT"])
 @login_required
 def personal_data():
@@ -904,8 +911,6 @@ def get_all_reservation():
         return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
 # ---- PAGOS ---- # 
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
@@ -962,8 +967,9 @@ def rent_machine():
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
+    print("📩 Llamada a /rent/extend_rent recibida")
     try:
-        request_value = request.json()
+        request_value = request.get_json()
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -972,7 +978,7 @@ def extend_rent():
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "error": str(e) }), 404
 
 # ---- MAIN ----
 

@@ -96,6 +96,8 @@
     <!-- Paginación -->
     <div id="paginacion" class="flex justify-center space-x-2 mt-6"></div>
   </main>
+<div id="toastMensaje" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 hidden"></div>
 
   <!-- Footer -->
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
@@ -193,7 +195,6 @@
 
   function mostrarReservas() {
     reservasContainer.innerHTML = "";
-
     const inicio = (paginaActual - 1) * porPagina;
     const reservasPagina = reservas.slice(inicio, inicio + porPagina);
 
@@ -219,6 +220,18 @@ fechaInicio.setHours(0, 0, 0, 0); // reset hora
 const esCancelable = fechaInicio >= hoy;
 
   let botonCancelar = "";
+  let botonConfirmar = "";
+
+if (fechaInicio.getTime() === hoy.getTime()) {
+  botonConfirmar = `
+    <button class="confirmar-btn mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
+            data-client="${r.cliente}"
+            data-machine="${r.maquina}"
+            data-start="${r.fecha_inicio}">
+      Confirmar Reserva
+    </button>
+  `;
+}
 
   if (esCancelable) {
     botonCancelar = `
@@ -238,18 +251,22 @@ const esCancelable = fechaInicio >= hoy;
   }
 
   tarjeta.innerHTML = `
-    <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
-    <p><strong>Cliente:</strong> ${r.cliente}</p>
-    <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
-    <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
-    ${botonCancelar}
-  `;
+  <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
+  <p><strong>Cliente:</strong> ${r.cliente}</p>
+  <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
+  <p><strong>Hasta:</strong> ${r.fecha_fin}</p>
+  ${botonCancelar}
+  ${botonConfirmar}
+`;
+
 
   reservasContainer.appendChild(tarjeta);
 });
 
 // Registrar eventos solo para los botones que están habilitados
 registrarEventosCancelacion();
+registrarEventosConfirmacion();
+
 
   }
 
@@ -282,6 +299,48 @@ registrarEventosCancelacion();
     });
   }
 
+  function registrarEventosConfirmacion() {
+  document.querySelectorAll(".confirmar-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const client_id = btn.dataset.client;
+      const machine_id = btn.dataset.machine;
+      const start_day = btn.dataset.start;
+
+      let employee_id = null;
+
+      try {
+        const resEmp = await fetch("/session/employee");
+        const data = await resEmp.json();
+
+        if (resEmp.ok && data.employee_id) {
+          employee_id = data.employee_id;
+        } else {
+          mostrarMensaje("⚠️ No se pudo obtener el número de empleado.", "error");
+          return;
+        }
+
+        const res = await fetch("/reservation/activate_reservation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ start_day, client_id, machine_id, employee_id })
+        });
+
+        if (res.status === 201) {
+          btn.parentElement.remove();
+          mostrarMensaje("✅ Alquiler realizado exitosamente.", "success");
+        } else {
+          const error = await res.json();
+          mostrarMensaje("❌ Error al confirmar reserva: " + (error.error || "Desconocido"), "error");
+        }
+
+      } catch (err) {
+        console.error(err);
+        mostrarMensaje("❌ Error de conexión al confirmar reserva", "error");
+      }
+    });
+  });
+}
+
   function construirPaginacion() {
     paginacion.innerHTML = "";
     const totalPaginas = Math.ceil(reservas.length / porPagina);
@@ -302,10 +361,11 @@ registrarEventosCancelacion();
   }
 
  function mostrarMensaje(texto, tipo) {
-  const contenedor = document.getElementById("mensajeReserva");
-  contenedor.textContent = texto;
+  const toast = document.getElementById("toastMensaje");
+  toast.textContent = texto;
 
-  contenedor.className = `mb-6 text-center font-semibold px-4 py-3 rounded shadow transition-all duration-300 ${
+  toast.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+  px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 ${
     tipo === "success"
       ? "bg-green-500 text-white"
       : tipo === "error"
@@ -313,12 +373,13 @@ registrarEventosCancelacion();
       : "bg-yellow-500 text-white"
   }`;
 
-  contenedor.classList.remove("hidden");
+  toast.classList.remove("hidden");
 
   setTimeout(() => {
-    contenedor.classList.add("hidden");
-  }, 3000);
+    toast.classList.add("hidden");
+  }, 4000);
 }
+
 
 </script>
 

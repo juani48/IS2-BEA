@@ -15,12 +15,12 @@ def usecase_extend_rent(start_day, client_id, machine_id, days_extended):
         if(start == end):
             raise Exception("No es posible extender el alquiler, no hay un minimo de 2 semanas de diferencia con la proxima reserva.")
     machine = get_machine(machine_id)
-    value = machine.price_day * days_extended
+    value = machine.price_day * days_extended + local_rent.total_value
 
     update_rent_extend(
         start_day=start_day,
         client_id=client_id,
         machine_id=machine_id,
-        days_extended=days_extended,
+        end_days_extended=end,
         extended_value=value
     )

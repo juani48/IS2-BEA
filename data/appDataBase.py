@@ -7,11 +7,11 @@ from data.query.delete import query_delete_mc, query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
-from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin
+from data.query.get_all import query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin, query_get_all_maintenance
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent, query_insert_maintenance
 
-from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend
+from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend, query_update_end_maintenance
 
 from data.query.change import query_change_password_user
 
@@ -55,8 +55,8 @@ def insert_reserve(start_day, client_id, machine_id, reserve):
 def insert_rent(start_day, client_id, machine_id, rent):
     query_insert_rent.execute(start_day, client_id, machine_id, rent)
 
-def insert_maintenance(start_day, client_id, employee_id, machine_id, maintenance):
-    query_insert_maintenance.execute(start_day, client_id, employee_id, machine_id, maintenance)
+def insert_maintenance(start_day, client_id, start_employee_id, machine_id, maintenance):
+    query_insert_maintenance.execute(start_day, client_id, start_employee_id, machine_id, maintenance)
 
 # ---- disable ----
 def disable_categorie(categorie):
@@ -104,8 +104,11 @@ def update_user_dni(dni, new_dni):
 def update_reservation_to_rent(start_day, client_id, machine_id, employee_id):
     query_update_reservation_to_rent.execute(start_day, client_id, machine_id, employee_id)
 
-def update_rent_extend(start_day, client_id, machine_id, days_extended, extended_value):
-    query_update_rent_extend.exeute(start_day, client_id, machine_id, days_extended, extended_value)
+def update_rent_extend(start_day, client_id, machine_id, end_days_extended, extended_value):
+    query_update_rent_extend.exeute(start_day, client_id, machine_id, end_days_extended, extended_value)
+
+def update_end_maintenance(start_day, client_id, start_employee_id, machine_id, end_employee_id, description):
+    query_update_end_maintenance.execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description)
 
 # ---- change  ----
 def change_password(dni,password):
@@ -167,6 +170,9 @@ def get_all_reservations():
 
 def get_all_reservations_by_dni(client_id):
     return query_get_all_reservations_by_dni.execute(client_id)
+
+def get_all_maintenance():
+    return query_get_all_maintenance.execute()
 
 # ---- delete ---- #
 def delete_reservation_by_employee(client_id, start_day, machine_id):

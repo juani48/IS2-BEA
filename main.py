@@ -12,6 +12,7 @@ from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetA
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
+from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -894,7 +895,6 @@ def reserve_machine():
         return jsonify({"error": str(e)}), 400
 
 
-    
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():
     try:
@@ -903,14 +903,13 @@ def get_daily_reserve():
         return jsonify({"error": str(e)}), 400
     
 
-
-
 @app.route("/reservation/get_all_reservation", methods=["POST"])
 def get_all_reservation():
     try:
         return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
 # ---- PAGOS ---- # 
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
@@ -979,6 +978,45 @@ def extend_rent():
         return "", 201
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
+
+# ---- MANTENIMIENTOS ---- #
+@app.route("/maintenance/start_maintenance", methods=["POST"])
+def start_maintenance():
+    try:
+        request_value = request.get_json()
+        StartMaintenance.usercase_start_maintenance(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            start_employee_id=request_value.get("start_employee_id"),
+            machine_id=request_value.get("machine_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/maintenance/end_maintenance", methods=["POST"])
+def end_maintenance():
+    try:
+        request_value = request.get_json()
+        EndMaintenance.usercase_end_maintenance(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            start_employee_id=request_value.get("start_employee_id"),
+            machine_id=request_value.get("machine_id"),
+            end_employee_id=request_value.get("end_employee_id"),
+            description=request_value.get("description")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/maintenance/get_all_maintenance", methods=["GET"])
+def get_all_maintenance():
+    try:
+        return jsonify({ "maintenance": GetAllMaintenance.usecase_get_all_maintenance() })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
 
 # ---- MAIN ----
 

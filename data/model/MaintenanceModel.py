@@ -6,15 +6,17 @@ class MaintenanceModel(Base):
 
     start_day = Column(String, nullable=False, primary_key=True)
     client_id = Column(Integer, ForeignKey("user_table.dni"), nullable=False, primary_key=True) # Almaceno el ultimo usuario que uso la maquina
-    employee_id = Column(Integer, ForeignKey("user_table.employee_number"), nullable=False, primary_key=True)
-    machine_id = Column(Integer, ForeignKey("machine_table.patent"), nullable=False, primary_key=True)
+    start_employee_id = Column(Integer, ForeignKey("user_table.employee_number"), nullable=False, primary_key=True)
+    machine_id = Column(String, ForeignKey("machine_table.patent"), nullable=False, primary_key=True)
    
     end_day = Column(String, nullable=False)
     completed = Column(Boolean, default=False)
+    description = Column(String, default="")
+    end_employee_id = Column(Integer, ForeignKey("user_table.employee_number"), nullable=True, defautl=0)
 
 
     def __repr__(self):
-        return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, employee_id:{self.employee_id}, completed: {self.completed}""" + "}"
+        return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, start_employee_id:{self.start_employee_id}, completed: {self.completed}, description: {self.description}, end_employee_id: {self.end_employee_id}""" + "}"
 
     def json(self):
       return {
@@ -22,8 +24,10 @@ class MaintenanceModel(Base):
             "client_id": self.client_id,
             "machine_id": self.machine_id,
             "end_day": self.end_day,
-            "employee_id": self.employee_id,
-            "completed": self.completed
+            "start_employee_id": self.start_employee_id,
+            "completed": self.completed,
+            "description": self.description,
+            "end_employee_id": self.end_employee_id
         }
    
     def json_days(self):
@@ -32,10 +36,12 @@ class MaintenanceModel(Base):
             "end_day": self.end_day,
         }
 
-    def __init__(self, start_day, client_id, machine_id, end_day, employee_id):
+    def __init__(self, start_day, client_id, machine_id, end_day, start_employee_id):
         self.start_day = start_day
         self.client_id = client_id
         self.machine_id = machine_id
         self.end_day = end_day
-        self.employee_id = employee_id
+        self.start_employee_id = employee_id
         self.completed = False
+        self.description = ""
+        self.end_employee_id = 0

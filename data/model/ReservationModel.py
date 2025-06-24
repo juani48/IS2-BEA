@@ -6,7 +6,7 @@ class ReservationModel(Base):
 
    start_day = Column(String, nullable=False, primary_key=True)
    client_id = Column(Integer, ForeignKey("user_table.dni"), nullable=False, primary_key=True)
-   machine_id = Column(Integer, ForeignKey("machine_table.patent"), nullable=False, primary_key=True)
+   machine_id = Column(String, ForeignKey("machine_table.patent"), nullable=False, primary_key=True)
    
    end_day = Column(String, nullable=False)
    total_value = Column(Double, nullable=False)

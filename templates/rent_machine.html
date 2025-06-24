@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bob el Alquilador - Alquiler de Maquinarias de Construcción</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Header -->
+    <!-- Encabezado del usuario logueado -->
+    <header class="bg-bob-red text-white sticky top-0 z-50 shadow-md">
+        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+
+            <!-- LOGO -->
+            <div class="shrink-0">
+                <a href="/panelEmpleado.html">
+                    <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+                </a>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <div class="flex-grow flex justify-center">
+                <div class="relative w-full max-w-xl">
+                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                </div>
+            </div>
+
+          <!-- MI CUENTA (se completa automáticamente si hay sesión) -->
+        <div id="accountArea"></div>
+
+                <!-- Dropdown -->
+                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white text-gray-700 rounded-lg shadow-lg z-50">
+                    <button onclick="window.location.href='/editar_perfil'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Editar perfil</button>
+                    <button onclick="window.location.href='/historial'" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Ver historial</button>
+                    <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Cerrar sesión</button>
+                </div>
+            </div>
+        <!-- Navigation debajo, 100% ancho -->
+        <nav class="main-nav w-full">
+            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
+                <li><a href="/main.html">Menú</a></li>
+                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto">Contáctanos</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
+            <ul class="flex flex-col space-y-3">
+                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
+                <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una maquinaria</a></li
+                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
+                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
+            </ul>
+        </div>
+    </header>
+    </div>
+</header>
+  
+    <div class="max-w-xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-8">
+      <h1 class="text-3xl font-bold text-center text-bob-red mb-6">
+        Alquiler Presencial
+      </h1>
+
+      <form id="form-alquiler" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >DNI del cliente</label
+          >
+          <input
+            type="number"
+            id="client_id"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >ID de la máquina (patente)</label
+          >
+          <input
+            type="text"
+            id="machine_id"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Fecha de inicio</label
+          >
+          <input
+            type="date"
+            id="start_day"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Fecha de fin</label
+          >
+          <input
+            type="date"
+            id="end_day"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >ID del empleado</label
+          >
+          <input
+            type="text"
+            id="employee_id"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-bob-red text-white font-semibold py-2 px-6 rounded-lg hover:bg-bob-dark-red transition"
+        >
+          Confirmar alquiler
+        </button>
+      </form>
+
+      <div id="mensaje" class="mt-4 text-center text-sm font-semibold"></div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Cargar categorías si aplica
+  if (typeof cargarCategoriasInicio === "function") {
+    cargarCategoriasInicio();
+  }
+
+  fetch("/session/employee")
+  .then(res => res.json())
+  .then(data => {
+     console.log("👉 Empleado desde sesión:", data); // 👈
+    if (data.employee_id) {
+      const empInput = document.getElementById("employee_id");
+      empInput.value = data.employee_id;
+      empInput.readOnly = true;
+      empInput.classList.add("bg-gray-100", "cursor-not-allowed");
+    }
+  })
+  .catch(err => {
+    console.warn("No se pudo obtener el número de empleado:", err);
+  });
+
+
+  const form = document.getElementById("form-alquiler");
+  const mensaje = document.getElementById("mensaje");
+  const startInput = document.getElementById("start_day");
+  const endInput = document.getElementById("end_day");
+
+  // Deshabilitar campo de fin hasta que se elija inicio
+  endInput.disabled = true;
+
+  // Manejar cambio de fecha de inicio
+  startInput.addEventListener("change", () => {
+    const startDate = new Date(startInput.value);
+    if (!startDate || isNaN(startDate)) return;
+
+    // Calcular mínimo: +7 días
+    const minEndDate = new Date(startDate);
+    minEndDate.setDate(minEndDate.getDate() + 7);
+
+    const formattedMinEnd = minEndDate.toISOString().split("T")[0];
+    endInput.min = formattedMinEnd;
+    endInput.disabled = false;
+
+    // Borrar fecha si ya no es válida
+    if (endInput.value < formattedMinEnd) {
+      endInput.value = "";
+    }
+  });
+
+  // Enviar formulario
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      start_day: startInput.value,
+      end_day: endInput.value,
+      client_id: document.getElementById("client_id").value,
+      machine_id: document.getElementById("machine_id").value,
+      employee_id: document.getElementById("employee_id").value
+    };
+
+    try {
+      const response = await fetch("/rent/rent_machine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        mensaje.innerHTML = `
+  <div class="bg-green-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mt-4">
+    <i class="fas fa-check-circle text-xl"></i>
+    <span class="font-semibold">Alquiler registrado correctamente.</span>
+  </div>
+`;
+
+    // Recargar la página después de 3 segundos
+    setTimeout(() => {
+    window.location.reload();
+    }, 3000);
+
+        form.reset();
+        endInput.disabled = true;
+      } else {
+        const result = await response.json();
+        
+        let errorMsg = result.error || "Error desconocido en el alquiler.";
+
+        // Reemplazo específico para el mensaje de usuario no registrado
+        if (errorMsg === "Usuario no registrado") {
+        errorMsg = "Alquiler fallido por usuario no registrado";
+        }
+        if (errorMsg === "Máquina inexistente") {
+        errorMsg = "Alquiler fallido por máquina inexistente";
+        }
+
+
+       mensaje.innerHTML = `
+  <div class="bg-red-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mt-4">
+    <i class="fas fa-exclamation-circle text-xl"></i>
+    <span class="font-semibold">${errorMsg}</span>
+  </div>
+`;
+
+      }
+    } catch (error) {
+      mensaje.textContent = " Error de conexión con el servidor.";
+      mensaje.className = "text-red-600 mt-4";
+    }
+  });
+});
+</script>
+
+ 
+  </body>
+
+   <!-- FOOTER -->
+  
+    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Columna 1: Redes + legales -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="https://instagram.com/bobelalquilador" target="_blank"
+                        class="hover:text-gray-300 transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Columna 2: Contacto -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Contacto</h3>
+                <ul class="space-y-2">
+                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
+                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
+                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Mapa -->
+            <div>
+                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Línea inferior -->
+        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
+            © 2025 Bob El Alquilador. Todos los derechos reservados.
+        </div>
+    </footer>
+</html>

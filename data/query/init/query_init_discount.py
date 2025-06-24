@@ -9,4 +9,4 @@ def execute():
     session.add(DiscountModel(
         discount=15, name="Points", need=5
     ))
-    session.commit
+    session.commit()

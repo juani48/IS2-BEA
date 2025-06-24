@@ -240,9 +240,6 @@ def user_history_page():
     return render_template("user_history.html")
 
 
-
-
-
 @app.route('/list_categories.html') #Hace falta estar logueado y ser empleado o admin
 @login_required                   #Si no sos admin o empleado, te manda al main
 def list_categories():
@@ -259,6 +256,15 @@ def edit_machine_data():
         return render_template('edit_machine_data.html')
     else:
         return render_template("/main.html")
+    
+@app.route("/rent_machine.html")
+@login_required                     
+def rent_machine_route():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("rent_machine.html")
+    else:
+        return render_template("/main.html")
+
     
 # ---- METODOS USUARIO ---- #
 
@@ -338,8 +344,16 @@ def session_status():
     else:
         return jsonify({ "authenticated": False }), 200
 
+@app.route("/session/employee", methods=["GET"])
+@login_required
+def get_employee_session_info():
+    if current_user.type == "Empleado" and current_user.employee_number > 0:
+        return jsonify({ "employee_id": current_user.employee_number }), 200
+    return jsonify({ "error": "No autorizado" }), 403
 
-@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
+
+
+@app.route("/user/update_user", methods=["PUT"]) #Chequeado 
 @login_required
 def update_user():         
     request_value = request.get_json()

@@ -21,7 +21,7 @@ def __init_db__():
         print(f"La base de datos ya esta cargada: {e}")
 
 def add_points():
-    query_update_user_points.execute(dni=11222333, number=100_000)
+   query_update_user_points.execute(dni=11222333, number=100_000)
 
 def __CATEGORIAS__():
     AddCategorie.usecase_add_categorie(categorie="Jardineria")

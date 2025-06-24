@@ -11,10 +11,19 @@ def usercase_add_rent(start_day, client_id, machine_id, end_day, employee_id):
         raise Exception("Se debe alquilar una maquina con un minimo de 7 dias.")
     
     client = get_user(client_id)
+    #agrego esto porque si el usuario no existe se rompe todo, soy Lara
+    if client is None:
+        raise Exception("Usuario no registrado")
+
+
     points = int(days/7)
     client.points += points
 
     machine = get_machine(machine_id)
+    #lo mismo que arriba
+    if machine is None:
+        raise Exception("Máquina inexistente")
+
     total_value = machine.price_day * days
 
     rent = RentModel(

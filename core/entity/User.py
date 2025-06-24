@@ -12,3 +12,7 @@ class User(UserMixin):
     self.password = user_model.password
     self.type = user_model.type
     self.id = str(user_model.dni)
+    self.phone = user_model.phone
+    self.birth_date = user_model.birth_date   # ✅ AGREGÁ ESTA LÍNEA
+    self.points = user_model.points    
+    self.employee_number = user_model.employee_number #Lo necesito para el confirmar reserva, no lo saquen

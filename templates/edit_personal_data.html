@@ -1,210 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Modificar Datos</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-   <link rel="icon" href="{{ url_for('static', filename='image/Solo logo.svg') }}" type="image/svg">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="{{ url_for('static', filename='script/scripts.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}" />
+  <link rel="icon" type="image/svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}" />
 </head>
 <body class="bg-gray-100 font-sans">
 
- <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
-        <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-
-            <!-- LOGO -->
-            <div class="shrink-0">
-                <a href="#" onclick="goHome()" title="Ir al inicio">
-                  <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
-                </a>
-            </div>
-
-            <!-- BARRA DE BÚSQUEDA -->
-            <div class="flex-grow flex justify-center">
-                <div class="relative w-full max-w-xl">
-                <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
-                class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
-                <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-                    <i class="fas fa-search"></i>
-                </button>
-                </div>
-            </div>
-
-            <!-- MI CUENTA -->
-            <div id="accountArea"></div>
-                 <!--Laruchi no te asustes, esto se completa dinámicamente dependiendo si sos usuario o visitante-->
-          </div>
-
-
+  <!-- ✅ HEADER -->
+  <header class="bg-red-700 text-white sticky top-0 z-50 shadow-md">
+    <div class="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="shrink-0">
+        <a href="#" onclick="goHome()" title="Ir al inicio">
+          <img src="{{ url_for('static', filename='image/Completo.svg') }}" alt="Bob el Alquilador" class="h-16">
+        </a>
+      </div>
+      <div class="flex-grow flex justify-center">
+        <div class="relative w-full max-w-xl">
+          <input type="text" id="searchInput" placeholder="Buscar maquinaria..."
+                 class="w-full py-2 px-4 pr-10 rounded-full text-gray-800 focus:outline-none shadow-md">
+          <button onclick="buscarMaquinaria()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">🔍</button>
         </div>
-        </div>
+      </div>
+      <div id="accountArea"></div>
+    </div>
+    <nav class="main-nav w-full">
+      <ul class="flex flex-wrap justify-between text-white px-4 text-sm md:text-base">
+        <li><a href="main.html">Menú</a></li>
+        <li><a href="machinery.html">Maquinarias</a></li>
+        <li><a href="#">Categorías</a></li>
+        <li><a href="#">Preguntas Frecuentes</a></li>
+        <li><a href="#contacto">Contáctanos</a></li>
+      </ul>
+    </nav>
+  </header>
 
-        <!-- Navigation debajo, 100% ancho -->
-        <nav class="main-nav w-full">
-            <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
-                <li><a href="main.html">Menú</a></li>
-                <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li class="relative" id="dropdown-categorias-container">
-                <span id="dropdown-categorias-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Categorías <i class="fas fa-caret-down ml-1"></i>
-                </span>
-
-                <div id="dropdown-categorias-menu"
-                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                    style="color: #7f1d1d;">
-                  <!-- Se rellena dinámicamente -->
-                </div>
-              </li>
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
-            </ul>
-        </nav>
-
-        <!-- Mobile Navigation Menu -->
-        <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-            <ul class="flex flex-col space-y-3">
-                <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
-                <li><a href="machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Maquinarias</a></li>
-                <li><a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Contáctanos</a></li>
-            </ul>
-        </div>  
-
-    </header>
+  <!-- ✅ FORMULARIO -->
   <main class="max-w-md mx-auto mt-12 bg-white p-6 rounded-lg shadow-md">
     <div class="flex justify-end">
-    <button onclick="window.location.href='edit_profile.html'" class="text-red-600 hover:text-red-800 text-xl font-bold" title="Volver al perfil">
-      &times;
-    </button>
-  </div>
+      <button onclick="window.location.href='edit_profile.html'" class="text-red-600 hover:text-red-800 text-xl font-bold" title="Volver al perfil">&times;</button>
+    </div>
     <h2 class="text-2xl font-bold text-red-700 mb-6 text-center">Modificar Datos</h2>
-    <div id="mensaje" class="hidden p-3 rounded text-center font-semibold"></div>
 
+         <!-- ✅ MENSAJE FUNCIONAL -->
+    <div id="mensaje" class="hidden p-3 rounded text-center font-semibold"></div>
     <form id="formDatos" class="space-y-4">
-      <input type="text" id="nombre" placeholder="Nombre" class="w-full p-3 border rounded">
-      <input type="text" id="apellido" placeholder="Apellido" class="w-full p-3 border rounded">
-      <button type="submit" class="w-full py-2 px-4 bg-bob-red hover:bg-bob-dark-red text-white font-bold rounded">
+      <!-- No editables -->
+      <div>
+        <label for="dni" class="block font-semibold text-sm">DNI (no editable)</label>
+        <input type="text" id="dni" class="w-full p-3 border rounded bg-gray-100" readonly>
+      </div>
+
+      <div>
+        <label for="email" class="block font-semibold text-sm">Email (no editable)</label>
+        <input type="email" id="email" class="w-full p-3 border rounded bg-gray-100" readonly>
+      </div>
+
+      <div>
+        <label for="birthdate" class="block font-semibold text-sm">Fecha de nacimiento (no editable)</label>
+        <input type="text" id="birthdate" class="w-full p-3 border rounded bg-gray-100" readonly>
+      </div>
+
+      <div>
+        <label for="points" class="block font-semibold text-sm">Puntos acumulados (no editable)</label>
+        <input type="text" id="points" class="w-full p-3 border rounded bg-gray-100" readonly>
+      </div>
+
+      <!-- Editables -->
+      <div>
+        <label for="nombre" class="block font-semibold text-sm">Nombre</label>
+        <input type="text" id="nombre" placeholder="Nombre"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+               class="w-full p-3 border rounded">
+      </div>
+
+      <div>
+        <label for="apellido" class="block font-semibold text-sm">Apellido</label>
+        <input type="text" id="apellido" placeholder="Apellido"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+               class="w-full p-3 border rounded">
+      </div>
+
+      <div>
+        <label for="telefono" class="block font-semibold text-sm">Teléfono</label>
+        <input type="text" id="telefono" placeholder="Teléfono"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+               class="w-full p-3 border rounded">
+      </div>
+
+      <button type="submit" class="w-full py-2 px-4 bg-red-700 hover:bg-red-800 text-white font-bold rounded">
         Guardar Cambios
       </button>
     </form>
+
   </main>
- 
-   <!-- FOOTER -->
-  
-    <footer id="contacto" class="bg-bob-dark-red text-white py-10">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <!-- Columna 1: Redes + legales -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Conectá con nosotros</h3>
-                <div class="flex space-x-4 mb-4">
-                    <a href="https://instagram.com/bobelalquilador" target="_blank"
-                        class="hover:text-gray-300 transition">
-                        <i class="fab fa-instagram text-2xl"></i>
-                    </a>
-                    <a href="https://wa.me/5492245400777" target="_blank" class="hover:text-gray-300 transition">
-                        <i class="fab fa-whatsapp text-2xl"></i>
-                    </a>
-                </div>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="terminos.html" class="hover:underline">Términos y Condiciones</a>
-                    </li>
-                </ul>
-            </div>
+  <!-- ✅ FOOTER -->
+  <footer id="contacto" class="bg-bob-dark-red text-white py-10 mt-12">
+    <div class="text-center text-sm">
+      © 2025 Bob El Alquilador. Todos los derechos reservados.
+    </div>
+  </footer>
 
-            <!-- Columna 2: Contacto -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Contacto</h3>
-                <ul class="space-y-2">
-                    <li><i class="fas fa-phone mr-2"></i> +54 11 5555-5555</li>
-                    <li><i class="fas fa-envelope mr-2"></i> info@bobelaquilador.com</li>
-                    <li><i class="fas fa-clock mr-2"></i> Lun-Vie: 9:00 - 17:00</li>
-                </ul>
-            </div>
-
-            <!-- Columna 3: Mapa -->
-            <div>
-                <h3 class="text-lg font-bold mb-2">Ubicación</h3>
-                <div class="rounded-lg overflow-hidden shadow-lg">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.118324865909!2d-57.937655799999995!3d-34.90348000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e66a8fcdf951%3A0x9191a5ff1fbbe5d5!2sFacultad%20de%20Inform%C3%A1tica%20-%20UNLP!5e0!3m2!1ses!2sar!4v1747357664109!5m2!1ses!2sar"
-                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Línea inferior -->
-        <div class="mt-6 border-t border-white/20 pt-4 text-center text-sm">
-            © 2025 Bob El Alquilador. Todos los derechos reservados.
-        </div>
-    </footer>
-
+  <!-- ✅ SCRIPT -->
   <script>
-  const user = JSON.parse(localStorage.getItem("user"));
-  document.getElementById("nombre").value = user.name;
-  document.getElementById("apellido").value = user.lastname;
+    document.addEventListener("DOMContentLoaded", function () {
+      window.onload = async function () {
+        try {
+          const res = await fetch("/user/personal_data");
+          const data = await res.json();
+          document.getElementById("dni").value = data.dni;
+          document.getElementById("email").value = data.email;
+          document.getElementById("birthdate").value = data.birthdate;
+          document.getElementById("points").value = data.points;
+          document.getElementById("nombre").value = data.name;
+          document.getElementById("apellido").value = data.lastname;
+          document.getElementById("telefono").value = data.phone;
+          localStorage.setItem("user", JSON.stringify(data));
+        } catch (err) {
+          console.error("Error al cargar datos:", err);
+        }
+      };
 
-  document.getElementById("formDatos").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const mensaje = document.getElementById("mensaje");
-    mensaje.classList.add("hidden");
+      document.getElementById("formDatos").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById("nombre").value.trim();
+        const apellido = document.getElementById("apellido").value.trim();
+        const telefono = document.getElementById("telefono").value.trim();
+        const dni = document.getElementById("dni").value;
+        const mensaje = document.getElementById("mensaje");
+        mensaje.classList.add("hidden");
 
-    const nuevoNombre = document.getElementById("nombre").value.trim();
-const nuevoApellido = document.getElementById("apellido").value.trim();
+        const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+        const soloNumeros = /^[0-9]+$/;
 
-// Validación: al menos una letra en cada campo
-const letraRegex = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/;
+        if (!soloLetras.test(nombre) || !soloLetras.test(apellido)) {
+          mensaje.textContent = "Nombre y apellido solo pueden contener letras.";
+          mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+          return;
+        }
 
-if (!letraRegex.test(nuevoNombre) || !letraRegex.test(nuevoApellido)) {
-  mensaje.className = "bg-yellow-100 text-yellow-700 border border-yellow-300 p-3 rounded text-center font-semibold";
-  mensaje.textContent = "Los campos no pueden estar vacíos.";
-  mensaje.classList.remove("hidden");
-  return;
-}
+        if (!soloNumeros.test(telefono)) {
+          mensaje.textContent = "El teléfono solo puede contener números.";
+          mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+          return;
+        }
+
+        try {
+          const res = await fetch("/user/personal_data", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ dni, name: nombre, lastname: apellido, phone: telefono })
+          });
+
+          if (res.status === 204) {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const updatedUser = { ...user, name: nombre, lastname: apellido, phone: telefono };
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+
+            mensaje.textContent = "✅ Datos actualizados con éxito.";
+            mensaje.className = "bg-green-100 text-green-700 border border-green-300 p-3 rounded text-center font-semibold";
+            window.scrollTo({ top: 0, behavior: "smooth" });
 
 
-    const res = await fetch("/user/update_user", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        dni: user.dni,
-        name: nuevoNombre,
-        lastname: nuevoApellido
-      })
+            setTimeout(() => {
+              window.location.href = "edit_profile.html";
+            }, 3000);
+          } else {
+            const data = await res.json();
+            mensaje.textContent = data;
+            mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+
+          }
+        } catch (err) {
+          console.error("Error al enviar datos:", err);
+          mensaje.textContent = "Error inesperado al actualizar los datos.";
+          mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
+        }
+
+        mensaje.classList.remove("hidden");
+      });
     });
-
-    console.log(res); // para debug
-
-    if (res.status === 204) {
-      // ✅ Actualizamos localStorage con los nuevos datos
-      const updatedUser = { ...user, name: nuevoNombre, lastname: nuevoApellido };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-
-      // ✅ Mostramos mensaje
-      mensaje.className = "bg-green-100 text-green-700 border border-green-300 p-3 rounded text-center font-semibold";
-      mensaje.textContent = "Datos actualizados con éxito.";
-      mensaje.classList.remove("hidden");
-
-      // ✅ Redireccionamos luego de 1 segundo
-      setTimeout(() => {
-        window.location.href = "edit_profile.html";
-      }, 1000);
-    } else {
-      const data = await res.json();
-      mensaje.className = "bg-red-100 text-red-700 border border-red-300 p-3 rounded text-center font-semibold";
-      mensaje.textContent = data;
-      mensaje.classList.remove("hidden");
-    }
-  });
-</script>
-
+  </script>
 </body>
 </html>

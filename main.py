@@ -339,20 +339,38 @@ def session_status():
         return jsonify({ "authenticated": False }), 200
 
 
-@app.route("/user/update_user", methods=["PUT"]) #Chequeado ✅
+@app.route("/session/employee", methods=["GET"])
 @login_required
-def update_user():         
-    request_value = request.get_json()
-    if current_user.dni == int(request_value.get("dni")):
-        UpdateUser.usecase_update_user(
-            #email=request_value.get("email"),
-            dni = request_value.get("dni"),
-            name =request_value.get("name"),
-            lastname =request_value.get("lastname"),
-        )
-        return "", 204
-    else:   
-        return jsonify("DNI incoincidente"), 401
+def get_employee_number():
+    if current_user.type == "Empleado" and current_user.employee_number > 0:
+        return jsonify({ "employee_id": current_user.employee_number }), 200
+    return jsonify({ "error": "No autorizado" }), 403
+
+@app.route("/user/personal_data", methods=["GET", "PUT"])
+@login_required
+def personal_data():
+    user = current_user
+
+    if request.method == "GET":
+        return jsonify({
+            "name": user.name,
+            "lastname": user.lastname,
+            "dni": user.dni,
+            "email": user.email,
+            "phone": user.phone,
+            "birthdate": user.birth_date,
+            "points": user.points
+        })
+
+    # PUT
+    data = request.get_json()
+    UpdateUser.usecase_update_user(
+        dni=user.dni,
+        name=data["name"],
+        lastname=data["lastname"],
+        phone=data["phone"]
+    )
+    return "", 204
 
 
 @app.route("/user/change_password", methods=["PUT"])
@@ -893,8 +911,6 @@ def get_all_reservation():
         return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
 # ---- PAGOS ---- # 
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
@@ -951,8 +967,9 @@ def rent_machine():
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
+    print("📩 Llamada a /rent/extend_rent recibida")
     try:
-        request_value = request.json()
+        request_value = request.get_json()
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -961,7 +978,7 @@ def extend_rent():
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "error": str(e) }), 404
 
 # ---- MAIN ----
 

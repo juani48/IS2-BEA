@@ -1,6 +1,8 @@
 from core.usecase.categorie import AddCategorie
 from core.usecase.machine import AddMachine
 from core.usecase.reserve import AddReservation
+from core.usecase.rent import AddRent
+from data.query.insert import query_insert_rent
 from data.query.update import query_update_user_points
 from data.query.insert import query_TEST_USER
 from data.model.UserModel import UserModel
@@ -17,6 +19,7 @@ def __init_db__():
         __USUARIOS__()
         __EMPLEADOS__()
         __RESERVAS__()
+        #__ALQUILERES__() --> para testear el extender alquiler (pri)
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 
@@ -191,7 +194,34 @@ def __RESERVAS__():
         apply_discount=False
     )
 
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-6-20",
+        end_day="2025-10-9",
+        client_id=47654123, # ----> RESERVA DE Jose
+        machine_id="ABC2",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
     
+    #AddReservation.init_usecase_add_reserve( --> para testear el confirmar reserva (pri)
+    #   start_day="2025-6-23",
+    #    end_day="2025-8-25",
+    #    client_id=47654123, # ----> RESERVA DE Jose
+    #    machine_id="ABC2",
+    #    shipment=True,
+    #    type="Cliente",
+    #    apply_discount=False
+    #)
+
+#def __ALQUILERES__(): --> para testear el extender alquiler (pri)
+#    AddRent.usercase_add_rent(
+#        start_day="2025-6-20",
+#        end_day="2025-10-9",
+#        client_id=47654123,     
+#        machine_id="ABC2",      
+#        employee_id=None        
+#    )
     
 
 

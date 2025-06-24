@@ -12,6 +12,7 @@ from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetA
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
+from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -353,20 +354,38 @@ def get_employee_session_info():
 
 
 
-@app.route("/user/update_user", methods=["PUT"]) #Chequeado 
+@app.route("/session/employee", methods=["GET"])
 @login_required
-def update_user():         
-    request_value = request.get_json()
-    if current_user.dni == int(request_value.get("dni")):
-        UpdateUser.usecase_update_user(
-            #email=request_value.get("email"),
-            dni = request_value.get("dni"),
-            name =request_value.get("name"),
-            lastname =request_value.get("lastname"),
-        )
-        return "", 204
-    else:   
-        return jsonify("DNI incoincidente"), 401
+def get_employee_number():
+    if current_user.type == "Empleado" and current_user.employee_number > 0:
+        return jsonify({ "employee_id": current_user.employee_number }), 200
+    return jsonify({ "error": "No autorizado" }), 403
+
+@app.route("/user/personal_data", methods=["GET", "PUT"])
+@login_required
+def personal_data():
+    user = current_user
+
+    if request.method == "GET":
+        return jsonify({
+            "name": user.name,
+            "lastname": user.lastname,
+            "dni": user.dni,
+            "email": user.email,
+            "phone": user.phone,
+            "birthdate": user.birth_date,
+            "points": user.points
+        })
+
+    # PUT
+    data = request.get_json()
+    UpdateUser.usecase_update_user(
+        dni=user.dni,
+        name=data["name"],
+        lastname=data["lastname"],
+        phone=data["phone"]
+    )
+    return "", 204
 
 
 @app.route("/user/change_password", methods=["PUT"])
@@ -890,7 +909,6 @@ def reserve_machine():
         return jsonify({"error": str(e)}), 400
 
 
-    
 @app.route("/reservation/get_daily_reservations", methods=["POST"])
 def get_daily_reserve():
     try:
@@ -899,16 +917,13 @@ def get_daily_reserve():
         return jsonify({"error": str(e)}), 400
     
 
-
-
 @app.route("/reservation/get_all_reservation", methods=["POST"])
 def get_all_reservation():
     try:
         return jsonify(GetAllReservations.usecase_get_all_reservations()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
+    
 # ---- PAGOS ---- # 
 
 @app.route("/failure_reservation.html") # Llamar al caso de uso que CANCELE la reserva
@@ -965,8 +980,9 @@ def rent_machine():
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
+    print("📩 Llamada a /rent/extend_rent recibida")
     try:
-        request_value = request.json()
+        request_value = request.get_json()
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -975,7 +991,46 @@ def extend_rent():
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "message": e }), 404
+        return jsonify({ "error": str(e) }), 404
+
+# ---- MANTENIMIENTOS ---- #
+@app.route("/maintenance/start_maintenance", methods=["POST"])
+def start_maintenance():
+    try:
+        request_value = request.get_json()
+        StartMaintenance.usercase_start_maintenance(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            start_employee_id=request_value.get("start_employee_id"),
+            machine_id=request_value.get("machine_id")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/maintenance/end_maintenance", methods=["POST"])
+def end_maintenance():
+    try:
+        request_value = request.get_json()
+        EndMaintenance.usercase_end_maintenance(
+            start_day=request_value.get("start_day"),
+            client_id=request_value.get("client_id"),
+            start_employee_id=request_value.get("start_employee_id"),
+            machine_id=request_value.get("machine_id"),
+            end_employee_id=request_value.get("end_employee_id"),
+            description=request_value.get("description")
+        )
+        return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/maintenance/get_all_maintenance", methods=["GET"])
+def get_all_maintenance():
+    try:
+        return jsonify({ "maintenance": GetAllMaintenance.usecase_get_all_maintenance() })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
 
 # ---- MAIN ----
 

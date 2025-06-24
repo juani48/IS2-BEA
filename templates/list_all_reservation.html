@@ -97,6 +97,8 @@
     <!-- Paginación -->
     <div id="paginacion" class="flex justify-center space-x-2 mt-6"></div>
   </main>
+  <div id="toastMensaje" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 hidden"></div>
 
   <!-- FOOTER -->
   
@@ -298,22 +300,26 @@ const esCancelable = fechaInicio >= hoy;
       }
     }
 
-    function mostrarMensajeReserva(texto, tipo) {
-  const mensajeDiv = document.getElementById("mensajeReserva");
-  mensajeDiv.textContent = texto;
+function mostrarMensajeReserva(texto, tipo) {
+  const toast = document.getElementById("toastMensaje");
+  toast.textContent = texto;
 
-  // Colores según el tipo de mensaje
-  if (tipo === "success") {
-    mensajeDiv.className = "mb-4 text-green-700 bg-green-100 border border-green-300 rounded px-4 py-2 text-center";
-  } else if (tipo === "error") {
-    mensajeDiv.className = "mb-4 text-red-700 bg-red-100 border border-red-300 rounded px-4 py-2 text-center";
-  } else {
-    mensajeDiv.className = "mb-4 text-gray-700 bg-gray-100 border border-gray-300 rounded px-4 py-2 text-center";
-  }
+  toast.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+  px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 ${
+    tipo === "success"
+      ? "bg-green-500 text-white"
+      : tipo === "error"
+      ? "bg-red-600 text-white"
+      : "bg-yellow-500 text-white"
+  }`;
 
-  // Ocultar luego de 4 segundos
-  setTimeout(() => mensajeDiv.textContent = "", 4000);
+  toast.classList.remove("hidden");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 4000);
 }
+
 
   </script>
 

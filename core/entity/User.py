@@ -13,10 +13,11 @@ class User(UserMixin):
         self.id = str(user_model.dni)  # requerido por Flask-Login
 
         #Campo necesario para acceder a /session/employee ,soy lara, agregue todo esto hasta abajo para usarlo
-        self.employee_number = user_model.employee_number
+        self.employee_number = user_model.employee_number #Lo necesito para el confirmar reserva, no lo saquen
 
         # Otros campos opcionales si los necesitás en la sesión
         self.phone = user_model.phone
         self.birth_date = user_model.birth_date
         self.points = user_model.points
         self.authorized = user_model.authorized
+     

@@ -13,6 +13,7 @@ from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategor
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
+from core.usecase.question import GetAllQuestions,AddQuestion
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -581,6 +582,27 @@ def user_points():
         return jsonify( GetUserPoints.usecase_get_user_points(request_value.get("dni")) ), 200 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/questions/get_all", methods=["GET"])
+def get_all_questions():
+    return jsonify( { "value" : GetAllQuestions.usecase_get_all_questions()} ), 200     
+
+@app.route("/questions/add_question", methods=["POST"])
+@login_required
+def add_question():
+    try:
+        data = request.get_json()
+        if not data or not data.get("question"):     # Validaciones básicas
+            return jsonify({"error": "La pregunta es obligatoria"}), 400
+        
+        user_name = current_user.name                # nombre del usuario logueado
+        question_text = data["question"]
+
+        AddQuestion.usecase_add_question(user_name, question_text)
+        return jsonify({"message": "Pregunta enviada correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al agregar pregunta: {str(e)}"}), 500
+
 
 
 # ---- MAQUINAS ----

@@ -1,8 +1,6 @@
 from data.config import Base
 from sqlalchemy import Column, Integer, Double, DateTime, ForeignKey, Boolean, String, Date
 
-from data.config import Base  # Asegúrate de que Base esté importado correctamente
-
 class UserModel(Base):
     __tablename__ = "user_table"
 

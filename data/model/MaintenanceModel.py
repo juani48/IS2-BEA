@@ -12,7 +12,7 @@ class MaintenanceModel(Base):
     end_day = Column(String, nullable=False)
     completed = Column(Boolean, default=False)
     description = Column(String, default="")
-    end_employee_id = Column(Integer, ForeignKey("user_table.employee_number"), nullable=True, defautl=0)
+    end_employee_id = Column(Integer, ForeignKey("user_table.employee_number"), nullable=True, default=0)
 
 
     def __repr__(self):

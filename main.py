@@ -461,7 +461,7 @@ def enable_employee():
         data = request.get_json()
         dni = data.get("dni")
         nro = data.get("employee_number", 0)
-        EnableEmployee.usecase_enable_employee(dni, nro)
+        EnableEmployee.usecase_enable_employee(nro, dni)
         return "", 204
     except Exception as e:
         return jsonify({"error": str(e)}), 400

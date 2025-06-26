@@ -7,20 +7,20 @@ class QuestionModel(Base):
     id = Column(Integer, primary_key=True)
     question = Column(String, nullable=False)
     answer = Column(String, nullable=True)
-    name_user = Column(String(50), nullable=False)
-    name_employee = Column(String(50), nullable=True)
+    dni_user = Column(Integer, nullable=False)
+    dni_employee = Column(Integer, nullable=True)
 
-    def __init__(self, name_user, question, answer=None, name_employee=None):
-        self.name_user = name_user
+    def __init__(self, dni_user, question):
+        self.dni_user = dni_user
         self.question = question
-        self.answer = answer
-        self.name_employee = name_employee
+        self.answer = None
+        self.dni_employee = None
 
     def json(self):
         return {
             "id": self.id,
             "question": self.question,
             "answer": self.answer,
-            "name_user": self.name_user,
-            "name_employee": self.name_employee,
+            "dni_user": self.dni_user,
+            "dni_employee": self.dni_employee,
         }

@@ -4,18 +4,19 @@ from sqlalchemy import Column, Integer, String, Float
 class CommentaryModel(Base):
     __tablename__ = "commentary_table"
 
-    machine_number = Column(String ,primary_key=True,nullable=False)
+    id = Column (Integer ,primary_key=True)
+    machine_patent = Column(String ,nullable=False)
     commentary = Column(String, nullable=False)
-    name = Column(String(50), nullable= False)
+    dni = Column(Integer, nullable= False)
 
-    def __init__(self, name, commentary, machine_number):
-        self.name = name
+    def __init__(self, dni, commentary, machine_patent):
+        self.dni = dni
         self.commentary = commentary
-        self.machine_number = machine_number
+        self.machine_patent = machine_patent
 
     def json(self):
         return {
             "commentary": self.commentary,
-            "name": self.name,
-            "machine_number": self.machine_number
+            "dni": self.dni,
+            "machine_patent": self.machine_patent
         }

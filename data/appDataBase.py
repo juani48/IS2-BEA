@@ -65,8 +65,8 @@ def insert_maintenance(start_day, client_id, start_employee_id, machine_id, main
 def insert_question(question):
     query_insert_question.execute(question=question)
     
-def insert_commentary(machine_number,commentary):
-    query_insert_commentary.execute(machine_number, commentary)
+def insert_commentary(machine_patent,commentary):
+    query_insert_commentary.execute(machine_patent, commentary)
 
 # ---- disable ----
 def disable_categorie(categorie):
@@ -187,8 +187,8 @@ def get_all_maintenance():
 def get_all_questions():
     return query_get_all_questions.execute()
 
-def get_all_commentarys(machine_number):
-    return query_get_all_commentarys.execute(machine_number)
+def get_all_commentarys(machine_patent):
+    return query_get_all_commentarys.execute(machine_patent)
 
 
 # ---- delete ---- #

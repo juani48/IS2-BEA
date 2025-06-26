@@ -14,7 +14,7 @@ from core.usecase.reserve import MachineReservations, AddReservation, ConfirmRes
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from core.usecase.question import GetAllQuestions,AddQuestion
-from core.usecase.commentary import GetAllCommentary
+from core.usecase.commentary import GetAllCommentary,AddCommentary
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -596,10 +596,10 @@ def add_question():
         if not data or not data.get("question"):     # Validaciones básicas
             return jsonify({"error": "La pregunta es obligatoria"}), 400
         
-        user_name = current_user.name                # nombre del usuario logueado
+        user_dni = current_user.dni                # nombre del usuario logueado
         question_text = data["question"]
 
-        AddQuestion.usecase_add_question(user_name, question_text)
+        AddQuestion.usecase_add_question(user_dni, question_text)
         return jsonify({"message": "Pregunta enviada correctamente"}), 201
     except Exception as e:
         return jsonify({"error": f"Error al agregar pregunta: {str(e)}"}), 500
@@ -607,21 +607,21 @@ def add_question():
 @app.route("/commentary/get_all", methods=["POST"])
 def get_all_commentary():
     data = request.get_json()
-    machine_number = data.get("machine_number")
-    return jsonify({ "value": GetAllCommentary.usecase_get_all_commentarys(machine_number) }), 200
+    machine_patent = data.get("machine_patent")
+    return jsonify({ "value": GetAllCommentary.usecase_get_all_commentarys(machine_patent) }), 200
 
 @app.route("/commentary/add_commentary", methods=["POST"])
 @login_required
-def add_question():
+def add_commentary():
     try:
         data = request.get_json()
         if not data or not data.get("commentary"):     # Validaciones básicas
             return jsonify({"error": "El comentario es obligatorio"}), 400
         
-        user_name = current_user.name                # nombre del usuario logueado
+        user_dni = current_user.dni                # dni del usuario logueado
         commentary_text = data["commentary"]
-
-        AddQuestion.usecase_add_commentary(user_name, commentary_text)
+        patent = data ["patent"] 
+        AddCommentary.usecase_add_commentary( machine_patent=patent, commentaryStr=commentary_text, dni=user_dni,)
         return jsonify({"message": "Comentario enviado correctamente"}), 201
     except Exception as e:
         return jsonify({"error": f"Error al agregar comentario: {str(e)}"}), 500

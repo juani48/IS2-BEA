@@ -3,8 +3,7 @@ from data.config import session
 from data.model.MaintenanceModel import MaintenanceModel
 
 def execute(start_day, client_id, start_employee_id, machine_id, maintenance):
-    local_maintenance = session.query
-    (
+    local_maintenance = session.query(
         MaintenanceModel
     ).filter(
         and_(

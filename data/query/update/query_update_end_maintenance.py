@@ -24,6 +24,7 @@ def execute(start_day, client_id, start_employee_id, machine_id, end_employee_id
         raise Exception("La maquina no tiene un mantenimiento activo.")
     
     local_maintenance.completed = True
+    #local_maintenance.end_day = date
     local_maintenance.end_employee_id = end_employee_id
     local_maintenance.description = description
     session.commit()

@@ -9,7 +9,7 @@ from data.query.delete import query_delete_mc, query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
-from data.query.get_all import query_get_all_commentarys, query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin, query_get_all_maintenance,query_get_all_questions
+from data.query.get_all import query_get_all_commentarys, query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin, query_get_all_maintenance,query_get_all_questions, query_get_all_rent_by_date, query_get_all_reseration_by_date, query_get_all_rent_by_categorie, query_get_all_reseration_by_categorie
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent, query_insert_maintenance,query_insert_question,query_insert_commentary
 
@@ -183,6 +183,18 @@ def get_all_reservations_by_dni(client_id):
 
 def get_all_maintenance():
     return query_get_all_maintenance.execute()
+
+def get_all_reservation_by_date(start_date, end_date):
+    query_get_all_reseration_by_date.execute(start_date, end_date)
+
+def get_all_rent_by_date(start_date, end_date):
+    query_get_all_rent_by_date.execute(start_date, end_date)
+    
+def get_all_rent_by_categoire(start_date, end_date, categorie):
+    query_get_all_rent_by_categorie.execute(start_date, end_date, categorie)
+
+def get_all_reservation_by_categoire(start_date, end_date, categorie):
+    query_get_all_reseration_by_categorie.execute(start_date, end_date, categorie)
 
 def get_all_questions():
     return query_get_all_questions.execute()

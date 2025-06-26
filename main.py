@@ -15,6 +15,7 @@ from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from core.usecase.question import GetAllQuestions,AddQuestion
 from core.usecase.commentary import GetAllCommentary,AddCommentary
+from core.usecase.statistics import GetStatistics
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -1073,6 +1074,23 @@ def get_all_maintenance():
         return jsonify({ "maintenance": GetAllMaintenance.usecase_get_all_maintenance() })
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
+
+
+# ---- ESTADISTICAS ---- #
+
+@app.route("/statistics/get_statistics", methods=["POST"])
+def get_statistics():
+    try:
+        request_value = request.get_json()
+        return jsonify({
+            "statistics": GetStatistics.usecase_get_statistics(
+                start_date=request_value.get("start_date"),
+                end_date=request_value.get("end_date"),
+                categorie=request_value.get("categorie")
+            ) 
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 4
 
 
 # ---- MAIN ----

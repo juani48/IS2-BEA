@@ -1,16 +1,20 @@
 from datetime import datetime
-from data.appDataBase import get_all_reservation_by_date, get_all_rent_by_date
-from data.model.RentModel import RentModel
+from data.appDataBase import get_all_reservation_by_date, get_all_rent_by_date, get_all_rent_by_categoire, get_all_machines_by_categorie
 
-def usecase_get_statistics(start_date, end_date):
+def usecase_get_statistics(start_date, end_date, categorie):
+    
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = datetime.strptime(end_date, "%Y-%m-%d")
 
     if (start > end):
         raise Exception("Fechas inconsistentes.")
     
-    list_rent = get_all_rent_by_date(start_date, end_date)
-    list_reservation = get_all_reservation_by_date(start_date, end_date)
+    if categorie != None or categorie != "":
+        list_rent = get_all_rent_by_date(start_date, end_date, categorie)
+        list_reservation = get_all_reservation_by_date(start_date, end_date, categorie)
+    else:    
+        list_rent = get_all_rent_by_categoire(start_date, end_date)
+        list_reservation = get_all_machines_by_categorie(start_date, end_date)
 
     dic_rent = { 
         "element_count" : len(list_rent), 

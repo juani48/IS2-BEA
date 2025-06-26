@@ -152,6 +152,14 @@ def load_panelEmpleado():
     else:
         return render_template("/main.html")
 
+@app.route("/statistics.html")
+@login_required
+def load_statistics():
+    if(current_user.type == "Admin"):
+        return render_template("/statistics.html")
+    else:
+        return render_template("/main.html")
+
 @app.route("/change_password.html") #Hace falta estar logueado para entrar acá, no importa que tipo de usuario sos
 @login_required
 def load_change_password():

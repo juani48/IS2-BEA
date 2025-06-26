@@ -585,6 +585,9 @@ def user_points():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
+
+# ---- PREGUNTAS Y COMENTARIOS ----
+
 @app.route("/question/get_all", methods=["GET"])
 def get_all_questions():
     return jsonify( { "value" : GetAllQuestions.usecase_get_all_questions()} ), 200     
@@ -597,7 +600,7 @@ def add_question():
         if not data or not data.get("question"):     # Validaciones básicas
             return jsonify({"error": "La pregunta es obligatoria"}), 400
         
-        user_dni = current_user.dni                # nombre del usuario logueado
+        user_dni = current_user.dni                # dni del usuario logueado
         question_text = data["question"]
 
         AddQuestion.usecase_add_question(user_dni, question_text)

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estadísticas - Bob el Alquilador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style/style.css" />
+  <script src="/static/script/scripts.js" defer></script>
+  <script src="/static/script/statistics.js" defer></script>
+  <link rel="icon" href="/static/image/Solo logo.svg" type="image/svg+xml">
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-red-700 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="text-2xl font-bold cursor-pointer" onclick="redirigirSegunSesion()">Bob el Alquilador</div>
+      <div id="header-buttons" class="space-x-4"></div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-semibold mb-6 text-red-700">Estadísticas de Alquiler</h1>
+
+    <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div>
+        <label for="month" class="block mb-1 font-medium">Mes</label>
+        <select id="month" class="w-full border rounded px-3 py-2">
+          <option value="">-- Seleccionar mes --</option>
+          <option value="01">Enero</option>
+          <option value="02">Febrero</option>
+          <option value="03">Marzo</option>
+          <option value="04">Abril</option>
+          <option value="05">Mayo</option>
+          <option value="06">Junio</option>
+          <option value="07">Julio</option>
+          <option value="08">Agosto</option>
+          <option value="09">Septiembre</option>
+          <option value="10">Octubre</option>
+          <option value="11">Noviembre</option>
+          <option value="12">Diciembre</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="year" class="block mb-1 font-medium">Año</label>
+        <select id="year" class="w-full border rounded px-3 py-2">
+          <option value="">-- Seleccionar año --</option>
+          <!-- Se carga con JS -->
+        </select>
+      </div>
+
+    <div>
+        <label for="categorie" class="block mb-1 font-medium">Categoría</label>
+        <select id="categorie" class="w-full border rounded px-3 py-2">
+            <option value="">-- Todas las categorías --</option>
+        </select>
+    </div>
+
+
+      <div>
+        <label for="start_date" class="block mb-1 font-medium">Fecha inicio</label>
+        <input type="date" id="start_date" class="w-full border rounded px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="end_date" class="block mb-1 font-medium">Fecha fin</label>
+        <input type="date" id="end_date" class="w-full border rounded px-3 py-2" />
+      </div>
+
+      <div class="flex items-end space-x-2">
+        <button type="button" onclick="buscarEstadisticas()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded">Buscar</button>
+        <button type="button" onclick="limpiarFiltros()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded">Limpiar filtros</button>
+      </div>
+    </form>
+
+    <section id="resultado-estadisticas" class="grid grid-cols-1 md:grid-cols-3 gap-6"></section>
+    <!-- Gráficos -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10" id="charts-container" style="display:none;">
+  <div class="bg-white p-4 rounded shadow">
+    <h2 class="text-lg font-semibold text-center text-red-700 mb-2">Distribución Rent vs Reservation</h2>
+    <canvas id="pieChart"></canvas>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h2 class="text-lg font-semibold text-center text-red-700 mb-2">Valor total por tipo</h2>
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+  </main>
+
+  <footer class="bg-red-700 text-white py-4 text-center mt-12">
+    <p class="text-sm">&copy; 2025 Bob el Alquilador. Todos los derechos reservados.</p>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarAnios();
+    cargarCategorias();
+  });
+
+  function cargarAnios() {
+    const yearSelect = document.getElementById("year");
+    const anioActual = new Date().getFullYear();
+    for (let i = anioActual; i >= anioActual - 10; i--) {
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = i;
+      yearSelect.appendChild(option);
+    }
+  }
+
+  function limpiarFiltros() {
+    document.getElementById("month").value = "";
+    document.getElementById("year").value = "";
+    document.getElementById("start_date").value = "";
+    document.getElementById("end_date").value = "";
+    document.getElementById("categorie").value = "";
+    document.getElementById("resultado-estadisticas").innerHTML = "";
+  }
+
+  function buscarEstadisticas() {
+  const mes = document.getElementById("month").value;
+  const anio = document.getElementById("year").value;
+  const categoria = document.getElementById("categorie").value.trim();
+  let start = document.getElementById("start_date").value;
+  let end = document.getElementById("end_date").value;
+
+  const hoy = new Date();
+
+  // 🎯 Si el usuario selecciona mes y año: calculamos fechas automáticas
+  if (mes && anio) {
+    start = `${anio}-${mes}-01`;
+    end = new Date(anio, parseInt(mes), 0).toISOString().split("T")[0];
+  }
+
+  // 🎯 Si solo elige mes: usamos un rango muy amplio de años para ese mes
+  if (mes && !anio) {
+    start = `2000-${mes}-01`;
+    end = `${hoy.getFullYear()}-${mes}-31`;
+  }
+
+  // 🎯 Si solo elige año: todo el año
+  if (anio && !mes) {
+    start = `${anio}-01-01`;
+    end = `${anio}-12-31`;
+  }
+
+  // 🟡 Caso especial: si no hay fechas, ni mes, ni año, pero sí categoría → se permite
+  const usandoFechas = start && end;
+  const usandoCategoria = categoria !== "";
+
+  if (!usandoFechas && !usandoCategoria) {
+    alert("Seleccioná al menos una categoría, mes, año o rango de fechas.");
+    return;
+  }
+
+  fetch("/statistics/get_statistics", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      start_date: start || null,
+      end_date: end || null,
+      categorie: categoria || ""
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) throw new Error(data.error);
+    renderizarEstadisticas(data.statistics);
+  })
+  .catch(err => {
+    document.getElementById("resultado-estadisticas").innerHTML =
+      `<div class="text-red-700 col-span-3 font-semibold">Error: ${err.message}</div>`;
+  });
+}
+
+
+  function renderizarEstadisticas(stats) {
+    const contenedor = document.getElementById("resultado-estadisticas");
+    contenedor.innerHTML = "";
+
+    Object.values(stats).forEach(obj => {
+      const card = document.createElement("div");
+      card.className = "bg-white p-6 rounded shadow border-l-4 border-red-600";
+      card.innerHTML = `
+        <h2 class="text-xl font-bold text-red-700 capitalize mb-2">${obj.type}</h2>
+        <p><strong>Cantidad:</strong> ${obj.element_count}</p>
+        <p><strong>Total:</strong> $${obj.total_value.toFixed(2)}</p>
+        <p><strong>Promedio:</strong> $${obj.average.toFixed(2)}</p>
+      `;
+      contenedor.appendChild(card);
+    });
+  }
+  function cargarCategorias() {
+  fetch("/categorie/get_all_categories")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("categorie");
+      if (data.categories && Array.isArray(data.categories)) {
+        data.categories.forEach(cat => {
+          const option = document.createElement("option");
+          option.value = cat.name; // o cat.nombre si es en español
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Error cargando categorías:", err);
+    });
+}
+let pieChart, barChart;
+
+function renderizarEstadisticas(stats) {
+  const contenedor = document.getElementById("resultado-estadisticas");
+  contenedor.innerHTML = "";
+
+  // Resetear gráficos si ya existen
+  if (pieChart) pieChart.destroy();
+  if (barChart) barChart.destroy();
+
+  // Mostrar tarjetas de estadísticas
+  Object.values(stats).forEach(obj => {
+    const card = document.createElement("div");
+    card.className = "bg-white p-6 rounded shadow border-l-4 border-red-600";
+    card.innerHTML = `
+      <h2 class="text-xl font-bold text-red-700 capitalize mb-2">${obj.type}</h2>
+      <p><strong>Cantidad:</strong> ${obj.element_count}</p>
+      <p><strong>Total:</strong> $${obj.total_value.toFixed(2)}</p>
+      <p><strong>Promedio:</strong> $${obj.average.toFixed(2)}</p>
+    `;
+    contenedor.appendChild(card);
+  });
+
+  // Mostrar los gráficos
+  const chartSection = document.getElementById("charts-container");
+  chartSection.style.display = "grid";
+
+  // Datos para los gráficos
+  const rent = stats.rent;
+  const reservation = stats.reservation;
+  const total = stats.total;
+
+  const ctxPie = document.getElementById("pieChart").getContext("2d");
+  pieChart = new Chart(ctxPie, {
+    type: "doughnut",
+    data: {
+      labels: ["Alquileres", "Reservas"],
+      datasets: [{
+        data: [rent.element_count, reservation.element_count],
+        backgroundColor: ["#dc2626", "#f97316"],
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  const ctxBar = document.getElementById("barChart").getContext("2d");
+  barChart = new Chart(ctxBar, {
+    type: "bar",
+    data: {
+      labels: ["Alquileres", "Reservas", "Total"],
+      datasets: [{
+        label: "Valor total ($)",
+        data: [rent.total_value, reservation.total_value, total.total_value],
+        backgroundColor: ["#dc2626", "#f97316", "#2563eb"]
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
+
+/* DATOS SIMULADOS PARA VER COMO FUNCIONARIA
+document.addEventListener("DOMContentLoaded", () => {
+  cargarAnios();
+  cargarCategorias();
+
+  // 🔴 Datos simulados para ver cómo se renderiza sin conectarse al backend
+  const mockStats = {
+    rent: {
+      element_count: 4,
+      total_value: 15000,
+      average: 3750,
+      type: "rent"
+    },
+    reservation: {
+      element_count: 6,
+      total_value: 8000,
+      average: 1333.33,
+      type: "reservation"
+    },
+    total: {
+      element_count: 10,
+      total_value: 23000,
+      average: 2300,
+      type: "all"
+    }
+  };
+
+  renderizarEstadisticas(mockStats); // 👈 Inyectamos los datos simulados directamente
+});*/
+
+</script>
+
+</body>
+</html>

@@ -1102,6 +1102,32 @@ def get_statistics():
         })
     except Exception as e:
         return jsonify({ "error": str(e) }), 4
+    
+@app.route("/statistics/get_statistics_month", methods=["POST"])
+def get_statistics_month():
+    try:
+        request_value = request.get_json()
+        return jsonify({
+            "statistics": GetStatistics.usecase_get_statistics(
+                month=request_value.get("month"),
+                categorie=request_value.get("categorie")
+            ) 
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 4
+    
+@app.route("/statistics/get_statistics_year", methods=["POST"])
+def get_statistics_year():
+    try:
+        request_value = request.get_json()
+        return jsonify({
+            "statistics": GetStatistics.usecase_get_statistics_year(
+                year=request_value.get("year"),
+                categorie=request_value.get("categorie")
+            ) 
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 4
 
 
 # ---- MAIN ----

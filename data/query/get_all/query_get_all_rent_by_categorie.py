@@ -10,13 +10,15 @@ def execute(start_date, end_date, categorie):
     ).join(
         MachineCategorieModel, MachineCategorieModel.machine_id == RentModel.machine_id
     ).filter(
-        and_(
-            and_(
-                start_date <= RentModel.start_day,
-                end_date >= RentModel.end_day,
-            ),
-            MachineCategorieModel.categorie_id == categorie
-        )
+        MachineCategorieModel.categorie_id == categorie
     ).all()
 
     return local_reservation
+
+        #and_(
+            #and_(
+                #start_date <= RentModel.start_day,
+                #end_date >= RentModel.end_day,
+            #),
+            #MachineCategorieModel.categorie_id == categorie
+        #)

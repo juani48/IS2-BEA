@@ -12,17 +12,27 @@ def execute(start_date, end_date, categorie):
     ).filter(
         and_(
             and_(
-                and_(
-                    start_date <= ReservationModel.start_day,
-                    end_date >= ReservationModel.end_day,
-                ),
-                and_(
-                    ReservationModel.activate == False,
-                    ReservationModel.paid == True
-                )
+                ReservationModel.activate == False,
+                ReservationModel.paid == True
             ),
             MachineCategorieModel.categorie_id == categorie
         )
     ).all()
 
     return local_reservation
+
+###
+#and_(
+            #and_(
+                #and_(
+                    #start_date <= ReservationModel.start_day,
+                    #end_date >= ReservationModel.end_day,
+                #),
+                #and_(
+                    #ReservationModel.activate == False,
+                    #ReservationModel.paid == True
+                #)
+            #),
+            #MachineCategorieModel.categorie_id == categorie
+        #)
+###

@@ -145,8 +145,8 @@ def __EMPLEADOS__():
 
 def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-5-2",
-        end_day="2025-5-9",
+        start_day="2025-6-26",
+        end_day="2025-7-5",
         client_id=49087890, # ----> RESERVA DE Juliana
         machine_id="ABC1",
         shipment=False,

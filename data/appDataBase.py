@@ -117,8 +117,8 @@ def update_reservation_to_rent(start_day, client_id, machine_id, employee_id):
 def update_rent_extend(start_day, client_id, machine_id, end_days_extended, extended_value):
     query_update_rent_extend.exeute(start_day, client_id, machine_id, end_days_extended, extended_value)
 
-def update_end_maintenance(start_day, client_id, start_employee_id, machine_id, end_employee_id, description):
-    query_update_end_maintenance.execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description)
+def update_end_maintenance(start_day, client_id, start_employee_id, machine_id, end_employee_id, description, end_day):
+    query_update_end_maintenance.execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description, end_day)
 
 # ---- change  ----
 def change_password(dni,password):
@@ -191,10 +191,10 @@ def get_all_rent_by_date(start_date, end_date):
     query_get_all_rent_by_date.execute(start_date, end_date)
     
 def get_all_rent_by_categoire(start_date, end_date, categorie):
-    query_get_all_rent_by_categorie.execute(start_date, end_date, categorie)
+    return query_get_all_rent_by_categorie.execute(start_date, end_date, categorie)
 
-def get_all_reservation_by_categoire(start_date, end_date, categorie):
-    query_get_all_reseration_by_categorie.execute(start_date, end_date, categorie)
+def get_all_reservation_by_categorie(start_date, end_date, categorie):
+    return query_get_all_reseration_by_categorie.execute(start_date, end_date, categorie)
 
 def get_all_questions():
     return query_get_all_questions.execute()

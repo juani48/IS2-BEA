@@ -2,7 +2,7 @@ from sqlalchemy import and_
 from data.config import session
 from data.model.MaintenanceModel import MaintenanceModel
 
-def execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description):
+def execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description, end_day):
     local_maintenance = session.query(
         MaintenanceModel
     ).filter(
@@ -24,6 +24,7 @@ def execute(start_day, client_id, start_employee_id, machine_id, end_employee_id
         raise Exception("La maquina no tiene un mantenimiento activo.")
     
     local_maintenance.completed = True
+    local_maintenance.end_day = end_day
     local_maintenance.end_employee_id = end_employee_id
     local_maintenance.description = description
     session.commit()

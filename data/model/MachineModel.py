@@ -15,11 +15,13 @@ class MachineModel(Base):
     description = Column(String, nullable=True)
     creation_date = Column(String, nullable=False)
     
+    under_maintenance = Column(Boolean, nullable=False, default=False)
+
     # stock?
     # variable string para mostrar el estado (disponible, o en mantenimiento)
 
     def __repr__(self):
-        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}, creation_date: {self.creation_date}""" + "}"
+        return "{" + f"""patent:{self.patent}, mark:{self.mark}, model:{self.model}, price_day:{self.price_day}, ubication:{self.ubication}, refund: {self.refund}, disable: {self.disable}, creation_date: {self.creation_date}, under_maintenance: {self.under_maintenance}""" + "}"
 
     def json(self):
         return {
@@ -31,7 +33,8 @@ class MachineModel(Base):
             "refund": self.refund,
             "disable": self.disable,
             "description": self.description,
-            "creation_date": self.creation_date
+            "creation_date": self.creation_date,
+            "under_maintenance": self.under_maintenance
         }
 
     def include(self, string):
@@ -54,3 +57,4 @@ class MachineModel(Base):
         self.disable = False
         self.description = description
         self.creation_date = creation_date
+        self.under_maintenance = False

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from data.appDataBase import insert_maintenance, get_user, get_machine
+from data.appDataBase import insert_maintenance, get_user, get_machine, update_machine
 from data.model.MaintenanceModel import MaintenanceModel
 
 def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_id):
@@ -8,6 +8,9 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
     end_day = datetime.strftime(end, "%Y-%m-%d")
     
     # Poner en mantenimiento la maquina (?
+    machine = get_machine(machine_id)
+    machine.under_maintenance = True
+    update_machine(machine )
 
     maintenance = MaintenanceModel(
         start_day=start_day,

@@ -152,6 +152,14 @@ def load_panelEmpleado():
     else:
         return render_template("/main.html")
 
+@app.route("/statistics.html")
+@login_required
+def load_statistics():
+    if(current_user.type == "Admin"):
+        return render_template("/statistics.html")
+    else:
+        return render_template("/main.html")
+
 @app.route("/change_password.html") #Hace falta estar logueado para entrar acá, no importa que tipo de usuario sos
 @login_required
 def load_change_password():
@@ -585,6 +593,9 @@ def user_points():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
+
+# ---- PREGUNTAS Y COMENTARIOS ----
+
 @app.route("/question/get_all", methods=["GET"])
 def get_all_questions():
     return jsonify( { "value" : GetAllQuestions.usecase_get_all_questions()} ), 200     
@@ -597,7 +608,7 @@ def add_question():
         if not data or not data.get("question"):     # Validaciones básicas
             return jsonify({"error": "La pregunta es obligatoria"}), 400
         
-        user_dni = current_user.dni                # nombre del usuario logueado
+        user_dni = current_user.dni                # dni del usuario logueado
         question_text = data["question"]
 
         AddQuestion.usecase_add_question(user_dni, question_text)
@@ -1086,6 +1097,32 @@ def get_statistics():
             "statistics": GetStatistics.usecase_get_statistics(
                 start_date=request_value.get("start_date"),
                 end_date=request_value.get("end_date"),
+                categorie=request_value.get("categorie")
+            ) 
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 4
+    
+@app.route("/statistics/get_statistics_month", methods=["POST"])
+def get_statistics_month():
+    try:
+        request_value = request.get_json()
+        return jsonify({
+            "statistics": GetStatistics.usecase_get_statistics(
+                month=request_value.get("month"),
+                categorie=request_value.get("categorie")
+            ) 
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 4
+    
+@app.route("/statistics/get_statistics_year", methods=["POST"])
+def get_statistics_year():
+    try:
+        request_value = request.get_json()
+        return jsonify({
+            "statistics": GetStatistics.usecase_get_statistics_year(
+                year=request_value.get("year"),
                 categorie=request_value.get("categorie")
             ) 
         })

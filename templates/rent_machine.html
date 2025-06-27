@@ -100,16 +100,18 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">ID de la máquina (patente)</label>
-        <input type="text" id="machine_id" required
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
-      </div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">ID de la máquina (patente)</label>
+      <input type="text" id="machine_id" readonly
+        class="w-full border border-gray-200 bg-gray-100 text-gray-700 rounded-lg px-4 py-2 cursor-not-allowed" />
+    </div>
+
 
       <!-- Fechas -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio</label>
-        <input type="date" id="start_day" required
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
+       <input type="date" id="start_day" required
+  class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red"
+  readonly />
       </div>
 
       <div>
@@ -138,27 +140,7 @@
      // 1. Obtener reservas y configurar calendario
   let reservas = [];
 
-  fetch("/reservation/machine_reservations", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ machine_id: machineId })
-  })
-    .then(response => {
-      if (!response.ok) throw new Error(response.message);
-      return response.json();
-    })
-    .then(data => {
-      const hoy = new Date().toISOString().split('T')[0];
-      document.getElementById("start_day").min = hoy;
-      reservas = data.value
-
-      // Inicializar Flatpickr con días bloqueados
-      inicializarCalendarios();
-    })
-    .catch(error => {
-      alert("Error al cargar reservas");
-      console.error(error);
-    });
+ 
 
   // 2. Configurar Flatpickr para mostrar días bloqueados
   function inicializarCalendarios() {
@@ -185,7 +167,7 @@
       };
     });
 
-    // Configurar calendario de inicio
+    /* Configurar calendario de inicio
     flatpickr("#start_day", {
       minDate: "today",
       disable: diasBloqueados,
@@ -199,10 +181,10 @@
 
         //calcularPrecioTotal();
       }
-    });
+    }); */
 
 
-    // Configurar calendario de fin
+    /* Configurar calendario de fin
     flatpickr("#end_day", {
       minDate: "today",
       disable: diasBloqueados,
@@ -210,7 +192,14 @@
       onChange: function () {
         //calcularPrecioTotal();
       }
-    });
+    });*/
+
+    flatpickr("#end_day", {
+  minDate: formattedMinEnd,
+  disable: diasBloqueados,
+  locale: { firstDayOfWeek: 1 },
+});
+
   }
   // 3. Función para verificar disponibilidad (opcional)
   /*function verificarDisponibilidad(fecha) {
@@ -245,7 +234,7 @@
   }
 
   // Volver a calcular el precio cuando cambian las fechas
-  document.getElementById("srat_day").addEventListener("change",
+  document.getElementById("start_day").addEventListener("change",
     function () {
       // ACA SE VERIA VERIFICAR COSAS EN CASO SEA NECESARIO
     }
@@ -258,6 +247,35 @@
 
 
     document.addEventListener("DOMContentLoaded", () => {
+
+      const params = new URLSearchParams(window.location.search);
+      const machineId = params.get("machine_id");
+        // Setear el campo del ID de la máquina
+  const machineInput = document.getElementById("machine_id");
+  machineInput.value = machineId;
+
+ fetch("/reservation/machine_reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ machine_id: machineId })
+  })
+    .then(response => {
+      if (!response.ok) throw new Error(response.message);
+      return response.json();
+    })
+    .then(data => {
+      const hoy = new Date().toISOString().split('T')[0];
+      document.getElementById("start_day").min = hoy;
+      reservas = data.value
+
+      // Inicializar Flatpickr con días bloqueados
+      inicializarCalendarios();
+    })
+    .catch(error => {
+      alert("Error al cargar reservas");
+      console.error(error);
+    });
+
       // Cargar categorías si aplica
       if (typeof cargarCategoriasInicio === "function") {
         cargarCategoriasInicio();
@@ -282,7 +300,17 @@
       const form = document.getElementById("form-alquiler");
       const mensaje = document.getElementById("mensaje");
       const startInput = document.getElementById("start_day");
+      const today = new Date().toISOString().split("T")[0];
+      startInput.value = today;
+      startInput.readOnly = true;
+      startInput.classList.add("bg-gray-100", "cursor-not-allowed");
       const endInput = document.getElementById("end_day");
+      const minEndDate = new Date();
+      minEndDate.setDate(minEndDate.getDate() + 7);
+      const formattedMinEnd = minEndDate.toISOString().split("T")[0];
+      endInput.min = formattedMinEnd;
+
+      
 
       // Deshabilitar campo de fin hasta que se elija inicio
       endInput.disabled = true;
@@ -314,7 +342,7 @@
           start_day: startInput.value,
           end_day: endInput.value,
           client_id: document.getElementById("client_id").value,
-          machine_id: document.getElementById("machine_id").value,
+          machine_id: machineId,
           employee_id: document.getElementById("employee_id").value
         };
 

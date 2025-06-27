@@ -115,9 +115,10 @@ function renderMachine(machine, imageSrc) {
   const container = document.getElementById("machine-list");
   const card = document.createElement("div");
 
-  card.innerHTML = `
-    <a href="/description_machinery.html?machine_id=${machine.patent}" 
-       class="block w-full max-w-[320px] aspect-auto bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 hover:shadow-xl transition duration-300 group relative">
+  
+    card.innerHTML = `
+  <div class="w-full max-w-[320px] bg-white rounded-2xl shadow-lg overflow-hidden mx-auto my-4 hover:shadow-xl transition duration-300 group relative">
+    <a href="/description_machinery.html?machine_id=${machine.patent}">
       <div class="w-full aspect-square overflow-hidden">
         <img src="${imageSrc}" onerror="this.src='/static/image/machines/default.png'"
              alt="Imagen de ${machine.model}"
@@ -127,14 +128,23 @@ function renderMachine(machine, imageSrc) {
         <h2 class="text-lg font-bold text-gray-800">${machine.mark} ${machine.model}</h2>
         <p class="text-sm text-gray-600 mt-1">Ubicación: ${machine.ubication}</p>
         <p class="text-red-600 font-semibold mt-2">$${machine.price_day} / día</p>
-        <button class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
-                onclick="irAReserva(event, '${machine.patent}')">
-          Reservar
-        </button>
         ${userType === "Admin" && machine.disable ? `<p class="mt-2 text-sm text-red-600 font-semibold">Maquinaria deshabilitada</p>` : ""}
-
       </div>
-    </a>`;
+    </a>
+    <div class="mt-4 pb-4 flex justify-center gap-2">
+      <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
+              onclick="irAReserva(event, '${machine.patent}')">
+        Reservar
+      </button>
+      ${["Admin", "Empleado"].includes(userType)
+        ? `<a href="/rent_machine.html?machine_id=${machine.patent}" 
+              class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition">
+              Alquilar
+            </a>` : ""}
+    </div>
+  </div>
+`;
+
   container.appendChild(card.firstElementChild);
 }
 

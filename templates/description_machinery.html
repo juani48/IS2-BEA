@@ -274,6 +274,10 @@
     </footer>
 
     <script>
+      // Verificar si la máquina está en mantenimiento activo
+      let mantenimientoActivo = false;
+      let mantenimientoActual = null;
+
       function cargarImagenes(patente) {
         const contenedor = document.getElementById("imagenes-maquina");
         contenedor.innerHTML = "";
@@ -347,6 +351,48 @@
             fetch("/session/status")
               .then((res) => res.json())
               .then((sessionData) => {
+                console.log("📦 sessionData:", sessionData);
+
+                if (["Admin", "Empleado"].includes(sessionData.type)) {
+                  console.log(
+                    "📛 ERROR: No se está ejecutando fetch de mantenimiento"
+                  );
+                  fetch("/maintenance/get_all_maintenance")
+                    .then((res) => res.json())
+                    .then((data) => {
+                      console.log(
+                        "👉 mantenimiento recibidos",
+                        data.maintenance
+                      );
+
+                      const mantenimiento = data.maintenance.find(
+                        (m) =>
+                          m.machine_id === machine.patent &&
+                          m.completed === false
+                      );
+
+                      // Si no lo encuentra, mostramos igual el botón como 'Iniciar mantenimiento'
+                      mantenimientoActivo = !!mantenimiento;
+                      mantenimientoActual = mantenimiento || {
+                        start_day: null,
+                        client_id: 0,
+                        start_employee_id: 0,
+                        machine_id: machine.patent,
+                      };
+
+                      console.log(
+                        "👉 mostrando botón mantenimiento",
+                        mantenimiento
+                      );
+                      mostrarBotonMantenimiento(
+                        mantenimientoActivo,
+                        mantenimientoActual,
+                        sessionData,
+                        machine
+                      );
+                    });
+                }
+
                 if (!sessionData.authenticated) return;
 
                 // 🔴 Solo para Admin
@@ -391,6 +437,7 @@
 
                   // Insertar en el DOM antes del botón Reservar
                   const botonReservar = document.getElementById("reserveBtn");
+                  console.log("💡 Agregando botón al DOM", botonMantenimiento);
                   botonReservar.parentNode.insertBefore(
                     botonesDiv,
                     botonReservar
@@ -481,7 +528,7 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ "patent": patent }),
+          body: JSON.stringify({ patent: patent }),
         })
           .then((res) => {
             if (res.ok) {
@@ -523,6 +570,166 @@
         setTimeout(() => {
           toast.remove();
         }, 3000);
+      }
+
+      // ✅ FUNCIONALIDAD COMPLETA Y FUNCIONAL DEL BOTÓN DE MANTENIMIENTO
+      function mostrarBotonMantenimiento(
+        mantenimientoActivo,
+        mantenimientoActual,
+        sessionData,
+        machine
+      ) {
+        console.log("🔧 mostrarBotonMantenimiento ejecutado");
+        const botonPrevio = document.getElementById("boton-mantenimiento");
+        if (botonPrevio) botonPrevio.remove(); // Eliminalo si ya existía
+
+        const botonMantenimiento = document.createElement("button");
+        botonMantenimiento.id = "boton-mantenimiento";
+
+        const actualizarEstadoBoton = () => {
+          botonMantenimiento.innerText = mantenimientoActivo
+            ? "Terminar mantenimiento"
+            : "Iniciar mantenimiento";
+          botonMantenimiento.className = mantenimientoActivo
+            ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            : "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+        };
+
+        actualizarEstadoBoton();
+
+        botonMantenimiento.onclick = async () => {
+          const hoy = new Date().toISOString().split("T")[0];
+          let empId = 0;
+
+          if (sessionData.type === "Empleado") {
+            try {
+              const res = await fetch("/session/employee");
+              const json = await res.json();
+              if (!json.employee_id)
+                throw new Error("ID de empleado no recibido");
+              empId = json.employee_id;
+            } catch (e) {
+              alert("No se pudo obtener el número de empleado");
+              return;
+            }
+          }
+
+          try {
+            let res;
+            if (!mantenimientoActivo) {
+              res = await fetch("/maintenance/start_maintenance", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  start_day: hoy,
+                  client_id: 0,
+                  start_employee_id: empId,
+                  machine_id: machine.patent,
+                }),
+              });
+
+              const body = await res.text();
+              console.log(
+                "✅ Respuesta mantenimiento inicio:",
+                res.status,
+                body
+              );
+
+              if (!res.ok)
+                throw new Error("Fallo al iniciar mantenimiento: " + body);
+
+              mostrarToast("Mantenimiento iniciado", "blue");
+              mantenimientoActivo = true;
+              mostrarBotonMantenimiento(
+                mantenimientoActivo,
+                {
+                  start_day: hoy,
+                  client_id: 0,
+                  start_employee_id: empId,
+                  machine_id: machine.patent,
+                },
+                sessionData,
+                machine
+              );
+            } else {
+              const descripcionInput = document.getElementById(
+                "descripcion-mantenimiento"
+              );
+              const descripcion = descripcionInput
+                ? descripcionInput.value.trim()
+                : "";
+
+              res = await fetch("/maintenance/end_maintenance", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  start_day: mantenimientoActual.start_day,
+                  client_id: mantenimientoActual.client_id,
+                  start_employee_id: mantenimientoActual.start_employee_id,
+                  machine_id: machine.patent,
+                  end_employee_id: empId,
+                  description: descripcion || "",
+                }),
+              });
+
+              const body = await res.text();
+              console.log(
+                "✅ Respuesta mantenimiento cierre:",
+                res.status,
+                body
+              );
+
+              if (!res.ok)
+                throw new Error("Fallo al terminar mantenimiento: " + body);
+
+              mostrarToast("Mantenimiento finalizado", "green");
+              setTimeout(() => location.reload(), 1000); // recarga tras 1 segundo
+            }
+          } catch (err) {
+            console.error("⛔ Error:", err);
+            alert("Error: " + err.message);
+          }
+        };
+
+        const botonReservar = document.getElementById("reserveBtn");
+        if (!botonReservar) {
+          console.error(
+            "❌ No se encontró el botón de reserva para insertar el de mantenimiento"
+          );
+          return;
+        }
+        console.log("💡 Agregando botón al DOM", botonMantenimiento);
+        botonReservar.parentNode.insertBefore(
+          botonMantenimiento,
+          botonReservar
+        );
+
+        // 🔁 Agregar botón e input al DOM (evitando duplicados)
+        let contenedorFinal = document.getElementById(
+          "contenedor-mantenimiento"
+        );
+        if (contenedorFinal) contenedorFinal.remove();
+
+        contenedorFinal = document.createElement("div");
+        contenedorFinal.id = "contenedor-mantenimiento";
+        contenedorFinal.className = "flex flex-col gap-2 mt-4";
+
+        // input solo si mantenimiento está activo
+        if (mantenimientoActivo) {
+          const inputDescripcion = document.createElement("input");
+          inputDescripcion.type = "text";
+          inputDescripcion.placeholder = "Descripción del mantenimiento";
+          inputDescripcion.id = "descripcion-mantenimiento";
+          inputDescripcion.className =
+            "border border-gray-300 px-4 py-2 rounded shadow";
+          contenedorFinal.appendChild(inputDescripcion);
+        }
+
+        // agregamos el botón común
+        contenedorFinal.appendChild(botonMantenimiento);
+
+        // insertamos antes del botón reservar
+        botonReservar.parentNode.insertBefore(contenedorFinal, botonReservar);
       }
     </script>
   </body>

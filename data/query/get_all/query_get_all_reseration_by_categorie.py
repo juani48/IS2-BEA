@@ -5,25 +5,23 @@ from data.model.ReservationModel import ReservationModel
 from data.model.MachineCategorieModel import MachineCategorieModel
 
 def execute(start_date, end_date, categorie):
-    start = datetime.strptime(start_date, "%Y-%m-%d")
-    end = datetime.strptime(end_date, "%Y-%m-%d")
     local_reservation = session.query(
         ReservationModel
     ).join(
-        MachineCategorieModel.machine_id == ReservationModel.machine_id
+        MachineCategorieModel, MachineCategorieModel.machine_id == ReservationModel.machine_id
     ).filter(
         and_(
             and_(
                 and_(
-                    start <= datetime.strptime(ReservationModel.start_day, "%Y-%m-%d"),
-                    end >= datetime.strptime(ReservationModel.end_day, "%Y-%m-%d"),
+                    start_date <= ReservationModel.start_day,
+                    end_date >= ReservationModel.end_day,
                 ),
                 and_(
                     ReservationModel.activate == False,
                     ReservationModel.paid == True
                 )
             ),
-            MachineCategorieModel.categorie_id.lower() == categorie.lower()
+            MachineCategorieModel.categorie_id == categorie
         )
     ).all()
 

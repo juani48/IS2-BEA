@@ -12,5 +12,6 @@ def execute(patent, new_machine):
     local_machine.refund = new_machine.refund
     local_machine.disable = new_machine.disable
     local_machine.description = new_machine.description
+    local_machine.under_maintenance = new_machine.under_maintenance
 
     session.commit()

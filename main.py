@@ -14,7 +14,7 @@ from core.usecase.reserve import MachineReservations, AddReservation, ConfirmRes
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from core.usecase.question import GetAllQuestions,AddQuestion
-from core.usecase.commentary import GetAllCommentary,AddCommentary
+from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
 from core.usecase.statistics import GetStatistics
 from templates import *
 import os
@@ -633,11 +633,33 @@ def add_commentary():
         user_dni = current_user.dni                # dni del usuario logueado
         commentary_text = data["commentary"]
         patent = data ["patent"] 
-        AddCommentary.usecase_add_commentary( machine_patent=patent, commentaryStr=commentary_text, dni=user_dni,)
+        date = datetime.now()
+
+        AddCommentary.usecase_add_commentary( date=date ,dni=user_dni, commentaryStr=commentary_text,machine_patent=patent, answer=None )
         return jsonify({"message": "Comentario enviado correctamente"}), 201
     except Exception as e:
         return jsonify({"error": f"Error al agregar comentario: {str(e)}"}), 500
     
+@app.route("/commentary/add_answer", methods=["POST"])
+@login_required
+def add_answer():
+    try:
+        data = request.get_json()
+        if not data or not data.get("commentary"):     # Validaciones básicas
+            return jsonify({"error": "El comentario es obligatorio"}), 400
+        
+        user_dni = current_user.dni                # dni del usuario logueado
+        commentary_text = data["commentary"]
+        patent = data ["patent"] 
+        dateCommentary= data ["dateCommentary"]
+        date = datetime.now()
+
+        AddAnswer.usecase_add_answer( date=date ,dni=user_dni, commentaryStr=commentary_text,machine_patent=patent, answerID=None,dateCommentary= dateCommentary)
+        return jsonify({"message": "Respuesta enviada correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al agregar respuesta: {str(e)}"}), 500
+    
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE

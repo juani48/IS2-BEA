@@ -268,7 +268,7 @@ function buscarEstadisticas() {
   let start = document.getElementById("start_date").value;
   let end = document.getElementById("end_date").value;
   const hoy = new Date();
-  const categoriaSegura = categoria || "";
+  const categoriaSegura = categoria || null;
 
   // 🎯 SOLO MES (sin año ni fechas)
   if (mes && !anio && !start && !end) {

@@ -596,7 +596,7 @@ def user_points():
     
 
 # ---- PREGUNTAS Y COMENTARIOS ----   
-@app.route("/questions/send", methods=["POST"])
+@app.route("/question/send", methods=["POST"])
 def send_question():
     try:
         data = request.get_json() or {}

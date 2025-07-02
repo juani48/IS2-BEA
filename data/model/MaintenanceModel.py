@@ -41,7 +41,7 @@ class MaintenanceModel(Base):
         self.client_id = client_id
         self.machine_id = machine_id
         self.end_day = end_day
-        self.start_employee_id = employee_id
+        self.start_employee_id = start_employee_id
         self.completed = False
         self.description = ""
         self.end_employee_id = 0

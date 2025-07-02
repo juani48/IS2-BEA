@@ -80,10 +80,6 @@ def __calculate__(dic, list):
     total_value = 0.0
     for x in list:
         total_value += x.total_value
-    # cambie () por [] porque me daba error
-    dic.get["total_value"] = total_value
-    dic.get["average"] = total_value/dic.get("element_count")
-    
     dic.update({"total_value": total_value})
     if dic.get("element_count") == 0:
         avr = 0

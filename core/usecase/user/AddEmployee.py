@@ -2,13 +2,16 @@ from data.model.UserModel import UserModel
 from data.appDataBase import insert_employee
 from core.usecase.user.RequestUser import _random_password
 from core.usecase.service import SendMail
-from data.query.get import query_get_user, query_get_employee, query_get_user_by_email
+from data.query.get import query_get_user, query_get_employee, query_get_user_by_email, query_get_employee_by_number
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
+    
     if query_get_user.execute(dni):
         raise Exception("El DNI ya se encuentra registrado.")
-    if query_get_employee.execute(dni) or query_get_employee.execute(dni * -1):
+    
+    if query_get_employee.execute(employeeN=employeeN) or query_get_employee.execute(employeeN=employeeN * -1):
         raise Exception("El numero de empleado ya se encuntra registrado.")
+    
     if query_get_user_by_email.execute(email=email):
         raise Exception("El correo ya se encuntra registrado.")
 

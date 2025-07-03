@@ -14,7 +14,6 @@ def execute(start_date, end_date):
                 ReservationModel.paid == True
             )
     ).all()
-
     return local_reservation
 
 ##

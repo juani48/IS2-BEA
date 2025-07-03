@@ -185,10 +185,10 @@ def get_all_maintenance():
     return query_get_all_maintenance.execute()
 
 def get_all_reservation_by_date(start_date, end_date):
-    query_get_all_reseration_by_date.execute(start_date, end_date)
+    return query_get_all_reseration_by_date.execute(start_date, end_date)
 
 def get_all_rent_by_date(start_date, end_date):
-    query_get_all_rent_by_date.execute(start_date, end_date)
+    return query_get_all_rent_by_date.execute(start_date, end_date)
     
 def get_all_rent_by_categoire(start_date, end_date, categorie):
     return query_get_all_rent_by_categorie.execute(start_date, end_date, categorie)

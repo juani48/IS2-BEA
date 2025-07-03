@@ -80,25 +80,7 @@ def __calculate__(dic, list):
     total_value = 0.0
     for x in list:
         total_value += x.total_value
-<<<<<<< HEAD
     # cambie () por [] porque me daba error
     dic.get["total_value"] = total_value
     dic.get["average"] = total_value/dic.get("element_count")
     
-=======
-    dic.update({"total_value": total_value})
-    if dic.get("element_count") == 0:
-        avr = 0
-    else:
-        avr = (total_value/dic.get("element_count")) 
-    dic.update({"average": avr})
-    
-def __stream__(list, start, end):
-    aux = []
-    for x in list:
-        s = datetime.strptime(x.start_day, "%Y-%m-%d")
-        e = datetime.strptime(x.end_day, "%Y-%m-%d")
-        if start <= s and end >= e:
-            aux.append(x)
-    return aux
->>>>>>> 94125584ee4fcf2145d4b3959cfc5c9699d6041f

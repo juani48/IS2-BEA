@@ -247,6 +247,13 @@ def load_list_clients():
         return render_template("list_all_users.html")
     return redirect("/main.html")
 
+@app.route("/list_all_maintenance.html")
+@login_required
+def load_list_maincenance():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("list_all_maintenance.html")
+    return redirect("/main.html")
+
 @app.route("/user_history.html")
 @login_required
 def user_history_page():
@@ -1133,7 +1140,7 @@ def get_statistics_month():
     try:
         request_value = request.get_json()
         return jsonify({
-            "statistics": GetStatistics.usecase_get_statistics(
+            "statistics": GetStatistics.usecase_get_statistics_month(
                 month=request_value.get("month"),
                 categorie=request_value.get("categorie")
             ) 

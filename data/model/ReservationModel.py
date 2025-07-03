@@ -30,7 +30,8 @@ class ReservationModel(Base):
          "activate": self.activate,
          "employee_id": self.employee_id,
          "paid": self.paid,
-         "preference_id": self.preference_id
+         "preference_id": self.preference_id,
+         "type": "reservation"
       }
    
    def json_days(self):

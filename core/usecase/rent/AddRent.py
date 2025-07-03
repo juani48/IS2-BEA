@@ -3,11 +3,8 @@ from data.appDataBase import insert_rent, get_user, get_machine, get_employee
 from data.model.RentModel import RentModel
 
 def usercase_add_rent(start_day, client_id, machine_id, end_day, employee_id):
-
-    if (get_employee(employeeN=employee_id) == None):
-        raise Exception("No existe un empleado con el numero de empleado ingresado.")
     
-    end_day = end_day.slip("")[0]
+    #end_day = end_day.slip("")[0]
     end = datetime.strptime(end_day, "%Y-%m-%d")
     start = datetime.strptime(start_day, "%Y-%m-%d")
 

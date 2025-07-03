@@ -28,6 +28,7 @@ class RentModel(Base):
             "total_value": self.total_value,
             "employee_id": self.employee_id,
             "extended": self.extended,
+            "type": "rent"
             #"days_extended": self.days_extended,
             #"extended_value": self.extended_value
         }

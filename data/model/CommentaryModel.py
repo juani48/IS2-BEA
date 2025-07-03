@@ -1,22 +1,27 @@
 from data.config import Base
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Text
 
 class CommentaryModel(Base):
     __tablename__ = "commentary_table"
 
-    id = Column (Integer ,primary_key=True)
-    machine_patent = Column(String ,nullable=False)
-    commentary = Column(String, nullable=False)
+    date = Column (String ,primary_key=True)
     dni = Column(Integer, nullable= False)
+    commentary = Column(String, nullable=False)
+    machine_patent = Column(String ,nullable=False)
+    answer = Column(Text, nullable = True)
 
-    def __init__(self, dni, commentary, machine_patent):
+    def __init__(self, date,dni, commentary, machine_patent,answer):
+        self.date = date
         self.dni = dni
         self.commentary = commentary
         self.machine_patent = machine_patent
+        self.answer = answer
 
     def json(self):
         return {
-            "commentary": self.commentary,
+            "date": self.date,
             "dni": self.dni,
-            "machine_patent": self.machine_patent
+            "commentary": self.commentary,
+            "machine_patent": self.machine_patent,
+            "answer": self.answer
         }

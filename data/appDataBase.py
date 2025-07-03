@@ -202,7 +202,6 @@ def get_all_questions():
 def get_all_commentarys(machine_patent):
     return query_get_all_commentarys.execute(machine_patent)
 
-
 # ---- delete ---- #
 def delete_reservation_by_employee(client_id, start_day, machine_id):
     query_delete_reservation.execute(client_id, start_day, machine_id)

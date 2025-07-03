@@ -15,20 +15,23 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
     update_machine(patent=machine_id, machine=machine)
 
     client = 0
+    now = datetime.now()
 
     list_rent = get_all_rent_by_date(None, None)
-    if list_rent != []:
-        list_rent = [x for x in list_rent if x.machine_id == machine_id]
-        rent = sorted(list_rent, key=lambda x: x.start_day)[0]
-        if (datetime.now() >= datetime.strptime(rent.start_day, "%Y-%m-%d.%H-%M-%S")) and (datetime.now() <= datetime.strptime(rent.end_day, "%Y-%m-%d.%H-%M-%S")):
-            client = rent.client_id
+    list_rent = [x for x in list_rent if x.machine_id == machine_id]
+
+    if list_rent:
+        # Buscar el alquiler más cercano a ahora
+        closest_rent = min(list_rent, key=lambda x: abs(parse_date(x.start_day) - now))
+        client = closest_rent.client_id
     else:
         list_reservation = get_all_reservation_by_date(None, None)
-        if list_reservation != []:
-            list_reservation = [x for x in list_reservation if x.machine_id == machine_id]
-            reservation = sorted(list_reservation, key=lambda x: x.start_day)[0]
-            if (datetime.now() >= datetime.strptime(reservation.start_day, "%Y-%m-%d")) and (datetime.now() <= datetime.strptime(reservation.end_day, "%Y-%m-%d")):
-                client = reservation.client_id
+        list_reservation = [x for x in list_reservation if x.machine_id == machine_id]
+
+    if list_reservation:
+        # Buscar la reserva más cercana a ahora
+        closest_reservation = min(list_reservation, key=lambda x: abs(parse_date(x.start_day) - now))
+        client = closest_reservation.client_id
 
 
     maintenance = MaintenanceModel(
@@ -40,3 +43,13 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
     )
 
     insert_maintenance(start_day, client_id, start_employee_id, machine_id, maintenance)
+
+
+
+def parse_date(date_str):
+    # Intenta con formato de alquiler
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d.%H-%M-%S")
+    except ValueError:
+        # Intenta con formato de reserva
+        return datetime.strptime(date_str, "%Y-%m-%d")

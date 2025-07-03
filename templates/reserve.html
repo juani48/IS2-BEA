@@ -244,74 +244,12 @@
     maquinaNombre.textContent = "No se seleccionó ninguna máquina";
   }
 
-
-  /*
-  let reservas = []
-  fetch(
-    "/reservation/machine_reservations",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "machine_id": machineId })
-    }
-  ).then(
-    response => {
-      if(!response.ok){
-        throw new Error(response.message);
-      }
-      return response.json();
-    }
-  )
-  .then(
-    data => {
-      let hoy = new Date().toISOString().split('T')[0];
-      document.getElementById("fechaInicio").min = hoy
-      console.log("reservas", data.value)
-      reservas = data.value.map(reserva => ({
-        start: new Date(reserva.start_day).getDate() + 1,
-        end: new Date(reserva.end_day).getDate() + 1
-      }));
-      console.log("reservas 2", reservas)
-    }
-  ).catch(
-  error => {
-    alert("Error");
-    this.checked = false;
-  }
-);
-*/
   // Mostrar/ocultar campo de dirección
   document.querySelectorAll('input[name="entrega"]').forEach(radio => {
     radio.addEventListener("change", function () {
       document.getElementById("campoDireccion").classList.toggle("hidden", this.value !== "domicilio");
     });
   });
-
-  /* COMENTADO
-    function esFechaReservada(fecha) {
-      const fechaObj = new Date(fecha).getDate() + 1;
-      //fechaObj.setHours(0, 0, 0, 0); // Ignorar horas/minutos
-      var bool = false;
-  
-      reservas.forEach(r => {
-        console.log("mi fehca", fechaObj)
-        console.log("init", r.start)
-        console.log("end", r.end)
-  
-  
-        if (fechaObj >= r.start && r.end >= fechaObj){ //|| (fechaObj - r.start < 14 )){
-          console.log("ocupado")
-          bool = true;
-        }
-        if(fechaObj - r.end < 14 || r.start - fechaObj > 14 ){
-          console.log("amtes")
-          bool = true;
-        }
-      })
-      return bool
-    
-    }
-      */
 
   // 1. Obtener reservas y configurar calendario
   let reservas = [];
@@ -340,13 +278,7 @@
 
   // 2. Configurar Flatpickr para mostrar días bloqueados
   function inicializarCalendarios() {
-    // Preparar rangos bloqueados
-    /*
-    const diasBloqueados = reservas.map(reserva => ({
-      from: reserva.start_day,
-      to: reserva.end_day
-    }));
-    */
+
     const diasBloqueados = reservas.map(reserva => {
       const fechaInicio = new Date(reserva.start_day);
       const fechaFin = new Date(reserva.end_day);

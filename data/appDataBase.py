@@ -1,23 +1,21 @@
 import os
 from data.config import Base, engine
 
-from data.model.QuestionModel import QuestionModel
-
 from data.query.disable import query_disable_categorie, query_disable_machine,query_disable_employee
 
 from data.query.delete import query_delete_mc, query_delete_user
 
 from data.query.enable import query_enable_categorie, query_enable_machine, query_enable_user,query_enable_employee
 
-from data.query.get_all import query_get_all_commentarys, query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin, query_get_all_maintenance,query_get_all_questions, query_get_all_rent_by_date, query_get_all_reseration_by_date, query_get_all_rent_by_categorie, query_get_all_reseration_by_categorie
+from data.query.get_all import query_get_all_commentarys, query_get_all_machines, query_get_all_machines_by_categorie, query_get_all_employees, query_get_all_users, query_get_all_categories, query_get_all_reservations_by_machine,query_get_all_requests,query_get_all_reservation,query_get_all_reservations_by_dni, query_get_all_reservations_by_dni,query_get_all_disable_employees, query_get_all_machines_admin, query_get_all_machines_by_categorie_admin, query_get_all_maintenance, query_get_all_rent_by_date, query_get_all_reseration_by_date, query_get_all_rent_by_categorie, query_get_all_reseration_by_categorie
 
-from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent, query_insert_maintenance,query_insert_question,query_insert_commentary
+from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent, query_insert_maintenance,query_insert_commentary,query_insert_answer
 
 from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend, query_update_end_maintenance
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email, query_get_rent
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email, query_get_rent,query_get_commentary
 
 from data.query.delete import query_delete_reservation
 
@@ -62,12 +60,13 @@ def insert_rent(start_day, client_id, machine_id, rent):
 def insert_maintenance(start_day, client_id, start_employee_id, machine_id, maintenance):
     query_insert_maintenance.execute(start_day, client_id, start_employee_id, machine_id, maintenance)
 
-def insert_question(question):
-    query_insert_question.execute(question=question)
     
 def insert_commentary(machine_patent,commentary):
     query_insert_commentary.execute(machine_patent, commentary)
 
+def insert_answer(dateID,answerID):
+    query_insert_answer.execute(dateID= dateID, answerID= answerID)
+    
 # ---- disable ----
 def disable_categorie(categorie):
     query_disable_categorie.execute(categorie=categorie)
@@ -143,6 +142,9 @@ def get_employee(employeeN):
 
 def get_rent(start_day, machine_id, clien_id):
     return query_get_rent.execute(start_day, machine_id, clien_id)
+
+def get_commentary (date):
+    return query_get_commentary.execute(date)
 
 # ---- get all ----
 def get_all_users():

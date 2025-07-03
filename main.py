@@ -1,6 +1,7 @@
 import init_db_proyect
 from datetime import datetime, timedelta
 import json
+import re
 from flask import Flask, jsonify, render_template, request,abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from core.entity.User import User
@@ -13,8 +14,8 @@ from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategor
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
 from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
-from core.usecase.question import GetAllQuestions,AddQuestion
-from core.usecase.commentary import GetAllCommentary,AddCommentary
+from core.usecase.question import sendQuestion
+from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
 from core.usecase.statistics import GetStatistics
 from templates import *
 import os
@@ -594,27 +595,29 @@ def user_points():
         return jsonify({"error": str(e)}), 400
     
 
-# ---- PREGUNTAS Y COMENTARIOS ----
-
-@app.route("/question/get_all", methods=["GET"])
-def get_all_questions():
-    return jsonify( { "value" : GetAllQuestions.usecase_get_all_questions()} ), 200     
-
-@app.route("/question/add_question", methods=["POST"])
-@login_required
-def add_question():
+# ---- PREGUNTAS Y COMENTARIOS ----   
+@app.route("/question/send", methods=["POST"])
+def send_question():
     try:
-        data = request.get_json()
-        if not data or not data.get("question"):     # Validaciones básicas
-            return jsonify({"error": "La pregunta es obligatoria"}), 400
-        
-        user_dni = current_user.dni                # dni del usuario logueado
-        question_text = data["question"]
+        data = request.get_json() or {}
+        email = data.get("email")
+        name = data.get("name")
+        lastname = data.get("lastname")
+        question = data.get("question")
 
-        AddQuestion.usecase_add_question(user_dni, question_text)
-        return jsonify({"message": "Pregunta enviada correctamente"}), 201
+        # Validaciones mínimas
+        if not all([email, name, lastname, question]):
+            return jsonify({"error": "Todos los campos son obligatorios."}), 400
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return jsonify({"error": "Email inválido."}), 400
+
+        sendQuestion.usecase_send_question(
+            emailUser=email, name=name, lastname=lastname, question=question
+        )
+        return jsonify({"message": "Pregunta enviada con éxito."}), 200
+
     except Exception as e:
-        return jsonify({"error": f"Error al agregar pregunta: {str(e)}"}), 500
+        return jsonify({"error": f"Error interno: {str(e)}"}), 500
 
 @app.route("/commentary/get_all", methods=["POST"])
 def get_all_commentary():
@@ -633,11 +636,33 @@ def add_commentary():
         user_dni = current_user.dni                # dni del usuario logueado
         commentary_text = data["commentary"]
         patent = data ["patent"] 
-        AddCommentary.usecase_add_commentary( machine_patent=patent, commentaryStr=commentary_text, dni=user_dni,)
+        date = datetime.now()
+
+        AddCommentary.usecase_add_commentary( date=date ,dni=user_dni, commentaryStr=commentary_text,machine_patent=patent, answer=None )
         return jsonify({"message": "Comentario enviado correctamente"}), 201
     except Exception as e:
         return jsonify({"error": f"Error al agregar comentario: {str(e)}"}), 500
     
+@app.route("/commentary/add_answer", methods=["POST"])
+@login_required
+def add_answer():
+    try:
+        data = request.get_json()
+        if not data or not data.get("commentary"):     # Validaciones básicas
+            return jsonify({"error": "El comentario es obligatorio"}), 400
+        
+        user_dni = current_user.dni                # dni del usuario logueado
+        commentary_text = data["commentary"]
+        patent = data ["patent"] 
+        dateCommentary= data ["dateCommentary"]
+        date = datetime.now()
+
+        AddAnswer.usecase_add_answer( date=date ,dni=user_dni, commentaryStr=commentary_text,machine_patent=patent, answerID=None,dateCommentary= dateCommentary)
+        return jsonify({"message": "Respuesta enviada correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al agregar respuesta: {str(e)}"}), 500
+    
+
 # ---- MAQUINAS ----
 
 @app.route("/machine/add_machine", methods=["POST"]) # TESTEADO -> TRUE

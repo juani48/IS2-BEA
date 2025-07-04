@@ -155,6 +155,16 @@ def __RESERVAS__():
         type="Cliente",
         apply_discount=False
     )
+
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-10-12",
+        end_day="2025-10-19",
+        client_id=47654123, # ----> RESERVA DE Jose
+        machine_id="ABC2",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
     
     #AddReservation.init_usecase_add_reserve( --> para testear el confirmar reserva (pri)
     #   start_day="2025-6-23",

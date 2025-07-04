@@ -248,10 +248,12 @@
 
       // Inicializar Flatpickr solo en end_day
       function inicializarCalendarioFin(minFechaFin) {
-        const diasBloqueados = reservas.map(reserva => {
-          const fechaInicio = new Date(reserva.start_day);
+
+        const diasBloqueados = reservas.map(r => {
+          const fechaInicio = new Date(r.start_day);
           fechaInicio.setDate(fechaInicio.getDate() - 14);
-          const fechaFin = new Date(reserva.end_day);
+
+          const fechaFin = new Date(r.end_day);
           fechaFin.setDate(fechaFin.getDate() + 14);
           return {
             from: fechaInicio.toISOString().split('T')[0],
@@ -259,8 +261,10 @@
           };
         });
 
+        console.log("fechas", diasBloqueados)
+
         flatpickr("#nuevaFechaInput", {
-          locale: { firstDayOfWeek: 1 },
+          //locale: { firstDayOfWeek: 1 },
           minDate: minFechaFin.toISOString().split('T')[0],
           disable: diasBloqueados,
         });

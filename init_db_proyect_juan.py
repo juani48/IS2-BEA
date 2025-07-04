@@ -18,7 +18,7 @@ def __init_db__():
         __USUARIOS__()
         __EMPLEADOS__()
         __RESERVAS__()
-        #__ALQUILERES__() #-> para testear el extender alquiler (pri)
+        __ALQUILERES__() #-> para testear el extender alquiler (pri)
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 
@@ -86,7 +86,7 @@ def __USUARIOS__():
     
     juan = UserModel(
         dni=45400389,
-        email="jibyrab@gmail.com",
+        email="jibyrab!@gmail.com",
         name="Juan",
         lastname="Brecevich",
         phone=123456788,

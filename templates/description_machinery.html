@@ -195,13 +195,20 @@
             </li>
           </ul>
 
-          <a
-            id="reserveBtn"
-            href="#"
-            class="mt-6 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
-          >
-            Reservar
-          </a>
+          <div class="mt-4 w-full flex flex-col gap-3">
+  <a id="reserveBtn"
+     class="w-full bg-red-600 hover:bg-red-700 text-white text-center py-2 rounded shadow font-semibold transition">
+    Reservar
+  </a>
+  <a id="rentBtn"
+     class="w-full bg-yellow-400 hover:bg-yellow-500 text-white text-center py-2 rounded shadow font-semibold transition">
+    Alquilar
+  </a>
+</div>
+
+
+
+
         </div>
       </div>
     </main>
@@ -347,6 +354,8 @@
               machine.creation_date
                 ? new Date(machine.creation_date).toLocaleDateString("es-AR")
                 : "No registrada";
+            document.getElementById("reserveBtn").href = `/reserve.html?machine_id=${machine.patent}`;
+            document.getElementById("rentBtn").href = `/rent_machine.html?machine_id=${machine.patent}`;
 
             fetch("/session/status")
               .then((res) => res.json())
@@ -666,7 +675,7 @@
                   start_day: mantenimientoActual.start_day,
                   client_id: mantenimientoActual.client_id,
                   start_employee_id: mantenimientoActual.start_employee_id,
-                  machine_id: machine.patent,
+                  machine_id:   tent,
                   end_employee_id: empId,
                   description: descripcion || "",
                 }),

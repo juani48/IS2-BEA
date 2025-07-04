@@ -232,6 +232,10 @@ def list_employee():
 def load_terminos():
     return render_template("terminos.html")
 
+@app.route("/list_all_maintenance.html")
+def list_all_maintenance():
+    return render_template("list_all_maintenance.html")
+
 @app.route("/list_all_reservation.html")
 @login_required                     
 def load_all_reservation():
@@ -582,6 +586,29 @@ def get_user_by_dni():
         return jsonify(user.json()), 200
     except Exception as e:
         return jsonify({"error": f"Error interno: {str(e)}"}), 500
+    
+#es como get user by dni pero un poco distinto
+@app.route("/users/check_client", methods=["POST"])
+@login_required
+def check_client_existence():
+    data = request.get_json() or {}
+    dni = data.get("dni")
+
+    if not dni:
+        return jsonify({"error": "DNI no proporcionado"}), 400
+
+    try:
+        from core.usecase.user.GetUserByDni import usecase_get_user_by_dni
+        user = usecase_get_user_by_dni(dni)
+        if user:
+            return jsonify(user.json()), 200
+        else:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Error interno: {str(e)}"}), 500
+ 
 
 @app.route("/user/user_history", methods=["GET", "POST"])
 def user_history():
@@ -629,6 +656,27 @@ def user_points():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
+@app.route("/signin_manual", methods=["POST"])
+@login_required
+def signin_manual():
+    try:
+        data = request.get_json()
+        print("📦 Datos recibidos:", data)
+        dni = data["dni"]
+        email = data["email"]
+        name = data["name"]
+        lastname = data["lastname"]
+        phone = data["phone"]
+        birthdate = data["birthdate"]
+        password = data["password"]
+
+        from core.usecase.user.Signin import usecase_signing
+        usecase_signing(dni, password, email, name, lastname, phone, birthdate)
+
+        return jsonify({"message": "Cliente registrado"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 # ---- PREGUNTAS Y COMENTARIOS ----   
 @app.route("/question/send", methods=["POST"])

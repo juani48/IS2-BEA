@@ -1173,7 +1173,7 @@ def get_statistics_month():
     try:
         request_value = request.get_json()
         return jsonify({
-            "statistics": GetStatistics.usecase_get_statistics(
+            "statistics": GetStatistics.usecase_get_statistics_month(
                 month=request_value.get("month"),
                 categorie=request_value.get("categorie")
             ) 

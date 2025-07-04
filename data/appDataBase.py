@@ -201,9 +201,6 @@ def get_all_rent_by_categoire(start_date, end_date, categorie):
 def get_all_reservation_by_categorie(start_date, end_date, categorie):
     return query_get_all_reseration_by_categorie.execute(start_date, end_date, categorie)
 
-def get_all_questions():
-    return #query_get_all_questions.execute()
-
 def get_all_commentarys(machine_patent):
     return query_get_all_commentarys.execute(machine_patent)
 

@@ -7,9 +7,10 @@ def execute(dni):
 
     try:
         user = session.get(UserModel, dni)
-        if user is None:
-            raise LookupError(f"Usuario con DNI {dni} no encontrado")
+        #if user is None:
+            #raise LookupError(f"Usuario con DNI {dni} no encontrado")
         return user
     except Exception as e:
         # Podés loggear el error si querés
-        raise RuntimeError(f"Error al obtener usuario: {e}")
+        #raise RuntimeError(f"Error al obtener usuario: {e}")
+        return None

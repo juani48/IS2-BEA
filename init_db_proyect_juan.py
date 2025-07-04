@@ -114,7 +114,7 @@ def __EMPLEADOS__():
 
     jose = UserModel(
         dni=66555444,
-        email="josepereyra@gmail.com",
+        email="jibyrab@gmail.com",
         name="Josefina",
         lastname="Pereyra",
         phone=123456788,

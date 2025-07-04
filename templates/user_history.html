@@ -230,12 +230,12 @@
         .then(data => {
           reservas = data.value;
 
-          const hoy = new Date();
-          const hoyISO = hoy.toISOString().split('T')[0];
 
-          // Setear mínimo para end_day (hoy + 7)
+          // Setear mínimo para end_day (hoy + 1)
+          const hoy = new Date(endDay);
+          const hoyISO = hoy.toISOString().split('T')[0];
           const fechaMinFin = new Date(hoy);
-          fechaMinFin.setDate(hoy.getDate() + 7);
+          fechaMinFin.setDate(hoy.getDate() + 1);
           const finISO = fechaMinFin.toISOString().split('T')[0];
           document.getElementById("nuevaFechaInput").min = finISO;
 

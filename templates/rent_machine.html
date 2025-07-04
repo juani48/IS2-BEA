@@ -99,6 +99,20 @@
           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
       </div>
 
+      <button type="button"
+  class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
+  onclick="verificarCliente()">Verificar usuario</button>
+
+<div id="campos-nuevo-cliente" class="space-y-3 hidden">
+  <div><input id="name" type="text" placeholder="Nombre" class="w-full border rounded px-4 py-2" /></div>
+  <div><input id="lastname" type="text" placeholder="Apellido" class="w-full border rounded px-4 py-2" /></div>
+  <div><input id="email" type="email" placeholder="Email" class="w-full border rounded px-4 py-2" /></div>
+  <div><input id="phone" type="tel" placeholder="Teléfono" class="w-full border rounded px-4 py-2" /></div>
+  <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento" class="w-full border rounded px-4 py-2" /></div>
+  <button type="button" onclick="crearNuevoCliente()" class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo cliente</button>
+</div>
+
+
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">ID de la máquina (patente)</label>
         <input type="text" id="machine_id" readonly
@@ -336,6 +350,92 @@
         }
       });
     });
+
+    function verificarCliente() {
+  const dni = document.getElementById("client_id").value;
+    if (!dni) {
+  mostrarError("Ingresá un DNI primero.");
+  return;
+}
+
+
+  fetch("/users/check_client", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dni })
+  })
+    .then(res => {
+      if (res.ok) {
+        mensaje.innerHTML = `
+        <div class="bg-green-600 text-white px-4 py-2 rounded shadow mt-2">El cliente ya está registrado ✅</div>`;
+        document.getElementById("campos-nuevo-cliente").classList.add("hidden");
+      } else if (res.status === 404) {
+        mensaje.innerHTML = `
+        <div class="bg-yellow-500 text-white px-4 py-2 rounded shadow mt-2">El cliente no está registrado. Ingresá sus datos.</div>`;
+        document.getElementById("campos-nuevo-cliente").classList.remove("hidden");
+      } else {
+        throw new Error("Error verificando cliente");
+      }
+    })
+    .catch(err => {
+      mensaje.innerHTML = `
+      <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">Error al verificar el cliente.</div>`;
+    });
+}
+
+function crearNuevoCliente() {
+  const dni = document.getElementById("client_id").value;
+  const name = document.getElementById("name").value;
+  const lastname = document.getElementById("lastname").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+  const birthdate = document.getElementById("birthdate").value;
+  const password = "cliente123"; // contraseña por defecto
+
+  if (!name || !lastname || !email || !phone || !birthdate) {
+    mostrarError("Por favor completá todos los campos.");
+    return;
+  }
+
+  fetch("/signin_manual", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dni, name, lastname, email, phone, birthdate, password })
+  })
+    .then(res => {
+      if (res.ok) {
+        mensaje.innerHTML = `
+        <div class="bg-green-600 text-white px-4 py-2 rounded shadow mt-2">Cliente creado correctamente 🎉</div>`;
+        document.getElementById("campos-nuevo-cliente").classList.add("hidden");
+      } else {
+        return res.json().then(err => {
+          throw new Error(err.error || "Error creando el cliente");
+        });
+      }
+    })
+    .catch(err => {
+      mensaje.innerHTML = `
+      <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">${err.message}</div>`;
+    });
+}
+    function mostrarError(texto) {
+  const mensaje = document.getElementById("mensaje");
+  mensaje.innerHTML = `
+    <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">
+      ${texto}
+    </div>
+  `;
+}
+
+// Función que elimina los números si se intentan ingresar
+function bloquearNumeros(inputId) {
+  const input = document.getElementById(inputId);
+  input.addEventListener("input", () => {
+    input.value = input.value.replace(/[0-9]/g, '');
+  });
+}
+
+ 
   </script>
 
 

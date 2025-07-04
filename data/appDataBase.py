@@ -138,7 +138,7 @@ def get_discount(name):
     return query_get_discount.query_get_discount(name)
 
 def get_employee(employeeN):
-    return query_get_employee(employeeN)
+    return query_get_employee.execute(employeeN)
 
 def get_rent(start_day, machine_id, clien_id):
     return query_get_rent.execute(start_day, machine_id, clien_id)

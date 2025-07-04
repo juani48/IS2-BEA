@@ -76,8 +76,8 @@
       <h2 class="text-xl font-semibold mb-4 text-center text-red-700">Extender alquiler</h2>
 
 
-      <input id="nuevaFechaInput" type="date" class="w-full border p-2 rounded mb-4" name="nuevaFechaInput"
-        placeholder="Seleccioná nueva fecha de fin">
+      <input id="nuevaFechaInput" type="text" class="..." placeholder="Seleccioná nueva fecha de fin">
+
 
 
       <div class="flex justify-end gap-2">
@@ -129,238 +129,203 @@
     </div>
   </footer>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("/user/user_history")
-        .then(res => res.json())
-        .then(data => {
-          const reservas = data.value;
-          const container = document.getElementById("reservation-container");
-          const emptyMsg = document.getElementById("no-reservations");
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("/user/user_history")
+      .then(res => res.json())
+      .then(data => {
+        const reservas = data.value;
+        const container = document.getElementById("reservation-container");
+        const emptyMsg = document.getElementById("no-reservations");
 
-          if (!reservas || reservas.length === 0) {
-            emptyMsg.classList.remove("hidden");
-            return;
-          }
-
-          const hoy = new Date();
-
-          reservas.forEach(r => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-bob-red p-4 rounded shadow flex flex-col gap-4";
-
-            const inicio = new Date(r.start_day);
-            const fin = new Date(r.end_day);
-            const puedeCancelar = hoy < inicio;
-            const activa = hoy >= inicio && hoy <= fin;
-
-            card.innerHTML = `
-              <div>
-                <p><strong>Máquina:</strong> ${r.machine_id}</p>
-                <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
-                <p><strong>Fecha fin:</strong> ${r.end_day}</p>
-                <p><strong>Monto:</strong> $${r.total_value}</p>
-              </div>
-              <div class="flex gap-2">
-                <button
-                  ${puedeCancelar ? '' : 'disabled'}
-                  class="px-4 py-2 rounded font-semibold text-white transition-all
-                    ${puedeCancelar ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}"
-                  onclick="${puedeCancelar ? `cancelarReserva('${r.preference_id}', this)` : ''}">
-                  Cancelar reserva
-                </button>
-                ${activa ? `<button class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded" onclick="extenderReserva('${r.start_day}', '${r.end_day}', '${r.machine_id}')"
->Extender alquiler</button>` : ''}
-              </div>
-            `;
-
-            container.appendChild(card);
-          });
-        })
-        .catch(err => {
-          console.error("Error al cargar historial:", err);
-        });
-    });
-
-    function cancelarReserva(preference_id, boton) {
-      fetch("/reservation/cancel_by_client", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preference_id })
-      })
-        .then(res => {
-          if (res.ok) {
-            boton.closest("div").remove();
-            const mensaje = document.getElementById("mensaje-exito");
-            mensaje.classList.remove("hidden");
-            setTimeout(() => mensaje.classList.add("hidden"), 3000);
-          } else {
-            return res.json().then(data => { throw new Error(data.error); });
-          }
-        })
-        .catch(err => {
-          alert("Error al cancelar la reserva: " + err.message);
-        });
-    }
-
-    //
-    let datosExtension = {};
-
-    function extenderReserva(startDay, endDay, machineId) {
-
-      const user = JSON.parse(localStorage.getItem("user"));
-      datosExtension = {
-        start_day: startDay,
-        machine_id: machineId,
-        client_id: user.dni
-      };
-      /*
-            const input = document.getElementById("nuevaFechaInput");
-      
-            const minDate = new Date(endDay);
-            minDate.setDate(minDate.getDate() + 1); // se debe extender más allá del endDay actual
-      
-            flatpickr(input, {
-              minDate: minDate.toISOString().split("T")[0],
-              dateFormat: "Y-m-d",
-              defaultDate: minDate.toISOString().split("T")[0],
-              disableMobile: true,
-            });
-      
-            */
-      // 1) Obtenemos las reservas para esa máquina
-      fetch('/reservation/machine_reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ machine_id: machineId })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error('No se pudo cargar reservas');
-          return res.json();
-        })
-        .then(({ value: reservas }) => {
-          console.log("reservas", reservas)
-          // 2) Preparamos el array de bloqueos
-          const bloqueos = [];
-
-          // a) Bloquear hoy y mañana relativo a endDay
-          const fechaFin = new Date(endDay);
-          const hoyISO = fechaFin.toISOString().split('T')[0];
-          const siguiente = new Date(fechaFin);
-          siguiente.setDate(siguiente.getDate() + 1);
-          const sigISO = siguiente.toISOString().split('T')[0];
-
-          bloqueos.push(hoyISO);
-
-          // b) Rangos ±14 días de cada reserva
-          reservas.forEach(r => {
-            const inicio = new Date(r.start_day);
-            inicio.setDate(inicio.getDate() - 14);
-            const fin = new Date(r.end_day);
-            fin.setDate(fin.getDate() + 14);
-            bloqueos.push({
-              from: inicio.toISOString().split('T')[0],
-              to: fin.toISOString().split('T')[0]
-            });
-          });
-
-          // 3) Inicializamos Flatpickr en el input
-          flatpickr('#nuevaFechaInput', {
-            locale: 'es',
-            dateFormat: 'Y-m-d',
-            minDate: sigISO,    // nunca antes del día siguiente a la fin actual
-            disable: bloqueos
-          });
-        })
-        .catch(err => {
-          alert('Error al cargar reservas: ' + err.message);
-          console.error(err);
-        });
-
-      document.getElementById("extender-popup").classList.remove("hidden");
-    }
-
-    /*
-        function padFecha(fechaStr) {
-          const fecha = new Date(fechaStr);
-          const year = fecha.getFullYear();
-          const month = String(fecha.getMonth() + 1).padStart(2, '0');
-          const day = String(fecha.getDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
+        if (!reservas || reservas.length === 0) {
+          emptyMsg.classList.remove("hidden");
+          return;
         }
-        function calcularDiferenciaDias(fechaInicio, fechaFin) {
-          const inicio = new Date(fechaInicio);
-          const fin = new Date(fechaFin);
-          const diferencia = fin - inicio;
-          return Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-        }
-    
-        function mostrarMensajeExtension(texto) {
-          const mensaje = document.getElementById("mensaje-extension");
-          mensaje.textContent = texto;
+
+        const hoy = new Date();
+
+        reservas.forEach(r => {
+          const card = document.createElement("div");
+          card.className = "bg-white border border-bob-red p-4 rounded shadow flex flex-col gap-4";
+
+          const inicio = new Date(r.start_day);
+          const fin = new Date(r.end_day);
+          const puedeCancelar = hoy < inicio;
+
+          card.innerHTML = `
+            <div>
+              <p><strong>Máquina:</strong> ${r.machine_id}</p>
+              <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
+              <p><strong>Fecha fin:</strong> ${r.end_day}</p>
+              <p><strong>Monto:</strong> $${r.total_value}</p>
+            </div>
+            <div class="flex gap-2">
+              <button
+                ${puedeCancelar ? '' : 'disabled'}
+                class="px-4 py-2 rounded font-semibold text-white transition-all
+                  ${puedeCancelar ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}"
+                onclick="${puedeCancelar ? `cancelarReserva('${r.preference_id}', this)` : ''}">
+                Cancelar reserva
+              </button>
+              ${r.type === "rent" ? `<button class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded" onclick="extenderReserva('${r.start_day}', '${r.end_day}', '${r.machine_id}')">Extender alquiler</button>` : ''}
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error("Error al cargar historial:", err);
+      });
+  });
+
+  function cancelarReserva(preference_id, boton) {
+    fetch("/reservation/cancel_by_client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ preference_id })
+    })
+      .then(res => {
+        if (res.ok) {
+          boton.closest("div").remove();
+          const mensaje = document.getElementById("mensaje-exito");
           mensaje.classList.remove("hidden");
           setTimeout(() => mensaje.classList.add("hidden"), 3000);
+        } else {
+          return res.json().then(data => { throw new Error(data.error); });
         }
-    */
-
-
-    function confirmarExtension() {
-      const nuevaFecha = document.getElementById("nuevaFechaInput").value;
-      if (!nuevaFecha) return;
-
-      const startDayRaw = datosExtension.start_day;
-
-      const partes = startDayRaw.split("-");
-      let year = partes[0];
-      let month = partes[1];
-      let day = partes[2];
-
-      // 🔥 Solución clave: eliminar ceros a la izquierda
-      const formattedStartDay = `${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`;
-
-      const diasExtendidos = calcularDiferenciaDias(formattedStartDay, nuevaFecha);
-
-      if (diasExtendidos < 1) {
-        alert("Debés extender al menos un día");
-        return;
-      }
-
-      const payload = {
-        start_day: formattedStartDay,
-        client_id: datosExtension.client_id,
-        machine_id: datosExtension.machine_id,
-        days_extended: diasExtendidos
-      };
-
-
-
-
-      fetch("/rent/extend_rent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
       })
-        .then(res => {
-          if (!res.ok) throw new Error("Error al extender alquiler");
-          return res.status === 201 ? Promise.resolve() : res.json();
-        })
-        .then(() => {
-          mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
-        })
-        .catch(error => {
-          mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
-        });
+      .catch(err => {
+        alert("Error al cancelar la reserva: " + err.message);
+      });
+  }
 
-      cerrarPopup();
+  let datosExtension = {};
 
-    }
+ function extenderReserva(startDay, endDay, machineId) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  datosExtension = {
+    start_day: startDay,
+    machine_id: machineId,
+    client_id: user.dni
+  };
+
+  fetch('/reservation/machine_reservations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ machine_id: machineId })
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('No se pudo cargar reservas');
+      return res.json();
+    })
+    .then(({ value: reservas }) => {
+      const bloqueos = [];
+
+      // 1. Bloquear hasta la fecha de fin actual
+      const fechaFin = new Date(endDay);
+      bloqueos.push({
+        to: fechaFin.toISOString().split('T')[0]
+      });
+
+      // 2. Bloquear reservas + mantenimiento (14 días)
+      reservas.forEach(r => {
+        if (r.start_day && r.end_day) {
+          const inicio = new Date(r.start_day);
+          const fin = new Date(r.end_day);
+
+          // Bloquear reserva
+          bloqueos.push({
+            from: inicio.toISOString().split('T')[0],
+            to: fin.toISOString().split('T')[0]
+          });
+
+          // Bloquear mantenimiento
+          const mantenimientoFin = new Date(fin);
+          mantenimientoFin.setDate(mantenimientoFin.getDate() + 14);
+
+          bloqueos.push({
+            from: fin.toISOString().split('T')[0],
+            to: mantenimientoFin.toISOString().split('T')[0]
+          });
+        }
+      });
+
+      // ✅ Inicializar Flatpickr
+      flatpickr("#nuevaFechaInput", {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        disable: bloqueos,
+        minDate: new Date(fechaFin.getTime() + 86400000), // día siguiente
+        disableMobile: true
+      });
+
+      // Mostrar popup
+      document.getElementById("extender-popup").classList.remove("hidden");
+    })
+    .catch(err => {
+      alert("Error al cargar reservas: " + err.message);
+      console.error(err);
+    });
+}
 
 
-    function cerrarPopup() {
-      document.getElementById("extender-popup").classList.add("hidden");
-    }
 
-  </script>
+  function calcularDiferenciaDias(fechaInicio, fechaFin) {
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+    const diferencia = fin - inicio;
+    return Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+  }
+
+  function mostrarMensajeExtension(texto) {
+    const mensaje = document.getElementById("mensaje-extension");
+    mensaje.textContent = texto;
+    mensaje.classList.remove("hidden");
+    setTimeout(() => mensaje.classList.add("hidden"), 3000);
+  }
+
+  function confirmarExtension() {
+  const nuevaFechaInput = document.getElementById("nuevaFechaInput").value;
+  if (!nuevaFechaInput) return;
+
+  const fechaSeleccionada = new Date(nuevaFechaInput);
+  const nuevaFecha = `${fechaSeleccionada.getFullYear()}-${fechaSeleccionada.getMonth() + 1}-${fechaSeleccionada.getDate()}`;
+
+  const payload = {
+    start_day: datosExtension.start_day,
+    client_id: datosExtension.client_id,
+    machine_id: datosExtension.machine_id,
+    end_day: nuevaFecha 
+  };
+
+  fetch("/rent/extend_rent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al extender alquiler");
+      return res.status === 201 ? Promise.resolve() : res.json();
+    })
+    .then(() => {
+      mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
+    })
+    .catch(error => {
+      mostrarMensajeExtension("❌ Ocurrió un error al extender.");
+    });
+
+  cerrarPopup();
+}
+
+
+
+  function cerrarPopup() {
+    document.getElementById("extender-popup").classList.add("hidden");
+  }
+</script>
+
 </body>
 
 </html>

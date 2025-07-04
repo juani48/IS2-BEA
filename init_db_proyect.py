@@ -19,7 +19,7 @@ def __init_db__():
         __USUARIOS__()
         __EMPLEADOS__()
         __RESERVAS__()
-        #__ALQUILERES__() --> para testear el extender alquiler (pri)
+        __ALQUILERES__() #-> para testear el extender alquiler (pri)
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 

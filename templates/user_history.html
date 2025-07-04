@@ -76,7 +76,7 @@
       <h2 class="text-xl font-semibold mb-4 text-center text-red-700">Extender alquiler</h2>
 
 
-      <input id="nuevaFechaInput" type="date" class="..." placeholder="Seleccioná nueva fecha de fin">
+      <input id="nuevaFechaInput" type="date" class="text-xl font-semibold mb-4 text-center text-red-700" placeholder="Seleccioná nueva fecha de fin">
 
 
 
@@ -180,6 +180,67 @@
       });
   });
 
+  // Datos para la extensión
+    let datosExtension = {};
+    
+    // Mostrar popup para extender reserva
+    function extenderReserva(startDay, endDay, id) {
+      datosExtension = {
+        id,
+        start_day: startDay,
+        end_day: endDay
+      };
+      
+      
+
+      // Crear instancia de Flatpickr
+      const flatpickrInstance = flatpickr("#nuevaFechaInput", {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        minDate: endDay,
+        disable: [
+          // Bloquear 14 días antes de cada reserva
+          { from: "2025-07-01", to: "2025-07-14" },
+          { from: "2025-07-20", to: "2025-08-03" },
+          
+          // Bloquear 14 días después de cada reserva (mantenimiento)
+          { from: "2025-06-26", to: "2025-07-10" },
+          { from: "2025-07-16", to: "2025-07-30" }
+        ],
+        disableMobile: true
+      });
+      
+      // Mostrar popup
+      document.getElementById("extender-popup").classList.remove("hidden");
+    }
+    
+    // Cerrar popup
+    function cerrarPopup() {
+      document.getElementById("extender-popup").classList.add("hidden");
+    }
+    
+    // Confirmar extensión
+    function confirmarExtension() {
+      const nuevaFecha = document.getElementById("nuevaFechaInput").value;
+      if (!nuevaFecha) return;
+      
+      // Simular llamada a la API
+      setTimeout(() => {
+        // Actualizar datos de la reserva
+        const reserva = reservas.find(r => r.id === datosExtension.id);
+        if (reserva) {
+          reserva.end_day = nuevaFecha;
+        }
+        
+        // Mostrar mensaje de éxito
+        const mensaje = document.getElementById("mensaje-extension");
+        mensaje.classList.remove("hidden");
+        setTimeout(() => mensaje.classList.add("hidden"), 3000);
+        
+        cerrarPopup();
+      }, 500);
+    }
+    
   
 </script>
 

@@ -8,7 +8,7 @@ from core.entity.User import User
 from data.appDataBase import get_machine, get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee,GetUserByDni,GetUserByEmployeeN
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
@@ -245,13 +245,6 @@ def load_all_reservation():
 def load_list_clients():
     if current_user.type == "Admin":
         return render_template("list_all_users.html")
-    return redirect("/main.html")
-
-@app.route("/list_all_maintenance.html")
-@login_required
-def load_list_maincenance():
-    if current_user.type in ["Admin", "Empleado"]:
-        return render_template("list_all_maintenance.html")
     return redirect("/main.html")
 
 @app.route("/user_history.html")
@@ -554,6 +547,41 @@ def reply_user_request():
 def get_all_clients():
     return jsonify(GetAllUsers.usecase_get_all_users()), 200
 
+@app.route("/users/get_user_by_employee_number", methods=["POST"])
+#@login_required
+def get_user_by_employee_number():
+    data = request.get_json() or {}
+    empN = data.get("employee_number")
+
+    if not empN:
+        return jsonify({"error": "Número de legajo no proporcionado"}), 400
+
+    try:
+        user = GetUserByEmployeeN.usecase_case_get_user_by_employee_number(empN)
+        if not user:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        return jsonify(user.json()), 200
+    except Exception as e:
+        return jsonify({"error": f"Error interno: {str(e)}"}), 500
+
+@app.route("/users/get_user_by_dni", methods=["POST"])
+#@login_required
+def get_user_by_dni():
+    data = request.get_json() or {}
+    dni = data.get("dni")
+    
+    if not dni:
+        return jsonify({"error": "DNI no proporcionado"}), 400
+
+    try:
+        user = GetUserByDni.usecase_get_user_by_dni(dni=dni)
+        if not user:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        return jsonify(user.json()), 200
+    except Exception as e:
+        return jsonify({"error": f"Error interno: {str(e)}"}), 500
 
 @app.route("/user/user_history", methods=["GET", "POST"])
 def user_history():
@@ -1140,7 +1168,7 @@ def get_statistics_month():
     try:
         request_value = request.get_json()
         return jsonify({
-            "statistics": GetStatistics.usecase_get_statistics_month(
+            "statistics": GetStatistics.usecase_get_statistics(
                 month=request_value.get("month"),
                 categorie=request_value.get("categorie")
             ) 

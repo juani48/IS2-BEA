@@ -548,7 +548,7 @@ def get_all_clients():
     return jsonify(GetAllUsers.usecase_get_all_users()), 200
 
 @app.route("/users/get_user_by_employee_number", methods=["POST"])
-#@login_required
+@login_required
 def get_user_by_employee_number():
     data = request.get_json() or {}
     empN = data.get("employee_number")
@@ -566,7 +566,7 @@ def get_user_by_employee_number():
         return jsonify({"error": f"Error interno: {str(e)}"}), 500
 
 @app.route("/users/get_user_by_dni", methods=["POST"])
-#@login_required
+@login_required
 def get_user_by_dni():
     data = request.get_json() or {}
     dni = data.get("dni")

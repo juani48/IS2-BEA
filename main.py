@@ -232,6 +232,10 @@ def list_employee():
 def load_terminos():
     return render_template("terminos.html")
 
+@app.route("/list_all_maintenance.html")
+def list_all_maintenance():
+    return render_template("list_all_maintenance.html")
+
 @app.route("/list_all_reservation.html")
 @login_required                     
 def load_all_reservation():
@@ -1142,6 +1146,7 @@ def extend_rent():
     print("📩 Llamada a /rent/extend_rent recibida")
     try:
         request_value = request.get_json()
+        print(request_value)
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),

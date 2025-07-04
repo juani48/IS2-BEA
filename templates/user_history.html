@@ -76,8 +76,9 @@
       <h2 class="text-xl font-semibold mb-4 text-center text-red-700">Extender alquiler</h2>
 
 
-      <input id="nuevaFechaInput" type="date" class="w-full border p-2 rounded mb-4" name="nuevaFechaInput"
+      <input id="nuevaFechaInput" type="date" class="text-xl font-semibold mb-4 text-center text-red-700"
         placeholder="Seleccioná nueva fecha de fin">
+
 
 
       <div class="flex justify-end gap-2">
@@ -152,27 +153,25 @@
             const inicio = new Date(r.start_day);
             const fin = new Date(r.end_day);
             const puedeCancelar = hoy < inicio;
-            const activa = hoy >= inicio && hoy <= fin;
 
             card.innerHTML = `
-              <div>
-                <p><strong>Máquina:</strong> ${r.machine_id}</p>
-                <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
-                <p><strong>Fecha fin:</strong> ${r.end_day}</p>
-                <p><strong>Monto:</strong> $${r.total_value}</p>
-              </div>
-              <div class="flex gap-2">
-                <button
-                  ${puedeCancelar ? '' : 'disabled'}
-                  class="px-4 py-2 rounded font-semibold text-white transition-all
-                    ${puedeCancelar ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}"
-                  onclick="${puedeCancelar ? `cancelarReserva('${r.preference_id}', this)` : ''}">
-                  Cancelar reserva
-                </button>
-                ${activa ? `<button class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded" onclick="extenderReserva('${r.start_day}', '${r.end_day}', '${r.machine_id}')"
->Extender alquiler</button>` : ''}
-              </div>
-            `;
+            <div>
+              <p><strong>Máquina:</strong> ${r.machine_id}</p>
+              <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
+              <p><strong>Fecha fin:</strong> ${r.end_day}</p>
+              <p><strong>Monto:</strong> $${r.total_value}</p>
+            </div>
+            <div class="flex gap-2">
+              <button
+                ${puedeCancelar ? '' : 'disabled'}
+                class="px-4 py-2 rounded font-semibold text-white transition-all
+                  ${puedeCancelar ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}"
+                onclick="${puedeCancelar ? `cancelarReserva('${r.preference_id}', this)` : ''}">
+                Cancelar reserva
+              </button>
+              ${r.type === "rent" ? `<button class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded" onclick="extenderReserva('${r.start_day}', '${r.end_day}', '${r.machine_id}')">Extender alquiler</button>` : ''}
+            </div>
+          `;
 
             container.appendChild(card);
           });
@@ -203,137 +202,95 @@
         });
     }
 
-    //
+    // Datos para la extensión
     let datosExtension = {};
 
-    function extenderReserva(startDay, endDay, machineId) {
+    // Mostrar popup para extender reserva
 
+    function extenderReserva(startDay, endDay, machineId) {
       const user = JSON.parse(localStorage.getItem("user"));
       datosExtension = {
-        start_day: startDay,
         machine_id: machineId,
+        start_day: startDay,
+        end_day: endDay,
         client_id: user.dni
       };
-      /*
-            const input = document.getElementById("nuevaFechaInput");
-      
-            const minDate = new Date(endDay);
-            minDate.setDate(minDate.getDate() + 1); // se debe extender más allá del endDay actual
-      
-            flatpickr(input, {
-              minDate: minDate.toISOString().split("T")[0],
-              dateFormat: "Y-m-d",
-              defaultDate: minDate.toISOString().split("T")[0],
-              disableMobile: true,
-            });
-      
-            */
-      // 1) Obtenemos las reservas para esa máquina
-      fetch('/reservation/machine_reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      let reservas = [];
+
+      fetch("/reservation/machine_reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ machine_id: machineId })
       })
-        .then(res => {
-          if (!res.ok) throw new Error('No se pudo cargar reservas');
-          return res.json();
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la respuesta del servidor");
+          return response.json();
         })
-        .then(({ value: reservas }) => {
-          console.log("reservas", reservas)
-          // 2) Preparamos el array de bloqueos
-          const bloqueos = [];
+        .then(data => {
+          reservas = data.value;
 
-          // a) Bloquear hoy y mañana relativo a endDay
-          const fechaFin = new Date(endDay);
-          const hoyISO = fechaFin.toISOString().split('T')[0];
-          const siguiente = new Date(fechaFin);
-          siguiente.setDate(siguiente.getDate() + 1);
-          const sigISO = siguiente.toISOString().split('T')[0];
 
-          bloqueos.push(hoyISO);
+          // Setear mínimo para end_day (hoy + 1)
+          const hoy = new Date(endDay);
+          const hoyISO = hoy.toISOString().split('T')[0];
+          const fechaMinFin = new Date(hoy);
+          fechaMinFin.setDate(hoy.getDate() + 1);
+          const finISO = fechaMinFin.toISOString().split('T')[0];
+          document.getElementById("nuevaFechaInput").min = finISO;
 
-          // b) Rangos ±14 días de cada reserva
-          reservas.forEach(r => {
-            const inicio = new Date(r.start_day);
-            inicio.setDate(inicio.getDate() - 14);
-            const fin = new Date(r.end_day);
-            fin.setDate(fin.getDate() + 14);
-            bloqueos.push({
-              from: inicio.toISOString().split('T')[0],
-              to: fin.toISOString().split('T')[0]
-            });
-          });
-
-          // 3) Inicializamos Flatpickr en el input
-          flatpickr('#nuevaFechaInput', {
-            locale: 'es',
-            dateFormat: 'Y-m-d',
-            minDate: sigISO,    // nunca antes del día siguiente a la fin actual
-            disable: bloqueos
-          });
+          inicializarCalendarioFin(fechaMinFin);
         })
-        .catch(err => {
-          alert('Error al cargar reservas: ' + err.message);
-          console.error(err);
+        .catch(error => {
+          alert("Error al cargar reservas");
+          console.error(error);
         });
 
+      // Inicializar Flatpickr solo en end_day
+      function inicializarCalendarioFin(minFechaFin) {
+
+        const diasBloqueados = reservas.map(r => {
+          const fechaInicio = new Date(r.start_day);
+          fechaInicio.setDate(fechaInicio.getDate() - 14);
+
+          const fechaFin = new Date(r.end_day);
+          fechaFin.setDate(fechaFin.getDate() + 14);
+          return {
+            from: fechaInicio.toISOString().split('T')[0],
+            to: fechaFin.toISOString().split('T')[0]
+          };
+        });
+
+        console.log("fechas", diasBloqueados)
+
+        flatpickr("#nuevaFechaInput", {
+          //locale: { firstDayOfWeek: 1 },
+          minDate: minFechaFin.toISOString().split('T')[0],
+          disable: diasBloqueados,
+        });
+      }
+
+      // Mostrar popup
       document.getElementById("extender-popup").classList.remove("hidden");
     }
 
-    /*
-        function padFecha(fechaStr) {
-          const fecha = new Date(fechaStr);
-          const year = fecha.getFullYear();
-          const month = String(fecha.getMonth() + 1).padStart(2, '0');
-          const day = String(fecha.getDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        }
-        function calcularDiferenciaDias(fechaInicio, fechaFin) {
-          const inicio = new Date(fechaInicio);
-          const fin = new Date(fechaFin);
-          const diferencia = fin - inicio;
-          return Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-        }
-    
-        function mostrarMensajeExtension(texto) {
-          const mensaje = document.getElementById("mensaje-extension");
-          mensaje.textContent = texto;
-          mensaje.classList.remove("hidden");
-          setTimeout(() => mensaje.classList.add("hidden"), 3000);
-        }
-    */
+    // Cerrar popup
+    function cerrarPopup() {
+      document.getElementById("extender-popup").classList.add("hidden");
+    }
 
 
+
+    // Confirmar extensión
     function confirmarExtension() {
-      const nuevaFecha = document.getElementById("nuevaFechaInput").value;
-      if (!nuevaFecha) return;
-
-      const startDayRaw = datosExtension.start_day;
-
-      const partes = startDayRaw.split("-");
-      let year = partes[0];
-      let month = partes[1];
-      let day = partes[2];
-
-      // 🔥 Solución clave: eliminar ceros a la izquierda
-      const formattedStartDay = `${parseInt(year)}-${parseInt(month)}-${parseInt(day)}`;
-
-      const diasExtendidos = calcularDiferenciaDias(formattedStartDay, nuevaFecha);
-
-      if (diasExtendidos < 1) {
-        alert("Debés extender al menos un día");
-        return;
-      }
+      const nuevaFechaInput = document.getElementById("nuevaFechaInput").value;
 
       const payload = {
-        start_day: formattedStartDay,
+        start_day: datosExtension.start_day,
         client_id: datosExtension.client_id,
         machine_id: datosExtension.machine_id,
-        days_extended: diasExtendidos
+        end_day: nuevaFechaInput
       };
-
-
-
 
       fetch("/rent/extend_rent", {
         method: "POST",
@@ -348,19 +305,21 @@
           mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
         })
         .catch(error => {
-          mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
+          mostrarMensajeExtension("❌ Ocurrió un error al extender.");
         });
 
       cerrarPopup();
-
     }
 
-
-    function cerrarPopup() {
-      document.getElementById("extender-popup").classList.add("hidden");
-    }
+    function mostrarMensajeExtension(texto) {
+    const mensaje = document.getElementById("mensaje-extension");
+    mensaje.textContent = texto;
+    mensaje.classList.remove("hidden");
+    setTimeout(() => mensaje.classList.add("hidden"), 3000);
+  }
 
   </script>
+
 </body>
 
 </html>

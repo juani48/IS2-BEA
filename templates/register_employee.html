@@ -318,7 +318,7 @@
         body: JSON.stringify(data),
       })
         .then(async (res) => {
-  if (res.status === 204) {
+  if (res.status === 201) {
     successDiv.classList.remove("hidden");
     setTimeout(() => {
       window.location.href = "panelAdmin.html";

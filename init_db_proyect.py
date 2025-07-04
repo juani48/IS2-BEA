@@ -144,59 +144,11 @@ def __EMPLEADOS__():
     query_TEST_USER.execute(user=empleadoLara)
 
 def __RESERVAS__():
-    AddReservation.init_usecase_add_reserve(
-        start_day="2025-6-26",
-        end_day="2025-7-5",
-        client_id=49087890, # ----> RESERVA DE Juliana
-        machine_id="ABC1",
-        shipment=False,
-        type="Cliente",
-        apply_discount=False
-    )
+
 
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-6-6",
-        end_day="2025-6-15",
-        client_id=47654123, # ----> RESERVA DE Jose
-        machine_id="ABC1",
-        shipment=False,
-        type="Cliente",
-        apply_discount=False
-    )
-
-    AddReservation.init_usecase_add_reserve(
-        start_day="2025-9-20",
-        end_day="2025-10-3",
-        client_id=47654123, # ----> RESERVA DE Jose
-        machine_id="ABC2",
-        shipment=False,
-        type="Cliente",
-        apply_discount=False
-    )
-
-    AddReservation.init_usecase_add_reserve(
-        start_day="2025-11-2",
-        end_day="2025-11-14",
-        client_id=49087890, # ----> RESERVA DE Juliana
-        machine_id="ABC2",
-        shipment=False,
-        type="Cliente",
-        apply_discount=False
-    )
-
-    AddReservation.init_usecase_add_reserve(
-        start_day="2025-8-10",
-        end_day="2025-8-25",
-        client_id=47654123, # ----> RESERVA DE Jose
-        machine_id="ABC2",
-        shipment=True,
-        type="Cliente",
-        apply_discount=False
-    )
-
-    AddReservation.init_usecase_add_reserve(
-        start_day="2025-6-20",
-        end_day="2025-10-9",
+        start_day="2025-7-12",
+        end_day="2025-7-19",
         client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC2",
         shipment=False,
@@ -214,14 +166,14 @@ def __RESERVAS__():
     #    apply_discount=False
     #)
 
-#def __ALQUILERES__(): --> para testear el extender alquiler (pri)
-#    AddRent.usercase_add_rent(
-#        start_day="2025-6-20",
-#        end_day="2025-10-9",
-#        client_id=47654123,     
-#        machine_id="ABC2",      
-#        employee_id=None        
-#    )
+def __ALQUILERES__(): #--> para testear el extender alquiler (pri)
+    AddRent.usercase_add_rent(
+        start_day="2025-7-2",
+        end_day="2025-7-9",
+        client_id=47654123,     
+        machine_id="ABC2",      
+        employee_id=None        
+    )
     
 
 

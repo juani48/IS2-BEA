@@ -1,6 +1,15 @@
 from data.config import session
 from data.model.UserModel import UserModel
 
-def execute (dni):
-    local_user = session.get(UserModel,dni)
-    return local_user
+def execute(dni):
+    if not dni:
+        raise ValueError("DNI no puede ser vacío o nulo")
+
+    try:
+        user = session.get(UserModel, dni)
+        if user is None:
+            raise LookupError(f"Usuario con DNI {dni} no encontrado")
+        return user
+    except Exception as e:
+        # Podés loggear el error si querés
+        raise RuntimeError(f"Error al obtener usuario: {e}")

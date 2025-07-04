@@ -232,6 +232,10 @@ def list_employee():
 def load_terminos():
     return render_template("terminos.html")
 
+@app.route("/list_all_maintenance.html")
+def list_all_maintenance():
+    return render_template("list_all_maintenance.html")
+
 @app.route("/list_all_reservation.html")
 @login_required                     
 def load_all_reservation():

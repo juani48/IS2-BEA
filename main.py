@@ -1102,7 +1102,7 @@ def extend_rent():
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
             machine_id=request_value.get("machine_id"),
-            days_extended=request_value.get("days_extended")
+            end_day=request_value.get("end_day")
         )
         return "", 201
     except Exception as e:

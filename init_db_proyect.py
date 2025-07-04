@@ -19,7 +19,7 @@ def __init_db__():
         __USUARIOS__()
         __EMPLEADOS__()
         __RESERVAS__()
-        #__ALQUILERES__() --> para testear el extender alquiler (pri)
+        __ALQUILERES__() #-> para testear el extender alquiler (pri)
     except Exception as e:
         print(f"La base de datos ya esta cargada: {e}")
 
@@ -149,6 +149,16 @@ def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
         start_day="2025-7-12",
         end_day="2025-7-19",
+        client_id=47654123, # ----> RESERVA DE Jose
+        machine_id="ABC2",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
+
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-10-12",
+        end_day="2025-10-19",
         client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC2",
         shipment=False,

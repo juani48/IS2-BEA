@@ -138,7 +138,7 @@ def get_discount(name):
     return query_get_discount.query_get_discount(name)
 
 def get_employee(employeeN):
-    return query_get_employee(employeeN)
+    return query_get_employee.execute(employeeN)
 
 def get_rent(start_day, machine_id, clien_id):
     return query_get_rent.execute(start_day, machine_id, clien_id)
@@ -202,7 +202,7 @@ def get_all_reservation_by_categorie(start_date, end_date, categorie):
     return query_get_all_reseration_by_categorie.execute(start_date, end_date, categorie)
 
 def get_all_questions():
-    return query_get_all_questions.execute()
+    return #query_get_all_questions.execute()
 
 def get_all_commentarys(machine_patent):
     return query_get_all_commentarys.execute(machine_patent)

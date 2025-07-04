@@ -76,7 +76,8 @@
       <h2 class="text-xl font-semibold mb-4 text-center text-red-700">Extender alquiler</h2>
 
 
-      <input id="nuevaFechaInput" type="text" class="..." placeholder="Seleccioná nueva fecha de fin">
+      <input id="nuevaFechaInput" type="date" class="w-full border p-2 rounded mb-4" name="nuevaFechaInput" placeholder="Seleccioná nueva fecha de fin">
+
 
 
 
@@ -201,130 +202,93 @@
       });
   }
 
+   // Datos temporales para la extensión
   let datosExtension = {};
 
- function extenderReserva(startDay, endDay, machineId) {
-  const user = JSON.parse(localStorage.getItem("user"));
-  datosExtension = {
-    start_day: startDay,
-    machine_id: machineId,
-    client_id: user.dni
-  };
+  // Abre el popup y guarda datos relevantes
+  function extenderReserva(start_day, end_day, machine_id) {
+    datosExtension = { start_day, end_day, machine_id };
 
-  fetch('/reservation/machine_reservations', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ machine_id: machineId })
-  })
-    .then(res => {
-      if (!res.ok) throw new Error('No se pudo cargar reservas');
-      return res.json();
-    })
-    .then(({ value: reservas }) => {
-      const bloqueos = [];
+    // Mostrar popup
+    document.getElementById("extender-popup").classList.remove("hidden");
 
-      // 1. Bloquear hasta la fecha de fin actual
-      const fechaFin = new Date(endDay);
-      bloqueos.push({
-        to: fechaFin.toISOString().split('T')[0]
-      });
+    // Establecer fecha mínima (un día después del fin actual)
+    const fechaMin = new Date(end_day);
+    fechaMin.setDate(fechaMin.getDate() + 1);
 
-      // 2. Bloquear reservas + mantenimiento (14 días)
-      reservas.forEach(r => {
-        if (r.start_day && r.end_day) {
-          const inicio = new Date(r.start_day);
-          const fin = new Date(r.end_day);
-
-          // Bloquear reserva
-          bloqueos.push({
-            from: inicio.toISOString().split('T')[0],
-            to: fin.toISOString().split('T')[0]
-          });
-
-          // Bloquear mantenimiento
-          const mantenimientoFin = new Date(fin);
-          mantenimientoFin.setDate(mantenimientoFin.getDate() + 14);
-
-          bloqueos.push({
-            from: fin.toISOString().split('T')[0],
-            to: mantenimientoFin.toISOString().split('T')[0]
-          });
-        }
-      });
-
-      // ✅ Inicializar Flatpickr
-      flatpickr("#nuevaFechaInput", {
-        locale: "es",
-        dateFormat: "Y-m-d",
-        disable: bloqueos,
-        minDate: new Date(fechaFin.getTime() + 86400000), // día siguiente
-        disableMobile: true
-      });
-
-      // Mostrar popup
-      document.getElementById("extender-popup").classList.remove("hidden");
-    })
-    .catch(err => {
-      alert("Error al cargar reservas: " + err.message);
-      console.error(err);
-    });
-}
-
-
-
-  function calcularDiferenciaDias(fechaInicio, fechaFin) {
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
-    const diferencia = fin - inicio;
-    return Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+    const inputFecha = document.getElementById("nuevaFechaInput");
+    inputFecha.min = fechaMin.toISOString().split("T")[0];
+    inputFecha.value = fechaMin.toISOString().split("T")[0];
   }
 
-  function mostrarMensajeExtension(texto) {
+  // Cierra el popup
+  function cerrarPopup() {
+    document.getElementById("extender-popup").classList.add("hidden");
+  }
+
+  // Confirma la extensión y llama al backend
+  function confirmarExtension() {
+    const nuevaFecha = document.getElementById("nuevaFechaInput").value;
+
+    if (!nuevaFecha) {
+      mostrarMensajeError("Seleccioná una fecha válida para extender.");
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.dni) {
+      mostrarMensajeError("No se pudo obtener la información del usuario.");
+      return;
+    }
+
+    const payload = {
+      start_day: datosExtension.start_day,
+      end_day: nuevaFecha,
+      machine_id: datosExtension.machine_id,
+      client_id: user.dni
+    };
+
+    fetch("/rent/extend_rent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(res => {
+        if (res.ok) {
+          document.getElementById("extender-popup").classList.add("hidden");
+          mostrarMensajeExito("Extensión realizada exitosamente.");
+          setTimeout(() => location.reload(), 2000);
+        } else {
+          return res.json().then(data => {
+            throw new Error(data.error);
+          });
+        }
+      })
+      .catch(err => {
+        mostrarMensajeError("Error al extender: " + err.message);
+      });
+  }
+
+  // Mensaje visual de éxito
+  function mostrarMensajeExito(texto) {
     const mensaje = document.getElementById("mensaje-extension");
-    mensaje.textContent = texto;
+    mensaje.textContent = "✅ " + texto;
     mensaje.classList.remove("hidden");
     setTimeout(() => mensaje.classList.add("hidden"), 3000);
   }
 
-  function confirmarExtension() {
-  const nuevaFechaInput = document.getElementById("nuevaFechaInput").value;
-  if (!nuevaFechaInput) return;
-
-  const fechaSeleccionada = new Date(nuevaFechaInput);
-  const nuevaFecha = `${fechaSeleccionada.getFullYear()}-${fechaSeleccionada.getMonth() + 1}-${fechaSeleccionada.getDate()}`;
-
-  const payload = {
-    start_day: datosExtension.start_day,
-    client_id: datosExtension.client_id,
-    machine_id: datosExtension.machine_id,
-    end_day: nuevaFecha 
-  };
-
-  fetch("/rent/extend_rent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Error al extender alquiler");
-      return res.status === 201 ? Promise.resolve() : res.json();
-    })
-    .then(() => {
-      mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
-    })
-    .catch(error => {
-      mostrarMensajeExtension("❌ Ocurrió un error al extender.");
-    });
-
-  cerrarPopup();
-}
-
-
-
-  function cerrarPopup() {
-    document.getElementById("extender-popup").classList.add("hidden");
+  // Mensaje visual de error
+  function mostrarMensajeError(texto) {
+    const div = document.createElement("div");
+    div.textContent = "❌ " + texto;
+    div.className = "fixed top-6 right-6 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50";
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
   }
+
+  
 </script>
+
 
 </body>
 

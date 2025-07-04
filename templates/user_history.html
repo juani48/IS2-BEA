@@ -76,7 +76,8 @@
       <h2 class="text-xl font-semibold mb-4 text-center text-red-700">Extender alquiler</h2>
 
 
-      <input id="nuevaFechaInput" type="date" class="text-xl font-semibold mb-4 text-center text-red-700" placeholder="Seleccioná nueva fecha de fin">
+      <input id="nuevaFechaInput" type="date" class="text-xl font-semibold mb-4 text-center text-red-700"
+        placeholder="Seleccioná nueva fecha de fin">
 
 
 
@@ -129,31 +130,31 @@
     </div>
   </footer>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("/user/user_history")
-      .then(res => res.json())
-      .then(data => {
-        const reservas = data.value;
-        const container = document.getElementById("reservation-container");
-        const emptyMsg = document.getElementById("no-reservations");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("/user/user_history")
+        .then(res => res.json())
+        .then(data => {
+          const reservas = data.value;
+          const container = document.getElementById("reservation-container");
+          const emptyMsg = document.getElementById("no-reservations");
 
-        if (!reservas || reservas.length === 0) {
-          emptyMsg.classList.remove("hidden");
-          return;
-        }
+          if (!reservas || reservas.length === 0) {
+            emptyMsg.classList.remove("hidden");
+            return;
+          }
 
-        const hoy = new Date();
+          const hoy = new Date();
 
-        reservas.forEach(r => {
-          const card = document.createElement("div");
-          card.className = "bg-white border border-bob-red p-4 rounded shadow flex flex-col gap-4";
+          reservas.forEach(r => {
+            const card = document.createElement("div");
+            card.className = "bg-white border border-bob-red p-4 rounded shadow flex flex-col gap-4";
 
-          const inicio = new Date(r.start_day);
-          const fin = new Date(r.end_day);
-          const puedeCancelar = hoy < inicio;
+            const inicio = new Date(r.start_day);
+            const fin = new Date(r.end_day);
+            const puedeCancelar = hoy < inicio;
 
-          card.innerHTML = `
+            card.innerHTML = `
             <div>
               <p><strong>Máquina:</strong> ${r.machine_id}</p>
               <p><strong>Fecha inicio:</strong> ${r.start_day}</p>
@@ -172,77 +173,148 @@
             </div>
           `;
 
-          container.appendChild(card);
+            container.appendChild(card);
+          });
+        })
+        .catch(err => {
+          console.error("Error al cargar historial:", err);
         });
+    });
+
+    function cancelarReserva(preference_id, boton) {
+      fetch("/reservation/cancel_by_client", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preference_id })
       })
-      .catch(err => {
-        console.error("Error al cargar historial:", err);
-      });
-  });
+        .then(res => {
+          if (res.ok) {
+            boton.closest("div").remove();
+            const mensaje = document.getElementById("mensaje-exito");
+            mensaje.classList.remove("hidden");
+            setTimeout(() => mensaje.classList.add("hidden"), 3000);
+          } else {
+            return res.json().then(data => { throw new Error(data.error); });
+          }
+        })
+        .catch(err => {
+          alert("Error al cancelar la reserva: " + err.message);
+        });
+    }
 
-  // Datos para la extensión
+    // Datos para la extensión
     let datosExtension = {};
-    
-    // Mostrar popup para extender reserva
-    function extenderReserva(startDay, endDay, id) {
-      datosExtension = {
-        id,
-        start_day: startDay,
-        end_day: endDay
-      };
-      
-      
 
-      // Crear instancia de Flatpickr
-      const flatpickrInstance = flatpickr("#nuevaFechaInput", {
-        locale: "es",
-        dateFormat: "Y-m-d",
-        minDate: endDay,
-        disable: [
-          // Bloquear 14 días antes de cada reserva
-          { from: "2025-07-01", to: "2025-07-14" },
-          { from: "2025-07-20", to: "2025-08-03" },
-          
-          // Bloquear 14 días después de cada reserva (mantenimiento)
-          { from: "2025-06-26", to: "2025-07-10" },
-          { from: "2025-07-16", to: "2025-07-30" }
-        ],
-        disableMobile: true
-      });
-      
+    // Mostrar popup para extender reserva
+
+    function extenderReserva(startDay, endDay, machineId) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      datosExtension = {
+        machine_id: machineId,
+        start_day: startDay,
+        end_day: endDay,
+        client_id: user.dni
+      };
+
+      let reservas = [];
+
+      fetch("/reservation/machine_reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ machine_id: machineId })
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la respuesta del servidor");
+          return response.json();
+        })
+        .then(data => {
+          reservas = data.value;
+
+          const hoy = new Date();
+          const hoyISO = hoy.toISOString().split('T')[0];
+
+          // Setear mínimo para end_day (hoy + 7)
+          const fechaMinFin = new Date(hoy);
+          fechaMinFin.setDate(hoy.getDate() + 7);
+          const finISO = fechaMinFin.toISOString().split('T')[0];
+          document.getElementById("nuevaFechaInput").min = finISO;
+
+          inicializarCalendarioFin(fechaMinFin);
+        })
+        .catch(error => {
+          alert("Error al cargar reservas");
+          console.error(error);
+        });
+
+      // Inicializar Flatpickr solo en end_day
+      function inicializarCalendarioFin(minFechaFin) {
+        const diasBloqueados = reservas.map(reserva => {
+          const fechaInicio = new Date(reserva.start_day);
+          fechaInicio.setDate(fechaInicio.getDate() - 14);
+          const fechaFin = new Date(reserva.end_day);
+          fechaFin.setDate(fechaFin.getDate() + 14);
+          return {
+            from: fechaInicio.toISOString().split('T')[0],
+            to: fechaFin.toISOString().split('T')[0]
+          };
+        });
+
+        flatpickr("#nuevaFechaInput", {
+          locale: { firstDayOfWeek: 1 },
+          minDate: minFechaFin.toISOString().split('T')[0],
+          disable: diasBloqueados,
+        });
+      }
+
       // Mostrar popup
       document.getElementById("extender-popup").classList.remove("hidden");
     }
-    
+
     // Cerrar popup
     function cerrarPopup() {
       document.getElementById("extender-popup").classList.add("hidden");
     }
-    
+
+
+
     // Confirmar extensión
     function confirmarExtension() {
-      const nuevaFecha = document.getElementById("nuevaFechaInput").value;
-      if (!nuevaFecha) return;
-      
-      // Simular llamada a la API
-      setTimeout(() => {
-        // Actualizar datos de la reserva
-        const reserva = reservas.find(r => r.id === datosExtension.id);
-        if (reserva) {
-          reserva.end_day = nuevaFecha;
-        }
-        
-        // Mostrar mensaje de éxito
-        const mensaje = document.getElementById("mensaje-extension");
-        mensaje.classList.remove("hidden");
-        setTimeout(() => mensaje.classList.add("hidden"), 3000);
-        
-        cerrarPopup();
-      }, 500);
+      const nuevaFechaInput = document.getElementById("nuevaFechaInput").value;
+
+      const payload = {
+        start_day: datosExtension.start_day,
+        client_id: datosExtension.client_id,
+        machine_id: datosExtension.machine_id,
+        end_day: nuevaFechaInput
+      };
+
+      fetch("/rent/extend_rent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al extender alquiler");
+          return res.status === 201 ? Promise.resolve() : res.json();
+        })
+        .then(() => {
+          mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
+        })
+        .catch(error => {
+          mostrarMensajeExtension("❌ Ocurrió un error al extender.");
+        });
+
+      cerrarPopup();
     }
-    
-  
-</script>
+
+    function mostrarMensajeExtension(texto) {
+    const mensaje = document.getElementById("mensaje-extension");
+    mensaje.textContent = texto;
+    mensaje.classList.remove("hidden");
+    setTimeout(() => mensaje.classList.add("hidden"), 3000);
+  }
+
+  </script>
 
 </body>
 

@@ -1098,6 +1098,7 @@ def extend_rent():
     print("📩 Llamada a /rent/extend_rent recibida")
     try:
         request_value = request.get_json()
+        print(request_value)
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),

@@ -707,7 +707,7 @@ def send_question():
 def get_all_commentary():
     data = request.get_json()
     machine_patent = data.get("machine_patent")
-    return jsonify({ "value": GetAllCommentary.usecase_get_all_commentarys(machine_patent) }), 200
+    return jsonify({"commentaries": GetAllCommentary.usecase_get_all_commentarys(machine_patent)}), 200
 
 @app.route("/commentary/add_commentary", methods=["POST"])
 @login_required

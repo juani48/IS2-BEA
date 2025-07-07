@@ -13,6 +13,9 @@ def usercase_add_rent(start_day, client_id, machine_id, end_day, employee_id):
         raise Exception("Se debe alquilar una maquina con un minimo de 7 dias.")
     
     client = get_user(client_id)
+    
+    if client == None:
+        raise Exception("Alquiler fallido por usuario no registrado.")
 
     points = int(days/7)
     client.points += points

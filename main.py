@@ -12,11 +12,12 @@ from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmp
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
-from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
+from core.usecase.rent import AddRent, ActivateReservation, ExtendRent, GetAllRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from core.usecase.question import sendQuestion
 from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
 from core.usecase.statistics import GetStatistics
+import init_db_proyect_juan
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -76,10 +77,7 @@ def load_user(user_id):
 def home():
     return render_template('/main.html')
 
-@app.route('/init_db_proyect')
-def __init_db_proyect__():
-    init_db_proyect.__init_db__()
-    return load_home()
+
 
 @app.route('/add_points')
 def __add_points__():
@@ -1156,10 +1154,8 @@ def rent_machine():
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
-    print("📩 Llamada a /rent/extend_rent recibida")
     try:
         request_value = request.get_json()
-        print(request_value)
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -1167,6 +1163,13 @@ def extend_rent():
             end_day=request_value.get("end_day")
         )
         return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/rent/get_all_rent", methods=["POST"])
+def get_all_rent():
+    try:
+        return jsonify({ GetAllRent.usecase_get_all_rent() }), 201
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 
@@ -1274,6 +1277,16 @@ def get_statistics_year():
 
 
 # ---- MAIN ----
+
+@app.route('/init_db_proyect')
+def __init_db_proyect__():
+    init_db_proyect.__init_db__()
+    return load_home()
+
+@app.route('/init_juan')
+def __init_db_proyect_juan__():
+    init_db_proyect_juan.__init_db__()
+    return load_home()
 
 if __name__ == '__main__':
     app.run(debug=True)

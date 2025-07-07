@@ -12,7 +12,7 @@ from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmp
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
-from core.usecase.rent import AddRent, ActivateReservation, ExtendRent
+from core.usecase.rent import AddRent, ActivateReservation, ExtendRent, GetAllRent
 from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMaintenance
 from core.usecase.question import sendQuestion
 from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
@@ -1146,10 +1146,8 @@ def rent_machine():
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
-    print("📩 Llamada a /rent/extend_rent recibida")
     try:
         request_value = request.get_json()
-        print(request_value)
         ExtendRent.usecase_extend_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -1157,6 +1155,13 @@ def extend_rent():
             end_day=request_value.get("end_day")
         )
         return "", 201
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/rent/get_all_rent", methods=["POST"])
+def get_all_rent():
+    try:
+        return jsonify({ GetAllRent.usecase_get_all_rent() }), 201
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 

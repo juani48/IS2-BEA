@@ -775,22 +775,31 @@ function cargarComentarios(patente) {
     });
 }
 
+function getSafeIdFromDate(dateString) {
+  return dateString.replaceAll(/[^a-zA-Z0-9]/g, "_");
+}
+
+
 function renderComentario(comentario, esRespuesta = false) {
   const card = document.createElement("div");
   card.className = esRespuesta ? "ml-6 border-l pl-4 border-gray-300" : "border-b pb-4";
 
   const nombre = `${comentario.name || "Usuario"} ${comentario.lastname || ""}`;
-  const fecha = new Date(comentario.date).toLocaleString("es-AR");
-  card.innerHTML = `
-    <p class="text-sm text-gray-700"><strong>${nombre}</strong> dijo:</p>
-    <p class="text-gray-900">${comentario.commentary}</p>
-    <p class="text-xs text-gray-500 mt-1">${fecha}</p>
-    <button onclick='mostrarFormularioRespuesta("${comentario.date}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>
-    <div id="respuesta-${comentario.date}" class="mt-2 hidden">
-      <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
-      <button onclick='enviarRespuesta("${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
-    </div>
-  `;
+  comentario.raw_date = comentario.date;  // mantener sin formatear
+const fecha = new Date(comentario.date).toLocaleString("es-AR");
+const safeId = getSafeIdFromDate(comentario.date);
+
+card.innerHTML = `
+  <p class="text-sm text-gray-700"><strong>${nombre}</strong> dijo:</p>
+  <p class="text-gray-900">${comentario.commentary}</p>
+  <p class="text-xs text-gray-500 mt-1">${fecha}</p>
+  <button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>
+  <div id="respuesta-${safeId}" class="mt-2 hidden">
+    <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
+    <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
+  </div>
+`;
+
 
   if (comentario.answers && comentario.answers.length > 0) {
     comentario.answers.forEach((r) => {
@@ -819,14 +828,17 @@ function enviarComentario() {
       if (data.message) {
         document.getElementById("newComment").value = "";
         cargarComentarios(machinePatentGlobal);
+        mostrarToast("Comentario creado exitosamente", "green");
       } else {
-        alert(data.error || "Error al comentar");
+        alert(data.error || "Error al comentar.");
       }
-    });
+    })
+    .catch((err) => alert("Error: " + err.message));
 }
 
-function enviarRespuesta(parentDate) {
-  const textarea = document.querySelector(`#respuesta-${parentDate} textarea`);
+
+function enviarRespuesta(safeId, realDate) {
+  const textarea = document.querySelector(`#respuesta-${safeId} textarea`);
   const text = textarea.value.trim();
   if (!text) return;
 
@@ -836,18 +848,32 @@ function enviarRespuesta(parentDate) {
     body: JSON.stringify({
       commentary: text,
       patent: machinePatentGlobal,
-      dateCommentary: parentDate,
+      dateCommentary: realDate,
     }),
   })
     .then((res) => res.json())
     .then((data) => {
       if (data.message) {
+        textarea.value = "";
         cargarComentarios(machinePatentGlobal);
+        mostrarToast("Respuesta enviada correctamente", "green");
       } else {
-        alert(data.error || "Error al responder");
+        alert(data.error || "Error al responder.");
       }
-    });
+    })
+    .catch((err) => alert("Error: " + err.message));
 }
+
+
+  console.log("🧾 Enviando respuesta", {
+    commentary: text,
+    patent: machinePatentGlobal,
+    dateCommentary: realDate,
+  });
+
+
+
+
 
     </script>
   </body>

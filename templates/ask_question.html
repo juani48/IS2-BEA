@@ -98,66 +98,53 @@
             </div>
           </li>
 
-        <li><a href="/ask_question.html">Contáctanos</a></li>
+          <li><a href="/ask_question.html">Contáctanos</a></li>
         </ul>
       </nav>
 
-      <!-- Mobile Navigation Menu -->
-      <div id="mobile-nav" class="hidden md:hidden mt-4 pb-2">
-        <ul class="flex flex-col space-y-3">
-          <li>
-            <a
-              href="main.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Menú</a
-            >
-          </li>
-          <li>
-            <a
-              href="machinery.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Maquinarias</a
-            >
-          </li>
-          <li>
-            <a
-              href="categorie.html"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Categorías</a
-            >
-          </li>
-          <li>
-            <a href="#" class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Preguntas Frecuentes</a
-            >
-          </li>
-          <li>
-            <a
-              href="#contacto"
-              class="block py-1 hover:bg-bob-dark-red px-2 rounded"
-              >Contáctanos</a
-            >
-          </li>
-        </ul>
-      </div>
-    </header>
-    <!-- Contenedor centrado -->
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
-      <div
-        class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center"
-      >
-        <h1 class="text-2xl font-bold text-bob-red mb-6">ESTÁ POR PAGAR</h1>
+<body class="bg-white text-gray-800">
+  <div class="max-w-md mx-auto mt-12 mb-16 bg-white rounded-lg shadow-lg p-6">
+  <h1 class="text-xl font-bold text-center text-red-700 mb-6">
+    Realizar una Pregunta
+  </h1>
 
-        <button
-          onclick="redirectToMercadoPago()"
-          class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-300 shadow-md"
-        >
-          Confirmar Reserva - PAGAR
-        </button>
-      </div>
+  <div id="messageBox" class="mb-4 hidden px-4 py-2 rounded text-white text-center text-sm font-semibold"></div>
+
+  <form id="questionForm" class="space-y-4">
+    <div>
+      <label class="block text-sm text-gray-700 mb-1">Nombre</label>
+      <input type="text" id="name" 
+  class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-black focus:ring-red-500 focus:border-red-500" 
+  required 
+  oninput="this.value = this.value.replace(/[0-9]/g, '')" />
     </div>
 
-    <!-- FOOTER -->
+    <div>
+      <label class="block text-sm text-gray-700 mb-1">Apellido</label>
+      <input type="text" id="lastname" 
+  class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-black focus:ring-red-500 focus:border-red-500" 
+  required 
+  oninput="this.value = this.value.replace(/[0-9]/g, '')" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-700 mb-1">Email</label>
+      <input type="email" id="email" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-black focus:ring-red-500 focus:border-red-500" required />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-700 mb-1">Pregunta</label>
+      <textarea id="question" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-black h-24 resize-none focus:ring-red-500 focus:border-red-500" required></textarea>
+    </div>
+
+    <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white text-sm font-medium py-2 rounded transition">
+      Enviar pregunta
+    </button>
+  </form>
+</div>
+
+
+<!-- FOOTER -->
 
     <footer id="contacto" class="bg-bob-dark-red text-white py-10">
       <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -223,37 +210,53 @@
         © 2025 Bob El Alquilador. Todos los derechos reservados.
       </div>
     </footer>
+  <script>
+    const form = document.getElementById("questionForm");
+    const messageBox = document.getElementById("messageBox");
 
-    <script>
-      function redirectToMercadoPago() {
-        fetch("/reservation/reserve_machine", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: localStorage.getItem("reserve"),
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        lastname: document.getElementById("lastname").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        question: document.getElementById("question").value.trim(),
+      };
+
+      fetch("/question/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.message) {
+            showMessage(res.message, "green");
+            form.reset();
+          } else {
+            showMessage(res.error || "Ocurrió un error.", "red");
+          }
         })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((preference) => {
-            localStorage.removeItem("reserve");
-            console.log("preference", preference);
-            window.location.href = preference.preference.init_point; // ESTO DEBE SER ASI PARA PODER REDIRIGIR A MERCADO PAGO
-          })
-          .catch((error) => {
-            console.log("Error: ", error);
-          });
-      }
+        .catch(() => {
+          showMessage("No se pudo enviar la pregunta. Intente más tarde.", "red");
+        });
 
-      function buscarMaquinaria() {
-        const input = document.getElementById("searchInput")?.value.trim();
-        if (input !== "") {
-          const encoded = encodeURIComponent(input);
-          window.location.href = `/machinery.html?search=${encoded}`;
-        }
-      }
-    </script>
-  </body>
+      function showMessage(text, color) {
+  messageBox.textContent = text;
+  messageBox.className = `mb-4 px-4 py-2 rounded text-white text-center text-sm font-semibold bg-${color}-600`;
+  messageBox.classList.remove("hidden");
+
+  // Ocultar mensaje después de 4 segundos
+  setTimeout(() => {
+    messageBox.classList.add("hidden");
+  }, 4000);
+}
+
+    });
+  </script>
+</body>
+
 </html>

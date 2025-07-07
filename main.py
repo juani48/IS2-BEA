@@ -431,26 +431,27 @@ def recover_password():
 
 
 
-@app.route("/admin/add_employee", methods=["PUT"])
+@app.route("/admin/add_employee", methods=["POST", "PUT"])
 @login_required
 def add_employee():
-    request_value = request.get_json()
     if current_user.type != "Admin":
-        return "Debe ser administrador para agregar un empleado", 403
+        return jsonify({"error": "Debe ser administrador para agregar un empleado"}), 403
 
     try:
+        data = request.get_json()
         AddEmployee.usecase_add_employee(
-            name = request_value.get("name"),
-            lastname = request_value.get("lastname"),
-            dni = request_value.get("dni"),
-            email = request_value.get("email"),
-            phone = request_value.get("phone"),
-            dateBirth = request_value.get("dateBirth"),
-            employeeN = request_value.get("employeeN")
+            name=data.get("name"),
+            lastname=data.get("lastname"),
+            dni=data.get("dni"),
+            email=data.get("email"),
+            phone=data.get("phone"),
+            dateBirth=data.get("dateBirth"),
+            employeeN=data.get("employeeN")
         )
-        return "Empleado agregado", 204
+        return jsonify({"mensaje": "Empleado agregado exitosamente"}), 201
     except Exception as e:
-        return jsonify({"detalles": str(e)}), 500
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route("/employee/disable", methods=["POST"])
@@ -706,7 +707,7 @@ def send_question():
 def get_all_commentary():
     data = request.get_json()
     machine_patent = data.get("machine_patent")
-    return jsonify({ "value": GetAllCommentary.usecase_get_all_commentarys(machine_patent) }), 200
+    return jsonify({"commentaries": GetAllCommentary.usecase_get_all_commentarys(machine_patent)}), 200
 
 @app.route("/commentary/add_commentary", methods=["POST"])
 @login_required
@@ -1217,7 +1218,7 @@ def get_statistics_month():
     try:
         request_value = request.get_json()
         return jsonify({
-            "statistics": GetStatistics.usecase_get_statistics(
+            "statistics": GetStatistics.usecase_get_statistics_month(
                 month=request_value.get("month"),
                 categorie=request_value.get("categorie")
             ) 

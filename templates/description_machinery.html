@@ -295,6 +295,8 @@
       // Verificar si la máquina está en mantenimiento activo
       let mantenimientoActivo = false;
       let mantenimientoActual = null;
+      let usuarioAutenticado = false;
+
 
       function cargarImagenes(patente) {
         const contenedor = document.getElementById("imagenes-maquina");
@@ -373,6 +375,11 @@
               .then((res) => res.json())
               .then((sessionData) => {
                 console.log("📦 sessionData:", sessionData);
+                usuarioAutenticado = sessionData.authenticated;
+                if (!usuarioAutenticado) {
+                  document.getElementById("commentFormContainer").classList.add("hidden");
+                }
+
 
                 if (["Admin", "Empleado"].includes(sessionData.type)) {
                   console.log(
@@ -793,7 +800,9 @@ card.innerHTML = `
   <p class="text-sm text-gray-700"><strong>${nombre}</strong> dijo:</p>
   <p class="text-gray-900">${comentario.commentary}</p>
   <p class="text-xs text-gray-500 mt-1">${fecha}</p>
-  <button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>
+      ${usuarioAutenticado ? `<button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>` : ""}
+
+
   <div id="respuesta-${safeId}" class="mt-2 hidden">
     <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
     <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>

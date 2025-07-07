@@ -684,6 +684,7 @@ def signin_manual():
 
 # ---- PREGUNTAS Y COMENTARIOS ----   
 @app.route("/question/send", methods=["POST"])
+@login_required
 def send_question():
     try:
         data = request.get_json() or {}

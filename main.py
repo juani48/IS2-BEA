@@ -17,6 +17,7 @@ from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMai
 from core.usecase.question import sendQuestion
 from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
 from core.usecase.statistics import GetStatistics
+import init_db_proyect_juan
 from templates import *
 import os
 from werkzeug.utils import secure_filename
@@ -76,10 +77,7 @@ def load_user(user_id):
 def home():
     return render_template('/main.html')
 
-@app.route('/init_db_proyect')
-def __init_db_proyect__():
-    init_db_proyect.__init_db__()
-    return load_home()
+
 
 @app.route('/add_points')
 def __add_points__():
@@ -1241,6 +1239,16 @@ def get_statistics_year():
 
 
 # ---- MAIN ----
+
+@app.route('/init_db_proyect')
+def __init_db_proyect__():
+    init_db_proyect.__init_db__()
+    return load_home()
+
+@app.route('/init_juan')
+def __init_db_proyect_juan__():
+    init_db_proyect_juan.__init_db__()
+    return load_home()
 
 if __name__ == '__main__':
     app.run(debug=True)

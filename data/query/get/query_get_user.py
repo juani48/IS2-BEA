@@ -11,4 +11,5 @@ def execute(dni):
         return user
     except Exception as e:
         # Podés loggear el error si querés
-        raise RuntimeError(f"Error al obtener usuario: {e}")
+        #raise RuntimeError(f"Error al obtener usuario: {e}")
+        return None

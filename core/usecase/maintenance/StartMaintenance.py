@@ -18,7 +18,10 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
     now = datetime.now()
 
     list_rent = get_all_rent_by_date(None, None)
-    list_rent = [x for x in list_rent if x.machine_id == machine_id]
+    #list_reservation = []
+
+    if list_rent:
+        list_rent = [x for x in list_rent if x.machine_id == machine_id]
 
     if list_rent:
         # Buscar el alquiler más cercano a ahora
@@ -26,12 +29,13 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
         client = closest_rent.client_id
     else:
         list_reservation = get_all_reservation_by_date(None, None)
-        list_reservation = [x for x in list_reservation if x.machine_id == machine_id]
+        if list_reservation:
+            list_reservation = [x for x in list_reservation if x.machine_id == machine_id]
 
-    if list_reservation:
-        # Buscar la reserva más cercana a ahora
-        closest_reservation = min(list_reservation, key=lambda x: abs(parse_date(x.start_day) - now))
-        client = closest_reservation.client_id
+        if list_reservation:
+            # Buscar la reserva más cercana a ahora
+            closest_reservation = min(list_reservation, key=lambda x: abs(parse_date(x.start_day) - now))
+            client = closest_reservation.client_id
 
 
     maintenance = MaintenanceModel(

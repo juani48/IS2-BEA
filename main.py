@@ -285,6 +285,14 @@ def rent_machine_route():
 @app.route("/ask_question.html")                   
 def ask_question():
     return render_template("/ask_question.html")
+
+@app.route('/machine_history.html')
+@login_required                   
+def machine_history():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template('machine_history.html')
+    else:
+        return render_template("/main.html")
     
 # ---- METODOS USUARIO ---- #
 
@@ -1161,6 +1169,27 @@ def extend_rent():
         return "", 201
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
+
+# TRAER ALQUILERES DE UNA MAQUINA    
+@app.route("/rent/get_all_by_machine", methods=["POST"])
+@login_required
+def get_all_rents_by_machine():
+    try:
+        data = request.get_json()
+        machine_id = data.get("machine_id")
+
+        if not machine_id:
+            return jsonify({ "error": "machine_id no proporcionado" }), 400
+
+        from data.config import session
+        from data.model.RentModel import RentModel
+
+        rents = session.query(RentModel).filter(RentModel.machine_id == machine_id).all()
+        return jsonify({ "rents": [r.json() for r in rents] }), 200
+
+    except Exception as e:
+        return jsonify({ "error": f"Error al obtener alquileres: {str(e)}" }), 500
+
 
 # ---- MANTENIMIENTOS ---- #
 @app.route("/maintenance/start_maintenance", methods=["POST"])

@@ -59,8 +59,18 @@
             <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
                 <li><a href="/main.html">Menú</a></li>
                 <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-                <li><a href="#">Preguntas Frecuentes</a></li>
-                <li><a href="#contacto">Contáctanos</a></li>
+                 <li class="relative" id="dropdown-categorias-container">
+                <span id="dropdown-categorias-toggle"
+                      class="cursor-pointer text-white hover:underline inline-block">
+                  Categorías <i class="fas fa-caret-down ml-1"></i>
+                </span>
+
+                <div id="dropdown-categorias-menu"
+                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+                    style="color: #7f1d1d;">
+                  <!-- Se rellena dinámicamente -->
+                </div>
+                <li><a href="/ask_question.html">Contáctanos</a></li>
             </ul>
         </nav>
 
@@ -128,12 +138,7 @@
   <div id="titulo-categorias" class="hidden pt-10 text-center">
     <h2 class="text-2xl font-bold text-gray-800">Nuestras categorías</h2>
     <div class="w-24 h-1 bg-red-600 mx-auto mt-2 rounded"></div>
-  </div>
 
-  <div id="categorias-container" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    <!-- Aquí se insertan las categorías dinámicamente -->
-  </div>
-</div>
 
 
 

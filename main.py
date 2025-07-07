@@ -280,6 +280,9 @@ def rent_machine_route():
     else:
         return render_template("/main.html")
 
+@app.route("/ask_question.html")                   
+def ask_question():
+    return render_template("/ask_question.html")
     
 # ---- METODOS USUARIO ---- #
 
@@ -679,6 +682,7 @@ def signin_manual():
 
 # ---- PREGUNTAS Y COMENTARIOS ----   
 @app.route("/question/send", methods=["POST"])
+@login_required
 def send_question():
     try:
         data = request.get_json() or {}
@@ -696,7 +700,7 @@ def send_question():
         sendQuestion.usecase_send_question(
             emailUser=email, name=name, lastname=lastname, question=question
         )
-        return jsonify({"message": "Pregunta enviada con éxito."}), 200
+        return jsonify({"message": "Pregunta enviada exitosamente."}), 200
 
     except Exception as e:
         return jsonify({"error": f"Error interno: {str(e)}"}), 500

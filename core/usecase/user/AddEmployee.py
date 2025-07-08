@@ -5,18 +5,19 @@ from core.usecase.service import SendMail
 from data.query.get import query_get_user, query_get_employee, query_get_user_by_email, query_get_employee_by_number
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
-
-    if query_get_user_by_email.execute(email=email):
-        raise Exception("El correo ya se encuntra registrado.")
-
-    if query_get_employee.execute(employeeN=employeeN) or query_get_employee.execute(employeeN=employeeN * -1):
-        raise Exception("El numero de empleado ya se encuntra registrado.")
     
-    if query_get_user.execute(dni):
-        raise Exception("El DNI ya se encuentra registrado.")
+    if query_get_user.execute(dni) is not None:
+        raise ValueError("El DNI ya se encuentra registrado.")
     
+    if query_get_employee.execute(employeeN=employeeN) is not None: 
 
-    if True: #(_validator(dni, email, name, lastname)):        
+        if query_get_employee.execute(employeeN=employeeN) or query_get_employee.execute(employeeN=employeeN * -1):
+            raise ValueError("El número de empleado ya se encuentra registrado.")        
+        
+    if query_get_user_by_email.execute(email):
+        raise ValueError("El correo ya se encuentra registrado.")
+
+    if (_validator(dni, email, name, lastname)):        
         password = _random_password()
         user = UserModel(
                 dni=int(dni),

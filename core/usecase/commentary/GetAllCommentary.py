@@ -26,9 +26,11 @@ def usecase_get_all_commentarys(machine_patent):
         if user:
             comment_json["name"] = user.name
             comment_json["lastname"] = user.lastname
+            comment_json["type"] = user.type
         else:
             comment_json["name"] = None
             comment_json["lastname"] = None
+            comment_json["type"] = "Cliente" 
 
         # ➕ Manejo de respuestas
         answers_list = []

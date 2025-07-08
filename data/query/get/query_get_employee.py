@@ -7,8 +7,6 @@ def execute(employeeN):
 
     try:
         employee = session.query(UserModel).filter_by(employee_number=employeeN).first()
-        #if employee is None:
-            #raise LookupError(f"No se encontró un usuario con numero de empleado {employeeN}")
         return employee
     except Exception as e:
         return None

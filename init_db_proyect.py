@@ -147,7 +147,7 @@ def __RESERVAS__():
 
 
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-7-12",
+        start_day="2025-7-8",
         end_day="2025-7-19",
         client_id=47654123, # ----> RESERVA DE Jose
         machine_id="ABC2",

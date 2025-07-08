@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from data.appDataBase import insert_maintenance, get_machine, update_machine, get_all_rent_by_date, get_all_reservation_by_date
+from data.appDataBase import insert_maintenance, get_machine, update_machine, get_all_rent_by_date, get_all_reservation_by_date, update_cancel_rent
 from data.model.MaintenanceModel import MaintenanceModel
 
 def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_id):
@@ -27,6 +27,7 @@ def usercase_start_maintenance(start_day, client_id, start_employee_id, machine_
         # Buscar el alquiler más cercano a ahora
         closest_rent = min(list_rent, key=lambda x: abs(parse_date(x.start_day) - now))
         client = closest_rent.client_id
+        update_cancel_rent(start_day=closest_rent.start_day, client_id=closest_rent.client_id, machine_id=closest_rent.machine_id)
     else:
         list_reservation = get_all_reservation_by_date(None, None)
         if list_reservation:

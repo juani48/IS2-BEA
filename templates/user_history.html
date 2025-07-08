@@ -303,6 +303,7 @@
         })
         .then(() => {
           mostrarMensajeExtension("✅ Extensión realizada exitosamente.");
+          setTimeout(() => location.reload(), 1500);
         })
         .catch(error => {
           mostrarMensajeExtension("❌ Ocurrió un error al extender.");

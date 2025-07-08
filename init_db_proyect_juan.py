@@ -38,7 +38,7 @@ def __MAQUINAS__():
         mark="CAT", 
         model="Excavadora", 
         price_day=3_000, 
-        ubication="Avenida 1 Calle 80", 
+        ubication="Ubicacion ABC2", 
         refund=10, 
         categorie=["Construccion"], 
         description="Ideal para excavar",
@@ -56,11 +56,11 @@ def __MAQUINAS__():
         creation_date="2000-10-5")
     
     AddMachine.usecase_add_machine(
-        patent="C4R", 
+        patent="ABC1", 
         mark="CAT", 
         model="Cargadora", 
         price_day=3_000, 
-        ubication="Ubicacion C4R", 
+        ubication="Ubicacion ABC1", 
         refund=10, 
         categorie=["Construccion"], 
         description="Ideal para cargar",
@@ -127,32 +127,32 @@ def __EMPLEADOS__():
 
 def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-7-12",
+        start_day="2025-7-11",
         end_day="2025-7-19",
-        client_id=45400389, # ----> RESERVA DE Juan
-        machine_id="ABC2",
+        client_id=44555666, # ----> RESERVA DE nahuel
+        machine_id="ABC1",
         shipment=False,
         type="Cliente",
         apply_discount=False
     )
 
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-7-4",
-        end_day="2025-7-13",
+        start_day="2025-8-4",
+        end_day="2025-8-13",
         client_id=44555666, # ----> RESERVA DE Nahuel empleado
-        machine_id="C4R",
+        machine_id="ABC3",
         shipment=False,
         type="Cliente",
         apply_discount=False
     )
 
-def __ALQUILERES__(): #--> para testear el extender alquiler (pri)
+def __ALQUILERES__(): 
     AddRent.usercase_add_rent(
-        start_day="2025-7-2",
-        end_day="2025-7-9",
-        client_id=45400389,     
+        start_day="2025-7-10",
+        end_day="2025-7-18",
+        client_id=45400389, # --> ALQUILER DE JUAN 
         machine_id="ABC2",      
-        employee_id=None        
+        employee_id=4444        
     )
     
 

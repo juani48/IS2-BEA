@@ -68,17 +68,15 @@
       <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
         <li><a href="/main.html">Menú</a></li>
         <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-         <li class="relative" id="dropdown-categorias-container">
-                <span id="dropdown-categorias-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Categorías <i class="fas fa-caret-down ml-1"></i>
-                </span>
+        <li class="relative" id="dropdown-categorias-container">
+          <span id="dropdown-categorias-toggle" class="cursor-pointer text-white hover:underline inline-block">
+            Categorías <i class="fas fa-caret-down ml-1"></i>
+          </span>
 
-                <div id="dropdown-categorias-menu"
-                    class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
-                    style="color: #7f1d1d;">
-                  <!-- Se rellena dinámicamente -->
-                </div>
+          <div id="dropdown-categorias-menu" class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
+            style="color: #7f1d1d;">
+            <!-- Se rellena dinámicamente -->
+          </div>
         <li><a href="#contacto">Contáctanos</a></li>
       </ul>
     </nav>
@@ -88,8 +86,7 @@
       <ul class="flex flex-col space-y-3">
         <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
         <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una
-            maquinaria</a></li 
-         <li><a href="/ask_question.html">Contáctanos</a></li>
+            maquinaria</a></li <li><a href="/ask_question.html">Contáctanos</a></li>
       </ul>
     </div>
   </header>
@@ -109,17 +106,20 @@
       </div>
 
       <button type="button"
-  class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
-  onclick="verificarCliente()">Verificar usuario</button>
+        class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
+        onclick="verificarCliente()">Verificar usuario</button>
 
-<div id="campos-nuevo-cliente" class="space-y-3 hidden">
-  <div><input id="name" type="text" placeholder="Nombre" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="lastname" type="text" placeholder="Apellido" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="email" type="email" placeholder="Email" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="phone" type="tel" placeholder="Teléfono" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento" class="w-full border rounded px-4 py-2" /></div>
-  <button type="button" onclick="crearNuevoCliente()" class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo cliente</button>
-</div>
+      <div id="campos-nuevo-cliente" class="space-y-3 hidden">
+        <div><input id="name" type="text" placeholder="Nombre" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="lastname" type="text" placeholder="Apellido" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="email" type="email" placeholder="Email" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="phone" type="tel" placeholder="Teléfono" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento"
+            class="w-full border rounded px-4 py-2" /></div>
+        <button type="button" onclick="crearNuevoCliente()"
+          class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo
+          cliente</button>
+      </div>
 
 
       <div>
@@ -160,10 +160,11 @@
 
   <script>
 
+
     const machineId = new URLSearchParams(window.location.search).get("machine_id");
     // 1. Obtener reservas y configurar calendario
+    
     let reservas = [];
-
     fetch("/reservation/machine_reservations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -175,7 +176,7 @@
       })
       .then(data => {
         reservas = data.value;
-
+        console.log("reservas", reservas)
         const hoy = new Date();
         const hoyISO = hoy.toISOString().split('T')[0];
 
@@ -361,90 +362,90 @@
     });
 
     function verificarCliente() {
-  const dni = document.getElementById("client_id").value;
-    if (!dni) {
-  mostrarError("Ingresá un DNI primero.");
-  return;
-}
+      const dni = document.getElementById("client_id").value;
+      if (!dni) {
+        mostrarError("Ingresá un DNI primero.");
+        return;
+      }
 
 
-  fetch("/users/check_client", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dni })
-  })
-    .then(res => {
-      if (res.ok) {
-        mensaje.innerHTML = `
+      fetch("/users/check_client", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dni })
+      })
+        .then(res => {
+          if (res.ok) {
+            mensaje.innerHTML = `
         <div class="bg-green-600 text-white px-4 py-2 rounded shadow mt-2">El cliente ya está registrado ✅</div>`;
-        document.getElementById("campos-nuevo-cliente").classList.add("hidden");
-      } else if (res.status === 404) {
-        mensaje.innerHTML = `
+            document.getElementById("campos-nuevo-cliente").classList.add("hidden");
+          } else if (res.status === 404) {
+            mensaje.innerHTML = `
         <div class="bg-yellow-500 text-white px-4 py-2 rounded shadow mt-2">El cliente no está registrado. Ingresá sus datos.</div>`;
-        document.getElementById("campos-nuevo-cliente").classList.remove("hidden");
-      } else {
-        throw new Error("Error verificando cliente");
-      }
-    })
-    .catch(err => {
-      mensaje.innerHTML = `
+            document.getElementById("campos-nuevo-cliente").classList.remove("hidden");
+          } else {
+            throw new Error("Error verificando cliente");
+          }
+        })
+        .catch(err => {
+          mensaje.innerHTML = `
       <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">Error al verificar el cliente.</div>`;
-    });
-}
-
-function crearNuevoCliente() {
-  const dni = document.getElementById("client_id").value;
-  const name = document.getElementById("name").value;
-  const lastname = document.getElementById("lastname").value;
-  const email = document.getElementById("email").value;
-  const phone = document.getElementById("phone").value;
-  const birthdate = document.getElementById("birthdate").value;
-  const password = "cliente123"; // contraseña por defecto
-
-  if (!name || !lastname || !email || !phone || !birthdate) {
-    mostrarError("Por favor completá todos los campos.");
-    return;
-  }
-
-  fetch("/signin_manual", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dni, name, lastname, email, phone, birthdate, password })
-  })
-    .then(res => {
-      if (res.ok) {
-        mensaje.innerHTML = `
-        <div class="bg-green-600 text-white px-4 py-2 rounded shadow mt-2">Cliente creado correctamente 🎉</div>`;
-        document.getElementById("campos-nuevo-cliente").classList.add("hidden");
-      } else {
-        return res.json().then(err => {
-          throw new Error(err.error || "Error creando el cliente");
         });
+    }
+
+    function crearNuevoCliente() {
+      const dni = document.getElementById("client_id").value;
+      const name = document.getElementById("name").value;
+      const lastname = document.getElementById("lastname").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const birthdate = document.getElementById("birthdate").value;
+      const password = "cliente123"; // contraseña por defecto
+
+      if (!name || !lastname || !email || !phone || !birthdate) {
+        mostrarError("Por favor completá todos los campos.");
+        return;
       }
-    })
-    .catch(err => {
-      mensaje.innerHTML = `
+
+      fetch("/signin_manual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dni, name, lastname, email, phone, birthdate, password })
+      })
+        .then(res => {
+          if (res.ok) {
+            mensaje.innerHTML = `
+        <div class="bg-green-600 text-white px-4 py-2 rounded shadow mt-2">Cliente creado correctamente 🎉</div>`;
+            document.getElementById("campos-nuevo-cliente").classList.add("hidden");
+          } else {
+            return res.json().then(err => {
+              throw new Error(err.error || "Error creando el cliente");
+            });
+          }
+        })
+        .catch(err => {
+          mensaje.innerHTML = `
       <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">${err.message}</div>`;
-    });
-}
+        });
+    }
     function mostrarError(texto) {
-  const mensaje = document.getElementById("mensaje");
-  mensaje.innerHTML = `
+      const mensaje = document.getElementById("mensaje");
+      mensaje.innerHTML = `
     <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">
       ${texto}
     </div>
   `;
-}
+    }
 
-// Función que elimina los números si se intentan ingresar
-function bloquearNumeros(inputId) {
-  const input = document.getElementById(inputId);
-  input.addEventListener("input", () => {
-    input.value = input.value.replace(/[0-9]/g, '');
-  });
-}
+    // Función que elimina los números si se intentan ingresar
+    function bloquearNumeros(inputId) {
+      const input = document.getElementById(inputId);
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/[0-9]/g, '');
+      });
+    }
 
- 
+
   </script>
 
 

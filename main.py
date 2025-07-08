@@ -1019,7 +1019,7 @@ def get_enabled_categories():
 @app.route("/reservation/machine_reservations", methods=["GET", "POST"]) # reservas de una maquina
 @login_required
 def machine_reservations():
-    
+    print("entro")
     try:
         request_value = request.get_json().get("machine_id") # [ star:.... , endfa....  ]
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200

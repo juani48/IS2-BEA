@@ -15,7 +15,7 @@ class RentModel(Base):
     extended = Column(Boolean, nullable=True, default=False)
     #days_extended = Column(Integer, nullable=True)
     #extended_value = Column(Double, nullable=True)
-    canceled_by_maintenance = Column(Boolean, nullable=False, defaul=False)
+    canceled_by_maintenance = Column(Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return "{" + f"""start_day:{self.start_day}, client_id:{self.client_id}, machine_id:{self.machine_id}, end_day:{self.end_day}, total_value:{self.total_value}, employee_id:{self.employee_id}, extended: {self.extended}, canceled_by_maintenance:{self.canceled_by_maintenance}""" + "}" #  days_extended: {self.days_extended}, extended_value: {self.extended_value}

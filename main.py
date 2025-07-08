@@ -39,9 +39,6 @@ from data.query.get.query_get_discount import query_get_discount
 from data.config import session
 
 
-
-
-
 app = Flask(__name__)
 
 app.secret_key = 'B3bQh7#2d@xZ!59sP0mT&vL'

@@ -13,7 +13,6 @@ def execute(machine_id):
         )
         
     ).all() #esta parte la tuve que cambiar porque estaba tirando errores
-    print(list)
     return list
 
 

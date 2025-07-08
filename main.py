@@ -36,6 +36,9 @@ from core.usecase.machine import UpdateMachineUbication
 from core.usecase.user.GetUserPoints import usecase_get_user_points
 from data.query.get.query_get_discount import query_get_discount
 from data.query.get import query_get_active_maintenance
+from data.config import session
+from data.model.RentModel import RentModel
+
 
 from data.config import session
 
@@ -1217,11 +1220,9 @@ def get_all_rents_by_machine():
         if not machine_id:
             return jsonify({ "error": "machine_id no proporcionado" }), 400
 
-        from data.config import session
-        from data.model.RentModel import RentModel
-
         rents = session.query(RentModel).filter(RentModel.machine_id == machine_id).all()
-        return jsonify({ "rents": [r.json() for r in rents] }), 200
+        print("debuggggg")
+        return jsonify({ "value": [r.json() for r in rents] }), 200
 
     except Exception as e:
         return jsonify({ "error": f"Error al obtener alquileres: {str(e)}" }), 500

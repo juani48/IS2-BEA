@@ -15,7 +15,7 @@ from data.query.update import query_update_machine, query_update_user, query_upd
 
 from data.query.change import query_change_password_user
 
-from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email, query_get_rent,query_get_commentary
+from data.query.get import query_get_user, query_get_machine, query_get_discount,query_get_employee,query_get_user_by_email, query_get_rent,query_get_commentary,query_get_history_employee,query_get_history_machine
 
 from data.query.delete import query_delete_reservation
 
@@ -148,6 +148,12 @@ def get_rent(start_day, machine_id, clien_id):
 
 def get_commentary (date):
     return query_get_commentary.execute(date)
+
+def get_history_employee(employee_number):
+    return query_get_history_employee.execute(employee_number)
+
+def get_history_machine(machine_patent):
+    return query_get_history_machine.execute(machine_patent)
 
 # ---- get all ----
 def get_all_users():

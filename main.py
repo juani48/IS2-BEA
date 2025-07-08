@@ -17,6 +17,7 @@ from core.usecase.maintenance import StartMaintenance, EndMaintenance, GetAllMai
 from core.usecase.question import sendQuestion
 from core.usecase.commentary import GetAllCommentary,AddCommentary,AddAnswer
 from core.usecase.statistics import GetStatistics
+from core.usecase.history import GetHistoryEmployee, GetHistoryMachine
 import init_db_proyect_juan
 from templates import *
 import os
@@ -678,6 +679,28 @@ def signin_manual():
         return jsonify({"message": "Cliente registrado"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+# ---- HISTORIAL ----   
+
+@app.route("/history/employee", methods=["POST"])
+@login_required
+def get_history_employee():
+    if (current_user.type == "Admin"):
+        data = request.get_json()
+        employee_number = data["employee_number"]
+        return jsonify (GetHistoryEmployee.usecase_get_history_employee(empN= employee_number))
+    else:
+        return jsonify({"message": "No autorizado"}), 403
+
+@app.route("/history/machine", methods=["POST"])
+@login_required
+def get_history_machine():
+    if (current_user.type == "Admin" or current_user.type == "Empleado"):
+        data = request.get_json()
+        local_machine = data["machine_patent"]
+        return jsonify (GetHistoryMachine.usecase_get_history_machine(machine_patent = local_machine))
+    else:
+        return jsonify({"message": "No autorizado"}), 403    
 
 
 # ---- PREGUNTAS Y COMENTARIOS ----   

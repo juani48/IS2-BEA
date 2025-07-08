@@ -11,7 +11,7 @@ from data.query.get_all import query_get_all_commentarys, query_get_all_machines
 
 from data.query.insert import query_insert_user, query_insert_machine, query_insert_categorie, query_insert_mc,query_insert_employee, query_insert_reserve, query_TEST_USER, query_insert_rent, query_insert_maintenance,query_insert_commentary,query_insert_answer
 
-from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend, query_update_end_maintenance
+from data.query.update import query_update_machine, query_update_user, query_update_user_points, query_update_confirm_reservation, query_update_user_dni, query_update_reservation_to_rent, query_update_rent_extend, query_update_end_maintenance, query_update_cancel_rent
 
 from data.query.change import query_change_password_user
 
@@ -118,6 +118,9 @@ def update_rent_extend(start_day, client_id, machine_id, end_days_extended, exte
 
 def update_end_maintenance(start_day, client_id, start_employee_id, machine_id, end_employee_id, description, end_day):
     query_update_end_maintenance.execute(start_day, client_id, start_employee_id, machine_id, end_employee_id, description, end_day)
+
+def update_cancel_rent(start_day, client_id, machine_id):
+    query_update_cancel_rent.execute(start_day, client_id, machine_id)
 
 # ---- change  ----
 def change_password(dni,password):

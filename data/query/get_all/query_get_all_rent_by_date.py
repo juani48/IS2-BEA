@@ -8,7 +8,7 @@ def execute(start_date, end_date):
     #end = datetime.strptime(end_date, "%Y-%m-%d")
     local_reservation = session.query(
         RentModel
-    ).all()
+    ).filter(RentModel.canceled_by_maintenance == False).all()
 
     return local_reservation
 

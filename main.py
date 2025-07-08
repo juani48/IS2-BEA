@@ -35,6 +35,7 @@ from datetime import datetime
 from core.usecase.machine import UpdateMachineUbication
 from core.usecase.user.GetUserPoints import usecase_get_user_points
 from data.query.get.query_get_discount import query_get_discount
+from data.query.get import query_get_active_maintenance
 
 from data.config import session
 
@@ -280,6 +281,30 @@ def rent_machine_route():
 @app.route("/ask_question.html")                   
 def ask_question():
     return render_template("/ask_question.html")
+
+@app.route('/machine_history.html')
+@login_required                   
+def machine_history():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template('machine_history.html')
+    else:
+        return render_template("/main.html")
+
+@app.route('/employee_history.html') 
+@login_required                   
+def employee_history():
+    if current_user.type in ["Admin"]:
+        return render_template('employee_history.html')
+    else:
+        return render_template("/main.html")
+    
+@app.route("/list_all_rent.html")
+@login_required
+def list_all_rent():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("list_all_rent.html")
+    return render_template("/main.html")
+
     
 # ---- METODOS USUARIO ---- #
 
@@ -359,13 +384,27 @@ def session_status():
     else:
         return jsonify({ "authenticated": False }), 200
 
+#@app.route("/session/employee", methods=["GET"])
+#@login_required
+#def get_employee_session_info():
+#    if current_user.type == "Empleado" and current_user.employee_number > 0:
+#        return jsonify({ "employee_id": current_user.employee_number }), 200
+#    return jsonify({ "error": "No autorizado" }), 403
+
 @app.route("/session/employee", methods=["GET"])
 @login_required
 def get_employee_session_info():
     if current_user.type == "Empleado" and current_user.employee_number > 0:
-        return jsonify({ "employee_id": current_user.employee_number }), 200
+        return jsonify({ 
+            "employee_id": current_user.employee_number, 
+            "type": current_user.type 
+        }), 200
+    elif current_user.type == "Admin":
+        return jsonify({ 
+            "employee_id": 1,  # Número fijo para admins
+            "type": current_user.type 
+        }), 200
     return jsonify({ "error": "No autorizado" }), 403
-
 
 
 @app.route("/session/employee", methods=["GET"])
@@ -1155,12 +1194,35 @@ def extend_rent():
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 
+#chatgpt me hizo sacarle las llaves al primer return  
 @app.route("/rent/get_all_rent", methods=["POST"])
 def get_all_rent():
     try:
-        return jsonify({ GetAllRent.usecase_get_all_rent() }), 201
+        return jsonify(GetAllRent.usecase_get_all_rent()), 200
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
+
+
+# TRAER ALQUILERES DE UNA MAQUINA    
+@app.route("/rent/get_all_by_machine", methods=["POST"])
+@login_required
+def get_all_rents_by_machine():
+    try:
+        data = request.get_json()
+        machine_id = data.get("machine_id")
+
+        if not machine_id:
+            return jsonify({ "error": "machine_id no proporcionado" }), 400
+
+        from data.config import session
+        from data.model.RentModel import RentModel
+
+        rents = session.query(RentModel).filter(RentModel.machine_id == machine_id).all()
+        return jsonify({ "rents": [r.json() for r in rents] }), 200
+
+    except Exception as e:
+        return jsonify({ "error": f"Error al obtener alquileres: {str(e)}" }), 500
+
 
 # ---- MANTENIMIENTOS ---- #
 @app.route("/maintenance/start_maintenance", methods=["POST"])
@@ -1197,6 +1259,13 @@ def end_maintenance():
 def get_all_maintenance():
     try:
         return jsonify({ "maintenance": GetAllMaintenance.usecase_get_all_maintenance() })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 404
+
+@app.route("/maintenance/get_active_maintenance", methods=["GET"])
+def get_active_maintenance():
+    try:
+        return jsonify({ "maintenance": [x.json() for x in execute()] }), 200
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 

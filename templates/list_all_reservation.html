@@ -207,7 +207,7 @@ hoy.setHours(0, 0, 0, 0); // Elimina hora, minutos, segundos, milisegundos
 const fechaInicio = new Date(r.start_day);
 fechaInicio.setHours(0, 0, 0, 0); // Igual que arriba
 
-const esCancelable = fechaInicio >= hoy;
+const esCancelable = true;
 
 
   let botonCancelar = "";
@@ -235,7 +235,7 @@ const esCancelable = fechaInicio >= hoy;
   }
 
   tarjeta.innerHTML = `
-    <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.machine_id}</h2>
+    <h2 class="text-lg font-bold text-bob-red">🛠️ Máquina:  ${r.machine_id}</h2>
     <p><strong>Cliente:</strong> ${r.client_id}</p>
     <p><strong>Desde:</strong> ${r.start_day}</p>
     <p><strong>Hasta:</strong> ${r.end_day}</p>

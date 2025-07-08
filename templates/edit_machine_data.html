@@ -98,6 +98,56 @@
       </h1>
 
       <form id="editMachineForm" class="space-y-4">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4"
+        >
+          <div>
+            <label class="font-semibold">Patente</label>
+            <input
+              type="text"
+              id="machinePatent"
+              class="w-full border rounded px-3 py-2 bg-gray-100"
+              readonly
+            />
+          </div>
+          <div>
+            <label class="font-semibold">Marca</label>
+            <input
+              type="text"
+              id="machineMark"
+              class="w-full border rounded px-3 py-2 bg-gray-100"
+              readonly
+            />
+          </div>
+          <div>
+            <label class="font-semibold">Modelo</label>
+            <input
+              type="text"
+              id="machineModel"
+              class="w-full border rounded px-3 py-2 bg-gray-100"
+              readonly
+            />
+          </div>
+          <div>
+            <label class="font-semibold">Ubicación actual</label>
+            <input
+              type="text"
+              id="machineUbication"
+              class="w-full border rounded px-3 py-2 bg-gray-100"
+              readonly
+            />
+          </div>
+          <div>
+            <label class="font-semibold">Fecha de creación</label>
+            <input
+              type="text"
+              id="machineCreationDate"
+              class="w-full border rounded px-3 py-2 bg-gray-100"
+              readonly
+            />
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="font-semibold">Precio por día</label>
@@ -276,6 +326,16 @@
               refundInput.disabled = false;
               refundInput.value = refundValue;
             }
+            document.getElementById("machinePatent").value =
+              machine.patent || "";
+            document.getElementById("machineMark").value = machine.mark || "";
+            document.getElementById("machineModel").value = machine.model || "";
+            document.getElementById("machineUbication").value =
+              machine.ubication || "";
+            document.getElementById("machineCreationDate").value =
+              machine.creation_date
+                ? new Date(machine.creation_date).toLocaleDateString("es-AR")
+                : "No registrada";
 
             document.getElementById("description").value =
               machine.description || "";

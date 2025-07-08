@@ -143,10 +143,28 @@
         <label for="aplicarPuntos">Aplicar descuento con puntos</label>
       </div>
 
-      <div id="precioConDescuentoWrapper" class="mt-2 hidden text-green-700 font-bold">
+      
+
+      <div id="infoPuntos" class="mt-4 p-4 rounded-xl bg-white border border-red-200 text-sm text-red-900 hidden space-y-1 shadow-sm">
+  <p><strong>Puntos actuales:</strong> <span id="puntosActuales">-</span></p>
+  <p><strong>Puntos necesarios para aplicar descuento:</strong> <span id="puntosNecesarios">5</span></p>
+  <p><strong>Puntos ganados con esta reserva:</strong> <span id="puntosGanados">-</span></p>
+  <p id="bloqueRestantes" class="hidden">
+  <strong>Puntos restantes si aplica el descuento:</strong>
+  <span id="puntosRestantes">-</span>
+</p>
+
+</div>
+
+<div id="ahorroWrapper" class="mt-1 hidden text-green-600 font-medium text-sm">
+  Te ahorrás: <span id="ahorroValor">$0</span>
+</div>
+<div id="precioConDescuentoWrapper" class="mt-2 hidden text-green-700 font-bold">
         Precio con descuento aplicado: <span id="nuevoPrecio">$0</span>
 
       </div>
+
+
 
       <p id="errorDescuento" class="hidden text-red-600 font-semibold mt-2">⚠️ No tenés puntos suficientes para aplicar
         el descuento.</p>
@@ -410,47 +428,85 @@
 
   // Aplicar descuento por puntos
 
-  document.getElementById("aplicarPuntos").addEventListener("change", async function () {
-    const aplicar = this.checked;
-    const total = calcularPrecioTotal();
-    const dni = JSON.parse(localStorage.getItem("user"))?.dni;
+document.getElementById("aplicarPuntos").addEventListener("change", async function () {
+  const aplicar = this.checked;
+  const total = calcularPrecioTotal();
+  const dni = JSON.parse(localStorage.getItem("user"))?.dni;
 
-    if (!aplicar || !dni || isNaN(total)) {
-      document.getElementById("precioConDescuentoWrapper").classList.add("hidden");
-      return;
+  const infoWrapper = document.getElementById("infoPuntos");
+  const puntosActualesSpan = document.getElementById("puntosActuales");
+  const puntosGanadosSpan = document.getElementById("puntosGanados");
+  const puntosRestantesSpan = document.getElementById("puntosRestantes");
+  const bloqueRestantes = document.getElementById("bloqueRestantes"); // 👈 NUEVO
+  const nuevoPrecioWrapper = document.getElementById("precioConDescuentoWrapper");
+  const nuevoPrecio = document.getElementById("nuevoPrecio");
+  const errorDescuento = document.getElementById("errorDescuento");
+  const ahorroWrapper = document.getElementById("ahorroWrapper");
+  const ahorroValor = document.getElementById("ahorroValor");
+
+  // Ocultamos todo por defecto
+  infoWrapper.classList.add("hidden");
+  nuevoPrecioWrapper.classList.add("hidden");
+  ahorroWrapper.classList.add("hidden");
+  errorDescuento.classList.add("hidden");
+  bloqueRestantes.classList.add("hidden"); // 👈 también ocultamos esto por defecto
+
+  if (!dni || isNaN(total)) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/user/user_points", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dni: dni })
+    });
+
+    if (!response.ok) throw new Error("No se pudieron obtener los puntos.");
+
+    const data = await response.json();
+    const puntosActuales = parseInt(data.points);
+    const puntosNecesarios = parseInt(data.need);
+    const descuento = parseFloat(data.discount);
+
+    // Calcular puntos ganados por la reserva (ej: 1 punto por cada 5 días)
+    const fechaInicio = new Date(document.getElementById("fechaInicio").value);
+    const fechaFin = new Date(document.getElementById("fechaFin").value);
+    const diasReserva = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
+    const puntosGanados = Math.floor(diasReserva / 5);
+
+    // Mostrar info visual
+    puntosActualesSpan.textContent = puntosActuales;
+    puntosGanadosSpan.textContent = puntosGanados;
+    infoWrapper.classList.remove("hidden");
+
+    if (aplicar) {
+      if (puntosActuales >= puntosNecesarios) {
+        const puntosRestantes = puntosActuales - puntosNecesarios + puntosGanados;
+        puntosRestantesSpan.textContent = puntosRestantes;
+        bloqueRestantes.classList.remove("hidden");
+
+        const nuevo = total * (1 - descuento / 100);
+        const ahorro = total - nuevo;
+
+        nuevoPrecio.textContent = `$${nuevo.toFixed(2)}`;
+        ahorroValor.textContent = `$${ahorro.toFixed(2)}`;
+
+        nuevoPrecioWrapper.classList.remove("hidden");
+        ahorroWrapper.classList.remove("hidden");
+      } else {
+        errorDescuento.classList.remove("hidden");
+        this.checked = false;
+        bloqueRestantes.classList.add("hidden"); // 👈 ocultar si no alcanza
+      }
     }
 
-    fetch("/user/user_points",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "dni": dni })
-      }
-    ).then(response => {
-      if (!response.ok) { throw new Error(data.message || "❌ No tenés suficientes puntos para aplicar el descuento."); }
-      return response.json()
-    })
-      .then(data => {
-        let point = data.point;
-        let need = data.need;
-        let discount = data.discount;
+  } catch (err) {
+    alert("Error al verificar puntos: " + err.message);
+    this.checked = false;
+  }
+});
 
-        if (point == need) {
-          const nuevo = total * (1 - discount / 100);
-          document.getElementById("nuevoPrecio").textContent = `$${nuevo.toFixed(2)}`;
-          document.getElementById("precioConDescuentoWrapper").classList.remove("hidden");
-        }
-      })
-      .catch(
-        error => {
-          alert("Error al verificar puntos: " + err.message);
-          this.checked = false;
-        }
-      );
-
-
-
-  });
 
   // Validación y envío
   document.getElementById("reservaForm").addEventListener("submit", function (e) {

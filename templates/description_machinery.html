@@ -95,7 +95,7 @@
               <!-- Se rellena dinámicamente -->
             </div>
           </li>
-        <li><a href="/ask_question.html">Contáctanos</a></li>
+          <li><a href="/ask_question.html">Contáctanos</a></li>
         </ul>
       </nav>
 
@@ -195,34 +195,55 @@
           </ul>
 
           <div class="mt-4 w-full flex flex-col gap-3">
-  <a id="reserveBtn"
-     class="w-full bg-red-600 hover:bg-red-700 text-white text-center py-2 rounded shadow font-semibold transition">
-    Reservar
-  </a>
-  <a id="rentBtn"
-     class="w-full bg-yellow-400 hover:bg-yellow-500 text-white text-center py-2 rounded shadow font-semibold transition">
-    Alquilar
-  </a>
-</div>
-
-
-
-
+            <a
+              id="reserveBtn"
+              class="w-full bg-red-600 hover:bg-red-700 text-white text-center py-2 rounded shadow font-semibold transition"
+            >
+              Reservar
+            </a>
+            <a
+              id="rentBtn"
+              class="w-full bg-yellow-400 hover:bg-yellow-500 text-white text-center py-2 rounded shadow font-semibold transition"
+            >
+              Alquilar
+            </a>
+            <a
+              id="historyBtn"
+              class="w-full bg-gray-600 hover:bg-gray-700 text-white text-center py-2 rounded shadow font-semibold transition"
+            >
+              Ver historial
+            </a>
+          </div>
+          <div id="adminActions" class="mt-4 flex flex-col gap-3"></div>
         </div>
       </div>
     </main>
-<section class="max-w-5xl mx-auto mt-10 mb-20 bg-white p-6 rounded-xl shadow">
-  <h2 class="text-2xl font-bold text-red-700 mb-4">Comentarios de otros usuarios</h2>
+    <section
+      class="max-w-5xl mx-auto mt-10 mb-20 bg-white p-6 rounded-xl shadow"
+    >
+      <h2 class="text-2xl font-bold text-red-700 mb-4">
+        Comentarios de otros usuarios
+      </h2>
 
-  <!-- Caja para nuevo comentario -->
-  <div id="commentFormContainer" class="mb-6">
-    <textarea id="newComment" class="w-full border border-gray-300 rounded p-3 text-sm resize-none text-black" rows="3" placeholder="Escribí tu experiencia con esta máquina..."></textarea>
-    <button onclick="enviarComentario()" class="mt-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded text-sm">Publicar comentario</button>
-  </div>
+      <!-- Caja para nuevo comentario -->
+      <div id="commentFormContainer" class="mb-6">
+        <textarea
+          id="newComment"
+          class="w-full border border-gray-300 rounded p-3 text-sm resize-none text-black"
+          rows="3"
+          placeholder="Escribí tu experiencia con esta máquina..."
+        ></textarea>
+        <button
+          onclick="enviarComentario()"
+          class="mt-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded text-sm"
+        >
+          Publicar comentario
+        </button>
+      </div>
 
-  <!-- Comentarios -->
-  <div id="commentList" class="space-y-6"></div>
-</section>
+      <!-- Comentarios -->
+      <div id="commentList" class="space-y-6"></div>
+    </section>
 
     <!-- FOOTER -->
 
@@ -297,7 +318,6 @@
       let mantenimientoActual = null;
       let usuarioAutenticado = false;
 
-
       function cargarImagenes(patente) {
         const contenedor = document.getElementById("imagenes-maquina");
         contenedor.innerHTML = "";
@@ -368,22 +388,36 @@
               machine.creation_date
                 ? new Date(machine.creation_date).toLocaleDateString("es-AR")
                 : "No registrada";
-            document.getElementById("reserveBtn").href = `/reserve.html?machine_id=${machine.patent}`;
-            document.getElementById("rentBtn").href = `/rent_machine.html?machine_id=${machine.patent}`;
+            document.getElementById(
+              "reserveBtn"
+            ).href = `/reserve.html?machine_id=${machine.patent}`;
+            document.getElementById(
+              "rentBtn"
+            ).href = `/rent_machine.html?machine_id=${machine.patent}`;
+
+            document.getElementById(
+              "historyBtn"
+            ).href = `/machine_history.html?machine_id=${machine.patent}`;
 
             fetch("/session/status")
               .then((res) => res.json())
               .then((sessionData) => {
-                console.log("📦 sessionData:", sessionData);
+                console.log(" sessionData:", sessionData);
                 usuarioAutenticado = sessionData.authenticated;
-                if (!usuarioAutenticado) {
-                  document.getElementById("commentFormContainer").classList.add("hidden");
+                // Ocultar botón "Alquilar" si NO es Admin ni Empleado
+                if (!["Admin", "Empleado"].includes(sessionData.type)) {
+                  document.getElementById("rentBtn").classList.add("hidden");
+                  document.getElementById("historyBtn").classList.add("hidden");
                 }
-
+                if (!usuarioAutenticado) {
+                  document
+                    .getElementById("commentFormContainer")
+                    .classList.add("hidden");
+                }
 
                 if (["Admin", "Empleado"].includes(sessionData.type)) {
                   console.log(
-                    "📛 ERROR: No se está ejecutando fetch de mantenimiento"
+                    " ERROR: No se está ejecutando fetch de mantenimiento"
                   );
                   fetch("/maintenance/get_all_maintenance")
                     .then((res) => res.json())
@@ -423,7 +457,7 @@
 
                 if (!sessionData.authenticated) return;
 
-                // 🔴 Solo para Admin
+                //  Solo para Admin
                 if (sessionData.type === "Admin") {
                   const estado = machine.disable
                     ? "Deshabilitada"
@@ -465,11 +499,9 @@
 
                   // Insertar en el DOM antes del botón Reservar
                   const botonReservar = document.getElementById("reserveBtn");
-                  console.log("💡 Agregando botón al DOM", botonMantenimiento);
-                  botonReservar.parentNode.insertBefore(
-                    botonesDiv,
-                    botonReservar
-                  );
+                 const adminContainer =
+                    document.getElementById("adminActions");
+                  if (adminContainer) adminContainer.appendChild(botonesDiv);
                 }
 
                 // 🟡 Admin o Empleado → Actualizar ubicación
@@ -520,10 +552,7 @@
                   divUbicacion.appendChild(botonUbicacion);
 
                   const botonReservar = document.getElementById("reserveBtn");
-                  botonReservar.parentNode.insertBefore(
-                    divUbicacion,
-                    botonReservar
-                  );
+                  adminContainer.appendChild(divUbicacion);
                 }
               });
 
@@ -667,6 +696,8 @@
                 throw new Error("Fallo al iniciar mantenimiento: " + body);
 
               mostrarToast("Mantenimiento iniciado", "blue");
+              setTimeout(() => location.reload(), 1000);
+
               mantenimientoActivo = true;
               mostrarBotonMantenimiento(
                 mantenimientoActivo,
@@ -694,7 +725,7 @@
                   start_day: mantenimientoActual.start_day,
                   client_id: mantenimientoActual.client_id,
                   start_employee_id: mantenimientoActual.start_employee_id,
-                  machine_id:   tent,
+                  machine_id: machine.patent,
                   end_employee_id: empId,
                   description: descripcion || "",
                 }),
@@ -757,59 +788,76 @@
         contenedorFinal.appendChild(botonMantenimiento);
 
         // insertamos antes del botón reservar
-        botonReservar.parentNode.insertBefore(contenedorFinal, botonReservar);
+        const adminContainer = document.getElementById("adminActions");
+        if (adminContainer) adminContainer.appendChild(contenedorFinal);
       }
-
-
 
       /*COMENTARIOS*/
       let machinePatentGlobal = null;
 
-function cargarComentarios(patente) {
-  machinePatentGlobal = patente;
-  fetch("/commentary/get_all", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ machine_patent: patente }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      const contenedor = document.getElementById("commentList");
-      contenedor.innerHTML = "";
-      data.commentaries.forEach((comentario) => {
-        contenedor.appendChild(renderComentario(comentario));
-      });
-    });
-}
+      function cargarComentarios(patente) {
+        machinePatentGlobal = patente;
+        fetch("/commentary/get_all", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ machine_patent: patente }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const contenedor = document.getElementById("commentList");
+            contenedor.innerHTML = "";
+            data.commentaries.forEach((comentario) => {
+              contenedor.appendChild(renderComentario(comentario));
+            });
+          });
+      }
 
 function getSafeIdFromDate(dateString) {
   return dateString.replaceAll(/[^a-zA-Z0-9]/g, "_");
 }
 
+function colorPorRol(type) {
+  switch ((type || "").toLowerCase()) {
+    case "Admin": return "text-yellow-600";
+    case "Empleado": return "text-blue-600";
+    case "Cliente": default: return "text-gray-500";
+  }
+}
 
-function renderComentario(comentario, esRespuesta = false) {
-  const card = document.createElement("div");
-  card.className = esRespuesta ? "ml-6 border-l pl-4 border-gray-300" : "border-b pb-4";
+      function renderComentario(comentario, esRespuesta = false) {
+        const card = document.createElement("div");
+        card.className = esRespuesta
+          ? "ml-6 border-l pl-4 border-gray-300"
+          : "border-b pb-4";
 
   const nombre = `${comentario.name || "Usuario"} ${comentario.lastname || ""}`;
-  comentario.raw_date = comentario.date;  // mantener sin formatear
-const fecha = new Date(comentario.date).toLocaleString("es-AR");
-const safeId = getSafeIdFromDate(comentario.date);
+  const tipo = comentario.type || "Cliente";  // por si no viene definido
+  const color = colorPorRol(tipo);
+  comentario.raw_date = comentario.date;
+  const fecha = new Date(comentario.date).toLocaleString("es-AR");
+  const safeId = getSafeIdFromDate(comentario.date);
 
-card.innerHTML = `
-  <p class="text-sm text-gray-700"><strong>${nombre}</strong> dijo:</p>
-  <p class="text-gray-900">${comentario.commentary}</p>
-  <p class="text-xs text-gray-500 mt-1">${fecha}</p>
-      ${usuarioAutenticado ? `<button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>` : ""}
+  card.innerHTML = `
+    <p class="text-sm text-gray-700">
+      <strong>${nombre}</strong>
+      <span class="ml-1 text-xs ${color}">(${tipo})</span>
+      dijo:
+    </p>
+    <p class="text-gray-900">${comentario.commentary}</p>
+    <p class="text-xs text-gray-500 mt-1">${fecha}</p>
+    ${
+      usuarioAutenticado
+        ? `<button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>`
+        : ""
+    }
 
+    <div id="respuesta-${safeId}" class="mt-2 hidden">
+      <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
+      <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
+    </div>
+  `;
 
-  <div id="respuesta-${safeId}" class="mt-2 hidden">
-    <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
-    <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
-  </div>
-`;
-
-
+  // Respuestas
   if (comentario.answers && comentario.answers.length > 0) {
     comentario.answers.forEach((r) => {
       card.appendChild(renderComentario(r, true));
@@ -819,71 +867,72 @@ card.innerHTML = `
   return card;
 }
 
-function mostrarFormularioRespuesta(dateId) {
-  document.getElementById(`respuesta-${dateId}`).classList.toggle("hidden");
-}
 
-function enviarComentario() {
-  const text = document.getElementById("newComment").value.trim();
-  if (!text) return;
-
-  fetch("/commentary/add_commentary", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ commentary: text, patent: machinePatentGlobal }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.message) {
-        document.getElementById("newComment").value = "";
-        cargarComentarios(machinePatentGlobal);
-        mostrarToast("Comentario creado exitosamente", "green");
-      } else {
-        alert(data.error || "Error al comentar.");
+      function mostrarFormularioRespuesta(dateId) {
+        document
+          .getElementById(`respuesta-${dateId}`)
+          .classList.toggle("hidden");
       }
-    })
-    .catch((err) => alert("Error: " + err.message));
-}
 
+      function enviarComentario() {
+        const text = document.getElementById("newComment").value.trim();
+        if (!text) return;
 
-function enviarRespuesta(safeId, realDate) {
-  const textarea = document.querySelector(`#respuesta-${safeId} textarea`);
-  const text = textarea.value.trim();
-  if (!text) return;
-
-  fetch("/commentary/add_answer", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      commentary: text,
-      patent: machinePatentGlobal,
-      dateCommentary: realDate,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.message) {
-        textarea.value = "";
-        cargarComentarios(machinePatentGlobal);
-        mostrarToast("Respuesta enviada correctamente", "green");
-      } else {
-        alert(data.error || "Error al responder.");
+        fetch("/commentary/add_commentary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            commentary: text,
+            patent: machinePatentGlobal,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.message) {
+              document.getElementById("newComment").value = "";
+              cargarComentarios(machinePatentGlobal);
+              mostrarToast("Comentario creado exitosamente", "green");
+            } else {
+              alert(data.error || "Error al comentar.");
+            }
+          })
+          .catch((err) => alert("Error: " + err.message));
       }
-    })
-    .catch((err) => alert("Error: " + err.message));
-}
 
+      function enviarRespuesta(safeId, realDate) {
+        const textarea = document.querySelector(
+          `#respuesta-${safeId} textarea`
+        );
+        const text = textarea.value.trim();
+        if (!text) return;
 
-  console.log("🧾 Enviando respuesta", {
-    commentary: text,
-    patent: machinePatentGlobal,
-    dateCommentary: realDate,
-  });
+        fetch("/commentary/add_answer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            commentary: text,
+            patent: machinePatentGlobal,
+            dateCommentary: realDate,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.message) {
+              textarea.value = "";
+              cargarComentarios(machinePatentGlobal);
+              mostrarToast("Respuesta enviada correctamente", "green");
+            } else {
+              alert(data.error || "Error al responder.");
+            }
+          })
+          .catch((err) => alert("Error: " + err.message));
+      }
 
-
-
-
-
+      console.log("🧾 Enviando respuesta", {
+        commentary: text,
+        patent: machinePatentGlobal,
+        dateCommentary: realDate,
+      });
     </script>
   </body>
 </html>

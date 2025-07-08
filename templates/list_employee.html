@@ -10,7 +10,7 @@
   <script src="{{ url_for('static', filename='script/scripts.js') }}" defer></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
   <link rel="icon" type="svg" href="{{ url_for('static', filename='image/Solo logo.svg') }}">
-
+</head>
 <body class="bg-gray-50">
 
   <!-- Header -->
@@ -85,9 +85,24 @@
     </header>
 
     <main class="max-w-5xl mx-auto mt-10 px-4">
+
       <h1 class="text-3xl font-bold text-bob-red text-center mb-8">
         Listado de Empleados
       </h1>
+
+      <div class="mb-6 bg-gray-100 p-4 rounded shadow">
+  <h3 class="text-lg font-semibold mb-2">Buscar empleado</h3>
+  <div class="flex flex-col md:flex-row gap-3 items-center">
+    <input type="number" id="inputEmpleado" placeholder="Número de empleado" class="border px-3 py-2 rounded w-full md:w-60" />
+    <input type="number" id="inputDNI" placeholder="DNI" class="border px-3 py-2 rounded w-full md:w-60" />
+    <button onclick="buscarEmpleado()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+      Buscar
+    </button>
+  </div>
+  <p id="mensajeBusqueda" class="mt-2 text-red-600 font-medium hidden"></p>
+  <div id="resultadoBusqueda" class="mt-4"></div>
+</div>
+
 
       <div
         id="employee-list"
@@ -216,6 +231,11 @@
                        </button>`
                 }
               </div>
+              <a href="employee_history.html?employee_number=${emp.employee_number}"
+   class="mt-2 inline-block bg-white text-bob-red border border-bob-red px-4 py-1 rounded hover:bg-bob-red hover:text-white transition font-semibold text-sm">
+   Ver historial
+</a>
+
             </div>
           `;
 
@@ -316,6 +336,65 @@
     document.body.appendChild(div);
     setTimeout(() => div.remove(), 3000);
   }
+
+  function buscarEmpleado() {
+  const numeroEmpleado = document.getElementById("inputEmpleado").value.trim();
+  const dni = document.getElementById("inputDNI").value.trim();
+  const mensaje = document.getElementById("mensajeBusqueda");
+  const resultado = document.getElementById("resultadoBusqueda");
+
+  mensaje.classList.add("hidden");
+  resultado.innerHTML = "";
+
+  let url = "";
+  let body = {};
+
+  if (numeroEmpleado) {
+    url = "/users/get_user_by_employee_number";
+    body = { employee_number: parseInt(numeroEmpleado) };
+  } else if (dni) {
+    url = "/users/get_user_by_dni";
+    body = { dni: parseInt(dni) };
+  } else {  
+    mensaje.textContent = "Ingresá un número de empleado o un DNI.";
+    mensaje.classList.remove("hidden");
+    return;
+  }
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) {
+        mensaje.textContent = "No se encontró el empleado.";
+        mensaje.classList.remove("hidden");
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.className = "border p-4 rounded shadow bg-white";
+      card.innerHTML = `
+        <p><strong>Nombre:</strong> ${data.name} ${data.lastname}</p>
+        <p><strong>DNI:</strong> ${data.dni}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Teléfono:</strong> ${data.phone}</p>
+        <p><strong>Fecha de nacimiento:</strong> ${data.birth_date}</p>
+        <p><strong>Número de empleado:</strong> ${data.employee_number}</p>
+        <p><strong>Rol:</strong> ${data.type}</p>
+        <p><strong>Estado:</strong> ${data.authorized ? "Autorizado" : "No autorizado"}</p>
+      `;
+      resultado.appendChild(card);
+    })
+    .catch((err) => {
+      console.error("❌ Error en búsqueda:", err);
+      mensaje.textContent = "Error al buscar empleado.";
+      mensaje.classList.remove("hidden");
+    });
+}
+
 </script>
 
   </body>

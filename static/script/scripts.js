@@ -189,7 +189,7 @@ function mostrarBotonEmpleado() {
               <a href="/pending_requests.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📋 Listar Solicitudes</a>
               <a href="/list_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar reservas hasta el día actual</a>
               <a href="/list_all_reservation.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar todas las reservas</a>
-              <a href="/main.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar alquileres</a>
+              <a href="/list_all_rent.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar alquileres</a>
               <a href="/list_all_maintenance.html" class="block px-4 py-2 font-semibold !text-[#7f1d1d] hover:bg-red-100 hover:!text-red-900">📄 Listar mantenimientos</a>
               
             </div>

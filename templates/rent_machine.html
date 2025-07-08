@@ -103,12 +103,12 @@
 
     <form id="form-alquiler" class="space-y-5">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">DNI del cliente</label>
-        <input type="number" id="client_id" required
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
-      </div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">DNI del cliente</label>
+  <input type="number" id="client_id" required
+    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
+</div>
 
-      <button type="button"
+<button type="button"
   class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
   onclick="verificarCliente()">Verificar usuario</button>
 
@@ -120,6 +120,7 @@
   <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento" class="w-full border rounded px-4 py-2" /></div>
   <button type="button" onclick="crearNuevoCliente()" class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo cliente</button>
 </div>
+
 
 
       <div>
@@ -360,13 +361,12 @@
       });
     });
 
-    function verificarCliente() {
+  function verificarCliente() {
   const dni = document.getElementById("client_id").value;
-    if (!dni) {
-  mostrarError("Ingresá un DNI primero.");
-  return;
-}
-
+  if (!dni) {
+    mostrarError("Ingresá un DNI primero.");
+    return;
+  }
 
   fetch("/users/check_client", {
     method: "POST",
@@ -391,6 +391,8 @@
       <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">Error al verificar el cliente.</div>`;
     });
 }
+
+
 
 function crearNuevoCliente() {
   const dni = document.getElementById("client_id").value;

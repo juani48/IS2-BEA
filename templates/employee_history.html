@@ -140,81 +140,94 @@
     <main
       class="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-8 mb-12"
     >
-      <h2 class="text-2xl font-bold text-red-700 mb-6">Historial completo</h2>
+      <h2 class="text-2xl font-bold text-red-700 mb-6">
+        Historial del Empleado
+      </h2>
 
       <div
-        id="machineTitle"
-        class="text-lg font-semibold mb-6 text-gray-700"
+        id="employeeData"
+        class="mb-6 text-lg font-medium text-gray-700"
       ></div>
 
       <section class="mb-10">
         <h3 class="text-xl font-semibold text-bob-red mb-4">🟨 Alquileres</h3>
-        <div id="rentsList" class="space-y-4"></div>
+        <div id="rentResults" class="space-y-4"></div>
       </section>
 
       <section class="mb-10">
-        <h3 class="text-xl font-semibold text-bob-red mb-4">🟩 Reservas</h3>
-        <div id="reservationsList" class="space-y-4"></div>
+        <h3 class="text-xl font-semibold text-bob-red mb-4">
+          🟩 Reservas Activadas
+        </h3>
+        <div id="reservationResults" class="space-y-4"></div>
       </section>
 
       <section>
         <h3 class="text-xl font-semibold text-bob-red mb-4">
           🛠️ Mantenimientos
         </h3>
-        <div id="maintenancesList" class="space-y-4"></div>
+        <div id="maintenanceResults" class="space-y-4"></div>
       </section>
     </main>
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams(window.location.search);
-        const machineId = params.get("machine_id");
+        const employeeNumber = parseInt(params.get("employee_number"));
 
-        if (!machineId) {
-          alert("No se especificó ninguna máquina.");
+        if (!employeeNumber) {
+          alert("Empleado no especificado.");
           return;
         }
 
-        document.getElementById(
-          "machineTitle"
-        ).textContent = `Patente: ${machineId}`;
-
         try {
-          // Obtener reservas
-          const resReservations = await fetch(
-            "/reservation/get_all_reservation",
-            { method: "POST" }
-          );
-          const reservationsData = await resReservations.json();
-          const reservas = (reservationsData || []).filter(
-            (r) => r.machine_id === machineId
-          );
-          renderCards(reservas, "reservationsList", "type");
-
-          // Obtener alquileres (usamos el mismo endpoint si llega a existir)
-          const resRents = await fetch("/rent/get_all_by_machine", {
+          // Mostrar nombre del empleado
+          const resEmp = await fetch("/users/get_user_by_employee_number", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ machine_id: machineId }),
+            body: JSON.stringify({ employee_number: employeeNumber }),
           });
-          const rentData = await resRents.json();
-          const alquileres = rentData.rents || [];
+          const emp = await resEmp.json();
+          document.getElementById(
+            "employeeData"
+          ).innerText = `Empleado: ${emp.name} ${emp.lastname} — Número de Empleado: ${emp.employee_number}`;
 
-          renderCards(alquileres, "rentsList", "type");
-
-          // Obtener mantenimientos
-          const resMaint = await fetch("/maintenance/get_all_maintenance");
-          const maintData = await resMaint.json();
-          const mantenimientos = maintData.maintenance.filter(
-            (m) => m.machine_id === machineId
+          // RESERVAS
+          const res1 = await fetch("/reservation/get_all_reservation", {
+            method: "POST",
+          });
+          const data1 = await res1.json();
+          const filteredReservations = data1.filter(
+            (r) => r.employee_id == employeeNumber
           );
-          renderMaintenances(mantenimientos);
+          renderCards(
+            filteredReservations,
+            "reservationResults",
+            "reservas activadas"
+          );
+
+          // ALQUILERES
+          const res2 = await fetch("/rent/get_all_rent", { method: "POST" });
+          const data2 = await res2.json();
+          const filteredRents = (data2 || []).filter(
+            (r) => r.employee_id == employeeNumber
+          );
+          renderCards(filteredRents, "rentResults", "alquileres");
+
+          // MANTENIMIENTOS
+          const res3 = await fetch("/maintenance/get_all_maintenance");
+          const data3 = await res3.json();
+          const filteredMaintenance = data3.maintenance.filter(
+            (m) =>
+              m.start_employee_id == employeeNumber ||
+              m.end_employee_id == employeeNumber
+          );
+          renderMaintenances(filteredMaintenance, employeeNumber);
         } catch (e) {
-          console.error("Error al cargar historial:", e);
+          console.error("❌ Error:", e);
         }
       });
 
-      function renderCards(items, containerId, tipo) {
+      function renderCards(items, containerId, label) {
         const container = document.getElementById(containerId);
         if (!items.length) {
           container.innerHTML = `<p class="text-gray-500">No posee historial.</p>`;
@@ -224,50 +237,77 @@
         for (const item of items) {
           const div = document.createElement("div");
           div.className = "border rounded p-4 bg-gray-50 shadow";
-
           div.innerHTML = `
-          <p><strong>Inicio:</strong> ${item.start_day}</p>
-          <p><strong>Fin:</strong> ${item.end_day}</p>
-          <p><strong>Cliente:</strong> ${item.client_id}</p>
-          <p><strong>Total:</strong> $${item.total_value}</p>
-          ${
-            item.shipment !== undefined
-              ? `<p><strong>Envío:</strong> ${item.shipment ? "Sí" : "No"}</p>`
-              : ""
-          }
-          ${
-            item.extended
-              ? `<p class="text-green-700 font-semibold">Alquiler extendido</p>`
-              : ""
-          }
-        `;
-
+        <p><strong>Inicio:</strong> ${item.start_day}</p>
+        <p><strong>Fin:</strong> ${item.end_day}</p>
+        <p><strong>Cliente:</strong> ${item.client_id}</p>
+        <p><strong>Máquina:</strong> ${item.machine_id}</p>
+        <p><strong>Total:</strong> $${item.total_value}</p>
+      `;
           container.appendChild(div);
         }
       }
 
-      function renderMaintenances(items) {
-        const container = document.getElementById("maintenancesList");
-        if (!items.length) {
+      function renderMaintenances(items, employeeNumber) {
+        const container = document.getElementById("maintenanceResults");
+        container.innerHTML = "";
+
+        console.log("🧪 DEBUG", { employeeNumber, items });
+
+        const iniciados = items.filter(
+          (m) => parseInt(m.start_employee_id) === employeeNumber
+        );
+        const finalizados = items.filter(
+          (m) => parseInt(m.end_employee_id) === employeeNumber
+        );
+
+        if (iniciados.length === 0 && finalizados.length === 0) {
           container.innerHTML = `<p class="text-gray-500">No posee historial.</p>`;
           return;
         }
 
-        for (const item of items) {
-          const div = document.createElement("div");
-          div.className = "border rounded p-4 bg-gray-50 shadow";
+        //Mantenimientos Iniciados
+        if (iniciados.length > 0) {
+          const titulo = document.createElement("h4");
+          titulo.textContent = " Mantenimientos Iniciados";
+          titulo.className = "text-md font-semibold text-bob-red mb-2 mt-4";
+          container.appendChild(titulo);
 
-          div.innerHTML = `
-          <p><strong>Inicio:</strong> ${item.start_day}</p>
-          <p><strong>Fin:</strong> ${item.end_day}</p>
-          <p><strong>Empleado inicio:</strong> ${item.start_employee_id}</p>
-          <p><strong>Empleado fin:</strong> ${item.end_employee_id}</p>
-          <p><strong>Descripción:</strong> ${
-            item.description || "Sin descripción"
-          }</p>
-        `;
+          iniciados.forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "border rounded p-4 bg-gray-50 shadow";
+            div.innerHTML = `
+        <p><strong>Inicio:</strong> ${item.start_day}</p>
+        <p><strong>Fin:</strong> ${item.end_day || "Pendiente"}</p>
+        <p><strong>Máquina:</strong> ${item.machine_id}</p>
+        <p><strong>Descripción:</strong> ${
+          item.description || "Sin descripción"
+        }</p>
+      `;
+            container.appendChild(div);
+          });
+        }
 
-          container.appendChild(div);
+        //  Mantenimientos Finalizados
+        if (finalizados.length > 0) {
+          const titulo = document.createElement("h4");
+          titulo.textContent = " Mantenimientos Finalizados";
+          titulo.className = "text-md font-semibold text-bob-red mb-2 mt-6";
+          container.appendChild(titulo);
+
+          finalizados.forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "border rounded p-4 bg-gray-50 shadow";
+            div.innerHTML = `
+        <p><strong>Inicio:</strong> ${item.start_day}</p>
+        <p><strong>Fin:</strong> ${item.end_day}</p>
+        <p><strong>Máquina:</strong> ${item.machine_id}</p>
+        <p><strong>Descripción:</strong> ${
+          item.description || "Sin descripción"
+        }</p>
+      `;
+            container.appendChild(div);
+          });
         }
       }
     </script>

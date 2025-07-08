@@ -11,14 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarCategoriasSelect();
 
   fetch("/session/status")
-    .then(res => res.json())
-    .then(data => {
-      if (data.authenticated && data.type) {
-        userType = data.type;
-      }
-      document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
-      fetchMachinesWithFilters();
-    })
+  .then(res => res.json())
+  .then(data => {
+    if (data.authenticated && data.type) {
+      userType = data.type;
+    }
+    document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
+    fetchMachinesWithFilters();
+  })
+
     .catch(err => {
       console.error("Error al obtener tipo de usuario:", err);
       document.getElementById("filter-apply")?.addEventListener("click", fetchMachinesWithFilters);
@@ -72,6 +73,10 @@ function fetchMachinesWithFilters() {
         renderPage(currentPage);
         renderPagination();
       }
+
+      document.getElementById("machine-list").style.display = "grid";
+document.getElementById("pagination").style.display = "flex";
+
     })
     .catch((err) => {
       console.error("Error al cargar máquinas:", err);

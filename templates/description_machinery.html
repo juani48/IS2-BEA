@@ -393,6 +393,7 @@
             document.getElementById(
               "rentBtn"
             ).href = `/rent_machine.html?machine_id=${machine.patent}`;
+
             document.getElementById(
               "historyBtn"
             ).href = `/machine_history.html?machine_id=${machine.patent}`;
@@ -402,6 +403,11 @@
               .then((sessionData) => {
                 console.log("📦 sessionData:", sessionData);
                 usuarioAutenticado = sessionData.authenticated;
+                // Ocultar botón "Alquilar" si NO es Admin ni Empleado
+                if (!["Admin", "Empleado"].includes(sessionData.type)) {
+                  document.getElementById("rentBtn").classList.add("hidden");
+                  document.getElementById("historyBtn").classList.add("hidden");
+                }
                 if (!usuarioAutenticado) {
                   document
                     .getElementById("commentFormContainer")
@@ -694,6 +700,8 @@
                 throw new Error("Fallo al iniciar mantenimiento: " + body);
 
               mostrarToast("Mantenimiento iniciado", "blue");
+              setTimeout(() => location.reload(), 1000);
+
               mantenimientoActivo = true;
               mostrarBotonMantenimiento(
                 mantenimientoActivo,
@@ -721,7 +729,7 @@
                   start_day: mantenimientoActual.start_day,
                   client_id: mantenimientoActual.client_id,
                   start_employee_id: mantenimientoActual.start_employee_id,
-                  machine_id: tent,
+                  machine_id: machine.patent,
                   end_employee_id: empId,
                   description: descripcion || "",
                 }),

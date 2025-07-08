@@ -214,6 +214,7 @@
               Ver historial
             </a>
           </div>
+          <div id="adminActions" class="mt-4 flex flex-col gap-3"></div>
         </div>
       </div>
     </main>
@@ -401,7 +402,7 @@
             fetch("/session/status")
               .then((res) => res.json())
               .then((sessionData) => {
-                console.log("📦 sessionData:", sessionData);
+                console.log(" sessionData:", sessionData);
                 usuarioAutenticado = sessionData.authenticated;
                 // Ocultar botón "Alquilar" si NO es Admin ni Empleado
                 if (!["Admin", "Empleado"].includes(sessionData.type)) {
@@ -416,7 +417,7 @@
 
                 if (["Admin", "Empleado"].includes(sessionData.type)) {
                   console.log(
-                    "📛 ERROR: No se está ejecutando fetch de mantenimiento"
+                    " ERROR: No se está ejecutando fetch de mantenimiento"
                   );
                   fetch("/maintenance/get_all_maintenance")
                     .then((res) => res.json())
@@ -456,7 +457,7 @@
 
                 if (!sessionData.authenticated) return;
 
-                // 🔴 Solo para Admin
+                //  Solo para Admin
                 if (sessionData.type === "Admin") {
                   const estado = machine.disable
                     ? "Deshabilitada"
@@ -498,11 +499,9 @@
 
                   // Insertar en el DOM antes del botón Reservar
                   const botonReservar = document.getElementById("reserveBtn");
-                  console.log("💡 Agregando botón al DOM", botonMantenimiento);
-                  botonReservar.parentNode.insertBefore(
-                    botonesDiv,
-                    botonReservar
-                  );
+                 const adminContainer =
+                    document.getElementById("adminActions");
+                  if (adminContainer) adminContainer.appendChild(botonesDiv);
                 }
 
                 // 🟡 Admin o Empleado → Actualizar ubicación
@@ -553,10 +552,7 @@
                   divUbicacion.appendChild(botonUbicacion);
 
                   const botonReservar = document.getElementById("reserveBtn");
-                  botonReservar.parentNode.insertBefore(
-                    divUbicacion,
-                    botonReservar
-                  );
+                  adminContainer.appendChild(divUbicacion);
                 }
               });
 
@@ -792,7 +788,8 @@
         contenedorFinal.appendChild(botonMantenimiento);
 
         // insertamos antes del botón reservar
-        botonReservar.parentNode.insertBefore(contenedorFinal, botonReservar);
+        const adminContainer = document.getElementById("adminActions");
+        if (adminContainer) adminContainer.appendChild(contenedorFinal);
       }
 
       /*COMENTARIOS*/

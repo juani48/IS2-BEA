@@ -301,6 +301,14 @@ def employee_history():
     else:
         return render_template("/main.html")
     
+@app.route("/list_all_rent.html")
+@login_required
+def list_all_rent():
+    if current_user.type in ["Admin", "Empleado"]:
+        return render_template("list_all_rent.html")
+    return render_template("/main.html")
+
+    
 # ---- METODOS USUARIO ---- #
 
 def getType():                                   

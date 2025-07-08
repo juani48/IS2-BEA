@@ -1006,7 +1006,7 @@ def disable_categorie():
             return jsonify({"message": str(e)}), 400  #  importante: enviar el mensaje de error
 
     else:
-        return ("/main.html")
+        return ("")
 
 # este es para hacer la lista de categorias disponibles
 @app.route("/categories/enabled", methods=["GET"])

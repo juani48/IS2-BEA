@@ -1,6 +1,6 @@
 from datetime import datetime, date, timedelta
 import calendar
-from data.appDataBase import get_all_reservation_by_date, get_all_rent_by_date, get_all_rent_by_categoire, get_all_reservation_by_categorie
+from data.appDataBase import get_all_reservation_by_date, get_all_rent_statics, get_all_rent_statics_categorie, get_all_reservation_by_categorie
 
 def usecase_get_statistics_year(year, categorie):
     start_date = date(year, 1, 1)
@@ -27,13 +27,11 @@ def usecase_get_statistics(start_date, end_date, categorie):
     list_reservation = []
 
     if categorie != None:
-        list_rent = get_all_rent_by_categoire(start_date, end_date, categorie)
+        list_rent = get_all_rent_statics_categorie(categorie)
         list_reservation = get_all_reservation_by_categorie(start_date, end_date, categorie)
     else:    
-        print("si")
-        list_rent = get_all_rent_by_date(start_date, end_date)
+        list_rent = get_all_rent_statics()
         list_reservation = get_all_reservation_by_date(start_date, end_date)
-        print(list_reservation)
 
 
     if list_rent == None and list_reservation == None:

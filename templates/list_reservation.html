@@ -201,12 +201,13 @@ bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 
       const fechaInicio = new Date(r.fecha_inicio);
       fechaInicio.setHours(0, 0, 0, 0); // reset hora
 
-      const esCancelable = fechaInicio >= hoy;
+     const esCancelable = true;
+
 
       let botonCancelar = "";
       let botonConfirmar = "";
 
-      if (fechaInicio.getTime() === hoy.getTime()) {
+      if (fechaInicio.getTime() <= hoy.getTime()) {
         botonConfirmar = `
     <button class="confirmar-btn mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
             data-client="${r.cliente}"
@@ -235,7 +236,7 @@ bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-center text-lg z-50 
       }
 
       tarjeta.innerHTML = `
-  <h2 class="text-lg font-bold text-bob-red">🛠️ ${r.maquina}</h2>
+  <h2 class="text-lg font-bold text-bob-red">🛠️ Máquina:  ${r.maquina}</h2>
   <p><strong>Cliente:</strong> ${r.cliente}</p>
   <p><strong>Desde:</strong> ${r.fecha_inicio}</p>
   <p><strong>Hasta:</strong> ${r.fecha_fin}</p>

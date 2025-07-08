@@ -8,7 +8,7 @@ from core.entity.User import User
 from data.appDataBase import get_machine, get_user
 from flask import redirect # redirigir a mercado pago
 from core.service.mercado_pago.config import MP_SDK
-from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee,GetUserByDni,GetUserByEmployeeN
+from core.usecase.user import Auth, UpdateUser,ChangePassword,RequestUser,AddEmployee,ReplyRequest, GetUserPoints, UpdateUserDni,GetAllRequests,DisableEmployee,RecoverPassword,GetAllEmployees, GetAllUsers, UserHistory, UserHistory,EnableEmployee,GetUserByDni,GetUserByEmployeeN,GetEmployeeByDni
 from core.usecase.machine import AddMachine, EnableMachine, DisableMachine, GetAllMachines, GetAllMachinesAdmin, GetAllMachinesByFilter, GetAllMachinesByFilterAdmin, UpdateMachine
 from core.usecase.categorie import AddCategorie, EnableCategorie, DisableCategorie, GetAllCategories, GetAllCategoriesEnable
 from core.usecase.reserve import MachineReservations, AddReservation, ConfirmReservation, CancelReservation, GetDailyReservations, GetAllReservations, UserReservations
@@ -572,7 +572,7 @@ def get_user_by_employee_number():
     except Exception as e:
         return jsonify({"error": f"Error interno: {str(e)}"}), 500
 
-@app.route("/users/get_user_by_dni", methods=["POST"])
+@app.route("/users/get_employee_by_dni", methods=["POST"])
 @login_required
 def get_user_by_dni():
     data = request.get_json() or {}
@@ -582,9 +582,9 @@ def get_user_by_dni():
         return jsonify({"error": "DNI no proporcionado"}), 400
 
     try:
-        user = GetUserByDni.usecase_get_user_by_dni(dni=dni)
+        user = GetEmployeeByDni.usecase_get_employee_by_dni(dni=dni)
         if not user:
-            return jsonify({"error": "Usuario no encontrado"}), 404
+            return jsonify({"error": "Empleado no encontrado"}), 404
 
         return jsonify(user.json()), 200
     except Exception as e:

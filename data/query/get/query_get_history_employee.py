@@ -2,17 +2,19 @@ from data.config import session
 from data.model.ReservationModel import ReservationModel
 from data.model.MaintenanceModel import MaintenanceModel
 from data.model.RentModel import RentModel
-from data.query.get import query_get_employee
+from data.query.get import query_get_employee_by_number
 
 def execute(empN):
-    local_employee = query_get_employee.execute(empN)
-    if local_employee is None:
-        return None
+    local_employee = query_get_employee_by_number.execute(empN)
+    if (local_employee.employee_number < 0):
+        local_employee_id = -local_employee.employee_number 
+    else:
+        local_employee_id = local_employee.employee_number
 
-    rent_list = session.query(RentModel).filter(RentModel.employee_id == local_employee.employee_number).all()
-    reservation_list = session.query(ReservationModel).filter(ReservationModel.employee_id == local_employee.employee_number).all()
-    maintenance_start_list = session.query(MaintenanceModel).filter(MaintenanceModel.start_employee_id == local_employee.employee_number).all()
-    maintenance_end_list = session.query(MaintenanceModel).filter(MaintenanceModel.end_employee_id == local_employee.employee_number).all()
+    rent_list = session.query(RentModel).filter(RentModel.employee_id == local_employee_id).all()
+    reservation_list = session.query(ReservationModel).filter(ReservationModel.employee_id == local_employee_id).all()
+    maintenance_start_list = session.query(MaintenanceModel).filter(MaintenanceModel.start_employee_id == local_employee_id).all()
+    maintenance_end_list = session.query(MaintenanceModel).filter(MaintenanceModel.end_employee_id == local_employee_id).all()
 
     result = {
         "rents": [r.json() for r in rent_list] or None,

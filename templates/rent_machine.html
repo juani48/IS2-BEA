@@ -86,17 +86,20 @@
       <ul class="flex flex-col space-y-3">
         <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
         <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una
-            maquinaria</a></li <li><a href="/ask_question.html">Contáctanos</a></li>
+            maquinaria</a></li 
+        <li><a href="/ask_question.html" >Contáctanos</a></li>
       </ul>
     </div>
-  </header>
   </div>
   </header>
 
   <div class="max-w-xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-8">
+    
     <h1 class="text-3xl font-bold text-center text-bob-red mb-6">
       Alquiler Presencial
     </h1>
+
+    <div id="mensaje" class="mt-4 text-center text-sm font-semibold"></div>
 
     <form id="form-alquiler" class="space-y-5">
       <div>
@@ -152,48 +155,86 @@
       </button>
     </form>
 
-    <div id="mensaje" class="mt-4 text-center text-sm font-semibold"></div>
+    
   </div>
 
   <script>
+
+    function mostrarAviso(texto, color = "red") {
+  const mensaje = document.getElementById("mensaje");
+  mensaje.innerHTML = `
+    <div class="bg-${color}-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mb-4">
+      <i class="fas fa-exclamation-circle text-xl"></i>
+      <span class="font-semibold">${texto}</span>
+    </div>`;
+}
+
 
 
     const machineId = new URLSearchParams(window.location.search).get("machine_id");
     // 1. Obtener reservas y configurar calendario
     
     let reservas = [];
-    fetch("/reservation/machine_reservations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ machine_id: machineId })
-    })
-      .then(response => {
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
-        return response.json();
-      })
-      .then(data => {
-        reservas = data.value;
-        console.log("reservas", reservas)
-        const hoy = new Date();
-        const hoyISO = hoy.toISOString().split('T')[0];
+    
+    Promise.all([
+  // 1) RESERVAS
+  fetch("/reservation/machine_reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ machine_id: machineId })
+  }).then(r => r.ok ? r.json() : Promise.reject("error reservas")),
 
-        // Verificar si hoy está ocupado
-        const hoyOcupado = reservas.some(reserva => {
-          const inicio = new Date(reserva.start_day);
-          inicio.setDate(inicio.getDate() - 14);
-          const fin = new Date(reserva.end_day);
-          fin.setDate(fin.getDate() + 14);
-          return hoy >= inicio && hoy <= fin;
-        });
+  // 2) ALQUILERES
+  fetch("/rent/get_all_by_machine", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ machine_id: machineId })
+  }).then(r => r.ok ? r.json() : Promise.reject("error rents")),
 
-        if (hoyOcupado) {
-          alert("No se puede elegir una fecha de inicio porque la máquina se encuentra utilizada para hoy");
-          document.getElementById("start_day").value = "";
-          document.getElementById("start_day").disabled = true;
-          document.getElementById("end_day").disabled = true;
-          window.location.href = "machinery.html"
-          return;
-        }
+  // 3) MANTENIMIENTO
+  fetch(`/maintenance/get_active_maintenance/${machineId}`)
+    .then(r => r.ok ? r.json() : Promise.resolve({ value: [] }))
+])
+.then(([resData, rentData, maintData]) => {
+  // ⬅ ESTE 'rentData' debe coincidir con la segunda promesa
+
+   const reservas = [...resData.value, ...rentData.value];
+  // Diagnóstico express: ponelo justo debajo de reservas = ...
+console.log("▶ reservas recibidas:", resData);
+console.log("▶ reservas.value:", resData.value);
+
+
+  const mantenimientoActivo = maintData.value.length > 0;
+    // ─── NUEVO BLOQUE ───
+  const hoy = new Date();                       // 1) hoy en objeto Date
+  const hoyISO = hoy.toISOString().split("T")[0];  // 2) hoy en formato YYYY-MM-DD
+
+  // 3) ¿La máquina está ocupada hoy?
+  const hoyOcupado = reservas.some(reserva => {
+    const inicio = new Date(reserva.start_day);
+    inicio.setDate(inicio.getDate() - 14);      // colchón −14 días
+    const fin = new Date(reserva.end_day);
+    fin.setDate(fin.getDate() + 14);            // colchón +14 días
+    return hoy >= inicio && hoy <= fin;
+  });
+  // ── FIN BLOQUE ──
+
+        if (hoyOcupado || mantenimientoActivo) {
+  let texto = "";
+  if (hoyOcupado) texto += "La máquina está reservada, alquilada o en mantenimiento hoy.";
+  if (hoyOcupado && mantenimientoActivo) texto += "<br>";
+  if (mantenimientoActivo) texto += "Además, tiene un mantenimiento activo.";
+  mostrarAviso(texto, "yellow");
+  const btnConfirmar = document.querySelector("#form-alquiler button[type='submit']");
+btnConfirmar.disabled = true;
+btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
+  document.getElementById("start_day").value = "";
+  document.getElementById("start_day").disabled = true;
+  document.getElementById("end_day").disabled = true;
+  return;
+}
+
+
 
         // Setear la fecha de hoy como inicio
         document.getElementById("start_day").value = hoyISO;
@@ -206,11 +247,11 @@
         document.getElementById("end_day").min = finISO;
 
         inicializarCalendarioFin(fechaMinFin);
-      })
-      .catch(error => {
-        alert("Error al cargar reservas");
-        console.error(error);
-      });
+})
+.catch(error => {
+  mostrarAviso("Error al cargar disponibilidad de la máquina.", "red");
+  console.error(error);
+});
 
     // Inicializar Flatpickr solo en end_day
     function inicializarCalendarioFin(minFechaFin) {

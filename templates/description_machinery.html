@@ -786,30 +786,46 @@ function getSafeIdFromDate(dateString) {
   return dateString.replaceAll(/[^a-zA-Z0-9]/g, "_");
 }
 
+function colorPorRol(type) {
+  switch ((type || "").toLowerCase()) {
+    case "Admin": return "text-yellow-600";
+    case "Empleado": return "text-blue-600";
+    case "Cliente": default: return "text-gray-500";
+  }
+}
 
 function renderComentario(comentario, esRespuesta = false) {
   const card = document.createElement("div");
   card.className = esRespuesta ? "ml-6 border-l pl-4 border-gray-300" : "border-b pb-4";
 
   const nombre = `${comentario.name || "Usuario"} ${comentario.lastname || ""}`;
-  comentario.raw_date = comentario.date;  // mantener sin formatear
-const fecha = new Date(comentario.date).toLocaleString("es-AR");
-const safeId = getSafeIdFromDate(comentario.date);
+  const tipo = comentario.type || "Cliente";  // por si no viene definido
+  const color = colorPorRol(tipo);
+  comentario.raw_date = comentario.date;
+  const fecha = new Date(comentario.date).toLocaleString("es-AR");
+  const safeId = getSafeIdFromDate(comentario.date);
 
-card.innerHTML = `
-  <p class="text-sm text-gray-700"><strong>${nombre}</strong> dijo:</p>
-  <p class="text-gray-900">${comentario.commentary}</p>
-  <p class="text-xs text-gray-500 mt-1">${fecha}</p>
-      ${usuarioAutenticado ? `<button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>` : ""}
+  card.innerHTML = `
+    <p class="text-sm text-gray-700">
+      <strong>${nombre}</strong>
+      <span class="ml-1 text-xs ${color}">(${tipo})</span>
+      dijo:
+    </p>
+    <p class="text-gray-900">${comentario.commentary}</p>
+    <p class="text-xs text-gray-500 mt-1">${fecha}</p>
+    ${
+      usuarioAutenticado
+        ? `<button onclick='mostrarFormularioRespuesta("${safeId}")' class="text-sm text-red-600 hover:underline mt-2">Responder</button>`
+        : ""
+    }
 
+    <div id="respuesta-${safeId}" class="mt-2 hidden">
+      <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
+      <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
+    </div>
+  `;
 
-  <div id="respuesta-${safeId}" class="mt-2 hidden">
-    <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
-    <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
-  </div>
-`;
-
-
+  // Respuestas
   if (comentario.answers && comentario.answers.length > 0) {
     comentario.answers.forEach((r) => {
       card.appendChild(renderComentario(r, true));
@@ -818,6 +834,7 @@ card.innerHTML = `
 
   return card;
 }
+
 
 function mostrarFormularioRespuesta(dateId) {
   document.getElementById(`respuesta-${dateId}`).classList.toggle("hidden");

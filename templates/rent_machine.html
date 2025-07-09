@@ -234,6 +234,12 @@ function traducirErrorBackend(errorOriginal) {
   if (hoyOcupado && mantenimientoActivo) texto += "<br>";
   if (mantenimientoActivo) texto += "Además, tiene un mantenimiento activo.";
   mostrarAviso(texto, "yellow");
+
+    setTimeout(() => {
+    window.location.href = "/machinery.html";
+  }, 3000); // 3 segundos
+
+  
   const btnConfirmar = document.querySelector("#form-alquiler button[type='submit']");
 btnConfirmar.disabled = true;
 btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");

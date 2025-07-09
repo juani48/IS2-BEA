@@ -149,7 +149,7 @@
     <!-- Gráficos -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10" id="charts-container" style="display:none;">
   <div class="bg-white p-4 rounded shadow">
-    <h2 class="text-lg font-semibold text-center text-red-700 mb-2">Distribución Rent vs Reservation</h2>
+    <h2 class="text-lg font-semibold text-center text-red-700 mb-2">Distribución Alquileres vs Reservas</h2>
     <canvas id="pieChart"></canvas>
   </div>
   <div class="bg-white p-4 rounded shadow">
@@ -351,6 +351,21 @@ function mostrarError(msg) {
 
 let pieChart, barChart;
 
+function traducirTipo(tipo) {
+  switch (tipo) {
+    case "rent":
+      return "Alquileres";
+    case "reservation":
+      return "Reservas";
+    case "total":
+    case "all":
+      return "Total";
+    default:
+      return tipo; // por si hay algún valor inesperado
+  }
+}
+
+
 function renderizarEstadisticas(stats) {
   const contenedor = document.getElementById("resultado-estadisticas");
   contenedor.innerHTML = "";
@@ -372,7 +387,7 @@ function renderizarEstadisticas(stats) {
     const card = document.createElement("div");
     card.className = "bg-white p-6 rounded shadow border-l-4 border-red-600";
     card.innerHTML = `
-      <h2 class="text-xl font-bold text-red-700 capitalize mb-2">${obj.type}</h2>
+      <h2 class="text-xl font-bold text-red-700 capitalize mb-2">${traducirTipo(obj.type)}</h2>
       <p><strong>Cantidad:</strong> ${obj.element_count}</p>
       <p><strong>Total:</strong> $${obj.total_value.toFixed(2)}</p>
       <p><strong>Promedio:</strong> $${obj.average.toFixed(2)}</p>

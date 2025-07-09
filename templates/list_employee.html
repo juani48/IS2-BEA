@@ -337,63 +337,96 @@
     setTimeout(() => div.remove(), 3000);
   }
 
-  function buscarEmpleado() {
-  const numeroEmpleado = document.getElementById("inputEmpleado").value.trim();
-  const dni = document.getElementById("inputDNI").value.trim();
+ function buscarEmpleado() {
+  const inputEmpleado = document.getElementById("inputEmpleado");
+  const inputDNI = document.getElementById("inputDNI");
+  const numeroEmpleado = inputEmpleado.value.trim();
+  const dni = inputDNI.value.trim();
   const mensaje = document.getElementById("mensajeBusqueda");
   const resultado = document.getElementById("resultadoBusqueda");
 
   mensaje.classList.add("hidden");
   resultado.innerHTML = "";
 
-  let url = "";
-  let body = {};
-
-  if (numeroEmpleado) {
-    url = "/users/get_user_by_employee_number";
-    body = { employee_number: parseInt(numeroEmpleado) };
-  } else if (dni) {
-    url = "/users/get_user_by_dni";
-    body = { dni: parseInt(dni) };
-  } else {  
+  // Fallback: si no hay ninguno
+  if (!numeroEmpleado && !dni) {
     mensaje.textContent = "Ingresá un número de empleado o un DNI.";
     mensaje.classList.remove("hidden");
     return;
   }
 
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.error) {
-        mensaje.textContent = "No se encontró el empleado.";
-        mensaje.classList.remove("hidden");
-        return;
-      }
-
-      const card = document.createElement("div");
-      card.className = "border p-4 rounded shadow bg-white";
-      card.innerHTML = `
-        <p><strong>Nombre:</strong> ${data.name} ${data.lastname}</p>
-        <p><strong>DNI:</strong> ${data.dni}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Teléfono:</strong> ${data.phone}</p>
-        <p><strong>Fecha de nacimiento:</strong> ${data.birth_date}</p>
-        <p><strong>Número de empleado:</strong> ${data.employee_number}</p>
-        <p><strong>Rol:</strong> ${data.type}</p>
-        <p><strong>Estado:</strong> ${data.authorized ? "Autorizado" : "No autorizado"}</p>
-      `;
-      resultado.appendChild(card);
+  // Intenta primero por número
+  if (numeroEmpleado) {
+    fetch("/users/get_user_by_employee_number", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ employee_number: parseInt(numeroEmpleado) }),
     })
-    .catch((err) => {
-      console.error("❌ Error en búsqueda:", err);
-      mensaje.textContent = "Error al buscar empleado.";
-      mensaje.classList.remove("hidden");
-    });
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error && data.type === "Empleado") {
+          inputDNI.value = ""; // Limpiar campo DNI
+          mostrarEmpleado(data, "por número de empleado");
+        } else if (dni) {
+          // Si falló por número, intentar por DNI
+          buscarPorDNI(dni, inputEmpleado);
+        } else {
+          mostrarNoEncontrado();
+        }
+      })
+      .catch(() => {
+        if (dni) {
+          buscarPorDNI(dni, inputEmpleado);
+        } else {
+          mostrarNoEncontrado();
+        }
+      });
+  } else {
+    // Solo DNI
+    buscarPorDNI(dni, inputEmpleado);
+  }
+
+  function buscarPorDNI(dniValue, inputEmpleadoElement) {
+    fetch("/users/get_employee_by_dni", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dni: parseInt(dniValue) }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error && data.type === "Empleado") {
+          inputEmpleadoElement.value = ""; // Limpiar campo número
+          mostrarEmpleado(data, "por DNI");
+        } else {
+          mostrarNoEncontrado();
+        }
+      })
+      .catch(() => mostrarNoEncontrado());
+  }
+
+  function mostrarEmpleado(data, metodo) {
+    const card = document.createElement("div");
+    card.className = "border p-4 rounded shadow bg-white";
+    card.innerHTML = `
+      <p><strong>Nombre:</strong> ${data.name} ${data.lastname}</p>
+      <p><strong>DNI:</strong> ${data.dni}</p>
+      <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Teléfono:</strong> ${data.phone}</p>
+      <p><strong>Fecha de nacimiento:</strong> ${data.birth_date}</p>
+      <p><strong>Número de empleado:</strong> ${data.employee_number}</p>
+      <p><strong>Rol:</strong> ${data.type}</p>
+      <p><strong>Estado:</strong> ${data.authorized ? "Autorizado" : "No autorizado"}</p>
+      <p class="mt-2 text-sm text-gray-500 italic">🔍 Encontrado ${metodo}</p>
+    `;
+    resultado.appendChild(card);
+  }
+
+  function mostrarNoEncontrado() {
+    mensaje.textContent = "No se encontró el empleado.";
+    mensaje.classList.remove("hidden");
+  }
 }
+
 
 </script>
 

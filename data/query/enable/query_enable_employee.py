@@ -3,9 +3,6 @@ from data.query.get import query_get_user, query_get_employee_by_number
 
 def execute(employeeN, dni):
     local_employee = query_get_user.execute(dni)
-    
-    if local_employee is not None:
-        raise ValueError(f"Ya existe un empleado con DNI {dni}")
 
     if employeeN == 0:
         if (local_employee.employee_number < 0) and (local_employee.type != "Admin"):

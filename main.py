@@ -442,10 +442,10 @@ def add_employee():
     try:
         data = request.get_json()
         AddEmployee.usecase_add_employee(
-            name=data.get("name"),
-            lastname=data.get("lastname"),
             dni=data.get("dni"),
             email=data.get("email"),
+            name=data.get("name"),
+            lastname=data.get("lastname"),                        
             phone=data.get("phone"),
             dateBirth=data.get("dateBirth"),
             employeeN=data.get("employeeN")

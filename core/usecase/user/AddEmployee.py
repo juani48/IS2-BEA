@@ -5,7 +5,10 @@ from core.usecase.service import SendMail
 from data.query.get import query_get_user, query_get_employee, query_get_user_by_email, query_get_employee_by_number
 
 def usecase_add_employee(dni, email, name, lastname, phone, dateBirth, employeeN):
-    
+    dni = int(dni)
+    phone = int(phone)
+    employeeN = int(employeeN)
+
     if query_get_user.execute(dni) is not None:
         raise ValueError("El DNI ya se encuentra registrado.")
     

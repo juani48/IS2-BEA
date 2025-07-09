@@ -38,7 +38,7 @@ from data.query.get.query_get_discount import query_get_discount
 from data.query.get import query_get_active_maintenance
 from data.config import session
 from data.model.RentModel import RentModel
-
+from data.model.MaintenanceModel import MaintenanceModel
 
 from data.config import session
 
@@ -1173,8 +1173,13 @@ def activate_reservation():
 # CARGAR ALQUILER (SE REALIZA EL MISMO DIA)
 @app.route("/rent/rent_machine", methods=["POST"])
 def rent_machine():
+    print("🔁 Endpoint /rent/rent_machine cargado")
+
     try:
         request_value = request.get_json()
+        if not request_value:
+            return jsonify({ "error": "Datos inválidos o mal formateados" }), 404  # mantenemos el código original
+
         AddRent.usercase_add_rent(
             start_day=request_value.get("start_day"),
             client_id=request_value.get("client_id"),
@@ -1184,7 +1189,7 @@ def rent_machine():
         )
         return "", 201
     except Exception as e:
-        return jsonify({ "error": str(e) }), 404
+        return jsonify({ "error": str(e) }), 404  # mantenemos el código original
 
 @app.route("/rent/extend_rent", methods=["POST"])
 def extend_rent():
@@ -1266,12 +1271,32 @@ def get_all_maintenance():
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 
-@app.route("/maintenance/get_active_maintenance", methods=["GET"])
-def get_active_maintenance():
+# ——— lógica compartida ———
+def _active_maint_by_machine(machine_id):
+    activos = (session.query(MaintenanceModel)
+                        .filter(MaintenanceModel.machine_id == machine_id,
+                                MaintenanceModel.end_day == None)
+                        .all())
+    return [m.json() for m in activos]
+
+# ------- ruta nueva (GET con parámetro) -------
+@app.route("/maintenance/get_active_maintenance/<string:machine_id>", methods=["GET"])
+@login_required
+def get_active_maintenance_get(machine_id):
     try:
-        return jsonify({ "maintenance": [x.json() for x in execute()] }), 200
+        return jsonify({"value": _active_maint_by_machine(machine_id)}), 200
     except Exception as e:
-        return jsonify({ "error": str(e) }), 404
+        return jsonify({"error": str(e)}), 500
+
+# ------- ruta existente (POST sin parámetro en la URL) -------
+@app.route("/maintenance/get_active_maintenance", methods=["POST"])
+@login_required
+def get_active_maintenance_post():
+    try:
+        machine_id = request.get_json().get("machine_id")
+        return jsonify({"value": _active_maint_by_machine(machine_id)}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ---- ESTADISTICAS ---- #

@@ -3,7 +3,7 @@ from data.model.UserModel import UserModel
 
 def execute(dni):
     if not dni:
-        raise ValueError("DNI no puede ser vacío o nulo")
+        raise ValueError("Alquiler fallido por usuario no registrado.")
 
     try:
         user = session.get(UserModel, dni)

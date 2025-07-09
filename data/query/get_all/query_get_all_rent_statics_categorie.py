@@ -1,7 +1,7 @@
 from datetime import datetime
 from operator import and_
 from data.config import session
-from data.model import MachineCategorieModel
+from data.model.MachineCategorieModel import MachineCategorieModel
 from data.model.RentModel import RentModel
 
 def execute(categorie):

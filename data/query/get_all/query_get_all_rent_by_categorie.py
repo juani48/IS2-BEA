@@ -10,7 +10,10 @@ def execute(start_date, end_date, categorie):
     ).join(
         MachineCategorieModel, MachineCategorieModel.machine_id == RentModel.machine_id
     ).filter(
-        MachineCategorieModel.categorie_id == categorie
+        and_(
+            MachineCategorieModel.categorie_id == categorie,
+            RentModel.canceled_by_maintenance == False
+        )
     ).all()
 
     return local_reservation

@@ -68,11 +68,10 @@
       <ul class="flex flex-wrap justify-between text-white py- px-4 text-sm md:text-base">
         <li><a href="/main.html">Menú</a></li>
         <li><a href="machinery.html">Maquinarias</a></li> <!-- onclick="getMachine()" no funciona si no son botones -->
-         <li class="relative" id="dropdown-categorias-container">
-                <span id="dropdown-categorias-toggle"
-                      class="cursor-pointer text-white hover:underline inline-block">
-                  Categorías <i class="fas fa-caret-down ml-1"></i>
-                </span>
+        <li class="relative" id="dropdown-categorias-container">
+          <span id="dropdown-categorias-toggle" class="cursor-pointer text-white hover:underline inline-block">
+            Categorías <i class="fas fa-caret-down ml-1"></i>
+          </span>
 
                 <div id="dropdown-categorias-menu"
                     class="hidden absolute left-0 mt-2 bg-white rounded-md shadow-lg w-64 z-50"
@@ -186,6 +185,7 @@ function traducirErrorBackend(errorOriginal) {
 
     const machineId = new URLSearchParams(window.location.search).get("machine_id");
     // 1. Obtener reservas y configurar calendario
+    
     let reservas = [];
     
     Promise.all([
@@ -443,27 +443,27 @@ toggleNuevoCliente.addEventListener("change", () => {
       } else if (res.status === 404) {
         mensaje.innerHTML = `
         <div class="bg-yellow-500 text-white px-4 py-2 rounded shadow mt-2">El cliente no está registrado. Ingresá sus datos.</div>`;
-        document.getElementById("campos-nuevo-cliente").classList.remove("hidden");
-      } else {
-        throw new Error("Error verificando cliente");
-      }
-    })
-    .catch(err => {
-      mensaje.innerHTML = `
+            document.getElementById("campos-nuevo-cliente").classList.remove("hidden");
+          } else {
+            throw new Error("Error verificando cliente");
+          }
+        })
+        .catch(err => {
+          mensaje.innerHTML = `
       <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">Error al verificar el cliente.</div>`;
     });
 }
 
 
 
-function crearNuevoCliente() {
-  const dni = document.getElementById("client_id").value;
-  const name = document.getElementById("name").value;
-  const lastname = document.getElementById("lastname").value;
-  const email = document.getElementById("email").value;
-  const phone = document.getElementById("phone").value;
-  const birthdate = document.getElementById("birthdate").value;
-  const password = "cliente123"; // contraseña por defecto
+    function crearNuevoCliente() {
+      const dni = document.getElementById("client_id").value;
+      const name = document.getElementById("name").value;
+      const lastname = document.getElementById("lastname").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const birthdate = document.getElementById("birthdate").value;
+      const password = "cliente123"; // contraseña por defecto
 
   if (!dni || !name || !lastname || !email || !phone || !birthdate) {
     mostrarError("Por favor completá todos los campos.");
@@ -495,23 +495,23 @@ function crearNuevoCliente() {
 }
 
     function mostrarError(texto) {
-  const mensaje = document.getElementById("mensaje");
-  mensaje.innerHTML = `
+      const mensaje = document.getElementById("mensaje");
+      mensaje.innerHTML = `
     <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">
       ${texto}
     </div>
   `;
-}
+    }
 
-// Función que elimina los números si se intentan ingresar
-function bloquearNumeros(inputId) {
-  const input = document.getElementById(inputId);
-  input.addEventListener("input", () => {
-    input.value = input.value.replace(/[0-9]/g, '');
-  });
-}
+    // Función que elimina los números si se intentan ingresar
+    function bloquearNumeros(inputId) {
+      const input = document.getElementById(inputId);
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/[0-9]/g, '');
+      });
+    }
 
- 
+
   </script>
 
 

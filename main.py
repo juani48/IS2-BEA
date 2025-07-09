@@ -1087,6 +1087,16 @@ def machine_reservations():
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route("/reservation/machine_reservations_history", methods=["GET", "POST"]) # reservas de una maquina
+@login_required
+def machine_reservations_history():
+    print("entro")
+    try:
+        request_value = request.get_json().get("machine_id") # [ star:.... , endfa....  ]
+        return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine_user_hystory(request_value) }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
  
 @app.route("/reservation/cancel_reservation", methods=["POST"])
 @login_required

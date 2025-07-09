@@ -499,7 +499,7 @@
 
                   // Insertar en el DOM antes del botón Reservar
                   const botonReservar = document.getElementById("reserveBtn");
-                 const adminContainer =
+                  const adminContainer =
                     document.getElementById("adminActions");
                   if (adminContainer) adminContainer.appendChild(botonesDiv);
                 }
@@ -629,167 +629,17 @@
         }, 3000);
       }
 
-      // ✅ FUNCIONALIDAD COMPLETA Y FUNCIONAL DEL BOTÓN DE MANTENIMIENTO
-      function mostrarBotonMantenimiento(
-        mantenimientoActivo,
-        mantenimientoActual,
-        sessionData,
-        machine
-      ) {
-        console.log("🔧 mostrarBotonMantenimiento ejecutado");
-        const botonPrevio = document.getElementById("boton-mantenimiento");
-        if (botonPrevio) botonPrevio.remove(); // Eliminalo si ya existía
-
-        const botonMantenimiento = document.createElement("button");
-        botonMantenimiento.id = "boton-mantenimiento";
-
-        const actualizarEstadoBoton = () => {
-          botonMantenimiento.innerText = mantenimientoActivo
-            ? "Terminar mantenimiento"
-            : "Iniciar mantenimiento";
-          botonMantenimiento.className = mantenimientoActivo
-            ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            : "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
-        };
-
-        actualizarEstadoBoton();
-
-        botonMantenimiento.onclick = async () => {
-          const hoy = new Date().toISOString().split("T")[0];
-          let empId = 0;
-
-          if (sessionData.type === "Empleado") {
-            try {
-              const res = await fetch("/session/employee");
-              const json = await res.json();
-              if (!json.employee_id)
-                throw new Error("ID de empleado no recibido");
-              empId = json.employee_id;
-            } catch (e) {
-              alert("No se pudo obtener el número de empleado");
-              return;
-            }
-          }
-
-          try {
-            let res;
-            if (!mantenimientoActivo) {
-              res = await fetch("/maintenance/start_maintenance", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  start_day: hoy,
-                  client_id: 0,
-                  start_employee_id: empId,
-                  machine_id: machine.patent,
-                }),
-              });
-
-              const body = await res.text();
-              console.log(
-                "✅ Respuesta mantenimiento inicio:",
-                res.status,
-                body
-              );
-
-              if (!res.ok)
-                throw new Error("Fallo al iniciar mantenimiento: " + body);
-
-              mostrarToast("Mantenimiento iniciado", "blue");
-              setTimeout(() => location.reload(), 1000);
-
-              mantenimientoActivo = true;
-              mostrarBotonMantenimiento(
-                mantenimientoActivo,
-                {
-                  start_day: hoy,
-                  client_id: 0,
-                  start_employee_id: empId,
-                  machine_id: machine.patent,
-                },
-                sessionData,
-                machine
-              );
-            } else {
-              const descripcionInput = document.getElementById(
-                "descripcion-mantenimiento"
-              );
-              const descripcion = descripcionInput
-                ? descripcionInput.value.trim()
-                : "";
-
-              res = await fetch("/maintenance/end_maintenance", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  start_day: mantenimientoActual.start_day,
-                  client_id: mantenimientoActual.client_id,
-                  start_employee_id: mantenimientoActual.start_employee_id,
-                  machine_id: machine.patent,
-                  end_employee_id: empId,
-                  description: descripcion || "",
-                }),
-              });
-
-              const body = await res.text();
-              console.log(
-                "✅ Respuesta mantenimiento cierre:",
-                res.status,
-                body
-              );
-
-              if (!res.ok)
-                throw new Error("Fallo al terminar mantenimiento: " + body);
-
-              mostrarToast("Mantenimiento finalizado", "green");
-              setTimeout(() => location.reload(), 1000); // recarga tras 1 segundo
-            }
-          } catch (err) {
-            console.error("⛔ Error:", err);
-            alert("Error: " + err.message);
-          }
-        };
-
-        const botonReservar = document.getElementById("reserveBtn");
-        if (!botonReservar) {
-          console.error(
-            "❌ No se encontró el botón de reserva para insertar el de mantenimiento"
-          );
-          return;
-        }
-        console.log("💡 Agregando botón al DOM", botonMantenimiento);
-        botonReservar.parentNode.insertBefore(
-          botonMantenimiento,
-          botonReservar
-        );
-
-        // 🔁 Agregar botón e input al DOM (evitando duplicados)
-        let contenedorFinal = document.getElementById(
-          "contenedor-mantenimiento"
-        );
-        if (contenedorFinal) contenedorFinal.remove();
-
-        contenedorFinal = document.createElement("div");
-        contenedorFinal.id = "contenedor-mantenimiento";
-        contenedorFinal.className = "flex flex-col gap-2 mt-4";
-
-        // input solo si mantenimiento está activo
-        if (mantenimientoActivo) {
-          const inputDescripcion = document.createElement("input");
-          inputDescripcion.type = "text";
-          inputDescripcion.placeholder = "Descripción del mantenimiento";
-          inputDescripcion.id = "descripcion-mantenimiento";
-          inputDescripcion.className =
-            "border border-gray-300 px-4 py-2 rounded shadow";
-          contenedorFinal.appendChild(inputDescripcion);
-        }
-
-        // agregamos el botón común
-        contenedorFinal.appendChild(botonMantenimiento);
-
-        // insertamos antes del botón reservar
+      function mostrarBotonMantenimiento() {
         const adminContainer = document.getElementById("adminActions");
-        if (adminContainer) adminContainer.appendChild(contenedorFinal);
+        if (!adminContainer) return;
+
+        const btn = document.createElement("a");
+        btn.href = `/machine_history.html?machine_id=${machinePatentGlobal}`;
+        btn.innerText = "Mantenimiento";
+        btn.className =
+          "w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded shadow font-semibold transition";
+
+        adminContainer.appendChild(btn);
       }
 
       /*COMENTARIOS*/
@@ -812,17 +662,21 @@
           });
       }
 
-function getSafeIdFromDate(dateString) {
-  return dateString.replaceAll(/[^a-zA-Z0-9]/g, "_");
-}
+      function getSafeIdFromDate(dateString) {
+        return dateString.replaceAll(/[^a-zA-Z0-9]/g, "_");
+      }
 
-function colorPorRol(type) {
-  switch ((type || "").toLowerCase()) {
-    case "Admin": return "text-yellow-600";
-    case "Empleado": return "text-blue-600";
-    case "Cliente": default: return "text-gray-500";
-  }
-}
+      function colorPorRol(type) {
+        switch ((type || "").toLowerCase()) {
+          case "Admin":
+            return "text-yellow-600";
+          case "Empleado":
+            return "text-blue-600";
+          case "Cliente":
+          default:
+            return "text-gray-500";
+        }
+      }
 
       function renderComentario(comentario, esRespuesta = false) {
         const card = document.createElement("div");
@@ -830,14 +684,16 @@ function colorPorRol(type) {
           ? "ml-6 border-l pl-4 border-gray-300"
           : "border-b pb-4";
 
-  const nombre = `${comentario.name || "Usuario"} ${comentario.lastname || ""}`;
-  const tipo = comentario.type || "Cliente";  // por si no viene definido
-  const color = colorPorRol(tipo);
-  comentario.raw_date = comentario.date;
-  const fecha = new Date(comentario.date).toLocaleString("es-AR");
-  const safeId = getSafeIdFromDate(comentario.date);
+        const nombre = `${comentario.name || "Usuario"} ${
+          comentario.lastname || ""
+        }`;
+        const tipo = comentario.type || "Cliente"; // por si no viene definido
+        const color = colorPorRol(tipo);
+        comentario.raw_date = comentario.date;
+        const fecha = new Date(comentario.date).toLocaleString("es-AR");
+        const safeId = getSafeIdFromDate(comentario.date);
 
-  card.innerHTML = `
+        card.innerHTML = `
     <p class="text-sm text-gray-700">
       <strong>${nombre}</strong>
       <span class="ml-1 text-xs ${color}">(${tipo})</span>
@@ -853,20 +709,21 @@ function colorPorRol(type) {
 
     <div id="respuesta-${safeId}" class="mt-2 hidden">
       <textarea class="w-full border rounded p-2 text-sm text-black" rows="2" placeholder="Tu respuesta..."></textarea>
-      <button onclick='enviarRespuesta("${safeId}", "${comentario.date}")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
+      <button onclick='enviarRespuesta("${safeId}", "${
+          comentario.date
+        }")' class="mt-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Enviar respuesta</button>
     </div>
   `;
 
-  // Respuestas
-  if (comentario.answers && comentario.answers.length > 0) {
-    comentario.answers.forEach((r) => {
-      card.appendChild(renderComentario(r, true));
-    });
-  }
+        // Respuestas
+        if (comentario.answers && comentario.answers.length > 0) {
+          comentario.answers.forEach((r) => {
+            card.appendChild(renderComentario(r, true));
+          });
+        }
 
-  return card;
-}
-
+        return card;
+      }
 
       function mostrarFormularioRespuesta(dateId) {
         document

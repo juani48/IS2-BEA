@@ -218,7 +218,7 @@
 
       let reservas = [];
 
-      fetch("/reservation/machine_reservations", {
+      fetch("/reservation/machine_reservations_history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ machine_id: machineId })

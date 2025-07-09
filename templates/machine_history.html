@@ -166,9 +166,85 @@
     </main>
 
     <script>
+      let machineId;
+      let employeeId = 0;
+      let mantenimientoActivo = false;
+      let mantenimientoActual = null;
+      let descripcionInput;
+
       document.addEventListener("DOMContentLoaded", async () => {
+        const modal = document.getElementById("modalConfirmacion");
+        const btnConfirmar = document.getElementById("confirmarModal");
+        const btnCancelar = document.getElementById("cancelarModal");
+        btnCancelar.onclick = () => {
+          modal.classList.add("hidden");
+        };
+
         const params = new URLSearchParams(window.location.search);
-        const machineId = params.get("machine_id");
+        machineId = params.get("machine_id");
+        const maintenanceContainer = document.createElement("div");
+        maintenanceContainer.className = "mt-6 flex flex-col gap-3";
+
+        mantenimientoActivo = false;
+        mantenimientoActual = null;
+        employeeId = 0;
+
+        const btn = document.createElement("button");
+        btn.className =
+          "self-start bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-1 px-3 rounded";
+
+        btn.innerText = "Cargando...";
+
+        descripcionInput = document.createElement("input");
+        descripcionInput.type = "text";
+        descripcionInput.placeholder = "Descripción del mantenimiento";
+        descripcionInput.id = "descripcion-mantenimiento";
+        descripcionInput.className =
+          "border border-gray-300 px-4 py-2 rounded shadow";
+        descripcionInput.style.display = "none"; // solo visible si hay mantenimiento activo
+
+        maintenanceContainer.appendChild(btn);
+        maintenanceContainer.appendChild(descripcionInput);
+        document.getElementById("machineTitle").after(maintenanceContainer);
+
+        const session = await fetch("/session/employee").then((r) =>
+          r.ok ? r.json() : {}
+        );
+        employeeId = session.employee_id || 0;
+
+        const data = await fetch("/maintenance/get_all_maintenance").then((r) =>
+          r.json()
+        );
+        const mantenimiento = data.maintenance.find(
+          (m) => m.machine_id === machineId && !m.completed
+        );
+
+        mantenimientoActivo = !!mantenimiento;
+        mantenimientoActual = mantenimiento;
+
+        btn.innerText = mantenimientoActivo
+          ? "Terminar mantenimiento"
+          : "Iniciar mantenimiento";
+        btn.className = mantenimientoActivo
+          ? "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          : "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+
+        descripcionInput.style.display = mantenimientoActivo ? "block" : "none";
+
+        btn.onclick = () => {
+          if (!mantenimientoActivo) {
+            // Solo mostrar el modal si se va a INICIAR mantenimiento
+            modal.classList.remove("hidden");
+          } else {
+            // Si se va a TERMINAR mantenimiento, ejecutar directo
+            finalizarMantenimiento();
+          }
+        };
+
+        btnConfirmar.onclick = () => {
+          modal.classList.add("hidden");
+          iniciarMantenimiento();
+        };
 
         if (!machineId) {
           alert("No se especificó ninguna máquina.");
@@ -244,6 +320,46 @@
 
           container.appendChild(div);
         }
+      }
+
+      function iniciarMantenimiento() {
+        const hoy = new Date().toISOString().split("T")[0];
+        fetch("/maintenance/start_maintenance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            start_day: hoy,
+            client_id: 0,
+            start_employee_id: employeeId,
+            machine_id: machineId,
+          }),
+        })
+          .then((r) =>
+            r.ok ? r.text() : Promise.reject("Error al iniciar mantenimiento")
+          )
+          .then(() => location.reload())
+          .catch((err) => alert(err));
+      }
+
+      function finalizarMantenimiento() {
+        const descripcion = descripcionInput.value.trim();
+        fetch("/maintenance/end_maintenance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            start_day: mantenimientoActual.start_day,
+            client_id: mantenimientoActual.client_id,
+            start_employee_id: mantenimientoActual.start_employee_id,
+            machine_id: machineId,
+            end_employee_id: employeeId,
+            description: descripcion || "",
+          }),
+        })
+          .then((r) =>
+            r.ok ? r.text() : Promise.reject("Error al finalizar mantenimiento")
+          )
+          .then(() => location.reload())
+          .catch((err) => alert(err));
       }
 
       function renderMaintenances(items) {
@@ -338,5 +454,33 @@
         © 2025 Bob El Alquilador. Todos los derechos reservados.
       </div>
     </footer>
+
+    <!-- Modal de confirmación -->
+    <div
+      id="modalConfirmacion"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 class="text-xl font-bold mb-4 text-red-700">Confirmar acción</h2>
+        <p class="mb-4 text-gray-700">
+          ¿Estás seguro? Esta acción cancelará todas las reservas y alquileres
+          activos de la máquina.
+        </p>
+        <div class="flex justify-end gap-3">
+          <button
+            id="cancelarModal"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            id="confirmarModal"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

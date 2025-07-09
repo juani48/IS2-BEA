@@ -1,18 +1,17 @@
 from sqlalchemy import and_
 from data.config import session
 from data.model.ReservationModel import ReservationModel
-from data.model.RentModel import RentModel
 
 def execute(machine_id):
-    list =  session.query(
+    list = session.query(
         ReservationModel
     ).filter(
         and_(
             ReservationModel.machine_id == machine_id,
             ReservationModel.activate == False
         )
-        
     ).all() #esta parte la tuve que cambiar porque estaba tirando errores
+    print(list)
     return list
 
 

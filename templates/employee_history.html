@@ -208,10 +208,18 @@
           // ALQUILERES
           const res2 = await fetch("/rent/get_all_rent", { method: "POST" });
           const data2 = await res2.json();
-          const filteredRents = (data2 || []).filter(
-            (r) => r.employee_id == employeeNumber
-          );
-          renderCards(filteredRents, "rentResults", "alquileres");
+
+          if (Array.isArray(data2)) {
+            const filteredRents = data2.filter(
+              (r) => r.employee_id == employeeNumber
+            );
+            renderCards(filteredRents, "rentResults", "alquileres");
+          } else {
+            console.warn("⚠️ Respuesta inesperada en alquileres:", data2);
+            document.getElementById(
+              "rentResults"
+            ).innerHTML = `<p class="text-gray-500">No posee historial.</p>`;
+          }
 
           // MANTENIMIENTOS
           const res3 = await fetch("/maintenance/get_all_maintenance");

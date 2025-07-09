@@ -86,15 +86,14 @@
       <ul class="flex flex-col space-y-3">
         <li><a href="main.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Menú</a></li>
         <li><a href="register_machinery.html" class="block py-1 hover:bg-bob-dark-red px-2 rounded">Dar de alta una
-            maquinaria</a></li 
-        <li><a href="/ask_question.html" >Contáctanos</a></li>
+            maquinaria</a></li <li><a href="/ask_question.html">Contáctanos</a></li>
       </ul>
     </div>
-  </div>
+    </div>
   </header>
 
   <div class="max-w-xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-8">
-    
+
     <h1 class="text-3xl font-bold text-center text-bob-red mb-6">
       Alquiler Presencial
     </h1>
@@ -103,23 +102,26 @@
 
     <form id="form-alquiler" class="space-y-5">
       <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">DNI del cliente</label>
-  <input type="number" id="client_id" required
-    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
-</div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">DNI del cliente</label>
+        <input type="number" id="client_id" required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bob-red" />
+      </div>
 
-<button type="button"
-  class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
-  onclick="verificarCliente()">Verificar usuario</button>
+      <button type="button"
+        class="bg-bob-red text-white font-semibold py-1 px-4 rounded hover:bg-bob-dark-red mt-2 mb-4 transition"
+        onclick="verificarCliente()">Verificar usuario</button>
 
-<div id="campos-nuevo-cliente" class="space-y-3 hidden">
-  <div><input id="name" type="text" placeholder="Nombre" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="lastname" type="text" placeholder="Apellido" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="email" type="email" placeholder="Email" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="phone" type="tel" placeholder="Teléfono" class="w-full border rounded px-4 py-2" /></div>
-  <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento" class="w-full border rounded px-4 py-2" /></div>
-  <button type="button" onclick="crearNuevoCliente()" class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo cliente</button>
-</div>
+      <div id="campos-nuevo-cliente" class="space-y-3 hidden">
+        <div><input id="name" type="text" placeholder="Nombre" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="lastname" type="text" placeholder="Apellido" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="email" type="email" placeholder="Email" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="phone" type="tel" placeholder="Teléfono" class="w-full border rounded px-4 py-2" /></div>
+        <div><input id="birthdate" type="date" placeholder="Fecha de nacimiento"
+            class="w-full border rounded px-4 py-2" /></div>
+        <button type="button" onclick="crearNuevoCliente()"
+          class="bg-green-600 text-white font-semibold py-1 px-4 rounded hover:bg-green-700 transition">Crear nuevo
+          cliente</button>
+      </div>
 
 
       <div>
@@ -155,84 +157,87 @@
       </button>
     </form>
 
-    
+
   </div>
 
   <script>
 
     function mostrarAviso(texto, color = "red") {
-  const mensaje = document.getElementById("mensaje");
-  mensaje.innerHTML = `
+      const mensaje = document.getElementById("mensaje");
+      mensaje.innerHTML = `
     <div class="bg-${color}-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mb-4">
       <i class="fas fa-exclamation-circle text-xl"></i>
       <span class="font-semibold">${texto}</span>
     </div>`;
-}
+    }
 
 
 
     const machineId = new URLSearchParams(window.location.search).get("machine_id");
     // 1. Obtener reservas y configurar calendario
-    
+
     let reservas = [];
-    
+
     Promise.all([
-  // 1) RESERVAS
-  fetch("/reservation/machine_reservations", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ machine_id: machineId })
-  }).then(r => r.ok ? r.json() : Promise.reject("error reservas")),
+      // 1) RESERVAS
+      fetch("/reservation/machine_reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ machine_id: machineId })
+      }).then(r => r.ok ? r.json() : Promise.reject("error reservas")),
 
-  // 2) ALQUILERES
-  fetch("/rent/get_all_by_machine", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ machine_id: machineId })
-  }).then(r => r.ok ? r.json() : Promise.reject("error rents")),
+      // 2) ALQUILERES -->> NO ES NECESARIO ESTO LARA, YO DESDE EL BACK TE MANDO TODO EN /reservation/machine_reservations
+      fetch("/rent/get_all_by_machine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ machine_id: machineId })
+      }).then(r => r.ok ? r.json() : Promise.reject("error rents")),
 
-  // 3) MANTENIMIENTO
-  fetch(`/maintenance/get_active_maintenance/${machineId}`)
-    .then(r => r.ok ? r.json() : Promise.resolve({ value: [] }))
-])
-.then(([resData, rentData, maintData]) => {
-  // ⬅ ESTE 'rentData' debe coincidir con la segunda promesa
+      // 3) MANTENIMIENTO
+      fetch(`/maintenance/get_active_maintenance/${machineId}`)
+        .then(r => r.ok ? r.json() : Promise.resolve({ value: [] }))
+    ])
+      .then(([resData, rentData, maintData]) => {
+        // ⬅ ESTE 'rentData' debe coincidir con la segunda promesa
 
-   const reservas = [...resData.value, ...rentData.value];
-  // Diagnóstico express: ponelo justo debajo de reservas = ...
-console.log("▶ reservas recibidas:", resData);
-console.log("▶ reservas.value:", resData.value);
+        const reservas = [...resData.value, ...rentData.value];
+        // Diagnóstico express: ponelo justo debajo de reservas = ...
+        console.log("▶ reservas recibidas:", resData);
+        console.log("▶ reservas.value:", resData.value);
 
 
-  const mantenimientoActivo = maintData.value.length > 0;
-    // ─── NUEVO BLOQUE ───
-  const hoy = new Date();                       // 1) hoy en objeto Date
-  const hoyISO = hoy.toISOString().split("T")[0];  // 2) hoy en formato YYYY-MM-DD
+        const mantenimientoActivo = maintData.value.length > 0;
+        // ─── NUEVO BLOQUE ───
+        const hoy = new Date();                       // 1) hoy en objeto Date
+        const hoyISO = hoy.toISOString().split("T")[0];  // 2) hoy en formato YYYY-MM-DD
 
-  // 3) ¿La máquina está ocupada hoy?
-  const hoyOcupado = reservas.some(reserva => {
-    const inicio = new Date(reserva.start_day);
-    inicio.setDate(inicio.getDate() - 14);      // colchón −14 días
-    const fin = new Date(reserva.end_day);
-    fin.setDate(fin.getDate() + 14);            // colchón +14 días
-    return hoy >= inicio && hoy <= fin;
-  });
-  // ── FIN BLOQUE ──
+        // 3) ¿La máquina está ocupada hoy?
+        const hoyOcupado = reservas.some(reserva => {
+          const inicio = new Date(reserva.start_day);
+          inicio.setDate(inicio.getDate() - 14);      // colchón −14 días
+          const fin = new Date(reserva.end_day);
+          fin.setDate(fin.getDate() + 14);            // colchón +14 días
+          return hoy >= inicio && hoy <= fin;
+        });
+        // ── FIN BLOQUE ──
 
         if (hoyOcupado || mantenimientoActivo) {
-  let texto = "";
-  if (hoyOcupado) texto += "La máquina está reservada, alquilada o en mantenimiento hoy.";
-  if (hoyOcupado && mantenimientoActivo) texto += "<br>";
-  if (mantenimientoActivo) texto += "Además, tiene un mantenimiento activo.";
-  mostrarAviso(texto, "yellow");
-  const btnConfirmar = document.querySelector("#form-alquiler button[type='submit']");
-btnConfirmar.disabled = true;
-btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
-  document.getElementById("start_day").value = "";
-  document.getElementById("start_day").disabled = true;
-  document.getElementById("end_day").disabled = true;
-  return;
-}
+          let texto = "";
+          if (hoyOcupado) texto += "La máquina está reservada, alquilada o en mantenimiento hoy.";
+          if (hoyOcupado && mantenimientoActivo) texto += "<br>";
+          if (mantenimientoActivo) texto += "Además, tiene un mantenimiento activo.";
+          mostrarAviso(texto, "yellow");
+          const btnConfirmar = document.querySelector("#form-alquiler button[type='submit']");
+          btnConfirmar.disabled = true;
+          btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
+          document.getElementById("start_day").value = "";
+          document.getElementById("start_day").disabled = true;
+          document.getElementById("end_day").disabled = true;
+          setTimeout(() => {
+            window.location.href = "machinery.html";
+          }, 2000);
+          return;
+        }
 
 
 
@@ -247,11 +252,11 @@ btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
         document.getElementById("end_day").min = finISO;
 
         inicializarCalendarioFin(fechaMinFin);
-})
-.catch(error => {
-  mostrarAviso("Error al cargar disponibilidad de la máquina.", "red");
-  console.error(error);
-});
+      })
+      .catch(error => {
+        mostrarAviso("Error al cargar disponibilidad de la máquina.", "red");
+        console.error(error);
+      });
 
     // Inicializar Flatpickr solo en end_day
     function inicializarCalendarioFin(minFechaFin) {
@@ -400,12 +405,12 @@ btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
       });
     });
 
-  function verificarCliente() {
-  const dni = document.getElementById("client_id").value;
-  if (!dni) {
-    mostrarError("Ingresá un DNI primero.");
-    return;
-  }
+    function verificarCliente() {
+      const dni = document.getElementById("client_id").value;
+      if (!dni) {
+        mostrarError("Ingresá un DNI primero.");
+        return;
+      }
 
       fetch("/users/check_client", {
         method: "POST",
@@ -428,8 +433,8 @@ btnConfirmar.classList.add("opacity-50", "cursor-not-allowed");
         .catch(err => {
           mensaje.innerHTML = `
       <div class="bg-red-600 text-white px-4 py-2 rounded shadow mt-2">Error al verificar el cliente.</div>`;
-    });
-}
+        });
+    }
 
 
 

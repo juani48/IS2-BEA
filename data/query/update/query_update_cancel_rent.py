@@ -13,6 +13,5 @@ def execute(start_day, client_id, machine_id):
         )
     ).first()
 
-    if rent != None:
-        rent.canceled_by_maintenance == True
-        session.commit()
+    rent.canceled_by_maintenance = True
+    session.commit()

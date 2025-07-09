@@ -1,3 +1,4 @@
+from operator import and_
 import init_db_proyect
 from datetime import datetime, timedelta
 import json
@@ -24,7 +25,7 @@ import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
-from data.query.get.query_get_machine import execute
+from data.query.get import query_get_machine
 from data.config import session
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.model.CategorieModel import CategorieModel
@@ -994,7 +995,7 @@ def get_all_machines_filter_admin():
 
 @app.route("/machine/get_by_id/<string:machine_id>", methods=["GET"])
 def get_machine_by_id(machine_id):
-    machine = execute(machine_id)
+    machine = query_get_machine.execute(machine_id)
     if not machine:
         return jsonify({"error": "Maquinaria no encontrada"}), 404
 
@@ -1240,7 +1241,13 @@ def get_all_rents_by_machine():
         if not machine_id:
             return jsonify({ "error": "machine_id no proporcionado" }), 400
 
-        rents = session.query(RentModel).filter(RentModel.machine_id == machine_id).all()
+        rents = session.query(RentModel).filter(
+            and_(
+                RentModel.machine_id == machine_id,
+                RentModel.canceled_by_maintenance == False
+            )
+            
+            ).all()
         print("debuggggg")
         return jsonify({ "value": [r.json() for r in rents] }), 200
 
@@ -1289,7 +1296,7 @@ def get_all_maintenance():
 @app.route("/maintenance/get_active_maintenance", methods=["GET"])
 def get_active_maintenance():
     try:
-        return jsonify({ "maintenance": [x.json() for x in execute()] }), 200
+        return jsonify({ "maintenance": [x.json() for x in query_get_machine.execute() if x.under_maintenance == True ] }), 200
     except Exception as e:
         return jsonify({ "error": str(e) }), 404
 

@@ -194,7 +194,7 @@
         body: JSON.stringify({ machine_id: machineId })
       }).then(r => r.ok ? r.json() : Promise.reject("error reservas")),
 
-      
+
       // 2) ALQUILERES
       fetch("/rent/get_all_by_machine", {
         method: "POST",
@@ -240,6 +240,9 @@
           document.getElementById("start_day").value = "";
           document.getElementById("start_day").disabled = true;
           document.getElementById("end_day").disabled = true;
+          setTimeout(() => {
+            window.location.href="machinery.html";
+          },2500)
           return;
         }
 
@@ -267,7 +270,7 @@
     function inicializarCalendarioFin(minFechaFin) {
       console.log("A", reservas);
       const diasBloqueados = reservas.map(reserva => {
-        
+
 
         let fechaInicio = new Date(reserva.start_day);
         fechaInicio.setDate(fechaInicio.getDate() - 14);
@@ -411,11 +414,11 @@
         <span class="font-semibold">Alquiler registrado correctamente.</span>
       </div>
     `;
-          setTimeout(() => window.location.href="main.html", 3000);
+          setTimeout(() => window.location.href = "main.html", 3000);
           form.reset();
           document.getElementById("end_day").disabled = true;
           document.getElementById("campos-nuevo-cliente").classList.add("hidden");
-          
+
         } else {
           const result = await response.json();
           const errorMsg = result.error === "Usuario no registrado"

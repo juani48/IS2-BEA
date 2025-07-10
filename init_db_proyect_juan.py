@@ -127,7 +127,7 @@ def __EMPLEADOS__():
 
 def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-07-11",
+        start_day="2025-07-10", #--> 11
         end_day="2025-07-19",
         client_id=44555666, # ----> RESERVA DE nahuel
         machine_id="ABC1",

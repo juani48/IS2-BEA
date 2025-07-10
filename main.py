@@ -1255,7 +1255,7 @@ def get_all_rents_by_machine():
             )
             
             ).all()
-        print("debuggggg")
+        print(rents)
         return jsonify({ "value": [r.json() for r in rents] }), 200
 
     except Exception as e:

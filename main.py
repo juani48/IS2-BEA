@@ -716,8 +716,6 @@ def send_question():
         # Validaciones mínimas
         if not all([email, name, lastname, question]):
             return jsonify({"error": "Todos los campos son obligatorios."}), 400
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            return jsonify({"error": "Email inválido."}), 400
 
         sendQuestion.usecase_send_question(
             emailUser=email, name=name, lastname=lastname, question=question

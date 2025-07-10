@@ -2,6 +2,7 @@ import init_db_proyect
 from datetime import datetime, timedelta
 import json
 import re
+import traceback
 from flask import Flask, jsonify, render_template, request,abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from core.entity.User import User
@@ -1253,6 +1254,7 @@ def get_all_rents_by_machine():
         return jsonify({ "value": [r.json() for r in rents] }), 200
 
     except Exception as e:
+        traceback.print_exc()
         return jsonify({ "error": f"Error al obtener alquileres: {str(e)}" }), 500
 
 

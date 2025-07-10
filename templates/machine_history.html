@@ -274,7 +274,7 @@
             body: JSON.stringify({ machine_id: machineId }),
           });
           const rentData = await resRents.json();
-          const alquileres = rentData.rents || [];
+          const alquileres = rentData.value || [];
 
           renderCards(alquileres, "rentsList", "type");
 
@@ -364,26 +364,55 @@
 
       function renderMaintenances(items) {
         const container = document.getElementById("maintenancesList");
-        if (!items.length) {
+        container.innerHTML = "";
+
+        const activos = items.filter((m) => !m.completed);
+        const finalizados = items.filter((m) => m.completed);
+
+        if (activos.length === 0 && finalizados.length === 0) {
           container.innerHTML = `<p class="text-gray-500">No posee historial.</p>`;
           return;
         }
 
-        for (const item of items) {
-          const div = document.createElement("div");
-          div.className = "border rounded p-4 bg-gray-50 shadow";
+        // Activos
+        if (activos.length > 0) {
+          const titulo = document.createElement("h4");
+          titulo.textContent = " Mantenimientos Activos";
+          titulo.className = "text-md font-semibold text-bob-red mb-2 mt-4";
+          container.appendChild(titulo);
 
-          div.innerHTML = `
-          <p><strong>Inicio:</strong> ${item.start_day}</p>
-          <p><strong>Fin:</strong> ${item.end_day}</p>
-          <p><strong>Empleado inicio:</strong> ${item.start_employee_id}</p>
-          <p><strong>Empleado fin:</strong> ${item.end_employee_id}</p>
-          <p><strong>Descripción:</strong> ${
-            item.description || "Sin descripción"
-          }</p>
-        `;
+          activos.forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "border rounded p-4 bg-gray-50 shadow";
+            div.innerHTML = `
+        <p><strong>Inicio:</strong> ${item.start_day}</p>
+        <p><strong>Empleado inicio:</strong> ${item.start_employee_id}</p>
+      `;
+            container.appendChild(div);
+          });
+        }
 
-          container.appendChild(div);
+        // Finalizados
+        if (finalizados.length > 0) {
+          const titulo = document.createElement("h4");
+          titulo.textContent = " Mantenimientos Finalizados";
+          titulo.className = "text-md font-semibold text-bob-red mb-2 mt-6";
+          container.appendChild(titulo);
+
+          finalizados.forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "border rounded p-4 bg-gray-50 shadow";
+            div.innerHTML = `
+        <p><strong>Inicio:</strong> ${item.start_day}</p>
+        <p><strong>Fin:</strong> ${item.end_day}</p>
+        <p><strong>Empleado inicio:</strong> ${item.start_employee_id}</p>
+        <p><strong>Empleado fin:</strong> ${item.end_employee_id}</p>
+        <p><strong>Descripción:</strong> ${
+          item.description || "Sin descripción"
+        }</p>
+      `;
+            container.appendChild(div);
+          });
         }
       }
     </script>

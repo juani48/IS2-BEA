@@ -208,10 +208,12 @@ function traducirErrorBackend(errorOriginal) {
     .then(r => r.ok ? r.json() : Promise.resolve({ value: [] }))
 ])
 .then(([resData, rentData, maintData]) => {
-  // ⬅ ESTE 'rentData' debe coincidir con la segunda promesa
+  //  Validación por si el backend devuelve error en vez de value
+  const reservasRent = Array.isArray(rentData.value) ? rentData.value : [];
+  const reservasReserva = Array.isArray(resData.value) ? resData.value : [];
 
-   const reservas = [...resData.value, ...rentData.value];
- 
+  const reservas = [...reservasReserva, ...reservasRent];
+
 
   const mantenimientoActivo = maintData.value.length > 0;
     // ─── NUEVO BLOQUE ───
@@ -237,7 +239,7 @@ function traducirErrorBackend(errorOriginal) {
 
     setTimeout(() => {
     window.location.href = "/machinery.html";
-  }, 3000); // 3 segundos
+  }, 2000); // 2 segundos
 
   
   const btnConfirmar = document.querySelector("#form-alquiler button[type='submit']");
@@ -401,13 +403,16 @@ toggleNuevoCliente.addEventListener("change", () => {
   });
 
   if (response.ok) {
-    mensaje.innerHTML = `
-      <div class="bg-green-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mt-4">
-        <i class="fas fa-check-circle text-xl"></i>
-        <span class="font-semibold">Alquiler registrado correctamente.</span>
-      </div>
-    `;
-    setTimeout(() => window.location.reload(), 3000);
+  mensaje.innerHTML = `
+    <div class="bg-green-600 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-2 mt-4">
+      <i class="fas fa-check-circle text-xl"></i>
+      <span class="font-semibold">Alquiler registrado correctamente.</span>
+    </div>
+  `;
+  setTimeout(() => {
+    window.location.href = "/machinery.html";  
+  }, 2000);
+
     form.reset();
     document.getElementById("end_day").disabled = true;
     document.getElementById("campos-nuevo-cliente").classList.add("hidden");

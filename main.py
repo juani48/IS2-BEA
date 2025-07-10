@@ -482,10 +482,10 @@ def add_employee():
     try:
         data = request.get_json()
         AddEmployee.usecase_add_employee(
-            name=data.get("name"),
-            lastname=data.get("lastname"),
             dni=data.get("dni"),
             email=data.get("email"),
+            name=data.get("name"),
+            lastname=data.get("lastname"),                        
             phone=data.get("phone"),
             dateBirth=data.get("dateBirth"),
             employeeN=data.get("employeeN")
@@ -756,8 +756,6 @@ def send_question():
         # Validaciones mínimas
         if not all([email, name, lastname, question]):
             return jsonify({"error": "Todos los campos son obligatorios."}), 400
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            return jsonify({"error": "Email inválido."}), 400
 
         sendQuestion.usecase_send_question(
             emailUser=email, name=name, lastname=lastname, question=question

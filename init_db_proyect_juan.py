@@ -111,11 +111,11 @@ def __USUARIOS__():
     juan = UserModel(
         dni=45400389,
         email="jibyrab!@gmail.com",
-        name="4540089",
+        name="Juan",
         lastname="Brecevich",
         phone=123456788,
         birth_date="2004-6-28",
-        password="4540089",
+        password="45400389",
         employee_number=0,
         type="Cliente",
         authorized=True)

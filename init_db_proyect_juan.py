@@ -36,12 +36,12 @@ def __MAQUINAS__():
     AddMachine.usecase_add_machine(
         patent="ABC2", 
         mark="CAT", 
-        model="Excavadora", 
+        model="Cargadora", 
         price_day=3_000, 
-        ubication="Ubicacion ABC2", 
+        ubication="Calle 2 y avenida 25", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para excavar",
+        description="Ideal para cargar",
         creation_date="1985-5-1")
     
     AddMachine.usecase_add_machine(
@@ -49,7 +49,7 @@ def __MAQUINAS__():
         mark="CAT", 
         model="Cargadora", 
         price_day=1_000, 
-        ubication="Ubicacion ABC3", 
+        ubication="Calle 3 y avenida 13", 
         refund=10, 
         categorie=["Construccion"], 
         description="Ideal para cargar",
@@ -58,24 +58,24 @@ def __MAQUINAS__():
     AddMachine.usecase_add_machine(
         patent="ABC1", 
         mark="CAT", 
-        model="Cargadora", 
+        model="Excavadora", 
         price_day=3_000, 
-        ubication="Ubicacion ABC1", 
+        ubication="Calle 1 y avenida 12", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para cargar",
+        description="Ideal para excavar",
         creation_date="2000-10-5")
     
     # MAQUINA A DESHABILITAR
     AddMachine.usecase_add_machine(
         patent="ABC4", 
         mark="CAT", 
-        model="Cargadora", 
+        model="Excavadora", 
         price_day=7_500, 
-        ubication="Ubicacion ABC4", 
+        ubication="Calle 4 y avenida 24", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para cargar",
+        description="Ideal para excavar",
         creation_date="2000-10-5")
     
     # MAQUINA A MOSTRAR BOTON CANCELAR GRIS
@@ -84,10 +84,10 @@ def __MAQUINAS__():
         mark="CAT", 
         model="Cargadora", 
         price_day=15_000, 
-        ubication="Ubicacion ABC5", 
+        ubication="Calle 5 y avenida 15", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para cargar",
+        description="Ideal para trasportar",
         creation_date="2000-10-5")
         
     

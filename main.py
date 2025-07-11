@@ -1,3 +1,4 @@
+from operator import and_
 import init_db_proyect
 from datetime import datetime, timedelta
 import json
@@ -25,7 +26,7 @@ import os
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import flash
-from data.query.get.query_get_machine import execute
+from data.query.get import query_get_machine
 from data.config import session
 from data.model.MachineCategorieModel import MachineCategorieModel
 from data.model.CategorieModel import CategorieModel
@@ -43,9 +44,6 @@ from data.model.RentModel import RentModel
 from data.model.MaintenanceModel import MaintenanceModel
 
 from data.config import session
-
-
-
 
 
 app = Flask(__name__)
@@ -485,10 +483,10 @@ def add_employee():
     try:
         data = request.get_json()
         AddEmployee.usecase_add_employee(
-            name=data.get("name"),
-            lastname=data.get("lastname"),
             dni=data.get("dni"),
             email=data.get("email"),
+            name=data.get("name"),
+            lastname=data.get("lastname"),                        
             phone=data.get("phone"),
             dateBirth=data.get("dateBirth"),
             employeeN=data.get("employeeN")
@@ -748,7 +746,6 @@ def get_history_machine():
 
 # ---- PREGUNTAS Y COMENTARIOS ----   
 @app.route("/question/send", methods=["POST"])
-@login_required
 def send_question():
     try:
         data = request.get_json() or {}
@@ -760,8 +757,6 @@ def send_question():
         # Validaciones mínimas
         if not all([email, name, lastname, question]):
             return jsonify({"error": "Todos los campos son obligatorios."}), 400
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            return jsonify({"error": "Email inválido."}), 400
 
         sendQuestion.usecase_send_question(
             emailUser=email, name=name, lastname=lastname, question=question
@@ -998,7 +993,7 @@ def get_all_machines_filter_admin():
 
 @app.route("/machine/get_by_id/<string:machine_id>", methods=["GET"])
 def get_machine_by_id(machine_id):
-    machine = execute(machine_id)
+    machine = query_get_machine.execute(machine_id)
     if not machine:
         return jsonify({"error": "Maquinaria no encontrada"}), 404
 
@@ -1072,7 +1067,7 @@ def disable_categorie():
             return jsonify({"message": str(e)}), 400  #  importante: enviar el mensaje de error
 
     else:
-        return ("/main.html")
+        return ("")
 
 # este es para hacer la lista de categorias disponibles
 @app.route("/categories/enabled", methods=["GET"])
@@ -1089,6 +1084,16 @@ def machine_reservations():
     try:
         request_value = request.get_json().get("machine_id") # [ star:.... , endfa....  ]
         return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine(request_value) }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+@app.route("/reservation/machine_reservations_history", methods=["GET", "POST"]) # reservas de una maquina
+@login_required
+def machine_reservations_history():
+    print("entro")
+    try:
+        request_value = request.get_json().get("machine_id") # [ star:.... , endfa....  ]
+        return jsonify({ "value" :  MachineReservations.usecase_get_all_reservations_by_machine_user_hystory(request_value) }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
  
@@ -1249,8 +1254,14 @@ def get_all_rents_by_machine():
         if not machine_id:
             return jsonify({ "error": "machine_id no proporcionado" }), 400
 
-        rents = session.query(RentModel).filter(RentModel.machine_id == machine_id).all()
-        print("debuggggg")
+        rents = session.query(RentModel).filter(
+            and_(
+                RentModel.machine_id == machine_id,
+                RentModel.canceled_by_maintenance == False
+            )
+            
+            ).all()
+        print(rents)
         return jsonify({ "value": [r.json() for r in rents] }), 200
 
     except Exception as e:
@@ -1309,7 +1320,7 @@ def _active_maint_by_machine(machine_id):
 @login_required
 def get_active_maintenance_get(machine_id):
     try:
-        return jsonify({"value": _active_maint_by_machine(machine_id)}), 200
+        return jsonify({ "maintenance": [x.json() for x in query_get_machine.execute() if x.under_maintenance == True ] }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

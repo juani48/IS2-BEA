@@ -273,6 +273,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ machine_id: machineId }),
           });
+          
           const rentData = await resRents.json();
           const alquileres = rentData.value || [];
 
@@ -324,6 +325,7 @@
 
       function iniciarMantenimiento() {
         const hoy = new Date().toISOString().split("T")[0];
+        const userData = localStorage.getItem('user');
         fetch("/maintenance/start_maintenance", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

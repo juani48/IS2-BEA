@@ -1,8 +1,8 @@
 from core.usecase.service import SendMail
-from data.appDataBase import get_user_by_email
+from core.usecase.user import GetUserByEmployeeN
 
 def usecase_send_question(emailUser,name,lastname,question):
-    local_admin= get_user_by_email("bobelalquilador@gmail.com")
+    local_admin= GetUserByEmployeeN.usecase_case_get_user_by_employee_number(1)
     SendMail.usecase_send_mail(
         emailDest="bobelalquilador@gmail.com",
         subject="Nueva pregunta registrada",
@@ -11,6 +11,7 @@ def usecase_send_question(emailUser,name,lastname,question):
 
             Le informamos que recibió una nueva pregunta de parte de { name }, {lastname}.
               A continuación se la informamos:
+
               {question}
             
             El correo del usuario es: {emailUser}

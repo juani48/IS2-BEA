@@ -36,12 +36,12 @@ def __MAQUINAS__():
     AddMachine.usecase_add_machine(
         patent="ABC2", 
         mark="CAT", 
-        model="Excavadora", 
+        model="Cargadora", 
         price_day=3_000, 
-        ubication="Ubicacion ABC2", 
+        ubication="Calle 2 y avenida 25", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para excavar",
+        description="Ideal para cargar",
         creation_date="1985-5-1")
     
     AddMachine.usecase_add_machine(
@@ -49,7 +49,7 @@ def __MAQUINAS__():
         mark="CAT", 
         model="Cargadora", 
         price_day=1_000, 
-        ubication="Ubicacion ABC3", 
+        ubication="Calle 3 y avenida 13", 
         refund=10, 
         categorie=["Construccion"], 
         description="Ideal para cargar",
@@ -58,12 +58,36 @@ def __MAQUINAS__():
     AddMachine.usecase_add_machine(
         patent="ABC1", 
         mark="CAT", 
-        model="Cargadora", 
+        model="Excavadora", 
         price_day=3_000, 
-        ubication="Ubicacion ABC1", 
+        ubication="Calle 1 y avenida 12", 
         refund=10, 
         categorie=["Construccion"], 
-        description="Ideal para cargar",
+        description="Ideal para excavar",
+        creation_date="2000-10-5")
+    
+    # MAQUINA A DESHABILITAR
+    AddMachine.usecase_add_machine(
+        patent="ABC4", 
+        mark="CAT", 
+        model="Excavadora", 
+        price_day=7_500, 
+        ubication="Calle 4 y avenida 24", 
+        refund=10, 
+        categorie=["Construccion"], 
+        description="Ideal para excavar",
+        creation_date="2000-10-5")
+    
+    # MAQUINA A MOSTRAR BOTON CANCELAR GRIS
+    AddMachine.usecase_add_machine(
+        patent="ABC5", 
+        mark="CAT", 
+        model="Cargadora", 
+        price_day=15_000, 
+        ubication="Calle 5 y avenida 15", 
+        refund=10, 
+        categorie=["Construccion"], 
+        description="Ideal para trasportar",
         creation_date="2000-10-5")
         
     
@@ -86,12 +110,12 @@ def __USUARIOS__():
     
     juan = UserModel(
         dni=45400389,
-        email="jibyrab!@gmail.com",
+        email="jibyrab@gmail.com",
         name="Juan",
         lastname="Brecevich",
         phone=123456788,
         birth_date="2004-6-28",
-        password="juan",
+        password="45400389",
         employee_number=0,
         type="Cliente",
         authorized=True)
@@ -114,7 +138,7 @@ def __EMPLEADOS__():
 
     jose = UserModel(
         dni=66555444,
-        email="jibyrab@gmail.com",
+        email="josefina@gmail.com",
         name="Josefina",
         lastname="Pereyra",
         phone=123456788,
@@ -127,8 +151,8 @@ def __EMPLEADOS__():
 
 def __RESERVAS__():
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-7-11",
-        end_day="2025-7-19",
+        start_day="2025-07-11", #--> 11
+        end_day="2025-07-19",
         client_id=44555666, # ----> RESERVA DE nahuel
         machine_id="ABC1",
         shipment=False,
@@ -137,8 +161,18 @@ def __RESERVAS__():
     )
 
     AddReservation.init_usecase_add_reserve(
-        start_day="2025-8-4",
-        end_day="2025-8-13",
+        start_day="2025-08-22", 
+        end_day="2025-08-30",
+        client_id=44555666, # ----> RESERVA PARA MOSTRAR EL BLOQUEO DE DIAS
+        machine_id="ABC2",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
+
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-08-15",
+        end_day="2025-08-25",
         client_id=44555666, # ----> RESERVA DE Nahuel empleado
         machine_id="ABC3",
         shipment=False,
@@ -146,15 +180,46 @@ def __RESERVAS__():
         apply_discount=False
     )
 
+
+    # MAQUINA A DESHABILITAR
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-09-11",
+        end_day="2025-09-25",
+        client_id=45400389, 
+        machine_id="ABC4",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
+    
+    # MAQUINA A MOSTRAR BOTON CANCELAR GRIS
+    AddReservation.init_usecase_add_reserve(
+        start_day="2025-07-11",
+        end_day="2025-07-25",
+        client_id=45400389, 
+        machine_id="ABC5",
+        shipment=False,
+        type="Cliente",
+        apply_discount=False
+    )
+
 def __ALQUILERES__(): 
     AddRent.usercase_add_rent(
-        start_day="2025-7-10",
-        end_day="2025-7-18",
+        start_day="2025-07-10",
+        end_day="2025-07-18",
         client_id=45400389, # --> ALQUILER DE JUAN 
         machine_id="ABC2",      
         employee_id=4444        
     )
     
+    # MAQUINA A DESHABILITAR
+    AddRent.usercase_add_rent(
+        start_day="2025-07-10",
+        end_day="2025-07-18",
+        client_id=45400389, # --> ALQUILER DE JUAN 
+        machine_id="ABC4",      
+        employee_id=4444        
+    )
 
 
 

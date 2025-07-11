@@ -9,7 +9,6 @@ def execute(start_date, end_date):
     local_reservation = session.query(
         RentModel
     ).filter(RentModel.canceled_by_maintenance == False).all()
-
     return local_reservation
 
 

@@ -10,6 +10,6 @@ def usercase_activate_reservation(start_day, client_id, machine_id, employee_id)
     print(employee.dni == client_id)
     if (int(client_id) == employee.dni):
         print("wtf")
-        raise Exception("Alquiler fallida por coincidencia de DNI.")
+        raise Exception("Alquiler fallido por coincidencia de DNI.")
 
     update_reservation_to_rent(start_day, client_id, machine_id, employee_id)

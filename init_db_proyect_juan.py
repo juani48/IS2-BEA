@@ -110,7 +110,7 @@ def __USUARIOS__():
     
     juan = UserModel(
         dni=45400389,
-        email="jibyrab!@gmail.com",
+        email="jibyrab@gmail.com",
         name="Juan",
         lastname="Brecevich",
         phone=123456788,
@@ -138,7 +138,7 @@ def __EMPLEADOS__():
 
     jose = UserModel(
         dni=66555444,
-        email="jibyrab@gmail.com",
+        email="josefina@gmail.com",
         name="Josefina",
         lastname="Pereyra",
         phone=123456788,
@@ -202,7 +202,6 @@ def __RESERVAS__():
         type="Cliente",
         apply_discount=False
     )
-
 
 def __ALQUILERES__(): 
     AddRent.usercase_add_rent(

@@ -115,7 +115,7 @@ def __USUARIOS__():
         lastname="Brecevich",
         phone=123456788,
         birth_date="2004-6-28",
-        password="juan",
+        password="4540089",
         employee_number=0,
         type="Cliente",
         authorized=True)
